@@ -110,7 +110,7 @@ public class SelectedButtonActionSynchronizer
       if(button != null)
       {
         Object selected = action.getValue(SELECTED);
-        System.out.println("changed "+event.getPropertyName()+" to " +selected);
+//        System.out.println("changed "+event.getPropertyName()+" to " +selected);
         if((selected != null) && (selected instanceof Boolean))
           button.setSelected(((Boolean)selected).booleanValue());
       }

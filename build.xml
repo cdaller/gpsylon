@@ -12,7 +12,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.4.15-pre1"/>
+    <property name="release_version" value="0.4.15-pre2"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib/java"/>
@@ -51,6 +51,7 @@ Christof Dallermassl (cdaller@iicm.edu)
       <include name="writerasterimage/${dist_dir}/**/*.jar" />
       <include name="readgpsdrivetrack/${dist_dir}/**/*.jar" />
       <include name="mapmanager/${dist_dir}/**/*.jar" />
+      <include name="kismetimport/${dist_dir}/**/*.jar" />
     </patternset>
   </target>
   
@@ -69,8 +70,8 @@ Christof Dallermassl (cdaller@iicm.edu)
     <echo>
       The following targets are available:
       - help: shows all available targets of this build.xml file
-      - run: runs the GPSMap application
-      - compile: compiles the gpstool library and the GPSMap application
+      - run: runs the GPSilon application
+      - compile: compiles the gpstool library and the GPSilon application
       - compile_plugins: compiles all plugins
       - clean_all: deletes the '${target_class_dir}','${dist_dir}' and '${javadoc_dir}' directory.
       - clean: removes all compiled classes in the '${target_class_dir}' directory.
@@ -233,6 +234,42 @@ Christof Dallermassl (cdaller@iicm.edu)
       </fileset>
     </jar>
 
+<!-- create gpsilon jar file for quickstart -->
+    <jar jarfile="${dist_dir}/gpsilon.jar">
+      <!-- make the MANIFEST.MF file -->
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Class-Path" value="${dist_name}-${release_version}.jar" />
+        <attribute name="Main-Class" value="org.dinopolis.gpstool.GPSMap"/>
+        <section name="common">
+          <attribute name="Specification-Title" value="GPSilon" />
+          <attribute name="Specification-Version" value="${release_version}" />
+          <attribute name="Specification-Vendor" value="Christof Dallermassl" />
+          <attribute name="Implementation-Title" value="GPSilon" />
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
+        </section>
+      </manifest>
+    </jar>
+
+<!-- create gpstool jar file for quickstart -->
+    <jar jarfile="${dist_dir}/gpstool.jar">
+      <!-- make the MANIFEST.MF file -->
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Class-Path" value="${dist_name}-${release_version}.jar" />
+        <attribute name="Main-Class" value="org.dinopolis.gpstool.gpsinput.GPSTool"/>
+        <section name="common">
+          <attribute name="Specification-Title" value="GPSTool" />
+          <attribute name="Specification-Version" value="${release_version}" />
+          <attribute name="Specification-Vendor" value="Christof Dallermassl" />
+          <attribute name="Implementation-Title" value="GPSTool" />
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
+        </section>
+      </manifest>
+    </jar>
+
     <copy todir="${dist_dir}/${lib_dir}">
       <fileset dir="${lib_dir}">
         <patternset refid="gpstool.lib.patternset"/>
@@ -346,6 +383,9 @@ Christof Dallermassl (cdaller@iicm.edu)
       <fileset dir="${plugin_dir}/mapmanager/${dist_dir}">
         <include name="**/*.jar"/>  
       </fileset>
+      <fileset dir="${plugin_dir}/kismetimport/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
     </copy>
   </target>
 
@@ -387,7 +427,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- compile_plugins target -->
   <target name="compile_plugins"
-    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_mapmanager_plugin"> 
+    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin"> 
   </target>
 
   <!-- compile_downloadmousemode_plugin target -->
@@ -420,9 +460,14 @@ Christof Dallermassl (cdaller@iicm.edu)
     <ant dir="${plugin_dir}/mapmanager" target="compile" inheritAll="false"/>
   </target>
 
+  <!-- compile_mapmanager_plugin target -->
+  <target name="compile_kismetimport_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/kismetimport" target="compile" inheritAll="false"/>
+  </target>
+
   <!-- bin_dist_plugins target -->
   <target name="bin_dist_plugins"
-    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_mapmanager_plugin"> 
+    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin"> 
   </target>
 
   <!-- bin_dist_downloadmousemode_plugin target -->
@@ -455,9 +500,14 @@ Christof Dallermassl (cdaller@iicm.edu)
     <ant dir="${plugin_dir}/mapmanager" target="bin_dist" inheritAll="false"/>
   </target>
 
+  <!-- bin_dist_mapmanager_plugin target -->
+  <target name="bin_dist_kismetimport_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/kismetimport" target="bin_dist" inheritAll="false"/>
+  </target>
+
   <!-- install_plugins target -->
   <target name="install_plugins"
-    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_mapmanager_plugin"> 
+    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_mapmanager_plugin,install_kismetimport_plugin"> 
   </target>
 
   <!-- install_downloadmousemode_plugin target -->
@@ -488,6 +538,11 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- install_mapmanager_plugin target -->
   <target name="install_mapmanager_plugin" depends="init"> 
     <ant dir="${plugin_dir}/mapmanager" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_mapmanager_plugin target -->
+  <target name="install_kismetimport_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/kismetimport" target="install_plugin" inheritAll="false"/>
   </target>
 
 </project>

@@ -1,5 +1,12 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2003/10/02: 0.4.15-pre7 released
+
+2003/10/01: Fixed bugs in tracklayer plugin and gpstool plugin
+
+2003/08/15: Added log4j output in GPSMap.java for testing. Works fine
+            (if not on NFS).
+
 2003/08/05: made expedia download work again (thanks to Fritz Ganter
             and Chris Sutton)
 

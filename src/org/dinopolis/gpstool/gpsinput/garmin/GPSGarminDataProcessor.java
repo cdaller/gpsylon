@@ -435,7 +435,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       read_thread_.setDaemon(true);
       read_thread_.start();
 
-      GarminProduct info = getGarminProductInfo(5000L); // needed to know the capabilities of the device
+      GarminProduct info = getGarminProductInfo(2000L); // needed to know the capabilities of the device
       if(info == null)
         throw new GPSException("Garmin device does not respond!");
 	
@@ -608,7 +608,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void setWaypoints(List waypoints) 
     throws GPSException, UnsupportedOperationException
   {
-    waitTillReady();
+//    waitTillReady();
 
     if(!capabilities_.hasCapability("A100"))
       throw new UnsupportedOperationException("Garmin Device does not support waypoint transfer");
@@ -744,7 +744,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void setRoutes(List routes)
     throws GPSException, UnsupportedOperationException
   {
-    waitTillReady();
+//    waitTillReady();
 
     if(!capabilities_.hasCapability("A200") && !capabilities_.hasCapability("A201"))
       throw new UnsupportedOperationException("Garmin Device does not support route transfer");
@@ -947,7 +947,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void setTracks(List tracks)
     throws GPSException, UnsupportedOperationException
   {
-    waitTillReady();
+//    waitTillReady();
 
     if(!capabilities_.hasCapability("A300") && !capabilities_.hasCapability("A301"))
       throw new UnsupportedOperationException("Garmin Device does not support track transfer");
@@ -1822,7 +1822,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void requestPowerOff()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
         // Turn off power using link protocol L001 and command protocol A010
     if (capabilities_.hasCapability("L1") &&
         capabilities_.hasCapability("A10"))
@@ -1878,7 +1878,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	public void requestVoltage()
 		throws IOException
 	{
-		waitTillReady();
+//		waitTillReady();
 		sendCommandAsync(Pid_Command_Data_L001, Cmnd_Transfer_Voltage_A010);
 	}
 
@@ -1890,7 +1890,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	public void requestSerialNumber()
 		throws IOException
 	{
-		waitTillReady();
+//		waitTillReady();
 		if(capabilities_.hasCapability("L1"))
 			sendCommandAsync(Pid_Command_Data_L001,Cmnd_Transfer_SerialNr);
 		else
@@ -1904,7 +1904,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void requestScreenShot()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
     sendCommandAsync(Pid_Command_Data_L001, Cmnd_Transfer_Screenbitmap_A010);
   }
 
@@ -1918,7 +1918,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         // experimental code (from http://playground.sun.com/pub/soley/garmin.txt):
         // more information about these packets can be found at:
         // http://artico.lma.fi.upm.es/numerico/miembros/antonio/async/report.txt
-    waitTillReady();
+//    waitTillReady();
     GarminPacket garmin_packet = new GarminPacket(Pid_Enable_Async_Events,2);
         // 00 00 = 0x0= disable all (no bits set)
         // 01 00 = 0x1= enables RecordType=00,01,02 // etrex summit: nothing sent
@@ -1952,7 +1952,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void requestMapFlashInfo()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
     if (capabilities_.hasCapability("L1") &&
         capabilities_.hasCapability("A10"))
     {
@@ -1967,7 +1967,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   private void requestEraseFlash(int map_area)
   {
-    waitTillReady();
+//    waitTillReady();
     GarminPacket garmin_packet = new GarminPacket(Pid_Flash_Erase_Request,2);
     garmin_packet.setNextAsWord(map_area);
     putPacketAsync(garmin_packet);
@@ -1981,7 +1981,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void requestStartPvtData()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
     if (capabilities_.hasCapability("L1") &&
         capabilities_.hasCapability("A10"))
     {
@@ -1998,7 +1998,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void requestStopPvtData()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
     if (capabilities_.hasCapability("L1") &&
         capabilities_.hasCapability("A10"))
     {
@@ -2019,7 +2019,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean requestRoutes()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
       
     boolean success = false;
     int num_tries = 0;
@@ -2067,7 +2067,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean requestWaypoints()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
       
     boolean success = false;
     int num_tries = 0;
@@ -2115,7 +2115,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean requestTracks()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
       
     boolean success = false;
     int num_tries = 0;
@@ -2170,7 +2170,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean requestPVT()
     throws IOException
   {
-    waitTillReady();
+//    waitTillReady();
 
     if(capabilities_.hasCapability("A800") &&
        capabilities_.hasCapability("L1") &&

@@ -6,6 +6,7 @@
   <property name="dist_dir" value="dist"/>
   <property name="lib_dir" value="lib/java"/>
   <property name="dinopolis_classes" value="../../classes"/>
+  <property name="plugin_install_dir" value="${user.home}/.gpsmap/plugins"/>
 
 <!-- patternset of gpstool files needed to compile the distribution (used by the common_compile_dist) -->
   
@@ -33,9 +34,8 @@ The following targets are available:
       needed files (plugin jar and libraries).
  - compile: compiles a distribution
  - clean_dist: deletes the $$dist_dir directory.
- - upload_sourceforge_web: uploads the webpages to sourceforge
- - upload_sourceforge_dist: uploads the dist (bin and source)
-                             to ftpserver of sourceforge
+ - install_plugin: installs the plugins and all needed libraries into the
+      $$plugin_install_dir directory.
     </echo>
   </target>
 
@@ -117,24 +117,16 @@ The following targets are available:
   </target>       
   
 
-<!-- compile target -->
+<!-- clean_dist target -->
   <target name="clean_dist">
     <delete dir="${dist_dir}"/>
   </target>
 
-
-  <target name="upload_sourceforge_web">
-    <exec dir="${dino_doc_dir}/org/dinopolis/gpstool/" executable="/bin/sh">
-      <arg value="-c"/>
-      <arg value='tar cvf - *.html *.pdf changelog.txt images/*.png | ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; tar xf -)"'/>
-    </exec>
-  </target>
-   
-  <target name="upload_sourceforge_dist">
-    <exec dir="${dest_dir_dist}" executable="/bin/sh">
-      <arg value="-c"/>
-      <arg value='ncftpput upload.sourceforge.net incoming ${dest_dir_dist}/gpstool_???-${release_version}.tar.gz'/>
-    </exec>
-  </target>
-   
+<!-- install plugin target -->
+  <target name="install_plugin" depends="bin_dist">
+    <copy todir="${plugin_install_dir}">
+      <fileset dir="${dist_dir}">
+        <exclude name="*.tar.gz"/>
+      </fileset>
+    </copy>
 </project>

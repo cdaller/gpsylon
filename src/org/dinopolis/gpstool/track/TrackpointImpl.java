@@ -56,7 +56,7 @@ public class TrackpointImpl extends WaypointImpl implements Trackpoint
   
 //----------------------------------------------------------------------
 /**
- * Empty Constructor
+ * Copy Constructor
  */
   public TrackpointImpl(GPSTrackpoint trackpoint)
   {

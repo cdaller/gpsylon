@@ -22,6 +22,11 @@
 
 package org.dinopolis.gpstool;
 
+import org.dinopolis.gpstool.event.MapsChangedListener;
+import org.dinopolis.gpstool.event.MapsChangedEvent;
+import com.bbn.openmap.proj.Projection;
+import java.util.Collection;
+
 //----------------------------------------------------------------------
 /**
  * This hook is used for hooks concerning the management of maps.
@@ -56,8 +61,75 @@ public interface MapManagerHook
  */
 
   public void addNewMap(MapInfo map_info);
-  
+
+//----------------------------------------------------------------------
+/**
+ * Returns a list that holds information about all available maps
+ * (MapInfo objects).
+ *
+ * @return information about all available maps.
+ */
+  public Collection getMapInfos();
+
+  //----------------------------------------------------------------------
+/**
+ * Returns a list of ImageInfo objects that describe all maps and
+ * their position that are visible in the given projection. This list
+ * holds also maps that are below other maps (on top). The
+ * following algorithm is used to to determine the visibility of the
+ * maps: if the distance between the center of the image and the
+ * center of the viewport (the projection) is less than (image.width +
+ * viewport.width)/2 (same with height), the image is visible. The
+ * "visible_rectangle" info is not used in the returned ImageInfo
+ * objects!
+ *
+ * @param projection the projection to find the images for.
+ */
+  public Collection getAllVisibleImages(Projection projection);
+
+//----------------------------------------------------------------------
+/**
+ * Returns a collection of ImageInfo objects that describe all maps and
+ * their position that are visible in the given projection. This collection
+ * holds also maps that are covered by other maps (on top). The
+ * following algorithm is used to to determine the visibility of the
+ * maps: if the distance between the center of the image and the
+ * center of the viewport (the projection) is less than (image.width +
+ * viewport.width)/2 (same with height), the image is visible. The
+ * "visible_rectangle" info is not used in the returned ImageInfo
+ * objects!
+ *
+ * @param projection the projection to find the images for.
+ * @param min_scale_factor if the scale of the image divided by the
+ * scale of the projection is less than this value, the image is not
+ * used. So if the scale of the projection is 100000 and one map is
+ * of scale 1000, the factor would be 0.01, so if a min_scale_factor
+ * of 0.5 is given, the map would not be taken.
+ */
+  public Collection getAllVisibleImages(Projection projection,
+					double min_scale_factor);
+
+//----------------------------------------------------------------------
+/**
+ * Adds as a listener that is informed about changes of the maps
+ * (adding, removal).
+ *
+ * @param listener the listener to add
+ */
+  public void addMapsChangedListener(MapsChangedListener listener);
+
+
+  //----------------------------------------------------------------------
+/**
+ * Remove a listener that is informed about changes of the maps
+ * (adding, removal).
+ *
+ * @param listener the listener to be removed.
+ */
+  public void removeMapsChangedListener(MapsChangedListener listener);
 }
+
+
 
 
 

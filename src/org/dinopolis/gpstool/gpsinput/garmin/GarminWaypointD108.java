@@ -89,9 +89,9 @@ public class GarminWaypointD108 implements GarminWaypoint
     int offset = 50 + identification_.length() + 1;
     comment_ = GarminDataConverter.getGarminString(buffer,offset,51);
     offset = offset + comment_.length() + 1;
-    facility_ = GarminDataConverter.getGarminString(buffer,offset,51);
+    facility_ = GarminDataConverter.getGarminString(buffer,offset,31);
     offset = offset + facility_.length() + 1;
-    city_ = GarminDataConverter.getGarminString(buffer,offset,51);
+    city_ = GarminDataConverter.getGarminString(buffer,offset,25);
     offset = offset + city_.length() + 1;
     address_ = GarminDataConverter.getGarminString(buffer,offset,51);
     offset = offset + address_.length() + 1;

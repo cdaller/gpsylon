@@ -44,7 +44,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.WeakHashMap;
@@ -126,10 +125,7 @@ public class FileResources extends AbstractResources
   private ResourceBundle system_bundle_;
 
   /** the users private resource bundle */
-  private Properties private_resources_;
-
-  /** the original resources to determine any changes */
-  private HashMap original_resources_;
+  private Properties user_properties_;
 
   /** the file that holds the users resources */
   private File user_resource_file_;
@@ -162,30 +158,12 @@ public class FileResources extends AbstractResources
                         String system_resource_base_name)
   {
     user_resource_file_ = user_resource_file;
-    private_resources_ = user_bundle;
-    if (private_resources_ == null)
-      private_resources_ = new Properties();
+    user_properties_ = user_bundle;
+    if (user_properties_ == null)
+      user_properties_ = new Properties();
     user_resource_base_name_ = user_resource_base_name;
     system_bundle_ = system_bundle;
     system_resource_base_name_ = system_resource_base_name;
-    original_resources_ = new HashMap();
-    addOriginalResources();
-  }
-
-  //----------------------------------------------------------------------
-  /**
-   * Adds all resources to the original_resources_ HashMap.
-   */
-
-  private void addOriginalResources()
-  {
-    Enumeration names = private_resources_.propertyNames();
-    String key;
-    while (names.hasMoreElements())
-    {
-      key = (String)names.nextElement();
-      original_resources_.put(key, getValue(key));
-    }
   }
 
   //----------------------------------------------------------------------
@@ -382,9 +360,9 @@ public class FileResources extends AbstractResources
    *
    * @param caller the caller, to search the system bundle for.
    * @param base_name the base name of the resource bundle.
-   * @param locale the locale.
    * @param dir_name the name of the directory within the users homedir
    * to look for a property file.
+   * @param locale the locale.
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
    * could not be located.
@@ -577,7 +555,7 @@ public class FileResources extends AbstractResources
   
   protected synchronized String getValue(String key)
   {
-    String value = private_resources_.getProperty(key);
+    String value = user_properties_.getProperty(key);
     if (value != null)
       return(value);
     return(system_bundle_.getString(key)); // the system bundle
@@ -604,16 +582,13 @@ public class FileResources extends AbstractResources
    *
    * @param key the key of the resource property to set.
    * @param value the value of the resource property to set.
-   * @exception UnsupportedOperationException if the resources is not
-   * capable of storing values.
    * 
    */
   
   protected synchronized void setValue(String key, String value)
-    throws UnsupportedOperationException
   {
     //    System.err.println("setValue() key: "+key+", value: "+value);
-    private_resources_.setProperty(key, value);
+    user_properties_.setProperty(key, value);
   }
 
   //----------------------------------------------------------------------
@@ -625,17 +600,33 @@ public class FileResources extends AbstractResources
    * remove is supported.
    *
    * @param key the key of the resource to delete.
-   * @exception UnsupportedOperationException if the resources is not
-   * capable of deleting values.
    */
 
   protected synchronized void unsetValue(String key)
-    throws UnsupportedOperationException
   {
     //   System.err.println("unsetValue() key: "+key);
-    private_resources_.remove(key);
+    if(system_bundle_.getString(key) == null)
+      user_properties_.remove(key);
+    else
+          // mark it with a special key, so it is unset from now on!
+      user_properties_.put(key,"$"+UNSET_KEY+"$");
   }
 
+  //----------------------------------------------------------------------
+  /**
+   * Resets the bound value for the given key to its default value. If
+   * no value was bound under the given key, this method does
+   * nothing. Key is garanteed to be non-null! Removes the value from
+   * the user properties.
+   *
+   * @param key the key of the resource to reset.
+   */
+
+  protected void resetValue(String key)
+  {
+    user_properties_.remove(key);
+  }
+  
   //----------------------------------------------------------------------
   /**
    * Call this method to make all changes performed by unset and
@@ -657,230 +648,12 @@ public class FileResources extends AbstractResources
     if (!parent.exists())
       parent.mkdir();
         
-    if (!user_resource_file_.exists())
-    {
-      FileOutputStream file_out = new FileOutputStream(user_resource_file_);
-      private_resources_.store(file_out, "auto generated file - by FileResources");
-      return;
-    }
-   
-    File tmp_out_file = new File(parent, tmp_file_name);
-    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new
-      FileOutputStream(tmp_out_file), "8859_1")); 
-    
-    BufferedReader in = new BufferedReader(new InputStreamReader(new
-      FileInputStream(user_resource_file_), "8859_1")); 
-
-    // Get next line
-    String line = in.readLine();
-    HashSet set_keys = new HashSet();
-    while (line != null) 
-    {
-      if (line.length() > 0) 
-      {
-        // Continue lines that end in slashes if they are not comments
-        char firstChar = line.charAt(0);
-        if ((firstChar != '#') && (firstChar != '!')) 
-        {
-          while (continueLine(line)) 
-          {
-            String next_line = in.readLine();
-            if(next_line != null)
-              line += next_line;
-          }
-          
-          // Find start of key
-          int len = line.length();
-          int key_start;
-          for (key_start=0; key_start<len; key_start++)
-            if(WHITE_SPACE_CHARS.indexOf(line.charAt(key_start)) == -1)
-              break;
-          
-          // Blank lines are ignored
-          if (key_start == len)
-          {
-            out.newLine();
-            continue;
-          }
-
-          // Find separation between key and value
-          int separator_index;
-          for(separator_index=key_start; separator_index<len; separator_index++) {
-            char current_char = line.charAt(separator_index);
-            if (current_char == '\\')
-              separator_index++;
-            else 
-              if(KEY_VALUE_SEPARATORS.indexOf(current_char) != -1)
-                break;
-          }
-          
-          String key = line.substring(key_start, separator_index);
-          
-          key = loadConvert(key);
-          
-          if (wasModified(key))
-          {
-            //            System.err.println("key: "+key+", value: "+private_resources_.get(key));
-            if (private_resources_.containsKey(key))
-              writeln(out, key+"="+getValue(key));
-//                else
-//                  writeln(out, "#rem "+key+"="+getValue(key));
-          }
-          else
-            writeln(out, line);
-          set_keys.add(key);
-        }
-        else
-          writeln(out, line);
-      }
-      else
-        out.newLine();
-      // Get next line
-      line = in.readLine();
-    }
-    Enumeration enum = private_resources_.propertyNames();
-    String key = null;
-    boolean first = true;
-    while (enum.hasMoreElements())
-    {
-      key = (String)enum.nextElement();
-      if (!set_keys.contains(key))
-      {
-//          if (first)
-//          {
-//            writeln(out, "#-- added on "+new Date().toString()+" --");
-//            first = false;
-//          }
-        writeln(out, key+"="+getString(key));
-      }
-    }
-      
-    out.flush();
-    in.close();
-    out.close();
-    
-    if (!(tmp_out_file.renameTo(user_resource_file_)))
-    { // bugfix #55 on windows, can't move a file over an existing one!
-      user_resource_file_.delete();
-      tmp_out_file.renameTo(user_resource_file_);
-    }
-    original_resources_.clear();
-    addOriginalResources();
+    FileOutputStream file_out = new FileOutputStream(user_resource_file_);
+    user_properties_.store(file_out, "auto generated file - by FileResources");
+    file_out.close();
+    return;
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Writes the given string together with a newline to the given
-   * writer. 
-   *
-   * @param writer the writer to write to.
-   * @param line the string to write at writer.
-   * @return 
-   * @exception IOException in case of an IO error.
-   */
-  
-  private static void writeln(BufferedWriter writer, String line)
-    throws IOException
-  {
-    writer.write(line);
-    writer.newLine();
-  }
-
-  //----------------------------------------------------------------------
-  /*
-   * Returns true if the given line is a line that must
-   * be appended to the next line
-   */
-
-  private boolean continueLine (String line) 
-  {
-    int slash_count = 0;
-    int index = line.length() - 1;
-    while((index >= 0) && (line.charAt(index--) == '\\'))
-      slash_count++;
-    return (slash_count % 2 == 1);
-  }
-
-  //----------------------------------------------------------------------
-  /*
-   * Converts encoded &#92;uxxxx to unicode chars
-   * and changes special saved chars to their original forms
-   */
-
-  private String loadConvert (String to_convert) 
-  {
-    char character;
-    int len = to_convert.length();
-    StringBuffer out_buffer = new StringBuffer(len);
-    
-    for (int x=0; x<len; ) 
-    {
-      character = to_convert.charAt(x++);
-      if (character == '\\') {
-        character = to_convert.charAt(x++);
-        if(character == 'u') {
-          // Read the xxxx
-          int value=0;
-          for (int i=0; i<4; i++) {
-            character = to_convert.charAt(x++);
-            switch (character) {
-            case '0': case '1': case '2': case '3': case '4':
-            case '5': case '6': case '7': case '8': case '9':
-              value = (value << 4) + character - '0';
-              break;
-            case 'a': case 'b': case 'c':
-            case 'd': case 'e': case 'f':
-              value = (value << 4) + 10 + character - 'a';
-              break;
-            case 'A': case 'B': case 'C':
-            case 'D': case 'E': case 'F':
-              value = (value << 4) + 10 + character - 'A';
-              break;
-            default:
-              throw new IllegalArgumentException(
-                                                 "Malformed \\uxxxx encoding.");
-            }
-          }
-          out_buffer.append((char)value);
-        } 
-        else 
-        {
-          if (character == 't') 
-            character = '\t';
-          else 
-            if (character == 'r') 
-              character = '\r';
-            else
-              if (character == 'n') 
-                character = '\n';
-              else
-                if (character == 'f')
-                  character = '\f';
-          out_buffer.append(character);
-        }
-      }
-      else
-        out_buffer.append(character);
-    }
-    return out_buffer.toString();
-  }
-  
-  //----------------------------------------------------------------------
-  /**
-   * Determines whether the property bound under the given key has
-   * changed.
-   *
-   * @param key the key to determine if its value has changed.
-   * @return if the value bound under key has changed or not.
-   */
-
-  private boolean wasModified(String key)
-  {
-    Object value = original_resources_.get(key);
-    if (value == null)
-      return(true); // was added
-    return(!value.equals(private_resources_.getProperty(key)));
-  }
 
   //----------------------------------------------------------------------
   /**
@@ -1121,7 +894,7 @@ public class FileResources extends AbstractResources
           added.add(key);
         }
       }
-      enum = private_resources_.propertyNames();
+      enum = user_properties_.propertyNames();
       while (enum.hasMoreElements())
       {
         key = (String)enum.nextElement();

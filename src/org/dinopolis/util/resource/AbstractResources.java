@@ -3,28 +3,25 @@
  *
  * Copyright (c) 2001 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
 
 package org.dinopolis.util.resource;
-
-
-
 
 import gnu.regexp.RE;
 import gnu.regexp.REException;
@@ -99,7 +96,7 @@ import java.util.Iterator;
  * throwing a <code>MissingResourceException</code>.
  *
  * @author Dieter Freismuth
- * @version $Revision$ 
+ * @version $Revision$
  */
 
 public abstract class AbstractResources implements Resources
@@ -140,7 +137,7 @@ public abstract class AbstractResources implements Resources
    * @exception MissingResourceException if the given key is not defined
    * within the resources.
    */
-  
+
   protected abstract String getValue(String key)
     throws MissingResourceException;
 
@@ -156,7 +153,7 @@ public abstract class AbstractResources implements Resources
    * within the resources.
    */
 
-  protected String getAlsoAttachedValue(String key)
+  protected String getValueAllAttached(String key)
     throws MissingResourceException
   {
     MissingResourceException missing_exception = null;
@@ -171,7 +168,7 @@ public abstract class AbstractResources implements Resources
 
     if(attached_resources_ == null)
       throw missing_exception;
-    
+
         // search in all merged resources for the given key:
     synchronized(attached_resources_)
     {
@@ -260,9 +257,9 @@ public abstract class AbstractResources implements Resources
    * @param value the value of the resource property to set.
    * @exception UnsupportedOperationException if the resources is not
    * capable of storing values.
-   * 
+   *
    */
-  
+
   protected void setValue(String key, String value)
     throws UnsupportedOperationException
   {
@@ -271,45 +268,167 @@ public abstract class AbstractResources implements Resources
                                             "Resources class"));
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Removes the bound value for the given key, if no value was bound
-   * under the given key, this method does nothing. Key is garanteed
-   * to be non-null!
-   * Overwrite this method in classes extending AbstractResources, if
-   * remove is supported.
-   *
-   * @param key the key of the resource to delete.
-   * @exception UnsupportedOperationException if the resources is not
-   * capable of deleting values.
-   */
+//----------------------------------------------------------------------
+/**
+ * Registers the given value under the given key on this resources or
+ * on any attached resources (depending on which resource knows the
+ * given key). If no known resources know the given key, it is set in
+ * this resources.
+ *
+ *
+ * @param key the key of the resource property to set.
+ * @param value the value of the resource property to set.
+ * @exception UnsupportedOperationException if the resources is not
+ * capable of storing values.
+ */
+
+  protected void setValueAllAttached(String key, String value)
+    throws UnsupportedOperationException
+  {
+        // find out, if key is available in my or attached resources:
+    Resources resources = findResourcesForKey(key);
+    if((resources == null) || (resources == this))
+      setValue(key, value);
+    else
+      resources.setString(key, value);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Finds the resources that do not throw a MissintResourceException for
+ * the given key. Returns null, if none (not myself and no attached
+ * resources are found.)
+ *
+ * @param key the key of the resource to find in the resources.
+ * @return the first resource that did not throw a
+ * MissingResourceException or null, if none was found.
+ */
+  protected Resources findResourcesForKey(String key)
+  {
+    String value;
+        // try myself:
+    try
+    {
+      value = getValue(key);
+          // yes, I have got the key!
+      return(this);
+    }
+    catch(MissingResourceException ignored) {}
+
+        // try other resources:
+    if(attached_resources_ != null)
+    {
+      synchronized(attached_resources_)
+      {
+        Resources resources;
+        Iterator resources_iterator = attached_resources_.iterator();
+        while(resources_iterator.hasNext())
+        {
+          resources = (Resources)resources_iterator.next();
+          try
+          {
+            value = resources.getString(key);
+                // yes, the resources have got the key, return it:
+            return(resources);
+          }
+          catch(MissingResourceException ignored) {}
+        }
+      }
+    }
+        // no one has the key:
+    return(null);
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Removes the bound value for the given key, if no value was bound
+ * under the given key, this method does nothing. Key is garanteed
+ * to be non-null!
+ * Overwrite this method in classes extending AbstractResources, if
+ * remove is supported.
+ *
+ * @param key the key of the resource to delete.
+ * @exception UnsupportedOperationException if the resources is not
+ * capable of deleting values.
+ */
 
   protected void unsetValue(String key)
     throws UnsupportedOperationException
   {
     throw(new UnsupportedOperationException("remove methods are not "+
                                             "supported by this"+
-                                            "Resources class"));    
+                                            "Resources class"));
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Resets the bound value for the given key to its default value. If
-   * no value was bound under the given key, this method does
-   * nothing. Key is garanteed to be non-null!  Overwrite this method
-   * in classes extending AbstractResources, if reset is supported.
-   *
-   * @param key the key of the resource to reset.
-   * @exception UnsupportedOperationException if the resources is not
-   * capable of resetting values.
-   */
+//----------------------------------------------------------------------
+/**
+ * Removes the bound value for the given key on this resources or on
+ * any attached resources (depending on which resource knows the given
+ * key). If no known resources know the given key, it is removed in
+ * this resources.
+ *
+ *
+ * @param key the key of the resource property to set.
+ * @exception UnsupportedOperationException if the resources is not
+ * capable of storing values.
+ */
+
+  protected void unsetValueAllAttached(String key)
+    throws UnsupportedOperationException
+  {
+        // find out, if key is available in my or attached resources:
+    Resources resources = findResourcesForKey(key);
+    if((resources == null) || (resources == this))
+      unsetValue(key);
+    else
+      resources.unset(key);
+
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Resets the bound value for the given key to its default value. If
+ * no value was bound under the given key, this method does
+ * nothing. Key is garanteed to be non-null!  Overwrite this method
+ * in classes extending AbstractResources, if reset is supported.
+ *
+ * @param key the key of the resource to reset.
+ * @exception UnsupportedOperationException if the resources is not
+ * capable of resetting values.
+ */
 
   protected void resetValue(String key)
     throws UnsupportedOperationException
   {
     throw(new UnsupportedOperationException("reset methods are not "+
                                             "supported by this"+
-                                            "Resources class"));    
+                                            "Resources class"));
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Resets the given value under the given key on this resources or
+ * on any attached resources (depending on which resource knows the
+ * given key). If no known resources know the given key, it is reset in
+ * this resources.
+ *
+ *
+ * @param key the key of the resource property to set.
+ * @exception UnsupportedOperationException if the resources is not
+ * capable of storing values.
+ */
+  protected void resetValueAllAttached(String key)
+    throws UnsupportedOperationException
+  {
+        // find out, if key is available in my or attached resources:
+    Resources resources = findResourcesForKey(key);
+    if((resources == null) || (resources == this))
+      resetValue(key);
+    else
+      resources.reset(key);
+
   }
 
   //----------------------------------------------------------------------
@@ -329,7 +448,7 @@ public abstract class AbstractResources implements Resources
                                             "supported by this"+
                                             "Resources class"));
   }
-  
+
   //----------------------------------------------------------------------
   /**
    * Call this method to make all changes performed by unset and
@@ -392,6 +511,7 @@ public abstract class AbstractResources implements Resources
    * editor), but the place where the resources are stored can still
    * be held separated.
    *
+   * @param resources the resources to attach
    * @exception UnsupportedOperationException if the resources is not
    * capable of attaching other resources.
    */
@@ -406,11 +526,12 @@ public abstract class AbstractResources implements Resources
       attached_resources_.add(resources);
     }
   }
-  
+
   //----------------------------------------------------------------------
   /**
    * Detach previously attached resources.
    *
+   * @param resources the resources to detach.
    * @exception UnsupportedOperationException if the resources is not
    * capable of attaching other resources.
    */
@@ -447,7 +568,7 @@ public abstract class AbstractResources implements Resources
    * Sets the title for the given key.
    * Overwrite this method in classes extending AbstractResources, if
    * titles are supported. by default, this method throws an
-   * UnsupportedOperationException. 
+   * UnsupportedOperationException.
    *
    * @param key the key to set the title for.
    * @param title the title to set.
@@ -468,7 +589,7 @@ public abstract class AbstractResources implements Resources
   /**
    * Returns a string that describes the key and its possible values.
    * If no description for this key is available, <code>null</code> is
-   * returned. 
+   * returned.
    * Overwrite this method in classes extending AbstractResources, if
    * descriptions are supported. by default, this method returns null.
    *
@@ -486,7 +607,7 @@ public abstract class AbstractResources implements Resources
    * Sets the description for the given key.
    * Overwrite this method in classes extending AbstractResources, if
    * set of descriptions is supported. by default, this method throws
-   * an UnsupportedOperationException. 
+   * an UnsupportedOperationException.
    *
    * @param key the key to set the description for.
    * @param description the description to set.
@@ -528,7 +649,7 @@ public abstract class AbstractResources implements Resources
    * Sets the type for the given key.
    * Overwrite this method in classes extending AbstractResources, if
    * set of types is supported. by default, this method throws an
-   * UnsupportedOperationException. 
+   * UnsupportedOperationException.
    *
    * @param key the key to set the type for.
    * @param type the type to set.
@@ -553,7 +674,7 @@ public abstract class AbstractResources implements Resources
    * If no set of valid values exists <code>null</code> is returned.
    * Overwrite this method in classes extending AbstractResources, if
    * types is a set of chooseable values. by default, this method
-   * returns null. 
+   * returns null.
    *
    * @param key the key to get the type for.
    * @return the possible values.
@@ -569,14 +690,14 @@ public abstract class AbstractResources implements Resources
    * Sets the possible Values for the given key.
    * Overwrite this method in classes extending AbstractResources, if
    * set of possible values is supported. by default, this method
-   * throws an UnsupportedOperationException. 
+   * throws an UnsupportedOperationException.
    *
    * @param key the key to set the possible Values for.
    * @param possible_values the possible Values to set.
    * @exception UnsupportedOperationException if setPossibleValues
    * operations are not supported.
    * @exception IllegalArgumentException if key or possible_values is
-   * 'null'. 
+   * 'null'.
    */
 
   public void setPossibleValues(String key, String[] possible_values)
@@ -606,7 +727,7 @@ public abstract class AbstractResources implements Resources
     try
     {
       String old_value = getValue(key);
-      unsetValue(key);
+      unsetValueAllAttached(key);
       property_change_support_.firePropertyChange(key, old_value, null);
     }
     catch (MissingResourceException exc)
@@ -629,11 +750,11 @@ public abstract class AbstractResources implements Resources
   {
     if (key == null)
       throw(new IllegalArgumentException("'key' must not be 'null'"));
-    
+
     String old_value = null;
     try
     {
-      old_value = getValue(key);
+      old_value = getValueAllAttached(key);
     }
     catch(MissingResourceException exc)
     {
@@ -641,12 +762,12 @@ public abstract class AbstractResources implements Resources
     String new_value = null;
     try
     {
-      new_value = getValue(key);
+      new_value = getValueAllAttached(key);
     }
     catch(MissingResourceException exc)
     {
     }
-    resetValue(key);
+    resetValueAllAttached(key);
     property_change_support_.firePropertyChange(key, old_value, new_value);
   }
 
@@ -676,7 +797,7 @@ public abstract class AbstractResources implements Resources
    * @return the replaced string
    */
 
-  public static String replace(String to_replace, 
+  public static String replace(String to_replace,
                                Map map)
   {
     int var_start_pos = to_replace.indexOf(VAR_IDENTIFIER);
@@ -708,7 +829,7 @@ public abstract class AbstractResources implements Resources
           replaced+to_replace.substring(var_end_pos+VAR_LENGTH);
         var_end_pos = var_start_pos-VAR_LENGTH+replaced.length();
       }
-      
+
       var_start_pos = to_replace.indexOf(VAR_IDENTIFIER, var_end_pos+VAR_LENGTH);
     }
     return(to_replace);
@@ -724,7 +845,7 @@ public abstract class AbstractResources implements Resources
    * replaced! Variables in the resource file will be searched prior
    * to variables within the system properties and the 'null' key.
    *
-   * Examples: <xmp> 
+   * Examples: <xmp>
    * version = 1.0.0
    * id = Resouces ($version$) </xmp>
    * getString("id") will return 'Resouces (1.0.0)'
@@ -780,14 +901,14 @@ public abstract class AbstractResources implements Resources
             else
               if (replaced == null)
                 if (deep_replace)
-                  replaced = replaceVariables(getAlsoAttachedValue(variable),
+                  replaced = replaceVariables(getValueAllAttached(variable),
                                               set);
                 else
                   replaced = replaceVariables(variable, set);
               else
                 if (deep_replace)
                   replaced += RESOURCE_STRING_ARRAY_DELIMITER+
-                    replaceVariables(getAlsoAttachedValue(variable),
+                    replaceVariables(getValueAllAttached(variable),
                                      set);
                 else
                   replaced += RESOURCE_STRING_ARRAY_DELIMITER+
@@ -825,7 +946,7 @@ public abstract class AbstractResources implements Resources
           replaced+to_replace.substring(var_end_pos+VAR_LENGTH);
         var_end_pos = var_start_pos-VAR_LENGTH+replaced.length();
       }
-      
+
       var_start_pos = to_replace.indexOf(VAR_IDENTIFIER, var_end_pos+VAR_LENGTH);
     }
     return(to_replace);
@@ -863,7 +984,7 @@ public abstract class AbstractResources implements Resources
       RE regular_expression = new RE(key_perl5.toString());
 
       Vector hits = new Vector();
-      
+
       Enumeration enum = getKeys();
       Object hit;
       while (enum.hasMoreElements())
@@ -890,25 +1011,25 @@ public abstract class AbstractResources implements Resources
   /**
    * Returns the string loaded from the resource bundle. If variables
    * are given in the value, they will be replaced
-   * recursively. Variables are Strings that start and end with a 
+   * recursively. Variables are Strings that start and end with a
    * '$'. To escape the $-sign use $$. In case of a deadlock (a
    * contains variable b, and b contains variable a), the variable
    * will not be replaced. Variables that are not given within the
-   * resources are also not replaced. 
-   * 
+   * resources are also not replaced.
+   *
    * @param key the key of the resource property to look for.
    * @return the replaced string loaded from the resource bundle.
    * @exception MissingResourceException if the given key is not defined
    * within the resources.
    * @exception IllegalArgumentException if key is 'null'.
    */
-  
+
   public String getString(String key)
     throws MissingResourceException
   {
     if (key == null)
       throw(new IllegalArgumentException("'key' must not be 'null'"));
-    String value = getAlsoAttachedValue(key);
+    String value = getValueAllAttached(key);
     if (value == null)
       //      return(null);
       throw(new MissingResourceException("Can't find resource for "+
@@ -918,7 +1039,7 @@ public abstract class AbstractResources implements Resources
                                          getClass().getName(), key));
     if (value.indexOf(VAR_IDENTIFIER) < 0)
       return(value); // noting to escape
-    
+
     HashSet set = new HashSet();
     set.add(key);
     return(replaceVariables(value, set));
@@ -928,7 +1049,7 @@ public abstract class AbstractResources implements Resources
   /**
    * Returns the native value loaded from the resource bundle. If variables
    * are given in the value, they will be replaced
-   * recursively. Variables are Strings that start and end with a 
+   * recursively. Variables are Strings that start and end with a
    * '$'. To escape the $-sign use $$. In case of a deadlock (a
    * contains variable b, and b contains variable a), the variable
    * will not be replaced. Variables that are not given within the
@@ -937,7 +1058,7 @@ public abstract class AbstractResources implements Resources
    * getType() call with the given key returns <code>null</code>. If
    * the resource is invalid to its type (e.g.: "x" as Integer),
    * an IllegalArgumentException will be thrown.
-   * 
+   *
    * @param key the key of the resource property to look for.
    * @return the native object loaded from the resource bundle.
    * @exception MissingResourceException if the given key is not defined
@@ -945,7 +1066,7 @@ public abstract class AbstractResources implements Resources
    * @exception IllegalArgumentException if key is 'null', or the
    * value is not of the registerd type.
    */
-    
+
   public Object get(String key)
     throws MissingResourceException, IllegalArgumentException
   {
@@ -956,14 +1077,14 @@ public abstract class AbstractResources implements Resources
   /**
    * Returns the native value loaded from the resource bundle. If variables
    * are given in the value, they will be replaced
-   * recursively. Variables are Strings that start and end with a 
+   * recursively. Variables are Strings that start and end with a
    * '$'. To escape the $-sign use $$. In case of a deadlock (a
    * contains variable b, and b contains variable a), the variable
    * will not be replaced. Variables that are not given within the
    * resources are also not replaced. The return value will be of type
    * String, if the Resources are not type save, which means, that the
    * getType() call with the given key returns <code>null</code>.
-   * 
+   *
    * @param key the key of the resource property to look for.
    * @param type the type to be returned, if null, a String will be returned.
    * @return the native object loaded from the resource bundle.
@@ -972,11 +1093,11 @@ public abstract class AbstractResources implements Resources
    * @exception IllegalArgumentException if key is 'null', of the
    * value is not of the given type.
    */
-  
+
   public Object get(String key, Class type)
     throws MissingResourceException
   {
-    if ((type == null) || 
+    if ((type == null) ||
         (type == String.class))
       return(getString(key));
     if (type == String[].class)
@@ -1033,14 +1154,14 @@ public abstract class AbstractResources implements Resources
    * was not found within the resources, <code>default_value</code>
    * will be returned. Any variables found within the properties value
    * will be replaced.
-   * 
+   *
    * @param key the key of the resource property to look for.
    * @param default_value the default value that will be returned if no
    * resource of the given key was found.
    * @return the string loaded from the resource bundle.
    * @see #getString(java.lang.String)
    */
-  
+
   public String getString(String key, String default_value)
   {
     try
@@ -1056,7 +1177,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Registers the given value under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param value the value of the resource property to set.
    * @exception UnsupportedOperationException if set operations are
@@ -1071,7 +1192,7 @@ public abstract class AbstractResources implements Resources
       throw(new IllegalArgumentException("'key' must not be 'null'"));
     if (value == null)
       throw(new IllegalArgumentException("'value' must not be 'null'"));
-    
+
     String old_value = null;
     try
     {
@@ -1080,7 +1201,7 @@ public abstract class AbstractResources implements Resources
     catch(MissingResourceException exc)
     {
     }
-    setValue(key, value);
+    setValueAllAttached(key, value);
     property_change_support_.firePropertyChange(key, old_value, value);
   }
 
@@ -1089,7 +1210,7 @@ public abstract class AbstractResources implements Resources
    * Returns the string array, loaded from the resource
    * bundle. Returns an empty array instead of <code>null</code>. Any
    * variables found within the properties value will be replaced.
-   * 
+   *
    * @param key the key of the resource property to look for.
    * @return the string array, loaded from the resource bundle. Returns
    * an empty array instead of <code>null</code>.
@@ -1108,10 +1229,10 @@ public abstract class AbstractResources implements Resources
    * Returns the string array, loaded from the resource
    * bundle. Returns an empty array instead of <code>null</code>. Any
    * variables found within the properties value will be replaced.
-   * 
+   *
    * @param key the key of the resource property to look for.
    * @param delimiter the delimiter to be used to seperate single
-   * values. 
+   * values.
    * @return the string array, loaded from the resource bundle. Returns
    * an empty array instead of <code>null</code>.
    * @exception MissingResourceException if the given key is not defined
@@ -1138,9 +1259,9 @@ public abstract class AbstractResources implements Resources
    * key was not found within the resources,
    * <code>default_values</code> will be returned. Any variables found
    * within the properties value will be replaced.
-   * 
+   *
    * @param key the key of the resource property to look for.
-   * @param default_value the default value that will be returned if no
+   * @param default_values the default value that will be returned if no
    * resource of the given key was found.
    * @return the string array loaded from the resource bundle.
    */
@@ -1160,7 +1281,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Registers the given values under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param values the values of the resource property to set.
    * @exception UnsupportedOperationException if set operations are
@@ -1177,11 +1298,11 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Registers the given values under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param values the values of the resource property to set.
    * @param delimiter the delimiter to be used to seperate single
-   * values. 
+   * values.
    * @exception UnsupportedOperationException if set operations are
    * not supported.
    * @exception IllegalArgumentException if key or values is 'null'.
@@ -1208,7 +1329,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Returns the int loaded from the resource bundle. Any variables
-   * found within the properties value will be replaced. 
+   * found within the properties value will be replaced.
    *
    * @param key the key of the resource property to look for.
    * @return the int loaded from the resource bundle.
@@ -1257,13 +1378,13 @@ public abstract class AbstractResources implements Resources
     catch (NumberFormatException exc)
     {
     }
-    return(default_value);    
+    return(default_value);
   }
 
   //----------------------------------------------------------------------
   /**
    * Registers the given value under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param value the value of the resource property to set.
    * @exception UnsupportedOperationException if set operations are
@@ -1307,7 +1428,7 @@ public abstract class AbstractResources implements Resources
    * Returns the int array loaded from the resource bundle. If the key
    * was not found within the resources, <code>default_values</code>
    * will be returned. Any variables found within the properties value
-   * will be replaced. 
+   * will be replaced.
    *
    * @param key the key of the resource property to look for.
    * @param default_values the default value that will be returned if no
@@ -1338,7 +1459,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Registers the given values under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param values the values of the resource property to set.
    * @exception UnsupportedOperationException if set operations are
@@ -1367,7 +1488,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Returns the double loaded from the resource bundle. Any variables
-   * found within the properties value will be replaced. 
+   * found within the properties value will be replaced.
    *
    * @param key the key of the resource property to look for.
    * @return the double loaded from the resource bundle.
@@ -1416,13 +1537,13 @@ public abstract class AbstractResources implements Resources
     catch (NumberFormatException exc)
     {
     }
-    return(default_value);    
+    return(default_value);
   }
 
   //----------------------------------------------------------------------
   /**
    * Registers the given value under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param value the value of the resource property to set.
    * @exception UnsupportedOperationException if set operations are
@@ -1466,7 +1587,7 @@ public abstract class AbstractResources implements Resources
    * Returns the double array loaded from the resource bundle. If the key
    * was not found within the resources, <code>default_values</code>
    * will be returned. Any variables found within the properties value
-   * will be replaced. 
+   * will be replaced.
    *
    * @param key the key of the resource property to look for.
    * @param default_values the default value that will be returned if no
@@ -1497,7 +1618,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Registers the given values under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param values the values of the resource property to set.
    * @exception UnsupportedOperationException if set operations are
@@ -1529,7 +1650,7 @@ public abstract class AbstractResources implements Resources
    * that are interpreted as <code>true</code> within the resource file
    * are: "true", "True", "yes", "Yes" and "1". All other values will be
    * interpreted to be <code>false</code>. Any variables found within
-   * the properties value will be replaced. 
+   * the properties value will be replaced.
    *
    * @param key the key of the resource property to look for.
    * @return the boolean loaded from the resource bundle.
@@ -1587,7 +1708,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Registers the given value under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param value the value of the resource property to set.
    * @exception UnsupportedOperationException if set operations are
@@ -1600,10 +1721,10 @@ public abstract class AbstractResources implements Resources
   {
     if (key == null)
       throw(new IllegalArgumentException("'key' must not be 'null'"));
-    
+
     setString(key, value ? "1" : "0");
   }
-  
+
   //----------------------------------------------------------------------
   /**
    * Returns the icon loaded from the resource bundle. The value found
@@ -1613,7 +1734,7 @@ public abstract class AbstractResources implements Resources
    *
    * @param key the key of the resource property to look for.
    * @return the icon loaded from the resource bundle.
-   * @exception MissingResourceException if the given key is not defined
+   * @throws MissingResourceException if the given key is not defined
    * within the resources.
    */
 
@@ -1659,7 +1780,7 @@ public abstract class AbstractResources implements Resources
    * Returns the color loaded from the resource bundle. Any variables
    * found within the properties value will be replaced. Possible
    * values for colors are: "white", "blue",... and "r,g,b" values
-   * like "255,96,96". 
+   * like "255,96,96".
    *
    * @param key the key of the resource property to look for.
    * @return the color loaded from the resource bundle.
@@ -1725,7 +1846,7 @@ public abstract class AbstractResources implements Resources
    * resource of the given key was found.
    * @return the color loaded from the resource bundle.
    */
-  
+
   public Color getColor(String key, Color default_value)
   {
     try
@@ -1744,7 +1865,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Registers the given value under the given key.
-   * 
+   *
    * @param key the key of the resource property to set.
    * @param value the value of the resource property to set.
    * @exception UnsupportedOperationException if set operations are
@@ -1830,16 +1951,16 @@ public abstract class AbstractResources implements Resources
     int alpha = value.getAlpha();
     if (alpha == 255)
       setIntArray(key, new int[] {value.getRed(), value.getGreen(),
-                                    value.getBlue()}); 
+                                    value.getBlue()});
     else
       setIntArray(key, new int[] {value.getRed(), value.getGreen(),
-                                    value.getBlue(), alpha});      
+                                    value.getBlue(), alpha});
   }
 
   //----------------------------------------------------------------------
   /**
    * Returns the file loaded from the resource bundle. Any variables
-   * found within the properties value will be replaced. 
+   * found within the properties value will be replaced.
    *
    * @param key the key of the resource property to look for.
    * @return the file that is loaded from the resource bundle.
@@ -1861,7 +1982,7 @@ public abstract class AbstractResources implements Resources
    * Returns the file loaded from the resource bundle. Any variables
    * found within the properties value will be replaced. If the key
    * was not found within the resources, <code>default_value</code>
-   * will be returned. 
+   * will be returned.
    *
    * @param key the key of the resource property to look for.
    * @param default_value the default value that will be returned if no
@@ -1884,7 +2005,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Returns the Url loaded from the resource bundle. Any variables
-   * found within the properties value will be replaced. 
+   * found within the properties value will be replaced.
    *
    * @param key the key of the resource property to look for.
    * @return the Url that is loaded from the resource bundle.
@@ -1904,7 +2025,7 @@ public abstract class AbstractResources implements Resources
     }
     catch (MalformedURLException exc)
     {
-      throw(new MissingResourceException("malformed URL '"+value+"'", 
+      throw(new MissingResourceException("malformed URL '"+value+"'",
                                          getClass().getName(), key));
     }
   }
@@ -1914,7 +2035,7 @@ public abstract class AbstractResources implements Resources
    * Returns the Url loaded from the resource bundle. Any variables
    * found within the properties value will be replaced. If the key
    * was not found within the resources, <code>default_value</code>
-   * will be returned. 
+   * will be returned.
    *
    * @param key the key of the resource property to look for.
    * @param default_value the default value that will be returned if no
@@ -1941,9 +2062,9 @@ public abstract class AbstractResources implements Resources
    *
    * @param listener The PropertyChangeListener to be added.
    */
-  
+
   public void addPropertyChangeListener(PropertyChangeListener
-                                        listener) 
+                                        listener)
   {
     property_change_support_.addPropertyChangeListener(listener);
   }
@@ -1958,7 +2079,7 @@ public abstract class AbstractResources implements Resources
    */
 
   public void removePropertyChangeListener(PropertyChangeListener
-                                           listener) 
+                                           listener)
   {
     property_change_support_.removePropertyChangeListener(listener);
   }
@@ -1975,7 +2096,7 @@ public abstract class AbstractResources implements Resources
 
   public void addPropertyChangeListener(String property_name,
                                         PropertyChangeListener
-                                        listener) 
+                                        listener)
   {
     property_change_support_.addPropertyChangeListener(property_name, listener);
   }
@@ -2044,7 +2165,7 @@ public abstract class AbstractResources implements Resources
       return(String.class);
     if (type.equals("String[]"))
       return(String[].class);
-    
+
     if (type.equals("resource.group"))
       return(ResourceGroup.class);
 
@@ -2065,7 +2186,7 @@ public abstract class AbstractResources implements Resources
   /**
    * Returns the assign type for the given class.
    *
-   * @param class the class to get the type for.
+   * @param type the class to get the type for.
    * @return the corresponding name, or null if type was null.
    */
 
@@ -2109,7 +2230,7 @@ public abstract class AbstractResources implements Resources
       return("String");
     if (type == String[].class)
       return("String[]");
-    
+
     if (type == ResourceGroup.class)
       return("resource.group");
     if (type.isArray())

@@ -150,6 +150,8 @@ public class ReadGPSMapTrackPlugin implements ReadTrackPlugin, GPSMapKeyConstant
       Track track = new TrackImpl();
       if(Debug.DEBUG)
         Debug.println("read_track","loading GPSMap track");
+// TODO: this resources comes from the tracklayer plugin. if it does not exist, an exception is
+// thrown. Not very nice!
       String track_format = resources_.getString(KEY_TRACK_FILE_FORMAT);
       line_format = new MessageFormat(track_format,Locale.US); // for decimal points
 

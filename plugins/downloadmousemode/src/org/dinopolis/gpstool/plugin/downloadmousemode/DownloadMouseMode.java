@@ -23,13 +23,14 @@
 
 package org.dinopolis.gpstool.plugin.downloadmousemode;
 
-import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
-import java.awt.event.MouseEvent;
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.Layer;
+import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import com.bbn.openmap.Layer;
+import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
+import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
 /**
@@ -45,6 +46,7 @@ public class DownloadMouseMode implements MouseModePlugin
 {
   DownloadMouseModeLayer download_layer_;
   boolean mode_active_;
+  Resources resources_;
 
 
 //----------------------------------------------------------------------
@@ -70,6 +72,7 @@ public class DownloadMouseMode implements MouseModePlugin
   {
     download_layer_ = new DownloadMouseModeLayer();
     download_layer_.initializePlugin(support);
+    resources_ = support.getResources();
   }
 
 //----------------------------------------------------------------------
@@ -109,7 +112,7 @@ public class DownloadMouseMode implements MouseModePlugin
 
   public String getPluginIdentifier()
   {
-    return("DownloadMouseMode");
+    return(resources_.getString(DownloadMouseModeLayer.KEY_DOWNLOADMOUSEMODE_PLUGIN_IDENTIFIER));
   }
 
 //----------------------------------------------------------------------
@@ -122,7 +125,7 @@ public class DownloadMouseMode implements MouseModePlugin
 
   public float getPluginVersion()
   {
-    return(1.0f);
+    return((float)resources_.getDouble(DownloadMouseModeLayer.KEY_DOWNLOADMOUSEMODE_PLUGIN_VERSION));
   }
 
 //----------------------------------------------------------------------
@@ -136,7 +139,7 @@ public class DownloadMouseMode implements MouseModePlugin
 
   public String getPluginName()
   {
-    return("Download Maps");
+    return(resources_.getString(DownloadMouseModeLayer.KEY_DOWNLOADMOUSEMODE_PLUGIN_NAME));
   }
 
 //----------------------------------------------------------------------
@@ -151,7 +154,7 @@ public class DownloadMouseMode implements MouseModePlugin
 
   public String getPluginDescription()
   {
-    return("Download maps from internet servers");
+    return(resources_.getString(DownloadMouseModeLayer.KEY_DOWNLOADMOUSEMODE_PLUGIN_DESCRIPTION));
   }
 
 //----------------------------------------------------------------------

@@ -31,7 +31,7 @@ import org.dinopolis.gpstool.track.Track;
 /**
  * This plugin reads track data from a stream (ususally from a file)
  * and provides one or more tracks (lists of {@link
- * org.dinopolis.gpstool.gui.layer.track.TrackPoint} objects).
+ * org.dinopolis.gpstool.track.TrackPoint} objects).
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -42,8 +42,8 @@ public interface ReadTrackPlugin extends Plugin
   
 //----------------------------------------------------------------------
 /**
- * Returns a short description of the track data that may be used e.g. in
- * a file chooser. If possible, the description should be localized.
+ * Returns a short description of the track data that may be used for example
+ * in a file chooser. If possible, the description should be localized.
  *
  * @return The short description of the content.
  */

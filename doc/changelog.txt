@@ -1,5 +1,10 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2003/10/13: added support for screenshot on geko(201). Thanks to Frank
+            Wilhelm for providing the log data!
+
+						Added PVT data type D802 (not tested!)
+
 2003/10/02: 0.4.15-pre7 released
 
 2003/10/01: Fixed bugs in tracklayer plugin and gpstool plugin

@@ -22,10 +22,6 @@
 
 package org.dinopolis.gpstool.gui.layer;
 
-
-
-
-
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.proj.Projection;
@@ -43,6 +39,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.projection.FlatProjection;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
@@ -74,7 +71,7 @@ public class ScaleLayer extends Layer
       /** the rule length in pixels */
   int rule_length_;
       /** the rule value in meters/miles/etc. */
-  float rule_value_;
+  double rule_value_;
   
   AffineTransform old_transformation_;
 
@@ -94,7 +91,7 @@ public class ScaleLayer extends Layer
   Color rect_color_ = new Color(255,255,255,transparency_rect_);
   Color text_color_ = new Color(0,0,0,transparency_text_);
 
-  float old_scale_;
+  double old_scale_;
       /** this is the length that should be found as close as possible */
   int aimed_length_;
 
@@ -102,15 +99,26 @@ public class ScaleLayer extends Layer
   FontMetrics font_metrics_;
   String text_;
   int text_width_;
+  PluginSupport plugin_support_;
   
 //----------------------------------------------------------------------
 /**
  * Construct a scale layer.
  */
-  public ScaleLayer(Resources resources)
+  public ScaleLayer()
   {
-    resources_ = resources;
-    
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Initialize this layer
+ * 
+ * @param plugin_support the plugin support object.
+ */
+  public void initializePlugin(PluginSupport plugin_support)
+  {
+    resources_ = plugin_support.getResources();
+    plugin_support_ = plugin_support;
     aimed_length_ = resources_.getInt(KEY_SCALE_RULE_AIMED_LENGTH);
     layer_active_ = resources_.getBoolean(KEY_SCALE_LAYER_ACTIVE);
 
@@ -198,7 +206,7 @@ public class ScaleLayer extends Layer
     text_width_ = font_metrics_.stringWidth(text_);
     g2.drawString(text_,(rectangle_width_ - text_width_)/2,27);
     
-    text_ = (rule_value_/1000.0)+GPSMap.getDistanceUnit();
+    text_ = (rule_value_/1000.0)+plugin_support_.getUnitHelper().getDistanceUnit();
     text_width_ = font_metrics_.stringWidth(text_);
     g2.drawString(text_,(rectangle_width_ - text_width_)/2,13);
     
@@ -218,7 +226,7 @@ public class ScaleLayer extends Layer
  * @param rule_length the length of the rule in pixels
  * @param rule_value the value of the rule (meters, miles, etc.)
  */
-  protected void setRule(int rule_length, float rule_value)
+  protected void setRule(int rule_length, double rule_value)
   {
     rule_value_ = rule_value;
     rule_length_ = rule_length;
@@ -236,17 +244,18 @@ public class ScaleLayer extends Layer
   protected void calculateScaleRule()
   {
         // find the best scale-rule:
-    float scale_rule_length;
-    float best_rule = 0.0f;
-    float rule;
-    float best_rule_length = 0.0f;
-    float min_diff = 100*aimed_length_;
-    float diff;
+    double scale_rule_length;
+    double best_rule = 0.0f;
+    double rule;
+    double best_rule_length = 0.0f;
+    double min_diff = 100*aimed_length_;
+    double diff;
     for (int count=0; count < valid_scales_.length; count++)
     {
       rule = valid_scales_[count];
       scale_rule_length = rule / getProjection().getScale()
-                          * (float)FlatProjection.PIXELFACT / GPSMap.getDistanceOrSpeedFactor();
+                          * FlatProjection.PIXELFACT
+                          / plugin_support_.getUnitHelper().getDistanceOrSpeedFactor();
 //      System.out.println("checking scale: "+rule +"for scale:"+getProjection().getScale());
       diff = Math.abs(scale_rule_length - aimed_length_);
       if(diff < min_diff)
@@ -287,7 +296,7 @@ public class ScaleLayer extends Layer
         Debug.println("ScaleLayer_projection","new projection: "+proj);
       
       setProjection(proj.makeClone());
-      float new_scale = proj.getScale();
+      double new_scale = proj.getScale();
       if(Math.abs(old_scale_ - new_scale) > 1)
       {
         old_scale_ = new_scale;

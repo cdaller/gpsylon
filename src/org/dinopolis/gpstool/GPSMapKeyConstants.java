@@ -39,6 +39,7 @@ public interface GPSMapKeyConstants
   public static final String KEY_GPS_DEVICE_SERIAL_PORT = "gps.device.serial_port";
   public static final String KEY_GPS_DEVICE_SERIAL_SPEED = "gps.device.serial_speed";
   public static final String KEY_GPS_DEVICE_MODE = "gps.device.mode";
+  public static final String KEY_GPS_DEVICE_PROTOCOL = "gps.device.protocol";
   public static final String KEY_GPS_DEVICE_GPSD_HOST = "gps.device.gpsd.host";
   public static final String KEY_GPS_DEVICE_GPSD_PORT = "gps.device.gpsd.port";
   public static final String KEY_GPS_DEVICE_DATA_FILENAME = "gps.device.data.filename";
@@ -46,14 +47,20 @@ public interface GPSMapKeyConstants
   public static final String KEY_GPS_DEVICE_NMEA_DELAY = "gps.device.nmea.delay";
   public static final String KEY_GPS_DEVICE_NMEA_IGNORE_CHECKSUM = "gps.device.nmea.ignore_checksum";
 
-  
   public static final String VALUE_KEY_DEVICE_MODE_SERIAL = "serial";
   public static final String VALUE_KEY_DEVICE_MODE_GPSD = "tcp";
   public static final String VALUE_KEY_DEVICE_MODE_FILE = "file";
   public static final String VALUE_KEY_DEVICE_MODE_NONE = "none";
+  
+  public static final String VALUE_KEY_DEVICE_PROTOCOL_NMEA = "nmea";
+  public static final String VALUE_KEY_DEVICE_PROTOCOL_GARMIN = "garmin";
+
+  public static final String KEY_GPS_DEVICE_SERIAL_SPEED_DEFAULT_GARMIN = "gps.device.serial_speed.default.garmin";
+  public static final String KEY_GPS_DEVICE_SERIAL_SPEED_DEFAULT_NMEA = "gps.device.serial_speed.default.nmea";
+  public static final String KEY_GPS_DEVICE_SERIAL_SPEED_DEFAULT_SIRF2 = "gps.device.serial_speed.default.sirf2";
 
   public static final String KEY_LOCKFILES = "lockfiles";
-
+  
   // alarm settings
   public static final String KEY_ALARM_FILE = "alarm_file";
       // position settings
@@ -175,7 +182,7 @@ public interface GPSMapKeyConstants
   public static final String KEY_LOCALIZE_ALL = "localize.all";
   public static final String KEY_LOCALIZE_NONE = "localize.none";
   public static final String KEY_LOCALIZE_NOTHING_FOUND = "localize.nothing_found";
-
+  public static final String KEY_LOCALIZE_MESSAGE_GPS_PROPERTIES_EFFECT_ON_RESTART = "localize.message.gps_properties_effect_on_restart";
   
       /** map server urls */
   public static final String KEY_DOWNLOAD_MAP_URL_PREFIX = "download.map.url";

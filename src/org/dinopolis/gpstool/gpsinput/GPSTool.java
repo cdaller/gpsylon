@@ -671,6 +671,17 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 //   }
 
 //----------------------------------------------------------------------
+/**
+ * Returns the default template used to print data from the gps device.
+ *
+ * @return the default template.
+ */
+  public static String getDefaultTEmplate()
+  {
+    return(DEFAULT_TEMPLATE);
+  }
+
+//----------------------------------------------------------------------
 // Callback method for PropertyChangeListener
 //----------------------------------------------------------------------
   

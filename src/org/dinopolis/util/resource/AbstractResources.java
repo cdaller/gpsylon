@@ -787,7 +787,7 @@ public abstract class AbstractResources implements Resources
 
   //----------------------------------------------------------------------
   /**
-   * Replaces all variables with there values recursively. Variables
+   * Replaces all variables with their values recursively. Variables
    * are Strings that start and end with a '$'. To escape the $-sign
    * use $$. In case of a deadlock, the variable will not be
    * replaced.
@@ -837,7 +837,7 @@ public abstract class AbstractResources implements Resources
 
   //----------------------------------------------------------------------
   /**
-   * Replaces all variables with there values recursively. Variables
+   * Replaces all variables with their values recursively. Variables
    * are Strings that start and end with a '$'. To escape the $-sign
    * use $$. In case of a deadlock, the variable will not be
    * replaced. Variables that are not given within the resources and
@@ -979,6 +979,8 @@ public abstract class AbstractResources implements Resources
     }
     key_perl5.append("$"); // ending
 
+//    System.out.println("key='"+key+"', Key_perl5: "+key_perl5);
+    
     try
     {
       RE regular_expression = new RE(key_perl5.toString());

@@ -80,6 +80,18 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   +"  <bounds minlat=\"$min_latitude\" minlon=\"$min_longitude\"\n"
   +"          maxlat=\"$max_latitude\" maxlon=\"$max_longitude\"/>\n"
   +"\n"
+  +"## print all waypoints that are available:\n"
+  +"#if($printwaypoints)\n"
+  +"#foreach( $point in $waypoints )\n"
+  +"  <wpt lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
+  +"#if($point.hasValidAltitude())\n"
+  +"    <ele>$point.Altitude</ele>\n"
+  +"#end\n"
+  +"    <name>$!point.Identification</name>\n"
+  +"    <desc>![CDATA[$!point.Comment]]</desc>\n"
+  +"  </wpt>\n"
+  +"#end\n"
+  +"#end\n"
   +"## print all routes that are available:\n"
   +"#if($printroutes)\n"
   +"#foreach( $route in $routes )\n"
@@ -122,18 +134,6 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   +"#end\n"
   +"    </trkseg>\n"
   +"  </trk>\n"
-  +"#end\n"
-  +"#end\n"
-  +"## print all waypoints that are available:\n"
-  +"#if($printwaypoints)\n"
-  +"#foreach( $point in $waypoints )\n"
-  +"  <wpt lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
-  +"    <name>$!point.Identification</name>\n"
-  +"    <desc>![CDATA[$!point.Comment]]</desc>\n"
-  +"#if($point.hasValidAltitude())\n"
-  +"    <ele>$point.Altitude</ele>\n"
-  +"#end\n"
-  +"  </wpt>\n"
   +"#end\n"
   +"#end\n"
   +"</gpx>";
@@ -393,7 +393,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.SATELLITE_INFO,this);
       }
       if(args.isSet("printpos") || args.isSet("p") || args.isSet("printalt")
-         || args.isSet("printsat") || args.isSet("speed") || args.isSet("heading"))
+         || args.isSet("printsat") || args.isSet("printspeed") || args.isSet("printheading"))
       {
             // tell gps processor to send curren position once every second:
         gps_data_processor.startSendPositionPeriodically(1000L);

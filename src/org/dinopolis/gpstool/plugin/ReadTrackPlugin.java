@@ -67,7 +67,7 @@ public interface ReadTrackPlugin extends Plugin
  *
  * @param in the inputstream to read the data from.
  * @return an array of {@link
- * org.dinopolis.gpstool.gui.layer.track.Track} objects.
+ * org.dinopolis.gpstool.track.Track} objects.
  * @throws IOException if an error occurs during reading.
  */
 

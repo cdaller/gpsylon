@@ -24,13 +24,12 @@
 package org.dinopolis.gpstool.plugin.downloadmousemode;
 
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
-import org.dinopolis.gpstool.gui.MouseMode;
 import java.awt.event.MouseEvent;
 import com.bbn.openmap.LatLonPoint;
 import javax.swing.Icon;
-
-
-
+import org.dinopolis.gpstool.plugin.MouseModePlugin;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**
@@ -42,7 +41,7 @@ import javax.swing.Icon;
  * @version $Revision$
  */
 
-class DownloadMouseMode implements MouseMode
+public class DownloadMouseMode implements MouseModePlugin
 {
   DownloadMouseModeLayer download_layer_;
   boolean mode_active_;
@@ -51,15 +50,125 @@ class DownloadMouseMode implements MouseMode
 //----------------------------------------------------------------------
 /**
  * Creates a new <code>DownloadMouseMode</code> instance.
- *
- * @param download_layer the <code>DownloadMouseModeLayer</code> this
- * mouse mode belongs to.
  */
-  public DownloadMouseMode(DownloadMouseModeLayer download_layer)
+  public DownloadMouseMode()
   {
-    download_layer_ = download_layer;
   }
-    
+
+//----------------------------------------------------------------------
+// Plugin Methods
+// ----------------------------------------------------------------------
+  
+//----------------------------------------------------------------------
+/**
+ * Initialize the plugin and pass a PluginSupport that provides
+ * objects, the plugin may use.
+ *
+ * @param support the PluginSupport object
+ */
+  public void initializePlugin(PluginSupport support)
+  {
+    download_layer_ = new DownloadMouseModeLayer();
+    download_layer_.initializePlugin(support);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * The application calls this method to indicate that the plugin is
+ * activated and will be used from now on. The Plugin should
+ * initialize any needed resources (files, etc.) in this method.
+ *
+ * @throws Exception if an error occurs. If this method throws an
+ * exception, the plugin will not be used by the application.
+ */
+
+  public void startPlugin()
+  {
+  }
+
+//----------------------------------------------------------------------
+/**
+ * The application calls this method to indicate that the plugin is
+ * deactivated and will not be used any more. The Plugin should
+ * release all resources (close files, etc.) in this method.
+ *
+ * @throws Exception if an error occurs.
+ */
+
+  public void stopPlugin()
+  {
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the unique id of the plugin. The id is used to identify
+ * the plugin and to distinguish it from other plugins.
+ *
+ * @return The id of the plugin.
+ */
+
+  public String getPluginIdentifier()
+  {
+    return("DownloadMouseMode");
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the version of the plugin. The version may be used to
+ * choose between different version of the same plugin. 
+ *
+ * @return The version of the plugin.
+ */
+
+  public float getPluginVersion()
+  {
+    return(1.0f);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the name of the Plugin. The name should be a human
+ * readable and understandable name like "Save Image as JPEG". It is
+ * prefereable but not necessary that the name is localized. 
+ *
+ * @return The name of the plugin.
+ */
+
+  public String getPluginName()
+  {
+    return("Download Maps");
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns a description of the Plugin. The description should be
+ * human readable and understandable like "This plugin saves the
+ * content of the main window as an image in jpeg format". It is
+ * prefereable but not necessary that the description is localized. 
+ *
+ * @return The description of the plugin.
+ */
+
+  public String getPluginDescription()
+  {
+    return("Download maps from internet servers");
+  }
+
+//----------------------------------------------------------------------
+/**
+ * If the mouse mode plugin wants to draw anything on the map it may
+ * return a layer here or <code>null</code> if not.
+ *
+ * @return the layer the plugin wants to paint into.
+ * @see com.bbn.openmap.Layer
+ */
+
+  public Layer getLayer()
+  {
+    return(download_layer_);
+  }
+
+  
 //----------------------------------------------------------------------
 // MouseMode methods
 // ----------------------------------------------------------------------

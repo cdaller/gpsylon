@@ -85,6 +85,7 @@ import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
 import org.dinopolis.util.gui.SwingWorker;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
+import org.dinopolis.gpstool.plugin.PluginSupport;
 
 //----------------------------------------------------------------------
 /**
@@ -152,6 +153,8 @@ GPSMapKeyConstants
   public final int GPSDRIVE_TYPE = 2;
   public final static String TRACK_FORMAT_DEFINITION_IN_FILE_PREFIX = "# Format: ";
 
+  PluginSupport plugin_support_;
+
 //----------------------------------------------------------------------
 /**
  * Construct a track layer.  
@@ -165,9 +168,10 @@ GPSMapKeyConstants
 /**
  * Initializes this layer with the given resources.
  */
-  public void initialize(Resources resources)
+  public void initialize(PluginSupport support)
   {
-    resources_ = resources;
+    plugin_support_ = support;
+    resources_ = support.getResources();
     String track_format = resources_.getString(KEY_TRACK_FILE_FORMAT);
     track_format_ = new MessageFormat(track_format,Locale.US); // for decimal points
 
@@ -1153,9 +1157,7 @@ GPSMapKeyConstants
           plugin = (ReadTrackPlugin)plugins_[plugin_count];
           if(plugin != null)
           {
-                // special treatement for my own track reader:
-            if(plugin instanceof ReadGPSMapTrackPlugin)
-              ((ReadGPSMapTrackPlugin)plugin).initialize(resources_);
+            plugin.initializePlugin(plugin_support_);
             filter = new ExtensionFileFilter();
             extensions = plugin.getContentFileExtensions();
             for(int extension_count = 0; extension_count < extensions.length; extension_count++)

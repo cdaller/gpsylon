@@ -33,7 +33,7 @@ import org.dinopolis.gpstool.util.geoscreen.GeoScreen;
 //----------------------------------------------------------------------
 /**
  * An vector based implementation of {@link Route}. Only {@link
- * Waypoints} are allowed!
+ * Waypoint} objects are allowed!
  *
  * @author Christof Dallermassl
  * @version $Revision$

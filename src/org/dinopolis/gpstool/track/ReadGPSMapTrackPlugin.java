@@ -42,7 +42,7 @@ import org.dinopolis.util.Resources;
 //----------------------------------------------------------------------
 /**
  * This plugin reads track data from a stream (ususally from a file)
- * and provides one or more tracks (lists of {@link TrackPoint}
+ * and provides one or more tracks (lists of {@link Trackpoint}
  * objects). This plugin reads the tracks GPSMap saves itself. That's
  * why it is not a real plugin, but always available.
  *
@@ -135,8 +135,7 @@ public class ReadGPSMapTrackPlugin implements ReadTrackPlugin, GPSMapKeyConstant
  * be read, an empty array (length of 0) is returned (not null!).
  *
  * @param in the inputstream to read the data from.
- * @return an array of {@link
- * org.dinopolis.gpstool.gui.layer.track.Track} objects.
+ * @return an array of {@link Track} objects.
  * @throws IOException if an error occurs during reading.  */
   public Track[] getTracks(InputStream in)
     throws IOException

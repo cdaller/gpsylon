@@ -6,7 +6,7 @@
   </head>
 
   <body>
-    <h1>GPSilon (former GPSMap)</h1>
+    <h1>GPSylon (former GPSMap)</h1>
 
     <ul>
       <li><a href="#news">Latest News</a></li>
@@ -14,7 +14,7 @@
       <li><a href="#screenshots">Screenshots</a></li>
       <li><a href="#supported_devices">Supported GPSDevices</a></li>
       <li><a href="#installation">Installation</a></li>
-      <li><a href="#run_gpsmap">Run GPSilon</a></li>
+      <li><a href="#run_gpsmap">Run GPSylon</a></li>
       <li><a href="#download">Download</a></li>
       <li><a href="#status">Status</a></li>
       <li><a href="#plugins">Plugins</a></li>
@@ -33,7 +33,7 @@
       The dinopolis gpstool package is an open source (LGPL) Java GPS
       application.  It consists of different modules that may be used as a
       programmer's framework or as an application. The main application is
-      <a href="#general_description">GPSilon</a>. A smaller command line tool is
+      <a href="#general_description">GPSylon</a>. A smaller command line tool is
       <a href="#gpstool">GPSTool</a>.
     </p>
 
@@ -42,14 +42,14 @@
       <p>
         2003/05/12:<br>
         As the name GPSMap is already used by several other projects/products, the main
-        application is renamed to GPSilon.<br>
+        application is renamed to GPSylon.<br>
       </p>
 
     <a name="general_description">
-      <h2>Short Description of GPSilon</h2>
+      <h2>Short Description of GPSylon</h2>
 
    <p>
-    GPSilon is able to show maps downloaded from the 
+    GPSylon is able to show maps downloaded from the 
     <a href="http://www.mapblast.com">mapblast</a>
     or 
     <a href="http://www.expedia.com">expedia</a>
@@ -63,7 +63,7 @@
    </p>
           
           <p>
-          The main feature is the display of various maps. GPSilon allows the
+          The main feature is the display of various maps. GPSylon allows the
           user to navigate around like in a digital atlas. It shows maps of
           different scales, so missing maps of one scale do not result in a
           black screen, but show the next larger scale. See <a
@@ -97,7 +97,7 @@
         <li>Uses the following NMEA sentences: GLL, HDG, RMC, GGA, GSV, DBT, VTG, HTD.</li>
         <li>Display a track from gps data.</li>
         <li>Save the track.</li>
-        <li>Load a track created from GPSilon or from <a href="http://gpsdrive.kraftvoll.at">gpsdrive</a>.</li>
+        <li>Load a track created from GPSylon or from <a href="http://gpsdrive.kraftvoll.at">gpsdrive</a>.</li>
         <li>Import maps from gpsdrive.</li>
         <li>Download a map for a given position.</li>
         <li>Download maps for an area.</li>
@@ -146,7 +146,7 @@
             work. Garmin protocol support is built in, but not very well tested.
           </p>
           <p>
-            There were reports of the following devices to work with GPSilon:
+            There were reports of the following devices to work with GPSylon:
             <ul>
               <li>Garmin Etrex Summit/Legend (NMEA/garmin modes) tested by myself)</li>
               <li>Trimble Lassen SK8 (NMEA mode) (reported by Didier Donsez)</li>
@@ -157,7 +157,7 @@
           <a name="installation">
             <h2>Installation</h2>
             <p>
-              No installation of GPSilon itself is needed. Nevertheless, some dependencies
+              No installation of GPSylon itself is needed. Nevertheless, some dependencies
               exist:
 
               <ul>
@@ -180,7 +180,7 @@
                   <p>
                     Jan van Haarst reported that 
                     <a href="http://www.brianpoe.com/comfoolery/">comfoolery</a>
-                    can be used to forward the serial data to a network socket. GPSilon may
+                    can be used to forward the serial data to a network socket. GPSylon may
                     connect to this socket when it is configured to use gpsd instead of
                     the serial device.
                   </p>
@@ -189,11 +189,11 @@
             <a name="installation_database">
             <h3>Database for Location Markers</h3>
             <p>
-              GPSilon is able to store and retrieve location markers from
+              GPSylon is able to store and retrieve location markers from
               relational databases via JDBC. By default it uses the pure java
               open source <a href="http://hsqldb.sourceforge.net">Hypersonic
               DB (hsqldb)</a>. It has the advantage that no installation is needed and
-              GPSilon creates a database on demand without any hassle.
+              GPSylon creates a database on demand without any hassle.
             </p>
        <p>
         As the 
@@ -212,7 +212,7 @@
           Create the database: e.g. with the command 
           <code>mysqladmin create gpsmap</code>
          </li>
-         <li>Start GPSilon and edit database settings in the preferences
+         <li>Start GPSylon and edit database settings in the preferences
           (Location Marker tab):</li>
          <ul>
           <li>
@@ -226,8 +226,8 @@
            <code>sql/create_loation_mysql.sql</code>
           </li>
          </ul>
-         <li>quit GPSilon</li>
-         <li>on the next start, GPSilon tries to access the new database, but
+         <li>quit GPSylon</li>
+         <li>on the next start, GPSylon tries to access the new database, but
           cannot (as the tables are missing). It asks for administrators
           username/password (try "root" and empty password :-) so it can create
           the table(s). It will also add a user "sa" with no password for
@@ -251,10 +251,10 @@
         and user rights, ...)
        </p>
             <a name="run_gpsmap">
-              <h2>Run GPSilon</h2>
+              <h2>Run GPSylon</h2>
               <p>
-                To start GPSilon, <a href="https://sourceforge.net/project/showfiles.php?group_id=64816">download</a> the gpstool-archive, unpack it and call<br> 
-                  <code>java -jar gpssilon.jar</code><br> 
+                To start GPSylon, <a href="https://sourceforge.net/project/showfiles.php?group_id=64816">download</a> the gpstool-archive, unpack it and call<br> 
+                  <code>java -jar gpssylon.jar</code><br> 
                     or if your environment is setup to handle jar-archives correctly, simply
                     double click on the jar-archive (should work under
                     windows). All needed classes are contained in the jar file. 
@@ -263,10 +263,10 @@
               <p>
                 For commandline arguments (everything may be configured in the
                 application as well!), call<br>
-                  <code>java -jar gpsilon.jar --help</code><br> 
+                  <code>java -jar gpsylon.jar --help</code><br> 
               </p>
 	      <h3>Mouse Modes</h3>
-	      GPSilon supports different mouse modes. Mouse modes may be added
+	      GPSylon supports different mouse modes. Mouse modes may be added
 	      as plugins. At the moment, two mouse modes are available:
 	      <ul>
 	      <li>Navigation Mode: click anywhere in the map to zoom in and
@@ -291,7 +291,7 @@
 	      <a name="plugins">
 	       <h2>Plugins</h2>
 	       <p>
-	       GPSilon supports plugins of various kinds. The plugin-jars
+	       GPSylon supports plugins of various kinds. The plugin-jars
 	       are used without the need to set the
 	       <code>CLASSPATH</code>. All jars in the directories
 	       <code>[home]/.gpsmap/plugins</code> and in the
@@ -299,13 +299,13 @@
 	       </p>
               <a name="download">
                 <h2>Download</h2>
-                Please download the latest distribution of GPSilon at the 
+                Please download the latest distribution of GPSylon at the 
                 <a href="http://sourceforge.net/project/showfiles.php?group_id=64816">download 
                   page on sourceforge</a>.
                 <a name="status">
                   <h2>Status</h2>
                   <p>
-                    GPSilon is in beta-status. It runs quite stable, but many features are
+                    GPSylon is in beta-status. It runs quite stable, but many features are
                     not implemented yet.
                   </p>
                   <a name="todo">
@@ -493,7 +493,7 @@
                The source of the gpstool framework
                basically is licensed unter the Lesser Gnu
                Public License (LGPL). Some parts in the
-               framework (e.g. the main application GPSilon)
+               framework (e.g. the main application GPSylon)
                uses the Open Source library openmap which is
                licensed under the GPL, so take care which
                modules you use and which license you have to

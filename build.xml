@@ -70,8 +70,8 @@ Christof Dallermassl (cdaller@iicm.edu)
     <echo>
       The following targets are available:
       - help: shows all available targets of this build.xml file
-      - run: runs the GPSilon application
-      - compile: compiles the gpstool library and the GPSilon application
+      - run: runs the GPSylon application
+      - compile: compiles the gpstool library and the GPSylon application
       - compile_plugins: compiles all plugins
       - clean_all: deletes the '${target_class_dir}','${dist_dir}' and '${javadoc_dir}' directory.
       - clean: removes all compiled classes in the '${target_class_dir}' directory.
@@ -234,18 +234,18 @@ Christof Dallermassl (cdaller@iicm.edu)
       </fileset>
     </jar>
 
-<!-- create gpsilon jar file for quickstart -->
-    <jar jarfile="${dist_dir}/gpsilon.jar">
+<!-- create gpsylon jar file for quickstart -->
+    <jar jarfile="${dist_dir}/gpsylon.jar">
       <!-- make the MANIFEST.MF file -->
       <manifest>
         <attribute name="Built-By" value="${user.name}"/>
         <attribute name="Class-Path" value="${dist_name}-${release_version}.jar" />
         <attribute name="Main-Class" value="org.dinopolis.gpstool.GPSMap"/>
         <section name="common">
-          <attribute name="Specification-Title" value="GPSilon" />
+          <attribute name="Specification-Title" value="GPSylon" />
           <attribute name="Specification-Version" value="${release_version}" />
           <attribute name="Specification-Vendor" value="Christof Dallermassl" />
-          <attribute name="Implementation-Title" value="GPSilon" />
+          <attribute name="Implementation-Title" value="GPSylon" />
           <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
           <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
         </section>

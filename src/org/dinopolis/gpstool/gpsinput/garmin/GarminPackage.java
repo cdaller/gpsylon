@@ -697,6 +697,12 @@ class GarminPackage
     return((byte)checksum);
   }
 
+//----------------------------------------------------------------------
+/**
+ * Return the data buffer as int[].
+ * @return the data buffer as int[].
+ * @deprecated Use the varisous methods to read int, byte, word etc. instead.
+ */
   public int[] getCompatibilityBuffer()
   {
     int[] buffer = new int[package_size_ + 2];

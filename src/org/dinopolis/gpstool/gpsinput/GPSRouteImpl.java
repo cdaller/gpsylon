@@ -40,7 +40,7 @@ public class GPSRouteImpl implements GPSRoute
   protected String identification_;
   protected String comment_;
 
-  protected boolean minmax_valid = false;
+  protected boolean minmax_valid_ = false;
   protected double min_latitude_ = 90.0;
   protected double max_latitude_ = -90.0;
   protected double min_longitude_ = 180.0;
@@ -110,7 +110,7 @@ public class GPSRouteImpl implements GPSRoute
   public void setWaypoints(List routepoints)
   {
     route_points_ = new Vector(routepoints);
-    minmax_valid = false;
+    minmax_valid_ = false;
   }
 
 //--------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ public class GPSRouteImpl implements GPSRoute
   public void addWaypoint(GPSWaypoint routepoint)
   {
     route_points_.add(routepoint);
-    minmax_valid = false;
+    minmax_valid_ = false;
   }
 
 //--------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ public class GPSRouteImpl implements GPSRoute
   public void addWaypoint(int position, GPSWaypoint routepoint)
   {
     route_points_.add(position,routepoint);
-    minmax_valid = false;
+    minmax_valid_ = false;
   }
 
 //--------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ public class GPSRouteImpl implements GPSRoute
     throws IndexOutOfBoundsException
   {
     route_points_.remove(position);
-    minmax_valid = false;
+    minmax_valid_ = false;
   }
 
 //--------------------------------------------------------------------------------
@@ -181,6 +181,18 @@ public class GPSRouteImpl implements GPSRoute
     max_altitude_ = Double.MIN_VALUE;
   }
 
+
+//----------------------------------------------------------------------
+/**
+ * Returns the number of waypoints in this route.
+ *
+ * @return the number of waypoints in this route.
+ */
+  public int size()
+  {
+    return(route_points_.size());
+  }
+  
 //----------------------------------------------------------------------
 /**
  * Returns the minimum latitude (furthest south) covered by this route.
@@ -189,7 +201,7 @@ public class GPSRouteImpl implements GPSRoute
  */
   public double getMinLatitude()
   {
-    if(!minmax_valid)
+    if(!minmax_valid_)
       calculateMinMax();
     return(min_latitude_);
   }
@@ -202,7 +214,7 @@ public class GPSRouteImpl implements GPSRoute
  */
   public double getMaxLatitude()
   {
-    if(!minmax_valid)
+    if(!minmax_valid_)
       calculateMinMax();
     return(max_latitude_);
   }
@@ -216,7 +228,7 @@ public class GPSRouteImpl implements GPSRoute
  */
   public double getMinLongitude()
   {
-    if(!minmax_valid)
+    if(!minmax_valid_)
       calculateMinMax();
     return(min_longitude_);
   }
@@ -229,7 +241,7 @@ public class GPSRouteImpl implements GPSRoute
  */
   public double getMaxLongitude()
   {
-    if(!minmax_valid)
+    if(!minmax_valid_)
       calculateMinMax();
     return(max_longitude_);
   }
@@ -242,7 +254,7 @@ public class GPSRouteImpl implements GPSRoute
  */
   public double getMinAltitude()
   {
-    if(!minmax_valid)
+    if(!minmax_valid_)
       calculateMinMax();
     return(min_altitude_);
   }
@@ -255,7 +267,7 @@ public class GPSRouteImpl implements GPSRoute
  */
   public double getMaxAltitude()
   {
-    if(!minmax_valid)
+    if(!minmax_valid_)
       calculateMinMax();
     return(max_altitude_);
   }
@@ -279,26 +291,23 @@ public class GPSRouteImpl implements GPSRoute
     for(int index=0; index < route_points_.size(); index++)
     {
       waypoint = (GPSWaypoint)route_points_.get(index);
+
       value = waypoint.getLatitude();
-      if(min_latitude_ > value)
-        min_latitude_ = value;
-      if(max_latitude_ < value)
-        max_latitude_ = value;
+      min_latitude_ = Math.min(value,min_latitude_);
+      max_latitude_ = Math.max(value,max_latitude_);
+
       value = waypoint.getLongitude();
-      if(min_longitude_ > value)
-        min_longitude_ = value;
-      if(max_longitude_ < value)
-        max_longitude_ = value;
+      min_longitude_ = Math.min(value,min_longitude_);
+      max_longitude_ = Math.max(value,max_longitude_);
+
       value = waypoint.getAltitude();
       if(value != Double.NaN)
       {
-        if(min_altitude_ > value)
-          min_altitude_ = value;
-        if(max_altitude_ < value)
-          max_altitude_ = value;
+        min_altitude_ = Math.min(value,min_altitude_);
+        max_altitude_ = Math.max(value,max_altitude_);
       }
     }
-    minmax_valid = true;
+    minmax_valid_ = true;
   }
 
   

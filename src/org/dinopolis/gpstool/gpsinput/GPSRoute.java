@@ -126,6 +126,13 @@ public interface GPSRoute
  */
   public void clear();
 
+//----------------------------------------------------------------------
+/**
+ * Returns the number of waypoints in this route.
+ *
+ * @return the number of waypoints in this route.
+ */
+  public int size();
 
 //----------------------------------------------------------------------
 /**

@@ -55,6 +55,11 @@ public class MapInfoTableModel
 	{
 		return ((MapInfo) map_infos_.get(row));
 	}
+	
+	public int getRow(MapInfo map_info)
+	{
+		return(map_infos_.indexOf(map_info));
+	}
 
 	public String getColumnName(int column)
 	{

@@ -61,4 +61,20 @@ public class MapInfoTableSorter extends TableSorter implements MapInfoHoldingTab
 		return(((MapInfoTableModel)model).getMapInfo(sorted_indices_[row]));
 	}
 
+	/**
+	 * Return the row of the given map info object.
+	 * @param map_info
+	 */
+	public int getRow(MapInfo map_info)
+	{
+		checkModel();
+		int model_row = ((MapInfoTableModel)model).getRow(map_info);
+		for(int index = 0; index < sorted_indices_.length; index++)
+		{
+			if(sorted_indices_[index] == model_row)
+			  return(index);
+		}
+		// should never get to this line:
+		return(-1);
+	}
 }

@@ -36,7 +36,14 @@ public interface MapInfoHoldingTable
 	
 	/**
 	 * Return the MapInfo object of in the given row.
-	 * 
+	 * @param row
 	 */
 	MapInfo getMapInfo(int row);
+	
+	
+	/**
+	 * Return the row of the given map info object.
+	 * @param map_info
+	 */
+	int getRow(MapInfo map_info);
 }

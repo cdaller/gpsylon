@@ -25,6 +25,8 @@ package org.dinopolis.gpstool.plugin.mapmanager;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Set;
@@ -39,6 +41,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
@@ -299,7 +302,7 @@ public class MapManagerPlugin implements GuiPlugin, ListSelectionListener
 		if (mouse_mode_ == null)
 		{
 			mouse_mode_ = new MapManagerMouseMode();
-			mouse_mode_.initialize(resources_, layer_);
+			mouse_mode_.initialize(resources_, (MapManagerLayer)getLayer(),this,map_manager_);
 		}
 		return (new MouseMode[] { mouse_mode_ });
 	}
@@ -461,7 +464,30 @@ public class MapManagerPlugin implements GuiPlugin, ListSelectionListener
 		layer_.setSelectedMaps(selected_map_infos);
 		layer_.repaint();
 	}
-
+	
+	
+	public void setMapSelection(Collection map_infos)
+	{
+		MapInfoTable table = main_frame_.getMapInfoTable();
+		table.clearSelection();
+		addMapSelection(map_infos);
+	}
+	
+	public void addMapSelection(Collection map_infos)
+	{
+		MapInfoTable table = main_frame_.getMapInfoTable();
+		MapInfoHoldingTable table_model = (MapInfoHoldingTable)table.getModel();
+		Iterator iterator = map_infos.iterator();
+		MapInfo info;
+		int row;
+		while(iterator.hasNext())
+		{
+			info = (MapInfo)iterator.next();
+			row = table_model.getRow(info);
+			table.addRowSelectionInterval(row,row);		
+		}		
+	}
+	
 	//----------------------------------------------------------------------
 	// inner classes
 	//----------------------------------------------------------------------

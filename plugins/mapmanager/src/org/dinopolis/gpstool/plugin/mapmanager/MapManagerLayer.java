@@ -60,7 +60,7 @@ public class MapManagerLayer extends BasicLayer
   Object selected_maps_lock_ = new Object();
   Color unselected_color_ = new Color(0,0,0);
   Color selected_color_ = new Color(255,0,0);
-  Color selected_fill_color_ = new Color(255,0,0,128);
+  Color selected_fill_color_ = new Color(255,0,0,10);
   
 //----------------------------------------------------------------------
 /**

@@ -25,7 +25,7 @@ package org.dinopolis.gpstool.plugin;
 
 import java.io.IOException;
 import org.dinopolis.gpstool.MapInfo;
-import org.dinopolis.gpstool.util.ProgressListener;
+import org.dinopolis.util.ProgressListener;
 
 
 

@@ -676,7 +676,12 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
         int prn          = Integer.parseInt((String)data_fields.elementAt(3 + 4*sat_count));
         float elevation = Float.parseFloat((String)data_fields.elementAt(4 + 4*sat_count));
         float azimuth   = Float.parseFloat((String)data_fields.elementAt(5 + 4*sat_count));
-        int srn          = Integer.parseInt((String)data_fields.elementAt(6 + 4*sat_count));
+        String srn_string = (String)data_fields.elementAt(6 + 4*sat_count);
+        int srn;
+        if(srn_string.length() > 0)
+          srn          = Integer.parseInt((String)data_fields.elementAt(6 + 4*sat_count));
+        else
+          srn = 0;
         satellite_infos_[satellite_info_count_++] = new SatelliteInfo(prn,elevation,azimuth,srn);
         sat_count++;
       }

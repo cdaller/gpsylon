@@ -80,23 +80,24 @@ public class TrackChartFrame extends JFrame implements ActionListener
     List tracks = track_manager_.getTracks();
     if(tracks.size() > 0)
     {
-	Track default_track = (Track)track_manager_.getTracks().get(0);
-	chart_panel_ = new ChartPanel(getTrackChart(default_track));
-	chart_panel_.setPreferredSize(new Dimension(500,270));
-	chart_panel_.setMouseZoomable(true,false);
+      Track default_track = (Track)track_manager_.getTracks().get(0);
+      chart_panel_ = new ChartPanel(getTrackChart(default_track));
+      chart_panel_.setPreferredSize(new Dimension(500,270));
+      chart_panel_.setMouseZoomable(true,false);
 
-	JPanel north_panel = new JPanel(new FlowLayout());
-	north_panel.add(new JLabel(application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_TRACK)),
-			     BorderLayout.NORTH);
-	track_box_ = new JComboBox(new TrackListComboBoxModel(track_manager));
-	track_box_.addActionListener(this);
-	north_panel.add(track_box_);
-	getContentPane().add(north_panel,BorderLayout.NORTH);
-	getContentPane().add(chart_panel_,BorderLayout.CENTER);
+      JPanel north_panel = new JPanel(new FlowLayout());
+      north_panel.add(new JLabel(application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_TRACK)),
+                      BorderLayout.NORTH);
+      track_box_ = new JComboBox(new TrackListComboBoxModel(track_manager));
+      track_box_.addActionListener(this);
+      track_box_.setSelectedItem(default_track.getIdentification());
+      north_panel.add(track_box_);
+      getContentPane().add(north_panel,BorderLayout.NORTH);
+      getContentPane().add(chart_panel_,BorderLayout.CENTER);
     }
     else
     {
-	getContentPane().add(new JLabel("Sorry, no tracks available"));
+      getContentPane().add(new JLabel("Sorry, no tracks available"));
     }
     pack();
   }
@@ -104,7 +105,7 @@ public class TrackChartFrame extends JFrame implements ActionListener
 
   protected JFreeChart getTrackChart(Track track)
   {
-    System.out.println("create chart for track "+track.getIdentification());
+        //    System.out.println("create chart for track "+track.getIdentification());
     XYSeries xy_series = new XYSeries(track.getIdentification());
     List waypoints = track.getWaypoints();
     Iterator waypoint_iterator = waypoints.iterator();
@@ -131,8 +132,8 @@ public class TrackChartFrame extends JFrame implements ActionListener
                          application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_ALTITUDE);
     JFreeChart chart =
       ChartFactory.createLineXYChart(chart_title,
-                application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_DISTANCE),
-                application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_ALTITUDE),
+                                     application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_DISTANCE),
+                                     application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_ALTITUDE),
                                      data, 
                                      true,
                                      true,

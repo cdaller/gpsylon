@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
+import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**
@@ -257,6 +258,8 @@ public class SatelliteActivity extends JComponent
     {
       satellite_infos_ = new SatelliteInfo[infos.length];
       System.arraycopy(infos,0,satellite_infos_,0,satellite_infos_.length);
+      if(Debug.DEBUG && Debug.isEnabled("satellite_infos"))
+        Debug.println("satellite_infos","setSatelliteInfos: "+Debug.objectToString(satellite_infos_));
     }
     lost_signal_ = false;
     repaint();
@@ -291,28 +294,36 @@ public class SatelliteActivity extends JComponent
 
     int num_sat_active = 0;
     
-    for(int row_count = 0; row_count < rows_; row_count++)
+    if(satellite_infos_ != null)
     {
-      for(int column_count = 0; column_count < columns_; column_count++)
+          // copy satellite info, so changes during painting do not disturb:
+      SatelliteInfo[] sat_infos;
+      synchronized(satellite_infos_lock_)
       {
-        g.setColor(inactive_color_);
-        g.fillRect(column_count * column_width_,
-                   row_count * row_height_,
-                   bar_width_,bar_height_);
+        sat_infos = new SatelliteInfo[satellite_infos_.length];
+        System.arraycopy(satellite_infos_,0,sat_infos,0,satellite_infos_.length);
+        if(Debug.DEBUG && Debug.isEnabled("satellite_infos"))
+          Debug.println("satellite_infos","paintInfos: "+Debug.objectToString(sat_infos));
+      }
 
-        if(satellite_infos_ != null)
+          // paint them
+      for(int row_count = 0; row_count < rows_; row_count++)
+      {
+        for(int column_count = 0; column_count < columns_; column_count++)
         {
-              // copy satellite info, so changes during painting do not disturb:
-          SatelliteInfo[] sat_infos;
-          synchronized(satellite_infos_lock_)
-          {
-            sat_infos = new SatelliteInfo[satellite_infos_.length];
-            System.arraycopy(satellite_infos_,0,sat_infos,0,satellite_infos_.length);
-          }
+          g.setColor(inactive_color_);
+          g.fillRect(column_count * column_width_,
+                     row_count * row_height_,
+                     bar_width_,bar_height_);
+          
           g.setColor(active_color_);
           sat_index = row_count*(columns_) + column_count;
           if(sat_index < sat_infos.length)
           {
+//             System.out.println("print sat index: "+sat_index);
+//             System.out.println("paintInfo: "+sat_infos[sat_index]);
+            if(sat_infos[sat_index] == null)
+               System.exit(1);
             active_height = (int)(bar_height_ * sat_infos[sat_index].getSNR()/100.0);
             
             if (active_height > 0)

@@ -85,20 +85,7 @@ public class MapInfoScaleComparator  implements Comparator
         // use distance from top/left corner (therefore the -latitude
         // (should be 90-latitude, but as the 90 is on t=both sides of
         // the unequation...) as criteria:
-    if((-latitude1 + longitude1) < (-latitude2 + longitude2))
-    {
-//       if(Debug.DEBUG)
-//         Debug.println("MapInfoScaleComparator","info1 is closer to upper/left");
-      return(-1);
-    }
-    else
-    {
-//       if(Debug.DEBUG)
-//         Debug.println("MapInfoScaleComparator","info2 is closer to upper/left");
-      return(1);
-    }
-    
-
+    return(Double.compare( -latitude1 + longitude1,-latitude2 + longitude2));
   }
 
   public boolean equals(Object other)

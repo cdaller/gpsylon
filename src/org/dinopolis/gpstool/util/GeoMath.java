@@ -110,15 +110,19 @@ public class GeoMath
  * @param longitude1 the longitude of the first point given in degrees.
  * @param latitude2 the latitude of the second point given in degrees.
  * @param longitude2 the longitude of the second point given in degrees.
- * @return the course in degrees (-180,180).
+ * @return the course in degrees [0,360].
  */
   public static double courseDegrees(double latitude1, double longitude1,
                                      double latitude2, double longitude2)
   {
-    return(Math.toDegrees(courseRadians(Math.toRadians(latitude1),
+    double course = Math.toDegrees(courseRadians(Math.toRadians(latitude1),
                                         Math.toRadians(longitude1),
                                         Math.toRadians(latitude2),
-                                        Math.toRadians(longitude2))));
+                                        Math.toRadians(longitude2)));
+    if(course < 0.0)
+      return(360.0 + course);
+    else
+      return(course);
   }
   
 //----------------------------------------------------------------------

@@ -22,9 +22,11 @@
 
 
 package org.dinopolis.gpstool.gpsinput.garmin;
+
 import java.awt.Color;
 import java.util.List;
 import java.util.Vector;
+import org.dinopolis.gpstool.gpsinput.GPSTrack;
 
 //----------------------------------------------------------------------
 /**
@@ -32,7 +34,7 @@ import java.util.Vector;
  * @version $Revision$
  */
 
-public class GarminTrack extends GarminRoute
+public class GarminTrack extends GarminRoute implements GPSTrack
 {
   boolean display_;
 

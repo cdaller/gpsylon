@@ -22,31 +22,32 @@
 
 package org.dinopolis.gpstool.gui;
 
-import javax.swing.JButton;
-import javax.swing.JToolBar;
-import javax.swing.JLabel;
-import javax.swing.Action;
-import javax.swing.Icon;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.LayerStatusListener;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
-import java.beans.PropertyChangeListener; 
 import java.beans.PropertyChangeEvent; 
-import com.bbn.openmap.LatLonPoint;
-import org.dinopolis.util.Resources;
-import org.dinopolis.gpstool.util.angle.AngleFormat;
-import org.dinopolis.gpstool.util.angle.Latitude;
-import org.dinopolis.gpstool.util.angle.Longitude;
-import org.dinopolis.gpstool.util.angle.Angle;
+import java.beans.PropertyChangeListener; 
+import java.text.DecimalFormat;
+import java.util.HashSet;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.JToolBar;
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.MapNavigationHook;
-import javax.swing.JProgressBar;
-import com.bbn.openmap.event.LayerStatusListener;
-import com.bbn.openmap.event.LayerStatusEvent;
-import java.util.HashSet;
-import java.awt.Dimension;
+import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
+import org.dinopolis.gpstool.util.angle.Angle;
+import org.dinopolis.gpstool.util.angle.AngleFormat;
+import org.dinopolis.gpstool.util.angle.Latitude;
+import org.dinopolis.gpstool.util.angle.Longitude;
+import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
 /**
@@ -251,6 +252,12 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
     if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_SATELLITE_INFO))
     {
       satellite_activity_.setSatelliteInfos((SatelliteInfo[])event.getNewValue());
+      return;
+    }
+
+    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_POS_ERROR))
+    {
+      satellite_activity_.setPositionError((GPSPositionError)event.getNewValue());
       return;
     }
 

@@ -211,11 +211,6 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     {
       System.out.println(DEFAULT_TEMPLATE);
     }
-    if (args.isSet("test"))
-    {
-      test();
-      return;
-    }
     
     if (args.isSet("device"))
     {
@@ -275,6 +270,17 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         serial_port_speed = 4800;
       }
     
+    if (args.isSet("test"))
+    {
+      gps_data_processor.addGPSRawDataListener(
+        new GPSRawDataListener()
+        {
+          public void gpsRawDataReceived(char[] data, int offset, int length)
+          {
+            System.out.println("RAWLOG: "+new String(data,offset,length));
+          }
+        });
+    }
         // Define device to read data from
     GPSDevice gps_device;
     Hashtable environment = new Hashtable();
@@ -745,6 +751,8 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   private static void test()
   {
   }
+
+
 
   
 //----------------------------------------------------------------------

@@ -55,8 +55,8 @@ public class GarminProduct
  */
   public GarminProduct(GarminPackage pack)
   {
-    product_id_= pack.getNextAsInt();
-    product_software_ = pack.getNextAsInt();
+    product_id_= pack.getNextAsWord();
+    product_software_ = pack.getNextAsWord();
     product_name_ = pack.getNextAsString();
   }
 

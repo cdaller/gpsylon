@@ -393,7 +393,9 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
  * Returns all visible projected tracks (holding the screen
  * coordinates as well as the geographic coordinates) in a List. If no
  * tracks are found (or visible), an empty list is returned. Visiblity
- * is determined for the given projection.
+ * is determined for the given projection. The tracks returned are
+ * deep cloned, so any changes in these tracks do not influence the
+ * tracks stored in the track manager (and vice versa).
  *
  * @param projection the projection to use.
  * @throws InterruptedException if the thread was interrupted while
@@ -415,6 +417,7 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
     {
       Iterator iterator = track_map_.keySet().iterator();
       Track track;
+      TrackImpl projected_track;
       String id;
       while(iterator.hasNext())
       {
@@ -425,9 +428,12 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
         if(isTrackVisible(track,visible_area))
         {
 //          System.out.println("projection of track "+track.getIdentification());
-          track.forward(projection);
+              // deep clone of the track, so no changes may happen
+              // after the projection was done:
+          projected_track = new TrackImpl(track);
+          projected_track.forward(projection);
 //          System.out.println("end of projection of track "+track.getIdentification());
-          tracks.add(track);
+          tracks.add(projected_track);
         }
         if(Thread.interrupted())
         {
@@ -444,7 +450,9 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
  * as the geographic coordinates). At the moment, no caching is done,
  * so the calculation is always executed when this method is called.
  * If no track was found with the given identifier, <code>null</code>
- * is returned.
+ * is returned. The track returned is deep cloned, so any changes in
+ * this tracks does not influence the tracks stored in the track
+ * manager (and vice versa).
  * TODO: cache calls with same projection
  *
  * @param identifier the identifier of the track to return.
@@ -456,8 +464,9 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
     Track track = (Track)getTrack(identifier);
     if(track == null)
       return(null);
-    track.forward(projection);
-    return(track);
+    TrackImple projected_track = new TrackImpl(track);
+    projected_track.forward(projection);
+    return(projected_track);
   }
 
 

@@ -124,6 +124,17 @@ public interface GPSDataProcessor
 
 //----------------------------------------------------------------------
 /**
+ * Returns information about the gps connected (name of device, type
+ * of connection, etc.) This information is for display to the user,
+ * not for further processing (may change without notice).
+ *
+ * @return information about the gps connected.
+ */
+  public String[] getGPSInfo();
+
+  
+//----------------------------------------------------------------------
+/**
  * Returns the last received position from the GPSDevice or
  * <code>null</code> if no position was retrieved until now.
  * @return the position from the GPSDevice.

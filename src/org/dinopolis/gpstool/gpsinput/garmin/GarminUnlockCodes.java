@@ -35,14 +35,14 @@ public class GarminUnlockCodes
   
   public GarminUnlockCodes()
   {
-    data_ = new GarminPackage(0x6c);
+//    data_ = new GarminPackage(0x6c);
   }
 
   public void addCode(String code)
   {
-    GarminPackage code = new GarminPackage(code.length()+1);
-    code.setNextAsString(code);
-    data_.appendData(code);
+//     GarminPackage code = new GarminPackage(code.length()+1);
+//     code.setNextAsString(code);
+//     data_.appendData(code);
   }
 
 

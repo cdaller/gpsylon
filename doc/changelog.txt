@@ -1,5 +1,8 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/05/22: fixed bug in reading trackpoints from gps device (garmin):
+            set date to null, if not available. Do not print it in the
+            gpx template.
 
 2003/05/14: finally found the place that inserted the \\ into the
             resources (very bad for windows paths :-)

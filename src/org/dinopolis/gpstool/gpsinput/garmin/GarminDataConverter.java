@@ -154,7 +154,7 @@ public class GarminDataConverter
       index++;
     }
     if(zero_terminate)
-      buffer[index] = 0;
+      buffer[offset+index] = 0;
 
     return(buffer);
   }

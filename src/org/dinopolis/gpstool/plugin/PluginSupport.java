@@ -31,6 +31,7 @@ import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.StatusHook;
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
+import org.dinopolis.gpstool.gui.MouseModeManager;
 import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
@@ -149,6 +150,14 @@ public interface PluginSupport
  */
   public UnitHelper getUnitHelper();
 
+//----------------------------------------------------------------------
+/**
+ * Set the mouse mode manager. This class may be used to change the
+ * mouse mode.
+ *
+ * @return the mouse mode manager.
+ */
+  public MouseModeManager getMouseModeManager();
 }
 
 

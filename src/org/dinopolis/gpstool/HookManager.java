@@ -27,6 +27,7 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.beans.PropertyChangeSupport;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
+import org.dinopolis.gpstool.gui.MouseModeManager;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
@@ -57,6 +58,7 @@ public class HookManager implements PluginSupport
   TrackManager track_manager_;
   ServiceDiscovery service_discovery_;
   UnitHelper unit_helper_;
+  MouseModeManager mouse_mode_manager_;
   
   public HookManager()
   {
@@ -314,6 +316,29 @@ public class HookManager implements PluginSupport
   public UnitHelper getUnitHelper()
   {
     return(unit_helper_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the mouse mode manager.
+ *
+ * @param the mouse mode manager
+ */
+  protected void setMouseModeManager(MouseModeManager mouse_mode_manager)
+  {
+    mouse_mode_manager_ = mouse_mode_manager;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the mouse mode manager. This class may be used to change the
+ * mouse mode.
+ *
+ * @return the mouse mode manager.
+ */
+  public MouseModeManager getMouseModeManager()
+  {
+    return(mouse_mode_manager_);
   }
 
     

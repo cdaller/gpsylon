@@ -158,6 +158,18 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
+ * Get the word on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the word at the given position
+ */
+  public int getWord(int offset)
+  {
+    return(GarminDataConverter.getGarminWord(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
  * Get the int on the given offset.
  *
  * @param offset the position to return.
@@ -242,8 +254,49 @@ class GarminPackage
     throws IllegalStateException
   {
     int value = GarminDataConverter.getGarminInt(data_,get_index_);
+    get_index_ += 4;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as int.
+ * @param value the next value as int
+ */
+  public void setNextAsInt(int value)
+  {
+    data_ = GarminDataConverter.setGarminInt(value,data_,put_index_);
+    put_index_ += 4;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as word.
+ * @return the next value as word
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public int getNextAsWord()
+    throws IllegalStateException
+  {
+    int value = GarminDataConverter.getGarminWord(data_,get_index_);
     get_index_ += 2;
     return(value);
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as word.
+ * @param value the next value as word
+ */
+  public void setNextAsWord(int value)
+  {
+    data_ = GarminDataConverter.setGarminWord(value,data_,put_index_);
+    System.out.println("setnextasword");
+    System.out.println(data_[put_index_]);
+    System.out.println(data_[put_index_+1]);
+    put_index_ += 2;
   }
 
 //----------------------------------------------------------------------
@@ -263,6 +316,17 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
+ * Set the next data value as float.
+ * @param value the next value as float
+ */
+  public void setNextAsFloat(float value)
+  {
+    data_ = GarminDataConverter.setGarminFloat(value,data_,put_index_);
+    put_index_ += 4;
+  }
+
+//----------------------------------------------------------------------
+/**
  * Get the next data value as long.
  * @return the next value as long.
  * @throws IllegalStateException on a try to read more bytes than were
@@ -274,6 +338,17 @@ class GarminPackage
     long value = GarminDataConverter.getGarminLong(data_,get_index_);
     get_index_ += 4;
     return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as long.
+ * @param value the next value as long
+ */
+  public void setNextAsLong(long value)
+  {
+    data_ = GarminDataConverter.setGarminLong(value,data_,put_index_);
+    put_index_ += 4;
   }
 
 //----------------------------------------------------------------------
@@ -290,6 +365,35 @@ class GarminPackage
     get_index_ += value.length();
     return(value);
   }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as zero terminated string.
+ * @param value the next value as long
+ */
+  public void setNextAsString(String value)
+  {
+    int length = value.length() + 1;
+    data_ = GarminDataConverter.setGarminString(value,data_,put_index_,
+						length, true);
+    put_index_ += length;
+  }
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as long.
+ * @param value the next value as long
+ * @param max_length the maximum length the string may have (if the
+ * string should be zero terminated, this length includes the yero
+ * termination).
+ * @param zero_terminate zero terminate the string.
+ */
+  public void setNextAsString(String value, int max_length, boolean zero_terminate)
+  {
+    data_ = GarminDataConverter.setGarminString(value,data_,put_index_,
+						max_length, zero_terminate);
+    put_index_ += Math.min(value.length(),max_length);
+  }
+
 
 //----------------------------------------------------------------------
 /**
@@ -342,11 +446,37 @@ class GarminPackage
     buffer.append(",size=").append(package_size_);
     buffer.append(",data=[");
     for(int index = 0; index < package_size_; index++)
-      buffer.append(data_[index]).append(" ");
+      buffer.append(data_[index]).append("/").append((char)data_[index]).append(" ");
     buffer.append("]]");
     return(buffer.toString());
   }
-  
+
+
+  public static void main(String[] args)
+  {
+    String teststring = "hallo";
+    GarminPackage gp = new GarminPackage(1,4+2+teststring.length()+1);
+    gp.setNextAsInt(123456);
+    gp.setNextAsWord(1245);
+    gp.setNextAsString(teststring);
+
+    int word = 1234;
+    System.out.println("1234 as byte:");
+    System.out.println(word & 0xff); 
+    System.out.println((word & 0xff00) >> 8);
+    
+    System.out.println(gp.getNextAsInt());
+    System.out.println(gp.getNextAsWord());
+    System.out.println(gp.getNextAsString());
+
+//     int value;
+//     for(int index = 0; index < gp.getPackageSize(); index++)
+//     {
+//       value = gp.get();
+//       System.out.println("byte: "+index+":"+value+":"+(char)value);
+//     }
+    System.out.println(gp);
+  }
 }
 
 

@@ -23,9 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
-
-
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -267,7 +264,94 @@ public class GarminDataConverter
     buffer[offset] = (byt & 0xff);
     return(buffer);
   }
-  
+
+
+//----------------------------------------------------------------------
+/**
+ * Extracts an 16bit int (unsigned, java int) from the given character
+ * buffer and returns it.
+ *
+ * @param buffer the character buffer to extract the integer from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static int getGarminUnsignedInt(int[] buffer, int offset)
+  {
+    int value = (buffer[offset] & 0xff)
+                | ((buffer[offset+1] & 0xff) << 8);
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert a given int (16bit) to garmin data array.
+ *
+ * @param word the word to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminUnsignedInt(int word, int[] buffer, int offset)
+  {
+    buffer[offset] =  word & 0xff; 
+    buffer[offset+1] = (word & 0xff00) >> 8;
+    return(buffer);
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Extracts an 16bit int (signed, java int) from the given character
+ * buffer and returns it.
+ *
+ * @param buffer the character buffer to extract the integer from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static int getGarminSignedInt(int[] buffer, int offset)
+  {
+		int value = getGarminUnsignedInt(buffer,offset);
+		if((value & 0x8000) == 0)
+			return(value);
+		else
+					// two's complement! (as java int  has 4 bytes, the 2 leading zero
+					// bytes have to be filled by 0xff first, before the inverse two's
+					// complement may be calculated!:
+			return(-(~((value | 0xffff0000)-1)));  
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert a given int (16bit, signed) to garmin data array.
+ *
+ * @param word the word to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminSignedInt(int word, int[] buffer, int offset)
+  {
+		if(word < 0)
+		{
+			word = ~(-word) + 1; // two's complement
+			buffer[offset+1] = (word & 0x7f00 | 0x8000) >> 8; // copy data, set
+																												// signed bit
+		}
+		else
+		{
+			buffer[offset+1] = (word & 0x7f00) >> 8;
+		}
+    buffer[offset] =  word & 0xff; 
+    return(buffer);
+  }
+
+
 //----------------------------------------------------------------------
 /**
  * Extracts an word (unsigned, java int) from the given character
@@ -279,9 +363,7 @@ public class GarminDataConverter
  */
   public static int getGarminWord(int[] buffer, int offset)
   {
-    int value = (buffer[offset] & 0xff)
-                | ((buffer[offset+1] & 0xff) << 8);
-    return(value);
+		return(getGarminUnsignedInt(buffer,offset));
   }
 
 //----------------------------------------------------------------------
@@ -298,14 +380,12 @@ public class GarminDataConverter
  */
   public static int[] setGarminWord(int word, int[] buffer, int offset)
   {
-    buffer[offset] =  word & 0xff; 
-    buffer[offset+1] = (word & 0xff00) >> 8;
-    return(buffer);
+		return(setGarminUnsignedInt(word,buffer,offset));
   }
   
 //----------------------------------------------------------------------
 /**
- * Extracts an integer from the given character buffer and returns
+ * Extracts a signed integer from the given character buffer and returns
  * it.
  *
  * @param buffer the character buffer to extract the integer from.
@@ -314,16 +394,12 @@ public class GarminDataConverter
  */
   public static int getGarminInt(int[] buffer, int offset)
   {
-    int value = (buffer[offset] & 0xff)
-                | ((buffer[offset+1] & 0xff) << 8)
-                | ((buffer[offset+2] & 0xff) << 16)
-                | ((buffer[offset+3] & 0xff) << 24);
-    return(value);
+		return(getGarminSignedInt(buffer,offset));
   }
 
 //----------------------------------------------------------------------
 /**
- * Convert a given integer to garmin data array.
+ * Convert a given signed integer to garmin data array.
  *
  * @param integer the integer to be converted to garmin data array.
  * @param buffer the buffer to write the value(s) to.
@@ -335,10 +411,100 @@ public class GarminDataConverter
  */
   public static int[] setGarminInt(int integer, int[] buffer, int offset)
   {
-    buffer[offset] = integer & 0xff;
-    buffer[offset+1] = (integer & (int)(0xff << 8)) >> 8;   
-    buffer[offset+2] = (integer & (int)(0xff << 16)) >> 16; 
-    buffer[offset+3] = (integer & (int)(0xff << 24)) >> 24; 
+		return(setGarminInt(integer,buffer,offset));
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Extracts an unsingned long (32bit) from the given buffer and
+ * returns it.
+ *
+ * @param buffer the buffer to extract the integer from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static long getGarminUnsignedLong(int[] buffer, int offset)
+  {
+    long value = (buffer[offset] & 0xff)
+                | ((buffer[offset+1] & 0xff) << 8)
+                | ((long)(buffer[offset+2] & 0xff) << 16)
+                | ((long)(buffer[offset+3] & 0xff) << 24);
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert a given unsigned long (only 32bit are used) to garmin data
+ * array.
+ *
+ * @param longword the long value to be converted to garmin data
+ * array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminUnsignedLong(long longword, int[] buffer, int offset)
+  {
+    buffer[offset] = (int)(longword & 0xffL);
+    buffer[offset+1] = (int)(longword & 0xff00L) >> 8;   
+    buffer[offset+2] = (int)(longword & 0xff0000L) >> 16; 
+    buffer[offset+3] = (int)(longword & (int)(0xff000000L)) >> 24; 
+    return(buffer);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Extracts an singned long (32bit) from the given buffer and
+ * returns it.
+ *
+ * @param buffer the buffer to extract the integer from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static long getGarminSignedLong(int[] buffer, int offset)
+  {
+		long value = getGarminUnsignedLong(buffer,offset);
+		if((value & 0x80000000L) == 0)
+			return(value);
+		else
+					// two's complement! (as java long  has 8 bytes, the 4 leading zero
+					// bytes have to be filled by 0xff first, before the inverse two's
+					// complement may be calculated!:
+			return(-(~((value | 0xffffffff00000000L)-1)));  
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert a given signed long (only 32bit are used) to garmin data
+ * array.
+ *
+ * @param longword the long value to be converted to garmin data
+ * array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminSignedLong(long longword, int[] buffer, int offset)
+  {
+		if(longword < 0)
+		{
+			longword = ~(-longword) + 1; // two's complement
+			buffer[offset+3] = (int)(longword & 0x7f000000L | 0x80000000L) >> 24; // copy data, set signed bit
+		}
+		else
+		{
+			buffer[offset+3] = (int)(longword & 0x7f000000L) >> 24;
+		}
+    buffer[offset] = (int)longword & 0xff;
+    buffer[offset+1] = (int)(longword & 0xff00) >> 8;   
+    buffer[offset+2] = (int)(longword & 0xff0000L) >> 16; 
     return(buffer);
   }
 
@@ -351,13 +517,9 @@ public class GarminDataConverter
  * @param offset the offset to start reading the buffer.
  * @return the value extracted from the buffer.
  */
-  public static long getGarminLong(int[] buffer, int offset)
+  public static long getGarminLongWord(int[] buffer, int offset)
   {
-    long value = (buffer[offset] & 0xff)
-                | ((buffer[offset+1] & 0xff) << 8)
-                | ((long)(buffer[offset+2] & 0xff) << 16)
-                | ((long)(buffer[offset+3] & 0xff) << 24);
-    return(value);
+		return(getGarminUnsignedLong(buffer,offset));
   }
 
 //----------------------------------------------------------------------
@@ -374,13 +536,9 @@ public class GarminDataConverter
  * @throws ArrayIndexOutOfBoundsException if the buffer size is too
  * small to hold the given data.
  */
-  public static int[] setGarminLong(long longword, int[] buffer, int offset)
+  public static int[] setGarminLongWord(long longword, int[] buffer, int offset)
   {
-    buffer[offset] = (int)longword & 0xff;
-    buffer[offset+1] = (int)(longword & (int)(0xff << 8)) >> 8;   
-    buffer[offset+2] = (int)(longword & (int)(0xff << 16)) >> 16; 
-    buffer[offset+3] = (int)(longword & (int)(0xff << 24)) >> 24; 
-    return(buffer);
+		return(setGarminUnsignedLong(longword,buffer,offset));
   }
 
 //----------------------------------------------------------------------
@@ -597,9 +755,39 @@ public class GarminDataConverter
 	public static void main(String[] args)
 	{
 		int[] buffer = {90, 17, 52, 173};
-		long value = getGarminLong(buffer,0);
+		long value = getGarminLongWord(buffer,0);
 		if(value != 2905870682L)
 			System.out.println("Wrong: "+value);
+		else
+			System.out.println("Right!");
+
+		int[] buffer1 = {255, 255};
+		int value1 = getGarminSignedInt(buffer1,0);
+		if(value1 != -1)
+			System.out.println("Wrong: "+value1);
+		else
+			System.out.println("Right!");
+
+		buffer1 = setGarminSignedInt(-1,buffer1,0);
+		if((buffer1[0] != 255) && (buffer1[1] != 255))
+			System.out.println("Wrong! " +Integer.toHexString(buffer1[0])+","+Integer.toHexString(buffer1[1]));
+		else
+			System.out.println("Right!");
+
+		int[] buffer2 = {255,255,255,255};
+		long value2 = getGarminSignedLong(buffer2,0);
+		if(value2 != -1)
+			System.out.println("Wrong: "+value2);
+		else
+			System.out.println("Right!");
+
+		buffer2 = setGarminSignedInt(-1,buffer2,0);
+		if((buffer2[0] != 255) && (buffer2[1] != 255) && (buffer2[2] != 255) && (buffer2[3] != 255))
+			System.out.println("Wrong! " 
+												 +Integer.toHexString(buffer2[0])+","
+												 +Integer.toHexString(buffer2[1])+","
+												 +Integer.toHexString(buffer2[2])+","
+												 +Integer.toHexString(buffer2[3]));
 		else
 			System.out.println("Right!");
 	}

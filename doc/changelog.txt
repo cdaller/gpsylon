@@ -2,6 +2,10 @@ ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
 2003/07/01: finally added splash screen and progress bar
 
+            added "jars" target in build.xml file
+
+            0.4.15-pre5 released
+
 2003/06/30: added imageserver plugin that answers http requests on
             port 10080 (for screenshot)
 

@@ -190,15 +190,15 @@ class GarminPackage
     return (byte) checksum;
   }
 
-  public char[] getCompatibilityBuffer()
+  public int[] getCompatibilityBuffer()
   {
-    char[] buffer = new char[package_size_ + 2];
+    int[] buffer = new int[package_size_ + 2];
       
-    buffer[0] = (char)package_id_;
-    buffer[1] = (char)package_size_;
+    buffer[0] = package_id_;
+    buffer[1] = package_size_;
     for(int index = 0; index < package_size_; index++)
     {
-      buffer[index+2] = (char)data_[index];
+      buffer[index+2] = data_[index];
     }
     return(buffer);
   }

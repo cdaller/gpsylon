@@ -153,6 +153,15 @@ public class GarminDataConverter
       buffer[offset+index] = (int)string.charAt(index);
       index++;
     }
+        // pad the rest with spaces:
+    while(index < max_length)
+    {
+      buffer[offset+index] = ' ';  // pad with spaces
+      index++;
+    }
+        // leave space for terminating zero, if neccessary:
+    if((index == max_length)
+       index--;
     if(zero_terminate)
       buffer[offset+index] = 0;
 

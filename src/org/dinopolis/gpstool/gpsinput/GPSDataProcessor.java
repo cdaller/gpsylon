@@ -23,8 +23,9 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import java.util.Map;
 import java.beans.PropertyChangeListener;
+import java.util.Map;
+import java.util.List;
 
 //----------------------------------------------------------------------
 /**
@@ -144,6 +145,90 @@ public interface GPSDataProcessor
  * @return a map containing all key-value pairs of GPS data.  */
   public Map getGPSData();
 
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a list of waypoints from the gps device.
+ * @return a list of <code>GPSWaypoint</code> objects.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSWaypoint
+ */
+  public List getWaypoints()
+    throws UnsupportedOperationException, GPSException;
+
+//--------------------------------------------------------------------------------
+/**
+ * Write the waypoints to the gps device.
+ * @param waypoints The new waypoints.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSWaypoint
+ */
+  public void setWaypoints(List waypoints)
+    throws UnsupportedOperationException, GPSException;
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a list of routes from the gps device.
+ * @return a list of <code>GPSRoute</code> objects.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSRoute
+ */
+  public List getRoutes()
+    throws UnsupportedOperationException, GPSException;
+
+//--------------------------------------------------------------------------------
+/**
+ * Write the routes to the gps device.
+ * @param waypoints The new waypoints.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSWaypoint
+ */
+  public void setRoutes(List routes)
+    throws UnsupportedOperationException, GPSException;
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a list of tracks from the gps device.
+ * @return a list of <code>GPSRoute</code> objects.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSRoute
+ */
+  public List getTracks()
+    throws UnsupportedOperationException, GPSException;
+
+//--------------------------------------------------------------------------------
+/**
+ * Write the tracks to the gps device.
+ * @param waypoints The new waypoints.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSRoute
+ */
+  public void setTracks(List tracks)
+    throws UnsupportedOperationException, GPSException;
 
 //----------------------------------------------------------------------
 /**

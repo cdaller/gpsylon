@@ -1,5 +1,11 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+
+2003/05/14: finally found the place that inserted the \\ into the
+            resources (very bad for windows paths :-)
+
+2003/04/13: added time to tracks (includes time output in GPSTool)
+
 2003/05/12: 0.4.15-pre2 released
 
 2003/05/10: tested speed and heading for garmin devices. seems to

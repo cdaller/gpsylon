@@ -22,8 +22,9 @@
 
 
 package org.dinopolis.gpstool.util;
-import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.Projection;
+import java.awt.geom.Line2D;
 
 //----------------------------------------------------------------------
 /**
@@ -174,6 +175,45 @@ public class GeoExtent
   public void setEast(float east) 
   {
     east_ = east;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns true, if the given latitude/longitude is inside the given geo extent.
+ * The calculation does not take the curvature of the earth into account!
+ *
+ * @param latitude the latitude of the point.
+ * @param longitude the longitude of the point.
+ * @return true, if the given coordinates are inside the rectangle created
+ * by north, east, south, west.
+ */
+  public boolean isInside(double latitude, double longitude)
+  {
+    return((latitude > south_) && (latitude < north_)
+           && (longitude > west_) && (longitude < east_));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns true, if the line (lat1, lon1) to (lat2,lon2) intersects the
+ * interior of this geo extent. The calculation does not take the curvature
+ * of the earth into account!
+ *
+ * @param lat1 the latitude of the start point of the line.
+ * @param lon1 the longitude of the start point of the line.
+ * @param lat2 the latitude of the end point of the line.
+ * @param lon1 the longitude of the end point of the line.
+ * @return true, if the given line intersects one of the lines (N,W) to (N,E),
+ * (N,E) to (S,E), (S,E) to (S,W) or (S,W) to (N,W).
+ */
+  public boolean intersectsLine(double lat1, double lon1, double lat2, double lon2)
+  {
+    return(isInside(lat1,lon1)
+           || isInside(lat2,lon2)
+           || Line2D.linesIntersect(north_,west_,north_,east_,lat1,lon1,lat2,lon2)
+           || Line2D.linesIntersect(north_,east_,south_,east_,lat1,lon1,lat2,lon2)
+           || Line2D.linesIntersect(south_,east_,south_,west_,lat1,lon1,lat2,lon2)
+           || Line2D.linesIntersect(south_,west_,north_,east_,lat1,lon1,lat2,lon2));
   }
 
   public String toString()

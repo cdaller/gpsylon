@@ -48,6 +48,7 @@ public class TableSorter extends TableMap
 
 	public TableSorter(TableModel model)
 	{
+    this();
 		setModel(model);
 	}
 
@@ -219,22 +220,24 @@ public class TableSorter extends TableMap
 
 	public void reallocateIndexes()
 	{
-		int rowCount = model.getRowCount();
-
-		// Set up a new array of indexes with the right number of elements
-		// for the new data model.
-		sorted_indices_ = new int[rowCount];
-
-		// Initialise with the identity mapping.
-		for (int row = 0; row < rowCount; row++)
-		{
-			sorted_indices_[row] = row;
-		}
+    synchronized(sorted_indices_)
+    {
+      int rowCount = model.getRowCount();
+      
+          // Set up a new array of indexes with the right number of elements
+          // for the new data model.
+      sorted_indices_ = new int[rowCount];
+      
+          // Initialise with the identity mapping.
+      for (int row = 0; row < rowCount; row++)
+      {
+        sorted_indices_[row] = row;
+      }
+    }
 	}
 
 	public void tableChanged(TableModelEvent e)
 	{
-		//System.out.println("Sorter: tableChanged"); 
 		reallocateIndexes();
 
 		super.tableChanged(e);
@@ -244,7 +247,8 @@ public class TableSorter extends TableMap
 	{
 		if (sorted_indices_.length != model.getRowCount())
 		{
-			System.err.println("Sorter not informed of a change in model.");
+			System.err.println("org.dinopolis.gpstool.gui.util.TableSorter: Sorter not informed of a change in model.");
+      System.err.println("index.length="+sorted_indices_.length+" model.rowcount="+model.getRowCount());
 		}
 	}
 
@@ -255,7 +259,10 @@ public class TableSorter extends TableMap
 		num_comparations_ = 0;
 		// n2sort();
 		// qsort(0, indexes.length-1);
-		shuttlesort((int[]) sorted_indices_.clone(), sorted_indices_, 0, sorted_indices_.length);
+    synchronized(sorted_indices_)
+    {
+      shuttlesort((int[]) sorted_indices_.clone(), sorted_indices_, 0, sorted_indices_.length);
+    }
 		//System.out.println("Compares: "+compares);
 	}
 

@@ -28,7 +28,7 @@ import java.awt.Container;
 import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
-import org.dinopolis.gpstool.util.ProgressListener;
+import org.dinopolis.util.ProgressListener;
 
 
 

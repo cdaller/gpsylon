@@ -62,7 +62,7 @@ import org.dinopolis.util.commandarguments.CommandArguments;
  * print the downloaded tracks, routes, and waypoints. See the help
  * output for details about the usable variables.
  *
- * @author Christof Dallermassl
+ * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
  */
 
@@ -106,8 +106,8 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   +"#foreach( $route in $routes )\n"
   +"  <rte>\n"
   +"    <name>$!route.Identification</name>\n"
-  +"#if($point.getComment().length() > 0)\n"
-  +"    <desc>![CDATA[$!point.Comment]]</desc>\n"
+  +"#if($route.getComment().length() > 0)\n"
+  +"    <desc>![CDATA[$!route.Comment]]</desc>\n"
   +"#end\n"
   +"    <number>$velocityCount</number>\n"
   +"#set ($points = $route.getWaypoints())\n"
@@ -115,6 +115,12 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   +"    <rtept lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
   +"#if($point.hasValidAltitude())\n"
   +"        <ele>$point.Altitude</ele>\n"
+  +"#end\n"
+  +"#if($point.getIdentification().length() > 0)\n"
+  +"    <name>![CDATA[$!point.Identification]]</name>\n"
+  +"#end\n"
+  +"#if($point.getComment().length() > 0)\n"
+  +"    <desc>![CDATA[$!point.Comment]]</desc>\n"
   +"#end\n"
   +"    </rtept>\n"
   +"#end\n"
@@ -183,7 +189,8 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
                     "downloadwaypoints","downloadroutes","deviceinfo","printposonce",
                     "printpos","p","printalt","printspeed","printheading","printsat",
                     "template*","outfile*","screenshot*", "printdefaulttemplate",
-                    "helptemplate","nmealogfile*","l"};
+                    "helptemplate","nmealogfile*","l","uploadtracks","uploadroutes",
+                    "uploadwaypoints","infile*"};
 
         // Check command arguments
         // Throw exception if arguments are invalid
@@ -259,7 +266,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
       serial_port_speed = 9600;
       if(filename != null)
       {
-        System.err.println("ERROR: Cannor read garmin data from file, only serial port supported!");
+        System.err.println("ERROR: Cannot read garmin data from file, only serial port supported!");
         return;
       }
     }
@@ -270,7 +277,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         serial_port_speed = 19200;
         if(filename != null)
         {
-          System.err.println("ERROR: Cannor read sirf data from file, only serial port supported!");
+          System.err.println("ERROR: Cannot read sirf data from file, only serial port supported!");
           return;
         }
       }
@@ -415,6 +422,30 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         boolean result = printTemplate(context,reader,writer);
         
       }
+      boolean read_waypoints = (args.isSet("uploadwaypoints") && args.isSet("infile"));
+      boolean read_routes = (args.isSet("uploadroutes") && args.isSet("infile"));
+      boolean read_tracks = (args.isSet("uploadtracks") && args.isSet("infile"));
+
+      if(read_waypoints || read_routes || read_tracks)
+      {
+            // Create GPX file parser
+        ReadGPX reader = new ReadGPX();
+        String in_file = (String)args.getValue("infile");
+
+            // Parse given input file
+        reader.parseFile(in_file);
+
+            // Upload read data to attached gps device
+        if (read_waypoints)
+          gps_data_processor.setWaypoints(reader.getWaypoints());
+
+        if (read_routes)
+          gps_data_processor.setRoutes(reader.getRoutes());
+
+        if (read_tracks)
+          gps_data_processor.setTracks(reader.getTracks());
+      }
+
       if(args.isSet("printposonce"))
       {
         GPSPosition pos = gps_data_processor.getGPSPosition();
@@ -778,6 +809,13 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     System.out.println("--outfile <filename>, the file to print the tracks, routes and waypoints to, stdout is default");
     System.out.println("--template <filename>, the velocity template to use for printing routes, tracks and waypoints");
     System.out.println("--printdefaulttemplate, prints the default template used to print routes, waypoints, and tracks.");
+    System.out.println("--uploadtracks, reads track information from the file given at the infile\n"
+                      +"                parameter and uploads it to the gps device.");
+    System.out.println("--uploadroutes, reads route information from the file given at the infile\n"
+                      +"                parameter and uploads it to the gps device.");
+    System.out.println("--uploadwaypoints, reads waypoint information from the file given at the infile\n"
+                      +"                   parameter and uploads it to the gps device.");
+    System.out.println("--infile <filename>, the GPX file to read the tracks, routes and waypoints from");
     System.out.println("--helptemplate, prints some more information on how to write a template.");
     System.out.println("--help -h, shows this page");
     

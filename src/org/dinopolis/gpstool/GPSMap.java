@@ -67,7 +67,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import org.dinopolis.gpstool.alarm.AlarmConditionManager;
+//import org.dinopolis.gpstool.alarm.AlarmConditionManager;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSDevice;
 import org.dinopolis.gpstool.gpsinput.GPSException;
@@ -871,7 +871,7 @@ public class GPSMap
     String[] valid_args =
       new String[] {"device*","d*","help","h","speed#","s#","gpsfile*","f*",
                     "nmealogfile*","l*","gpsdhost*","g*","gpsdport#","p#",
-                    "file","gpsd","serial","alarmfile*","nmea","garmin"};
+                    "file","gpsd","serial","nmea","garmin"};
 
     CommandArguments args = null;
     try
@@ -1014,13 +1014,13 @@ public class GPSMap
       {
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_SERIAL);
       }
-      if (args.isSet("alarmfile"))
-      {
-	String filename = args.getStringValue("alarmfile");
-	if(filename.equals("none"))
-	   filename = "";
-        resources_.setString(KEY_ALARM_FILE,filename);
-      }
+//       if (args.isSet("alarmfile"))
+//       {
+//         String filename = args.getStringValue("alarmfile");
+//         if(filename.equals("none"))
+//           filename = "";
+//         resources_.setString(KEY_ALARM_FILE,filename);
+//       }
     }
   }
 
@@ -1640,20 +1640,20 @@ public class GPSMap
       {
         hook_manager_.setGPSDataProcessor(gps_data_processor_);
         gps_data_processor_.addGPSDataChangeListener(this);
-        String alarm_file = resources_.getString(KEY_ALARM_FILE,"");
-        if((alarm_file != null) && (alarm_file.length() > 0))
-        {
-              // add alarm settings:
-          AlarmConditionManager alarm_manager = new AlarmConditionManager();
-          try
-          {
-            alarm_manager.addAlarms(alarm_file,gps_data_processor_);
-          }
-          catch(IOException ioe)
-          {
-            ioe.printStackTrace();
-          }
-        }
+//         String alarm_file = resources_.getString(KEY_ALARM_FILE,"");
+//         if((alarm_file != null) && (alarm_file.length() > 0))
+//         {
+//               // add alarm settings:
+//           AlarmConditionManager alarm_manager = new AlarmConditionManager();
+//           try
+//           {
+//             alarm_manager.addAlarms(alarm_file,gps_data_processor_);
+//           }
+//           catch(IOException ioe)
+//           {
+//             ioe.printStackTrace();
+//           }
+//         }
       }
     }
     catch(GPSException e)

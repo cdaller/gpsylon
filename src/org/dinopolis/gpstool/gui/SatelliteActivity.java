@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
+import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
@@ -79,6 +80,7 @@ public class SatelliteActivity extends JComponent
   int watchdog_delay_ = 10000; // start in ten seconds
   int watchdog_period_ = 5000; // at least all 5 seconds, we need a valid signal!
 
+  PluginSupport plugin_support_;
   
 
 //----------------------------------------------------------------------
@@ -122,6 +124,11 @@ public class SatelliteActivity extends JComponent
         }
       }, watchdog_delay_, watchdog_period_);
     
+  }
+
+  public void initialize(PluginSupport plugin_support)
+  {
+    plugin_support_ = plugin_support;
   }
   
   
@@ -346,8 +353,10 @@ public class SatelliteActivity extends JComponent
       font_metrics_ = g.getFontMetrics();
       
           // give error in correct unit (feet or meters):
-      int pos_error = (int)Math.round(GPSMap.getAltitude((float)position_error_.getSphericalError()));
-      text_ = String.valueOf(pos_error+GPSMap.getAltitudeUnit());
+
+      int pos_error = (int)Math.round(plugin_support_.getUnitHelper().
+                                      getAltitude((float)position_error_.getSphericalError()));
+      text_ = String.valueOf(pos_error+plugin_support_.getUnitHelper().getAltitudeUnit());
       text_width_ = font_metrics_.stringWidth(text_);
       text_height_ = font_metrics_.getAscent();
 

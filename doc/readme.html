@@ -16,6 +16,7 @@
       <li><a href="#run_gpsmap">Run GPSMap</a></li>
       <li><a href="#download">Download</a></li>
       <li><a href="#status">Status</a></li>
+      <li><a href="#plugins">Plugins</a></li>
       <li><a href="#todo">To Do List</a></li>
       <li><a href="#compile">Compile Source Distribution</a></li>
       <li><a href="changelog.txt">Change Log</a></li>
@@ -28,7 +29,7 @@
     </ul>
 
     <p>
-      The dinopolis gpstool package is an open source (GPL) Java GPS
+      The dinopolis gpstool package is an open source (LGPL) Java GPS
       application.  It consists of different modules that may be used as a
       programmer's framework or as an application. The main application is
       GPSMap. 
@@ -62,7 +63,13 @@
       
       <p>
         It allows the download of a single map or for a given location or for multiple
-        maps in a given rectangular area from mapblast or expedia map servers. 
+        maps in a given rectangular area from mapblast or expedia map
+	servers. In the download mouse mode the user may choose a single map or
+	by dragging a rectangle with the mouse, the user may choose to download
+	maps for a larger area. This functionality allows the user to download
+	maps in a given scale for a larger area. Please only download maps you
+	need and be careful not to download thousands of maps, as the map
+	providers will discontinue their service when it is misused! 
       </p>
 
       <p>
@@ -245,24 +252,38 @@
                 application as well!), call<br>
                   <code>java -jar gpstool.jar --help</code><br> 
               </p>
-                <h3>Keybinding/Mouse</h3>
-                <table border=1>
-                  <tr>
-                    <th>Mousebutton</th><th>Description</th>
-                  </tr>
-                <tr>
-                  <td>Button1 drag</td><td>Set Rectangle for area-download of maps</td>
-                </tr>
-                <tr>
-                  <td>Shift-Button1</td><td>Set Destination (e.g. for simulation mode)</td>
-                </tr>
-                <tr>
-                  <td>Strg-Button1</td><td>Measure Distances</td>
-                </tr>
-                <tr>
-                  <td>Strg-Button3</td><td>Set Current Position (e.g. for simulation mode)</td>
-                </tr>
-              </table>
+	      <h3>Mouse Modes</h3>
+	      GPSMap supports different mouse modes. Mouse modes may be added
+	      as plugins. At the moment, two mouse modes are available:
+	      <ul>
+	      <li>Navigation Mode: click anywhere in the map to zoom in and
+	      center at the clicked position. If the shift-key is held, a click
+	      zooms out. More navigational functionality will be implemented
+	      soon (pan, ...)</li>
+	      <li>Download Mode: If the download mode is used, a window opens
+	      that displays some information about the map(s) to download. In
+	      the map window, a red rectangle (with crossed lines) shows the
+	      current location and size (size may not be exact and varies
+	      slightly from one internet map server to another). The user may
+	      change the location either by clicking in the map or by changing
+	      the coordinates in the download window. The coordinates may be
+	      entered in different formats (decimal, using the degree sign,
+	      etc.). The user may click and drag in the map to draw a
+	      rectangle. If the rectangle is larger that a single map, more
+	      than one rectangle is shown and the number of maps to download is
+	      shown in the download window. Please do not download maps
+	      excessively, as the companies that provide the maps do not like
+	      that and will stop their service if it is misused!</li>
+	      </ul>
+	      <a name="plugins">
+	       <h2>Plugins</h2>
+	       <p>
+	       GPSMap supports plugins of various kinds. The plugin-jars
+	       are used without the need to set the
+	       <code>CLASSPATH</code>. All jars in the directories
+	       <code>[home]/.gpsmap/plugins</code> and in the
+	       <code>plugins</code> directory of the applicaton are used. 
+	       </p>
               <a name="download">
                 <h2>Download</h2>
                 Please download the latest distribution of GPSMap at the 
@@ -374,7 +395,7 @@
                           <li>download from different servers (expedia, mapblast, ...): done</li>
                           <li>allow proxy authentication: done (untested)</li>
                           <li>show table of maps (allow to delete, rename?, ...)</li>
-                          <li>download an area of maps: done (but non-intuitive user interface)</li>
+                          <li>download an area of maps: done</li>
                         </ul>
                       </p>
 
@@ -419,6 +440,24 @@
                               <code>ant help</code> gives all ant-tasks.
              </p>
 
+                            <a name="license">
+                              <h2>License</h2> 
+                              <p> 
+                                The source of the gpstool framework
+                                basically is licensed unter the Lesser Gnu
+                                Public License (LGPL). Some parts in the
+                                framework (e.g. the main application GPSMap)
+                                uses the Open Source library openmap which is
+                                licensed under the GPL, so take care which
+                                modules you use and which license you have to
+                                respect. 
+                              </p>
+                              <p>
+                                The module that is responsible for reading gps
+                                data from a gps device in completely
+                                independent from the openmap library and may
+                                therefore be used under the LGPL license.
+                              </p>
                 <p>
                   Please report any comments, bugfixes, ...
                   to 

@@ -143,7 +143,7 @@ public class ActiveTrackLogger implements PropertyChangeListener
       if(tmp_point != null)
       {
         if(Debug.DEBUG)
-          Debug.println("track_logger","new position in tracklayer: "+tmp_point);
+          Debug.println("track_logger","new position in track logger: "+tmp_point);
         Trackpoint trackpoint = new TrackpointImpl();
         trackpoint.setDate(new Date());
         trackpoint.setLatitude(tmp_point.getLatitude());

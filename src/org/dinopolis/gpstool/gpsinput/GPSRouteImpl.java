@@ -218,7 +218,7 @@ public class GPSRouteImpl implements GPSRoute
   {
     if(!minmax_valid)
       calculateMinMax();
-    return(min_longitude);
+    return(min_longitude_);
   }
 
 //----------------------------------------------------------------------
@@ -244,7 +244,7 @@ public class GPSRouteImpl implements GPSRoute
   {
     if(!minmax_valid)
       calculateMinMax();
-    return(min_altitude);
+    return(min_altitude_);
   }
 
 //----------------------------------------------------------------------
@@ -278,24 +278,24 @@ public class GPSRouteImpl implements GPSRoute
     double value;
     for(int index=0; index < route_points_.size(); index++)
     {
-      waypoint = route_points_.get(index);
+      waypoint = (GPSWaypoint)route_points_.get(index);
       value = waypoint.getLatitude();
-      if(min_latitude > value)
-        min_latitude = value;
-      if(max_latitude < value)
-        max_latitude = value;
+      if(min_latitude_ > value)
+        min_latitude_ = value;
+      if(max_latitude_ < value)
+        max_latitude_ = value;
       value = waypoint.getLongitude();
-      if(min_longitude > value)
-        min_longitude = value;
-      if(max_longitude < value)
-        max_longitude = value;
+      if(min_longitude_ > value)
+        min_longitude_ = value;
+      if(max_longitude_ < value)
+        max_longitude_ = value;
       value = waypoint.getAltitude();
       if(value != Double.NaN)
       {
-        if(min_altitude > value)
-          min_altitude = value;
-        if(max_altitude < value)
-          max_altitude = value;
+        if(min_altitude_ > value)
+          min_altitude_ = value;
+        if(max_altitude_ < value)
+          max_altitude_ = value;
       }
     }
     minmax_valid = true;

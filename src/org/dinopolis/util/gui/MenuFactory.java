@@ -287,11 +287,13 @@ public class MenuFactory
     MenuItemActionChangedListener action_listener = new MenuItemActionChangedListener(menu_item);
 
     Action action_to_set = null;
-
+    Action action = null;
+    String menu_name;
+    
     while (tok.hasMoreTokens())
     {
-      String menu_name = tok.nextToken();
-      Action action = initializeMenuItem(menu_item, prefix,
+      menu_name = tok.nextToken();
+      action = initializeMenuItem(menu_item, prefix,
                                          menu_name, resources,
                                          action_gen);
       
@@ -303,10 +305,13 @@ public class MenuFactory
         action.addPropertyChangeListener(action_listener);
       }
       else
-        System.err.println("WARNING: MenuFactory.createMenuItem: action for '"+prefix+menu_name
-                           +"' with name '"
-                           +resources.getString(prefix+menu_name+KEY_RESOURCE_ACTION_SUFFIX, menu_name)
-                           +"' not found in action generator.");
+      {
+        System.err.println("WARNING: MenuFactory.createMenuItem: action for '"+prefix+menu_name+
+                           "' with name '"+resources.getString(prefix+menu_names+KEY_RESOURCE_ACTION_SUFFIX
+                                                               , "")+
+                           "' not found in action generator.");
+      }
+
     }
     
     if (action_to_set != null)

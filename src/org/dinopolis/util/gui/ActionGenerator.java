@@ -34,7 +34,7 @@ import javax.swing.Action;
  * @version $Revision$
  */
 
-interface ActionGenerator 
+public interface ActionGenerator 
 {
   //----------------------------------------------------------------------
   /**
@@ -45,7 +45,7 @@ interface ActionGenerator
    * @return the action registered under <code>key</code>.
    */
 
-  Action getAction(String key);
+  public Action getAction(String key);
 }
 
 

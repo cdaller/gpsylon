@@ -139,4 +139,24 @@ public class ActionStore implements ActionGenerator
   {
     return(actions_.keys());
   }
+
+//----------------------------------------------------------------------
+/**
+ * @return the string representation
+ */
+
+  public String toString()
+  {
+    StringBuffer ret = new StringBuffer(); 
+    ret.append("[");
+    Enumeration enum = actions_.keys();
+    while (enum.hasMoreElements())
+    {
+      ret.append(enum.nextElement());
+      if (enum.hasMoreElements())
+        ret.append(", ");
+    }
+    ret.append("]");
+    return(ret.toString());
+  }
 }

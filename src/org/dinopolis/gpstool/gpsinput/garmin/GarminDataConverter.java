@@ -722,7 +722,8 @@ public class GarminDataConverter
 
 //----------------------------------------------------------------------
 /**
- * Returns the seconds from 1.1.1990 from the given date.
+ * Returns the seconds from 1.1.1990 from the given date or 0 if the given date
+ * is null.
  *
  * @param date the date.
  * @return the seconds from 1.1.1990 from the given date.
@@ -730,7 +731,7 @@ public class GarminDataConverter
   public static long convertDateToGarminTime(Date date)
   {
     if(date == null)
-      return(garmin_zero_date_seconds_);
+      return(0);
     else
       return(date.getTime()/1000 - garmin_zero_date_seconds_);
   }
@@ -748,7 +749,7 @@ public class GarminDataConverter
 //     Calendar new_cal = (Calendar)garmin_zero_.clone();
 //     new_cal.add(Calendar.SECOND,(int)garmin_time);
 //     return(new_cal.getTime());
-    if(garmin_time < 0)
+    if((garmin_time < 0) || (garmin_time == 0xffffffffL))
       return(null);
     
     return(new Date((garmin_zero_date_seconds_ + garmin_time) * 1000));
@@ -794,6 +795,17 @@ public class GarminDataConverter
 												 +Integer.toHexString(buffer2[3]));
 		else
 			System.out.println("Right!");
+
+		Date now = new Date();
+		long garmin_now = convertDateToGarminTime(now);
+		System.out.println(now+":"+Long.toHexString(garmin_now));
+		System.out.println(now+":"+garmin_now);
+		System.out.println(convertGarminTimeToDate(garmin_now));
+		buffer2 = setGarminLongWord(garmin_now,buffer2,0);
+		long garmin_now2 = getGarminLongWord(buffer2,0);
+		System.out.println(convertGarminTimeToDate(garmin_now2));
+		System.out.println("zero:"+convertGarminTimeToDate(0));
+
 	}
 }
 

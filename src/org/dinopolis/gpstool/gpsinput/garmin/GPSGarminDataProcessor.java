@@ -220,10 +220,147 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Cmnd_Set_Serial_Speed    = 48; // 0x30 // from gpsexplorer
   public final static int Pid_Change_Serial_Speed  = 49; // 0x31 // from gpsexplorer
   public final static int Pid_Request_File         = 89; // 0x59 // from gpsexplorer
+	public final static int Pid_Voltage_Response     = 40; // 0x28 // from Newsgroup
+
+	public final static int Cmnd_Unknown1_A010       = 15; // 0x0f
+	public final static int Pid_Unknwon1_L001        = 39; // 0x27
       /**
        * Other Commands
        */
-  
+
+/**
+ * Unknown Commands (all eTrex Legend):
+ * sent command id 14: 
+ * response: id=38,size=4,data=[90 17 52 173 ]
+ *
+ * sent command id 15: 
+ * response: 
+ * id=27 (record), holding 121 packages:
+ * id=39,size=24,data=[222 255 0 0 90 242 251 105 66 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[223 255 0 0 176 134 194 117 68 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[224 255 0 0 63 58 137 129 70 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[225 255 0 0 205 237 79 141 72 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[226 255 0 0 36 130 22 153 74 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[227 255 0 0 93 178 114 224 75 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[228 255 0 0 150 226 206 39 77 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[229 255 0 0 151 243 42 111 78 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[230 255 0 0 208 35 135 182 79 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[231 255 0 0 208 52 227 253 80 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[232 255 0 0 66 132 63 69 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[233 255 0 0 67 149 155 140 83 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[234 255 0 0 180 228 247 211 84 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[235 255 0 0 181 245 83 27 86 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[236 255 0 0 182 6 176 98 87 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[237 255 0 0 67 169 26 39 88 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[238 255 0 0 96 13 133 235 88 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[239 255 0 0 68 186 118 110 89 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[240 255 0 0 210 92 225 50 90 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[241 255 0 0 239 192 75 247 90 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[242 255 0 0 211 109 61 122 91 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[243 255 0 0 240 209 167 62 92 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[244 255 0 0 126 116 18 3 93 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[245 255 0 0 97 33 4 134 93 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[246 255 0 0 126 133 110 74 94 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[247 255 0 0 40 123 231 139 94 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[248 255 0 0 98 50 96 205 94 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[249 255 0 0 12 40 217 14 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[250 255 0 0 240 212 202 145 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[251 255 0 0 41 140 67 211 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[252 255 0 0 41 140 67 211 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[253 255 0 0 211 129 188 20 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[254 255 0 0 211 129 188 20 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[255 255 0 0 211 129 188 20 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[0 0 0 0 13 57 53 86 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[1 0 0 0 211 129 188 20 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[2 0 0 0 211 129 188 20 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[3 0 0 0 211 129 188 20 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[4 0 0 0 211 129 188 20 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[5 0 0 0 41 140 67 211 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[6 0 0 0 41 140 67 211 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[7 0 0 0 240 212 202 145 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[8 0 0 0 70 223 81 80 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[9 0 0 0 12 40 217 14 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[10 0 0 0 98 50 96 205 94 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[11 0 0 0 40 123 231 139 94 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[12 0 0 0 126 133 110 74 94 56 111 65 12 37 182 187 91 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[13 0 0 0 69 206 245 8 94 56 111 65 211 109 61 122 91 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[14 0 0 0 97 33 4 134 93 56 111 65 153 182 196 56 91 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[15 0 0 0 183 43 139 68 93 56 111 65 239 192 75 247 90 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[16 0 0 0 126 116 18 3 93 56 111 65 239 192 75 247 90 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[17 0 0 0 154 199 32 128 92 56 111 65 181 9 211 181 90 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[18 0 0 0 240 209 167 62 92 56 111 65 210 92 225 50 90 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[19 0 0 0 12 37 182 187 91 56 111 65 210 92 225 50 90 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[20 0 0 0 211 109 61 122 91 56 111 65 238 175 239 175 89 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[21 0 0 0 239 192 75 247 90 56 111 65 10 3 254 44 89 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[22 0 0 0 181 9 211 181 90 56 111 65 39 86 12 170 88 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[23 0 0 0 210 92 225 50 90 56 111 65 39 86 12 170 88 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[24 0 0 0 238 175 239 175 89 56 111 65 39 86 12 170 88 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[25 0 0 0 68 186 118 110 89 56 111 65 153 179 161 229 87 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[26 0 0 0 96 13 133 235 88 56 111 65 182 6 176 98 87 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[27 0 0 0 125 96 147 104 88 56 111 65 124 79 55 33 87 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[28 0 0 0 67 169 26 39 88 56 111 65 152 162 69 158 86 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[29 0 0 0 96 252 40 164 87 56 111 65 238 172 204 92 86 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[30 0 0 0 124 79 55 33 87 56 111 65 181 245 83 27 86 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[31 0 0 0 210 89 190 223 86 56 111 65 123 62 219 217 85 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[32 0 0 0 238 172 204 92 86 56 111 65 209 72 98 152 85 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[33 0 0 0 181 245 83 27 86 56 111 65 152 145 233 86 85 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[34 0 0 0 209 72 98 152 85 56 111 65 238 155 112 21 85 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[35 0 0 0 152 145 233 86 85 56 111 65 180 228 247 211 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[36 0 0 0 238 155 112 21 85 56 111 65 180 228 247 211 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[37 0 0 0 10 239 126 146 84 56 111 65 10 239 126 146 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[38 0 0 0 208 55 6 81 84 56 111 65 208 55 6 81 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[39 0 0 0 38 66 141 15 84 56 111 65 208 55 6 81 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[40 0 0 0 237 138 20 206 83 56 111 65 38 66 141 15 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[41 0 0 0 67 149 155 140 83 56 111 65 38 66 141 15 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[42 0 0 0 9 222 34 75 83 56 111 65 208 55 6 81 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[43 0 0 0 95 232 169 9 83 56 111 65 38 66 141 15 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[44 0 0 0 37 49 49 200 82 56 111 65 38 66 141 15 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[45 0 0 0 123 59 184 134 82 56 111 65 38 66 141 15 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[46 0 0 0 123 59 184 134 82 56 111 65 38 66 141 15 84 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[47 0 0 0 66 132 63 69 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[48 0 0 0 66 132 63 69 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[49 0 0 0 66 132 63 69 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[50 0 0 0 152 142 198 3 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[51 0 0 0 66 132 63 69 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[52 0 0 0 66 132 63 69 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[53 0 0 0 66 132 63 69 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[54 0 0 0 123 59 184 134 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[55 0 0 0 123 59 184 134 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[56 0 0 0 37 49 49 200 82 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[57 0 0 0 95 232 169 9 83 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[58 0 0 0 9 222 34 75 83 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[59 0 0 0 67 149 155 140 83 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[60 0 0 0 237 138 20 206 83 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[61 0 0 0 208 55 6 81 84 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[62 0 0 0 180 228 247 211 84 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[63 0 0 0 152 145 233 86 85 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[64 0 0 0 123 62 219 217 85 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[65 0 0 0 238 172 204 92 86 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[66 0 0 0 124 79 55 33 87 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[67 0 0 0 153 179 161 229 87 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[68 0 0 0 39 86 12 170 88 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[69 0 0 0 68 186 118 110 89 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[70 0 0 0 210 92 225 50 90 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[71 0 0 0 211 109 61 122 91 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[72 0 0 0 212 126 153 193 92 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[73 0 0 0 69 206 245 8 94 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[74 0 0 0 70 223 81 80 95 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[75 0 0 0 13 57 53 86 96 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[76 0 0 0 184 63 10 223 97 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[77 0 0 0 185 80 102 38 99 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[78 0 0 0 42 160 194 109 100 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[79 0 0 0 213 166 151 246 101 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[80 0 0 0 214 183 243 61 103 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[81 0 0 0 100 107 186 73 105 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[82 0 0 0 243 30 129 85 107 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[83 0 0 0 17 148 71 97 109 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[84 0 0 0 159 71 14 109 111 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * id=39,size=24,data=[85 0 0 0 46 251 212 120 113 56 111 65 102 159 26 47 56 56 111 65 0 0 0 0 ]
+ * ends with transfer_complete (id 12)
+ * result is not a screenshot, as changing display does yield exactly the
+ * same data!
+ */
+
 //----------------------------------------------------------------------
 /**
  * Default constructor.
@@ -832,9 +969,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     try
     {
       if(Debug.DEBUG)
+			{
         Debug.println("gps_garmin_package","Sending package async "+garmin_package.getPackageId());
-      if(Debug.DEBUG)
-        Debug.println("gps_garmin_package_detailed","package details: "+garmin_package);
+				if(Debug.isEnabled("gps_garmin_package_detail"))
+					Debug.println("gps_garmin_package_detail","send package details: "+garmin_package);
+			}
           // package header
       out_stream_.write(DLE);
       out_stream_.write(garmin_package.getPackageId());
@@ -2103,8 +2242,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //        buffer = next_garmin_package.getCompatibilityBuffer();
         package_count++;
         if(Debug.DEBUG)
-          Debug.println("gps_garmin_package","read package "
-                        +(package_count+1)+" of "+package_num);
+				{
+          Debug.println("gps_garmin_package","read package "+package_count+" of "+package_num);
+					if(Debug.isEnabled("gps_garmin_package_detail"))
+						Debug.println("gps_garmin_package_detail","package details: "+next_garmin_package.toString());
+				}
 				package_id = next_garmin_package.getPackageId();
         switch(package_id)
         {
@@ -2130,6 +2272,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
               // route point:
         case Pid_Rte_Wpt_Data_L001:
         case Pid_Rte_Wpt_Data_L002:
+
+							// check, if id and link version match (only necessary when using
+							// undocumented features :-) : 
+     // case Pid_Unknwon1_L001: // same as Pid_Rte_Wpt_Data_L002, but different meaning!
+					if((package_id == Pid_Rte_Wpt_Data_L002) && (capabilities_.hasCapability("L1")))
+					{
+						System.out.println("Unknown package1: "+next_garmin_package);
+						break;
+					}
+
           if(package_count % 10 == 0)
             fireProgressActionProgress(GETROUTES,package_count);
           if(capabilities_.hasCapability("D100"))
@@ -2349,6 +2501,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
             // unlock codes correct
       }
       break;
+		case Pid_Voltage_Response:
+			System.out.println("Voltage package received - not handled yet!");
+			break;
     default:
       System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
                          +package_id);
@@ -2508,8 +2663,36 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
 // ======================================================================
 
-			gps_processor.requestVoltage();
-      
+// 			System.out.println("Requesting Voltage:");
+// 			gps_processor.requestVoltage();
+
+// ======================================================================
+
+			System.out.println("press key");
+      System.in.read();
+//       System.out.println("testing unkown protocols...");
+// 			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 15);
+// 			System.in.read();
+      System.out.println("testing unkown protocols...");
+			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 41);
+      System.in.read();
+      System.out.println("testing unkown protocols...");
+			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 42);
+      System.in.read();
+      System.out.println("testing unkown protocols...");
+			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 43);
+      System.in.read();
+      System.out.println("testing unkown protocols...");
+			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 44);
+      System.in.read();
+      System.out.println("testing unkown protocols...");
+			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 45);
+      System.in.read();
+      System.out.println("testing unkown protocols...");
+			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 46);
+      System.in.read();
+      System.out.println("testing unkown protocols...");
+			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 47);
       System.in.read();
 //       List waypoints = gps_processor.getWaypoints();
 //       System.out.println("Sync Waypoints: "+waypoints);
@@ -2560,7 +2743,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         else
         {
           if(Debug.DEBUG)
+					{
             Debug.println("gps_garmin_package","package received: "+garmin_package.getPackageId());
+						if(Debug.isEnabled("gps_garmin_package_detail"))
+							Debug.println("gps_garmin_package_detail","package details: "+garmin_package.toString());
+					}
           firePackageReceived(garmin_package);
         }
       }

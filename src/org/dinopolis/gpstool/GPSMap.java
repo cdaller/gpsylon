@@ -128,7 +128,7 @@ public class GPSMap
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.15-pre4";
+  public final static String GPSMAP_VERSION = "0.4.15-pre5";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -370,8 +370,6 @@ public class GPSMap
     System.out.println("latest version at: http://gpsmap.sourceforge.net");
     System.out.println("using");
 
-    SplashScreen splash_screen = new SplashScreen("GPSylon V"+GPSMAP_VERSION,10000);
-
     property_change_support_ = new PropertyChangeSupport(this);
 
         // create helper class for unit converstion and formatting:
@@ -379,12 +377,19 @@ public class GPSMap
 
         // setup the GUI
     loadResources();
+    int splash_progress = 0;
+    int splash_max_progress = resources_.getInt(KEY_SPLASH_MAX_PROGRESS,splash_progress);
+    SplashScreen splash_screen = new SplashScreen(resources_.getIcon(KEY_SPLASH_IMAGE),10000,
+                                                  0,splash_max_progress);
+    
     setLocale();
     initFilenames();
+    splash_screen.setStatus("Processing command line arguments",splash_progress+=5);
     processCommandLineArguments(args);
     print_gps_device_properties_warning_ = true;
 
             // initialize for plugins:
+    splash_screen.setStatus("Initialize plugin architecture",splash_progress+=5);
     initializePluginArchitecture();
 
         /** the Actions */
@@ -458,6 +463,7 @@ public class GPSMap
         // create hook_manager
     hook_manager_ = new HookManager();
 
+    splash_screen.setStatus("Connecting to gps device",splash_progress+=5);
     connectGPSDevice();
     
     updateResources(null);
@@ -465,6 +471,7 @@ public class GPSMap
 
  
         // Create a MapBean
+    splash_screen.setStatus("Create map component",splash_progress+=5);
     map_bean_ = new MapBean();
     map_bean_.setBackgroundColor(new Color(0,0,0));
     map_bean_.setDoubleBuffered(true);
@@ -475,6 +482,7 @@ public class GPSMap
     track_manager_ = new TrackManagerImpl();
     
         // initialize data for plugins (PluginSupport):
+    splash_screen.setStatus("Initialize modules for plugins",splash_progress+=5);
     hook_manager_.setMapManagerHook(map_manager_);
     hook_manager_.setMapNavigationHook(this);
     hook_manager_.setStatusHook(this); 
@@ -503,26 +511,32 @@ public class GPSMap
     current_map_position_ = new LatLonPoint(latitude,longitude);
 
         // set projection (including position and scale)
+    splash_screen.setStatus("Set default projection",splash_progress+=5);
     Projection projection = new FlatProjection(current_map_position_,
                                                (float)resources_.getDouble(KEY_MAP_SCALE),0,0);
     map_bean_.setProjection(projection);
 
     main_frame_.getContentPane().add(map_bean_,BorderLayout.CENTER);
 
+    splash_screen.setStatus("Create status bar",splash_progress+=5);
     status_bar_ = new StatusBar(hook_manager_);
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
     
     
         // instantiate, initialize and add plugins (gui and mousemodes)
+    splash_screen.setStatus("Initialize plugins",splash_progress+=5);
     initializePlugins();
     
+    splash_screen.setStatus("Add graticule layer",splash_progress+=5);
     graticule_layer_ = new GraticuleLayer();
     graticule_layer_.initialize(resources_);
     map_bean_.add(graticule_layer_);
     
+    splash_screen.setStatus("Add scale layer",splash_progress+=5);
     scale_layer_ = new ScaleLayer(resources_);
     map_bean_.add(scale_layer_);
 
+    splash_screen.setStatus("Add shape layer",splash_progress+=5);
     shape_layer_ = new ShapeLayer(resources_);
     map_bean_.add(shape_layer_);
     
@@ -530,6 +544,7 @@ public class GPSMap
 //     track_layer_.initialize(hook_manager_);
 //     map_bean_.add(track_layer_);
     
+    splash_screen.setStatus("Add position layer",splash_progress+=5);
     position_layer_ = new PositionLayer(resources_);
     map_bean_.add(position_layer_);
     map_bean_.addMouseListener(position_layer_);
@@ -542,11 +557,13 @@ public class GPSMap
 //     map_key_handler_ = new MapKeyHandler(this);
 //     position_layer_.addKeyListener(map_key_handler_);
     
+    splash_screen.setStatus("Add location layer",splash_progress+=5);
     location_layer_ = new LocationLayer();
     location_layer_.initialize(resources_,this,this,main_frame_);
     map_bean_.add(location_layer_);
     map_bean_.addMouseListener(location_layer_);
 
+    splash_screen.setStatus("Add map layer",splash_progress+=5);
     map_layer_ = new MultiMapLayer();
     map_layer_.initializePlugin(hook_manager_);
     map_bean_.add(map_layer_);
@@ -632,6 +649,7 @@ public class GPSMap
       plugin = (GuiPlugin)iterator.next();
       try
         {
+          splash_screen.setStatus("Start Plugin "+plugin.getPluginName(),splash_progress+=5);
           plugin.startPlugin();
         }
       catch(Exception e)
@@ -658,7 +676,11 @@ public class GPSMap
         System.out.println(dir_iterator.next());
       }
     }
-
+    if(Debug.DEBUG)
+      Debug.println("splash","final splash progress reached: "+splash_progress);
+    resources_.setInt(KEY_SPLASH_MAX_PROGRESS,splash_progress);
+    splash_screen.setStatus("Finished");
+    splash_screen.close();
   }
 
 

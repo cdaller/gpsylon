@@ -94,7 +94,9 @@ public class ArrayEditor extends PropertyEditorSupport
         buffer.append(DELIMITER);
       base_editor_.setValue(Array.get(value, count));
       buffer.append(escape(base_editor_.getAsText()));
+//      buffer.append(base_editor_.getAsText());
     }
+    System.out.println("ArrayEditor.getAsText: "+buffer.toString());
     return(buffer.toString());
   }
   
@@ -107,6 +109,7 @@ public class ArrayEditor extends PropertyEditorSupport
 
   public void setAsText(String value)
   {
+    System.out.println("ArrayEditor.setAsText: "+value);
     int delim_start_pos = 0;
     int delim_pos = value.indexOf(DELIMITER, delim_start_pos);
     Vector elements = new Vector();
@@ -133,9 +136,11 @@ public class ArrayEditor extends PropertyEditorSupport
     for (int count = 0; count < elements_count; count++)
     {
       base_editor_.setAsText(unescape((String)elements.elementAt(count)));
+//      base_editor_.setAsText((String)elements.elementAt(count));
       Array.set(array, count, base_editor_.getValue());
     }
     setValue(array);
+    System.out.println("ArrayEditor.setAsText result: "+elements);
   }
   
   //----------------------------------------------------------------------
@@ -286,22 +291,11 @@ public class ArrayEditor extends PropertyEditorSupport
 
   public static String escape(String to_escape)
   {
-    StringTokenizer tok = new StringTokenizer(to_escape,
-                                              DELIMITER+ESCAPE, true);
-    if (tok.countTokens() <= 1)
-      return(to_escape);
-    StringBuffer buffer = new StringBuffer();
-    while(tok.hasMoreTokens())
-    {
-      buffer.append(tok.nextToken());
-      if (tok.hasMoreTokens())
-      {
-        buffer.append(ESCAPE);
-        buffer.append(tok.nextToken());
-      }
-    }
-    return(buffer.toString());
+//    to_escape = replace(to_escape,ESCAPE,ESCAPE+ESCAPE);
+    to_escape = replace(to_escape,DELIMITER,ESCAPE+DELIMITER);
+    return(to_escape);
   }
+
 
   //----------------------------------------------------------------------
   /**
@@ -311,16 +305,49 @@ public class ArrayEditor extends PropertyEditorSupport
 
   public static String unescape(String to_unescape)
   {
-    StringTokenizer tok = new StringTokenizer(to_unescape,
-                                              ESCAPE);
-    if (tok.countTokens() <= 0)
-      return(to_unescape);
-    StringBuffer buffer = new StringBuffer();
-    while(tok.hasMoreTokens())
+    to_unescape = replace(to_unescape,ESCAPE+DELIMITER,DELIMITER);
+//    to_unescape = replace(to_unescape,ESCAPE+ESCAPE,ESCAPE);
+    return(to_unescape);
+  }
+
+
+  //----------------------------------------------------------------------
+  /**
+   * Replace each substring that matches the given string (old_str)
+   * with the new_str.
+   *
+   * @param str the string to use
+   * @param old_str the string to replace
+   * @param new_str the new strint that replaces the old_str
+   * @return the result
+   */
+
+  protected static String replace(String str, String old_str, String new_str)
+  {
+    int old_index = 0;
+    int index = 0;
+    StringBuffer result = new StringBuffer(str.length());
+    while((index >= 0) && (old_index < str.length()))
     {
-      buffer.append(tok.nextToken());
+      index = str.indexOf(old_str,old_index);
+      if(index >= 0)
+      {
+        result.append(str.substring(old_index,index)).append(new_str);
+        old_index = index + old_str.length();
+      }
     }
-    return(buffer.toString());
+    result.append(str.substring(old_index,str.length())); // append rest
+    return(result.toString());
+  }
+
+  public static void main(String[] args)
+  {
+    String s = "c:\\und\\no,ch\\was\\\\und noch weiter";
+    System.out.println("original: "+s);
+    String s2 = escape(s);
+    System.out.println("escaped: "+s2);
+    System.out.println("unescaped again: "+unescape(s2));
+    
   }
 }
 

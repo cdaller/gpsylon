@@ -100,7 +100,7 @@ public interface GarminWaypoint
  * @throws UnsupportedOperationException
  */
 	
-	public short getAttributes()
+	public int getAttributes()
     throws UnsupportedOperationException;
 	
 

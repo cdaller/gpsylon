@@ -28,6 +28,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -65,6 +67,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
   protected WatchDogThread watch_dog_;
   protected ReaderThread read_thread_;
+  protected SimpleDateFormat track_date_format = new SimpleDateFormat("yyyyMMdd HHmmss");
 
       /** lock used to synchronize ACK/NAK of packages from device with
        * reader thread */
@@ -384,6 +387,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public List getWaypoints()
     throws UnsupportedOperationException, GPSException
   {
+    if(!capabilities_.hasCapability("A100"))
+      throw new UnsupportedOperationException("Garmin Device does not support waypoint transfer");
     try
     {
       return(getWaypoints(0L));
@@ -409,6 +414,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public List getRoutes()
     throws UnsupportedOperationException, GPSException
   {
+    if(!capabilities_.hasCapability("A200"))
+      throw new UnsupportedOperationException("Garmin Device does not support route transfer");
     try
     {
 //      System.out.println("GPSGarminDataProcessor.getRoutes");
@@ -435,6 +442,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public List getTracks()
     throws UnsupportedOperationException, GPSException
   {
+    if(!capabilities_.hasCapability("A300"))
+      throw new UnsupportedOperationException("Garmin Device does not support track transfer");
     try
     {
       return(getTracks(0L));
@@ -1662,6 +1671,15 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
             Debug.println("gps_garmin","Received Track Data");
           if(package_count % 10 == 0)
             fireProgressActionProgress(GETTRACKS,package_count);
+
+          if(item == null) // device is incapable of sending track header
+          {
+            item = new GarminTrack();
+            ((GarminTrack)item).setIdentification(track_date_format.format(new Date()));
+            fireProgressActionStart(GETTRACKS,1,package_num);
+            packages_type_received = RECEIVED_TRACKS;
+          }
+          
           if(capabilities_.hasCapability("D300"))
             ((GarminTrack)item).addWaypoint(new GarminTrackpointD300(buffer));
           if(capabilities_.hasCapability("D301"))

@@ -35,7 +35,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import javax.imageio.ImageIO;
 import org.dinopolis.gpstool.gpsinput.GPSDevice;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSGeneralDataProcessor;

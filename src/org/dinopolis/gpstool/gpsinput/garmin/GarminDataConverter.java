@@ -160,7 +160,7 @@ public class GarminDataConverter
       index++;
     }
         // leave space for terminating zero, if neccessary:
-    if((index == max_length)
+    if(index == max_length)
        index--;
     if(zero_terminate)
       buffer[offset+index] = 0;

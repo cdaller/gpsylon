@@ -1,3 +1,25 @@
+/***********************************************************************
+ * @(#)$RCSfile$   $Revision$$Date$
+ *
+ * Copyright (c) 2001-2003 Sandra Brueckler, Stefan Feitl
+ * Written during an XPG-Project at the IICM of the TU-Graz, Austria
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License (LGPL)
+ * as published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 
+ * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ ***********************************************************************/
+
 package org.dinopolis.gpstool.gpsinput.garmin;
 
 import java.awt.Color;
@@ -8,13 +30,13 @@ import org.dinopolis.util.Debug;
 //----------------------------------------------------------------------
 /*
  * This class describes the display data and creates a BufferedImage that may be saved or
- * displayed. There are (up to now) three different data packages:
+ * displayed. There are (up to now) three different data packets:
 * <ul>
 * <li>Header</li>
 * <li>Color definitions (only on color devices)</li>
 * <li>Image data </li>
 * </ul>
-* The first package (the header) holds the following information:
+* The first packet (the header) holds the following information:
 * <pre>
 * example eTrex Legend:
 * 
@@ -35,7 +57,7 @@ import org.dinopolis.util.Debug;
 * 32: ??? (long): 200 13 1 0
 * 36: ??? (long): 1 0 0 0  // same as eMap
 * </pre>
-* On color devices (e.g. Streetpilot III) 16 color information packages follow:
+* On color devices (e.g. Streetpilot III) 16 color information packets follow:
 * <pre>
 * id=69,size=11,data=[2 0 0 0 0 0 0 0 128 128 128]
 * id=69,size=11,data=[2 0 0 0 3 0 0 0 0 0 0]
@@ -63,7 +85,7 @@ import org.dinopolis.util.Debug;
 * 10: red (byte): 128
 * </pre>
 *
-* Right after (the color packages or the header, depending on the device), the image data follows: 
+* Right after (the color packets or the header, depending on the device), the image data follows: 
 * <pre>
 * data from Streetpilot III:
 *
@@ -96,8 +118,8 @@ import org.dinopolis.util.Debug;
 * 4: byte offset (long): 128 0 0 0
 * 8: image data (4 bit per pixel giving the index in the color table)
 * 
-* the third package has 156 as byte offset, the fourth 284.
-* to calculate the start coordinates of a package:
+* the third packet has 156 as byte offset, the fourth 284.
+* to calculate the start coordinates of a packet:
 * x = (byte_offset / bytes_per_line) * pixel_per_byte // / is an integer division!
 * y = (byte_offset % bytes_per_line)                  // % is modulo
 *	(pixel_per_byte_ = 8/bit_per_pixel_)
@@ -127,20 +149,20 @@ public class GarminDisplayData
 
 //----------------------------------------------------------------------
 /**
- * Create a new Garmin Display Data object by the use of the header package.
- * @param garmin_package the header package to init the display data
+ * Create a new Garmin Display Data object by the use of the header packet.
+ * @param garmin_packet the header packet to init the display data
  */
 
-  public GarminDisplayData(GarminPackage garmin_package)
+  public GarminDisplayData(GarminPacket garmin_packet)
   {
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_header"))
-      Debug.println("garmin_display_header","first display data package: "+garmin_package);
-		bytes_per_line_ = (int)garmin_package.getLongWord(8);
-		bit_per_pixel_ = garmin_package.getByte(12);
-    width_ = (int)garmin_package.getLongWord(16);
-    height_ = (int)garmin_package.getLongWord(20);
+      Debug.println("garmin_display_header","first display data packet: "+garmin_packet);
+		bytes_per_line_ = (int)garmin_packet.getLongWord(8);
+		bit_per_pixel_ = garmin_packet.getByte(12);
+    width_ = (int)garmin_packet.getLongWord(16);
+    height_ = (int)garmin_packet.getLongWord(20);
 
-		rotate_image_degrees_ = guessOrientation(garmin_package);
+		rotate_image_degrees_ = guessOrientation(garmin_packet);
 
     if((rotate_image_degrees_ != 0) && (rotate_image_degrees_ != 180))
       image_ = new BufferedImage(height_,width_,BufferedImage.TYPE_INT_RGB);
@@ -156,11 +178,11 @@ public class GarminDisplayData
     {
 			if(num_colors == 16)
 			{
-						// color are defined in data packages (first long is 2)
+						// color are defined in data packets (first long is 2)
 			}
 			else
 			{
-				value = garmin_package.getByte(color_index + 24);
+				value = garmin_packet.getByte(color_index + 24);
 				grey_value = value * 16;
 				colors_[color_index] = new Color(grey_value,grey_value,grey_value);
 			}
@@ -176,24 +198,24 @@ public class GarminDisplayData
 // 		System.out.println("pixel per byte: "+pixel_per_byte_);
 
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_header"))
-      Debug.println("garmin_display_header","first display data package: "+this);
+      Debug.println("garmin_display_header","first display data packet: "+this);
   }
 
 //----------------------------------------------------------------------
 /**
- * Add a line to the display data using the given garmin package.
- * @param garmin_package the data package holding the next line.
+ * Add a line to the display data using the given garmin packet.
+ * @param garmin_packet the data packet holding the next line.
  */
-  public void addData(GarminPackage garmin_package)
+  public void addData(GarminPacket garmin_packet)
   {
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_data"))
-      Debug.println("garmin_display_data","next display data package: "+garmin_package);
+      Debug.println("garmin_display_data","next display data packet: "+garmin_packet);
 
-    long data_type = garmin_package.getNextAsLongWord(); 
+    long data_type = garmin_packet.getNextAsLongWord(); 
 
 		if(data_type == 1) // image data
 		{
-			long byte_offset = garmin_package.getNextAsLongWord();
+			long byte_offset = garmin_packet.getNextAsLongWord();
 
 					// determine start x/y:			
 			int	x = (int) (byte_offset % bytes_per_line_) * pixel_per_byte_;
@@ -202,11 +224,11 @@ public class GarminDisplayData
 			int value;
 			
 					// first long is ignored, second is pixel number
-			int data_bytes_available = garmin_package.getPackageSize()-8; 
+			int data_bytes_available = garmin_packet.getPacketSize()-8; 
 			int pixel_value;
 			for(int index_bytes = 0; index_bytes < data_bytes_available; index_bytes++)
 			{
-				value = garmin_package.getNextAsByte();
+				value = garmin_packet.getNextAsByte();
 				for(int pixel_per_byte_count = 0; pixel_per_byte_count < pixel_per_byte_; pixel_per_byte_count++)
 				{
 					pixel_value = (value >> (pixel_per_byte_count * bit_per_pixel_)) & bit_mask_;
@@ -218,10 +240,10 @@ public class GarminDisplayData
 		}
 		else if(data_type == 2) // color info
 		{
-			long color_index = garmin_package.getNextAsLongWord()/3;
-			int blue = garmin_package.getNextAsByte();
-			int green = garmin_package.getNextAsByte();
-			int red = garmin_package.getNextAsByte();
+			long color_index = garmin_packet.getNextAsLongWord()/3;
+			int blue = garmin_packet.getNextAsByte();
+			int green = garmin_packet.getNextAsByte();
+			int red = garmin_packet.getNextAsByte();
 			colors_[(int)color_index] = new Color(red,green,blue);
 //			System.out.println("color["+color_index+"]="+colors_[(int)color_index]);
 		}
@@ -251,18 +273,18 @@ public class GarminDisplayData
 
 //----------------------------------------------------------------------
 /**
- * Guess the orientation depending on some values in the package. This is more or less a guess, as the
+ * Guess the orientation depending on some values in the packet. This is more or less a guess, as the
  * detailed information about the garmin protocol is unknown!!!
- * @param garmin_package the header package
+ * @param garmin_packet the header packet
  * @return the angle the image should be rotated (0,-90 (counter clockwise),
  * 90 (clockwise),180).
  */
-  protected int guessOrientation(GarminPackage garmin_package)
+  protected int guessOrientation(GarminPacket garmin_packet)
   {
 				// some special treatment to set the orientation (no general concept found!): This is a bad
 				// hack!!! I need more data to find out about different values in different garmin devices.
-		int byte5 = (int)garmin_package.getByte(5);
-		int byte8 = (int)garmin_package.getByte(8);
+		int byte5 = (int)garmin_packet.getByte(5);
+		int byte8 = (int)garmin_packet.getByte(8);
 
 		if((byte5 == 0) && (byte8 == 76))  // eTrex legend
 		{
@@ -341,7 +363,7 @@ public class GarminDisplayData
 		{
 			if(args.length < 1)
 			{
-				System.out.println("need to give a filename to read package data from!");
+				System.out.println("need to give a filename to read packet data from!");
 				return;
 			}
 			
@@ -350,7 +372,7 @@ public class GarminDisplayData
 			tokenizer.setDelimiters(" ");
 			java.util.List tokens;
 			tokens = tokenizer.nextLine();
-			GarminPackage header = new GarminPackage(69,tokens.size());
+			GarminPacket header = new GarminPacket(69,tokens.size());
 			for(int index = 0; index < tokens.size(); index++)
 			{
 				header.put(Integer.parseInt((String)tokens.get(index)));
@@ -359,7 +381,7 @@ public class GarminDisplayData
 			while(tokenizer.hasNextLine())
 			{
 				tokens = tokenizer.nextLine();
-				GarminPackage data = new GarminPackage(69,tokens.size());
+				GarminPacket data = new GarminPacket(69,tokens.size());
 				for(int index = 0; index < tokens.size(); index++)
 				{
 					data.put(Integer.parseInt((String)tokens.get(index)));

@@ -302,160 +302,168 @@
                 <h2>Download</h2>
                 Please download the latest distribution of GPSylon at the 
                 <a href="http://sourceforge.net/project/showfiles.php?group_id=64816">download 
-                  page on sourceforge</a>.
+                  page on sourceforge</a>. The  <a href="http://cvs.sourceforge.net/cvstarballs/gpsmap-cvsroot.tar.gz">
+                  nightly CVS tarball</a> is available as well.
                 <a name="status">
-                  <h2>Status</h2>
-                  <p>
-                    GPSylon is in beta-status. It runs quite stable, but many features are
-                    not implemented yet.
-                  </p>
-                  <a name="todo">
-                    <h2>To Do List</h2>
-                    <p>
-                      urgent:
-                      <ul>
-                        <li>option to use always info from gpsdrive</li>
-                        <li>optionally draw rectangle for small scale maps that do not show (done (map manager plugin))</li>
-                        <li>download maps also larger than 1280x1024</li>
-                        <li>use repaint(int,int,int,int): mostly done</li>
-                        <li>are there GPS devices, that do not send RMC (for gps speed)??</li>
-                        <li>check for speed sent from gps (calculation of distance s=v*t) (tachometer)</li>
-                        <li>window showing NMEA data: done</li>
-                      </ul>
-                      <p>
-                        Todo (wishlist):
-                      </p>
-                      <p>
-                        routes
-                        <ul>
-                          <li>define route with mouse (like distant mouse mode)</li>
-                          <li>name route</li>
-                          <li>show table with available routes</li>
-                          <li>download maps for a given route in a given scale (and image size)</li>
-                          <li>follow a given route with gps</li>
-                        </ul>
-                      </p>
+            <h2>Status</h2>
+            <p>
+             GPSylon is in beta-status. It runs quite stable, but many features
+             are
+             not implemented yet.
+            </p>
+            <a name="todo">
+             <h2>To Do List</h2>
+             <p>
+              urgent:
+              <ul>
+               <li>option to use always info from gpsdrive</li>
+               <li>optionally draw rectangle for small scale maps that do not
+                show (done (map manager plugin))</li>
+               <li>download maps also larger than 1280x1024</li>
+               <li>use repaint(int,int,int,int): mostly done</li>
+               <li>are there GPS devices, that do not send RMC (for gps
+                speed)??</li>
+               <li>check for speed sent from gps (calculation of distance
+                s=v*t) (tachometer)</li>
+               <li>window showing NMEA data: done</li>
+              </ul>
+              <p>
+               Todo (wishlist):
+              </p>
+              <p>routes
+               <ul>
+                <li>define route with mouse (like distant mouse mode)</li>
+                <li>name route</li>
+                <li>show table with available routes</li>
+                <li>download maps for a given route in a given scale (and image
+                 size)</li>
+                <li>follow a given route with gps</li>
+               </ul></p>
 
-                      <p>
-                        waypoints
-                        <ul>
-                          <li>different lists of waypoints: done, categories should do the job</li>
-                          <li>display different list of waypoints: done, categories should do it</li>
-                          <li>different symbols for waypoints: done, for a couple of categories, more to come</li>
-                          <li>store waypoints in database (hsqldb, mysql): done</li>
-                        </ul>
-                      </p>
+              <p>waypoints
+               <ul>
+                <li>different lists of waypoints: done, categories should do
+                 the job</li>
+                <li>display different list of waypoints: done, categories
+                 should do it</li>
+                <li>different symbols for waypoints: done, for a couple of
+                 categories, more to come</li>
+                <li>store waypoints in database (hsqldb, mysql): done</li>
+               </ul></p>
 
-                      <p>
-                        overlays
-                        <ul>
-                          <li>show major cities (CSV), use them as waypoints</li>
-                          <li>shape files: done (experimental)</li>
-                          <li>GML</li>
-                        </ul>
-                      </p>
+              <p>overlays
+               <ul>
+                <li>show major cities (CSV), use them as waypoints</li>
+                <li>shape files: done (experimental)</li>
+                <li>GML</li>
+               </ul></p>
 
-                      <p>
-                        location database (GNR)
-                        <ul>
-                          <li>search for name in GNR (zipped files) (done, when gnr is imported)</li>
-                          <li>goto location (done)</li>
-                        </ul>
-                      </p>
+              <p>location database (GNR)
+               <ul>
+                <li>search for name in GNR (zipped files) (done, when gnr is
+                 imported)</li>
+                <li>goto location (done)</li>
+               </ul></p>
 
-                      <p>
-                        GPS Device
-                        <ul>
-                          <li>upload/download waypoints</li>
-                          <li>upload/download Tracks</li>
-                        </ul>
-                      </p>
+              <p>GPS Device
+               <ul>
+                <li>upload/download waypoints</li>
+                <li>upload/download Tracks</li>
+               </ul></p>
 
-                      <p>
-                        gps tracking
-                        <ul>
-                          <li>pursuit mode:   done, cdaller 2002/09/06</li>
-                          <li>as soon as manual navigation on screen, disable pursuit mode.</li>
-                          <li>different color for height or speed</li>
-                          <li>save gps tracks: done</li>
-                          <li>load gps tracks from gps device</li>
-                          <li>load gps tracks from file:  done for own tracks and track of gpdsrive</li>
-                          <li>autoscale (set scale, depending on speed)</li>
-                        </ul>
-                      </p>
+              <p>gps tracking
+               <ul>
+                <li>pursuit mode:   done, cdaller 2002/09/06</li>
+                <li>as soon as manual navigation on screen, disable pursuit
+                 mode.</li>
+                <li>different color for height or speed</li>
+                <li>save gps tracks: done</li>
+                <li>load gps tracks from gps device</li>
+                <li>load gps tracks from file: done for own tracks and track of
+                 gpdsrive</li>
+                <li>autoscale (set scale, depending on speed)</li>
+               </ul></p>
 
-                      <p>
-                        vectorize tracks 
-                        <ul>
-                          <li>define nodes (crossings) and arcs between nodes</li>
-                          <li>define type of arcs (highway, smaller road, bicycle path)</li>
-                          <li>export as GML</li>
-                          <li>import as GML</li>
-                        </ul>
-                      </p>
+              <p>vectorize tracks 
+               <ul>
+                <li>define nodes (crossings) and arcs between nodes</li>
+                <li>define type of arcs (highway, smaller road, bicycle
+                 path)</li>
+                <li>export as GML</li>
+                <li>import as GML</li>
+               </ul></p>
 
-                      <p>
-                        communication to other applications
-                        <ul>
-                          <li>import/export maps, tracks, waypoints to gpsdrive, gpspoint (partly done)</li>
-                          <li>option to leave maps there or copy them to .gpsmap/maps directory</li>
-                        </ul>
-                      </p>
+              <p>communication to other applications
+               <ul>
+                <li>import/export maps, tracks, waypoints to gpsdrive, gpspoint
+                 (partly done)</li>
+                <li>option to leave maps there or copy them to .gpsmap/maps
+                 directory</li>
+               </ul></p>
 
-                      <p>
-                        maps
-                        <ul>
-                          <li>import scanned maps</li>
-                          <li>download from different servers (expedia, mapblast, ...): done</li>
-                          <li>allow proxy authentication: done</li>
-                          <li>show table of maps (allow to delete, rename?, ...)</li>
-                          <li>download an area of maps: done</li>
-                        </ul>
-                      </p>
+              <p>maps
+               <ul>
+                <li>import scanned maps</li>
+                <li>download from different servers (expedia, mapblast, ...):
+                 done</li>
+                <li>allow proxy authentication: done</li>
+                <li>show table of maps (allow to delete, rename?, ...)</li>
+                <li>download an area of maps: done</li>
+               </ul></p>
 
-                      <p>
-                        autoroute calculation
-                        <ul>need vector data for this!</ul>
-                      </p>
+              <p>autoroute calculation
+               <ul>need vector data for this!</ul></p>
 
-                      <p>
-                        speech
-                        <ul>
-                          <li>output</li>
-                          <li>input</li>
-                        </ul>
-                      </p>
+              <p>speech
+               <ul>
+                <li>output</li>
+                <li>input</li>
+               </ul></p>
 
-                      <p>
-                        distance notification
-                        <ul>
-                          <li>provide notifications for specific points (e.g. radar warning)</li>
-                        </ul>
-                      </p>
+              <p>distance notification
+               <ul><li>provide notifications for specific points (e.g. radar
+                 warning)</li></ul></p>
 
-                      <p>
-                        context menus (right mouse) / one button mouse (touchscreen) support????
-                        <ul>
-                        </li>
-                          <li>set position</li>
-                          <li>set destination</li>
-                          <li>set waypoint</li>
-                          <li>let each layer add menu for this</li>
-                        </ul>
-                      </p>
+              <p>
+               context menus (right mouse) / one button mouse (touchscreen)
+               support????
+               <ul>
+               </li>
+                <li>
+                 set position
+                </li>
+                <li>
+                 set destination
+                </li>
+                <li>
+                 set waypoint
+                </li>
+                <li>
+                 let each layer add menu for this
+                </li>
+               </ul>
+              </p>
 
               <a name="compile">
-                <h2>Compile Source Distribution</h2>
-             <p>
-              To compile the source distribution, the java make tool
-              <a href="http://jakarta.apache.org/ant/index.html">Ant</a>
-              from the apache project is needed. When correctly installed, a
-              <code>ant compile</code> should be enough to compile the source.<br>
-                              <code>ant help</code> gives all ant-tasks.
-             </p>
+               <h2>
+                Compile Source Distribution
+               </h2>
+               <p>
+                To compile the source distribution, the java make tool
+                <a href="http://jakarta.apache.org/ant/index.html">Ant</a>
+                from the apache project is needed. When correctly installed, a
+                <code>ant compile</code>
+                should be enough to compile the
+                source.<br>
+                 <code>ant help</code>
+                 gives all ant-tasks.
+               </p>
 
-             <a name="gpstool">
-             <h2>Commandline tool GPSTool</h2> 
+               <a name="gpstool">
+                <h2>
+                 Commandline tool GPSTool
+                </h2>
+
                 <p>
                  GPSTool is a small command line application that demonstrates
                  the usage of the classes to read data from a gps device. The
@@ -487,37 +495,48 @@
                     templates to print tracks, routes, waypoints. These
                     templates are easy to write. Use command line switch
                     " --printdefaulttemplate" to show the gpx template. Other
-                    templates are provided in the auxiliary directory.</li>
+                    templates are provided in the auxiliary directory.
+                   </li>
                   </ul>
-             </p>
+                </p>
 
-             <a name="license">
-             <h2>License</h2> 
-             <p> 
-               The source of the gpstool framework
-               basically is licensed unter the Lesser Gnu
-               Public License (LGPL). Some parts in the
-               framework (e.g. the main application GPSylon)
-               uses the Open Source library openmap. The OpenMap code is 
-               covered under the <a href="http://openmap.bbn.com/license.html">OpenMap license</a>, 
-               which is a modified version of Sun's artistic license, so take care which
-               modules you use and which license you have to
-               respect. 
-             </p>
-             <p>
-               The module that is responsible for reading gps
-               data from a gps device in completely
-               independent from the openmap library and may
-               therefore be used under the LGPL license.
-             </p>
+                <a name="license">
+                 <h2>
+                  License
+                 </h2>
+
+                 <p>
+
+                  The source of the gpstool framework
+                  basically is licensed unter the Lesser Gnu
+                  Public License (LGPL). Some parts in the
+                  framework (e.g. the main application GPSylon)
+                  uses the Open Source library openmap. The OpenMap code is 
+                  covered under the 
+                  <a href="http://openmap.bbn.com/license.html">OpenMap
+                   license</a>,
+                  which is a modified version of Sun's artistic license, so
+                  take care which
+                  modules you use and which license you have to
+                  respect. 
+                 </p>
+                 <p>
+                  The module that is responsible for reading gps
+                  data from a gps device in completely
+                  independent from the openmap library and may
+                  therefore be used under the LGPL license.
+                 </p>
                  <p>
                   Please report any comments, bugfixes, ...
                   to 
-                  <address><a href="mailto:cdaller@iicm.edu">Christof
-                      Dallermassl</a></address>
-                </p>
-                      <A href="http://sourceforge.net"> 
-                        <IMG src="http://sourceforge.net/sflogo.php?group_id=64816&amp;type=5" width="210" height="62" border="0" alt="SourceForge Logo">
-                      </A>
-  </body>
+                  <address>
+                   <a href="mailto:cdaller@iicm.edu">Christof
+                    Dallermassl</a>
+                  </address>
+                 </p>
+                 <A href="http://sourceforge.net">
+
+                  <IMG src="http://sourceforge.net/sflogo.php?group_id=64816&amp;type=5" width="210" height="62" border="0" alt="SourceForge Logo">
+                 </A>
+ </body>
 </html>

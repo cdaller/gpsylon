@@ -639,6 +639,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if(Debug.DEBUG)
       Debug.println("gpstool_nmea","GSV detected: "+sentence);
+
     try
     {
       Vector data_fields = sentence.getDataFields();
@@ -646,9 +647,12 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       int message_number = Integer.parseInt((String)data_fields.elementAt(1));
       int number_satellites = Integer.parseInt((String)data_fields.elementAt(2));
 
-
-      if (message_number != last_gsv_message_number_ + 1)
+          // plausability check for gsv sentences:
+      if ((message_number != last_gsv_message_number_ + 1)
+          || ((message_number > 1) && (number_satellites != satellite_infos_.length)))
       {
+        if(Debug.DEBUG)
+          Debug.println("gpstool_nmea_gsv","GSV-message in wrong order, ignoring it!");
 //        System.err.println("WARNING: NMEA message: GSV-message part in wrong order!");
         last_gsv_message_number_ = 0;  // reset, so ready for next gsv message
         return;

@@ -195,6 +195,13 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
           end_x = trackpoint.getX();
           end_y = trackpoint.getY();
 
+          if((end_x == 0) && (end_y == 0))
+          {
+            System.out.println("XXXXXXXXXXXXXXX TrackLayer: end point == 0/0");
+            System.out.println("XXXXXXXXXXXXXXX Please inform the GPSylon developers!");
+//            System.exit(1);
+          }
+
               // only draw line, if the coordinates are different:
           if((Math.abs(end_x - start_x) > min_distance_between_trackpoints_)
              || (Math.abs(end_y - start_y) > min_distance_between_trackpoints_))
@@ -235,10 +242,14 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
     Projection projection = getProjection();
     if(projection == null)
       return;
-    List tracks = track_manager_.getVisibleProjectedTracks(projection);
-    if(Debug.DEBUG)
-      Debug.println("trackplugin","doCalculation of tracks: "+tracks);
-    setVisibleTracks(tracks);
+    try
+    {
+      List tracks = track_manager_.getVisibleProjectedTracks(projection);
+      if(Debug.DEBUG)
+        Debug.println("trackplugin","doCalculation of tracks: "+tracks);
+      setVisibleTracks(tracks);
+    }
+    catch(InterruptedException ignored){}
   }
 
 
@@ -254,7 +265,7 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
         // modify my tracks without being able to notice:
     Iterator iterator = tracks.iterator();
     Vector new_tracks = new Vector();
-    Track track;
+    Track track = null;
     TrackImpl simplified_track;
     while(iterator.hasNext())
     {
@@ -279,7 +290,10 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
 //           old_point = point;
 //         }
 //       }
-      new_tracks.add(new TrackImpl((Track)iterator.next()));
+      track = (Track)iterator.next();
+//      System.out.println("Cloning track "+track.getIdentification()+" size="+track.size());
+      new_tracks.add(new TrackImpl(track));
+//      System.out.println("End of Cloning tracks");
 //      new_tracks.add(simplified_track);
 //       System.out.println("simplified track '"+track.getIdentification()
 //                          +"' from "+track.size()+" to "+simplified_track.size()+" points.");

@@ -1,0 +1,21 @@
+# pcx5 header:
+H  SOFTWARE NAME & VERSION$dateformatter.applyPattern("yyyy-MMM-dd HH:mm:ss")$longitudeformatter.applyPattern("0.00000000")$latitudeformatter.applyPattern("0.00000000")$altitudeformatter.applyPattern("0")
+
+I  PCX5 2.09 Generated from gpstool utility
+
+H  R DATUM                IDX DA            DF            DX            DY            DZ
+M  G WGS 84               121 +0.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
+
+H  COORDINATE SYSTEM
+U  LAT LON DEG
+## print all waypoints that are available:
+#if($printwaypoints)
+# waypoint header:
+H  IDNT   LATITUDE    LONGITUDE    DATE      TIME     ALT   DESCRIPTION                              PROXIMITY     SYMBOL ;waypts
+#foreach( $point in $waypoints )
+W $stringformatter.pad($point.Identification,6) $latitudeformatter.format($point.Latitude) $longitudeformatter.format($point.Longitude) 2000-JAN-01 00:00:00 #if($point.hasValidAltitude())$stringformatter.pad($altitudeformatter.format($point.Altitude),5)
+#else
+-9999
+#end
+#end
+#end

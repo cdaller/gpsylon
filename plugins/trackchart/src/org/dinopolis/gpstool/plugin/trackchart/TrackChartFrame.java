@@ -113,12 +113,13 @@ public class TrackChartFrame extends JFrame implements ActionListener
     XYSeries xy_series = new XYSeries(track.getIdentification());
     List waypoints = track.getWaypoints();
     Iterator waypoint_iterator = waypoints.iterator();
+    double last_x = 0.0;
     Trackpoint last_trackpoint = null;
     Trackpoint trackpoint;
     if(waypoint_iterator.hasNext())
     {
       last_trackpoint = (Trackpoint)waypoint_iterator.next(); // start trackpoint
-      xy_series.add(0,last_trackpoint.getAltitude());
+      xy_series.add(last_x,last_trackpoint.getAltitude());
     
       while(waypoint_iterator.hasNext())
       {
@@ -126,8 +127,10 @@ public class TrackChartFrame extends JFrame implements ActionListener
             // calculate distance from last trackpoint (in km)
         double distance_km = GeoMath.distance(last_trackpoint.getLatitude(), last_trackpoint.getLongitude(),
                                               trackpoint.getLatitude(),trackpoint.getLongitude())/1000.0;
-        xy_series.add(unit_helper_.getDistance(distance_km),
+        last_x += unit_helper_.getDistance(distance_km);
+        xy_series.add(last_x,
                       unit_helper_.getAltitude(trackpoint.getAltitude()));
+        last_trackpoint = trackpoint;
       }
     }
       

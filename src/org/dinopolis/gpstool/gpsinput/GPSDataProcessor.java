@@ -23,10 +23,11 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import org.dinopolis.gpstool.util.ProgressListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Map;
+import org.dinopolis.gpstool.util.ProgressListener;
 
 //----------------------------------------------------------------------
 /**
@@ -61,6 +62,7 @@ import java.util.Map;
  * <li>SETTRACKS</li>
  * <li>GETWAYPOINTS</li>
  * <li>SETWAYPOINTS</li>
+ * <li>GETSCREENSHOT</li>
  * </ul>
  *
  * @author Christof Dallermassl
@@ -83,6 +85,7 @@ public interface GPSDataProcessor
   public final static String SETTRACKS = "settracks";
   public final static String GETWAYPOINTS = "getwaypoints";
   public final static String SETWAYPOINTS = "setwaypoints";
+  public final static String GETSCREENSHOT = "getscreenshot";
   
   public final static float KM2NAUTIC = 0.54f;
   
@@ -263,6 +266,19 @@ public interface GPSDataProcessor
   public void setTracks(List tracks)
     throws UnsupportedOperationException, GPSException;
 
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a screenshot of the gpsdevice.
+ * @return a image of the screen of the gps device.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public BufferedImage getScreenShot()
+    throws UnsupportedOperationException, GPSException;
 
 //----------------------------------------------------------------------
 /**

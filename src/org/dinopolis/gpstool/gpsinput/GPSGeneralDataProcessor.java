@@ -25,7 +25,7 @@ package org.dinopolis.gpstool.gpsinput;
 
 
 
-import org.dinopolis.gpstool.util.ProgressListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import org.dinopolis.gpstool.util.ProgressListener;
 import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
@@ -246,7 +247,7 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
  * supported by the gps device or by the protocol used.
  * @throws GPSException if the operation threw an exception
  * (e.g. communication problem).
- * @see GPSRoute
+ * @see GPSTrack
  */
   public List getTracks()
     throws UnsupportedOperationException, GPSException
@@ -264,13 +265,30 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
  * supported by the gps device or by the protocol used.
  * @throws GPSException if the operation threw an exception
  * (e.g. communication problem).
- * @see GPSRoute
+ * @see GPSTrack
  */
   public void setTracks(List tracks)
     throws UnsupportedOperationException, GPSException
   {
     throw new UnsupportedOperationException("operation not supported by the device/protocol");
   }
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a screenshot of the gpsdevice.
+ * @return a image of the screen of the gps device.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public BufferedImage getScreenShot()
+    throws UnsupportedOperationException, GPSException
+  {
+    throw new UnsupportedOperationException("operation not supported by the device/protocol");
+  }
+
 
 //----------------------------------------------------------------------
 /**

@@ -24,19 +24,21 @@
 package org.dinopolis.gpstool.gpsinput.garmin;
 
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import javax.imageio.ImageIO;
 import org.dinopolis.gpstool.gpsinput.GPSDevice;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSGeneralDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSPosition;
 import org.dinopolis.gpstool.gpsinput.GPSSerialDevice;
 import org.dinopolis.util.Debug;
-import java.util.Iterator;
 
 //----------------------------------------------------------------------
 /**
@@ -83,6 +85,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected Object pvt_sync_request_lock_ = new Object();
   protected GarminPVT result_pvt_;
   protected Object product_info_lock_ = new Object();
+  protected Object screenshot_sync_request_lock_ = new Object();
+  protected BufferedImage result_screenshot_;
 
       /** Listeners for the Result Packages */
   protected Vector result_listeners_;
@@ -139,6 +143,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Pid_Trk_Data_L001       = 34;  // 0x22
   public final static int Pid_Wpt_Data_L001       = 35;  // 0x23
   public final static int Pid_Pvt_Data_L001       = 51;  // 0x33
+  public final static int Pid_Display_Data_L001   = 69;  // 0x45
   public final static int Pid_Rte_Link_Data_L001  = 98;  // 0x62
   public final static int Pid_Trk_Hdr_L001        = 99;  // 0x63
 
@@ -154,7 +159,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Pid_Rte_Hdr_L002        = 37;  // 0x25
   public final static int Pid_Rte_Wpt_Data_L002   = 39;  // 0x27
   public final static int Pid_Wpt_Data_L002       = 43;  // 0x2b
-
+  
 /**
  * Identifiers for A010 - Device Command Protocol 1
  */
@@ -167,6 +172,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Cmnd_Transfer_Trk_A010   = 6;  // 0x06
   public final static int Cmnd_Transfer_Wpt_A010   = 7;  // 0x07
   public final static int Cmnd_Turn_Off_Pwr_A010   = 8;  // 0x08
+  public final static int Cmnd_Transfer_Screenbitmap_A010 = 32; // 0x20
   public final static int Cmnd_Start_Pvt_Data_A010 = 49;  // 0x31
   public final static int Cmnd_Stop_Pvt_Data_A010  = 50;  // 0x32
 
@@ -185,7 +191,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   public final static int Cmnd_Set_Serial_Speed    = 48; // 0x30 // from gpsexplorer
   public final static int Pid_Change_Serial_Speed  = 49; // 0x31 // from gpsexplorer
-
       /**
        * Other Commands
        */
@@ -424,7 +429,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * supported by the gps device or by the protocol used.
  * @throws GPSException if the operation threw an exception
  * (e.g. communication problem).
- * @see GPSRoute
+ * @see GPSTrack
  */
   public List getTracks()
     throws UnsupportedOperationException, GPSException
@@ -432,6 +437,30 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     try
     {
       return(getTracks(0L));
+    }
+    catch(IOException ioe)
+    {
+      throw new GPSException(ioe);
+    }
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a screenshot of the gpsdevice. This call blocks until
+ * something is received!
+ * @return an image of the screenshot
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public BufferedImage getScreenShot()
+    throws UnsupportedOperationException, GPSException
+  {
+    try
+    {
+      return(getScreenShot(0L));
     }
     catch(IOException ioe)
     {
@@ -969,6 +998,31 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
 //----------------------------------------------------------------------
 /**
+ * Returns a screenshot of the gps device. This method
+ * blocks until the tracks are read or the timeout (in milliseconds)
+ * is reached.
+ *
+ * @param timeout in milliseconds or 0 to wait forever.
+ * @return the screenshot or null if the timeout was reached.
+ */
+  public BufferedImage getScreenShot(long timeout)
+    throws IOException
+  {
+    synchronized(screenshot_sync_request_lock_)
+    {
+      result_screenshot_ = null;
+      requestScreenShot();
+      try
+      {
+        screenshot_sync_request_lock_.wait(timeout);
+      }
+      catch(InterruptedException ignore){}
+    }
+    return(result_screenshot_);
+  }
+
+//----------------------------------------------------------------------
+/**
  * Returns all available waypoints from the gps device. This method
  * blocks until the waipoints are read or the timeout (in milliseconds)
  * is reached.
@@ -1015,6 +1069,17 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       sendCommandAsync(Pid_Command_Data_L002, Cmnd_Turn_Off_Pwr_A011);
     }
 
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Method to request screenshot from device.
+ */
+  public void requestScreenShot()
+    throws IOException
+  {
+    waitTillReady();
+    sendCommandAsync(Pid_Command_Data_L001, Cmnd_Transfer_Screenbitmap_A010);
   }
 
 //----------------------------------------------------------------------
@@ -1379,6 +1444,26 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       Debug.println("gps_garmin","pvt received: "+pvt);
   }
 
+  
+//----------------------------------------------------------------------
+/**
+ * Method called out of the thread that reads the information from the
+ * gps device when display data was sent.
+ */
+  protected void fireDisplayDataReceived(GarminDisplayData display_data)
+  {
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","display data received: "+display_data);
+
+    synchronized(screenshot_sync_request_lock_)
+    {
+      result_screenshot_ = display_data.getImage();
+      screenshot_sync_request_lock_.notify();
+    }
+  }
+
+  
+
 //----------------------------------------------------------------------
 /**
  * Method called out of the thread that reads the information from the
@@ -1418,6 +1503,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void firePackageReceived(GarminPackage garmin_package)
   {
+    GarminPackage next_garmin_package;
     int packages_type_received = 0;
 
         // create int[] buffer (intermediate solution, as the
@@ -1449,6 +1535,32 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	    }
 	    break;
           // larger amount of packages belong together:
+
+    case Pid_Display_Data_L001:
+      GarminDisplayData display_data = new GarminDisplayData(garmin_package);
+      int height = display_data.getHeight();
+      fireProgressActionStart(GETSCREENSHOT,1,height);
+      for(int linenum = 0; linenum < height; linenum++)
+      {
+        do
+        {
+          next_garmin_package = getPackage();
+        }
+        while(next_garmin_package == null);
+        if(next_garmin_package.getPackageId() != Pid_Display_Data_L001)
+        {
+          System.err.println("WARNING: Expected Display Data, received: "+next_garmin_package);
+          return;
+        }
+        if(linenum % 10 == 0)
+          fireProgressActionProgress(GETSCREENSHOT,linenum);
+            // add line to display data:
+        display_data.addLine(next_garmin_package);
+      }
+      fireProgressActionProgress(GETSCREENSHOT,height);
+      fireProgressActionEnd(GETSCREENSHOT);
+      fireDisplayDataReceived(display_data);
+      break;
 	  case Pid_Records_L001:
 	  case Pid_Records_L002:
 	    int package_num = buffer[2]+256*buffer[3];
@@ -1464,8 +1576,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	    boolean transfer_complete = false;
 	    while(!transfer_complete)
 	    {
-            // TODO check for null package!
-	      GarminPackage next_garmin_package;
 	      do
 	      {
           next_garmin_package = getPackage();
@@ -1708,8 +1818,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       GPSGarminDataProcessor gps_processor = new GPSGarminDataProcessor();
       GPSDevice gps_device;
       Hashtable environment = new Hashtable();
-      environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS0");
-      environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(115200));
+      environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS1");
+      environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(9600));
       gps_device = new GPSSerialDevice();
       gps_device.init(environment);
       gps_processor.setGPSDevice(gps_device);
@@ -1726,7 +1836,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //      System.out.println("REQ: requesting tracks");
 //      gps_processor.requestTracks();
 
-      System.out.println("requesting async events");
+//      System.out.println("requesting async events");
 //      gps_processor.requestAsyncEvents();
 
 //       System.out.println("Requesting PVT");
@@ -1735,14 +1845,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	
 //      List routes = gps_processor.getRoutes(0L);
 //      System.out.println("Sync Routes: "+routes);
+
+      gps_processor.requestScreenShot();
       
       System.in.read();
-      List waypoints = gps_processor.getWaypoints();
-      System.out.println("Sync Waypoints: "+waypoints);
+//       List waypoints = gps_processor.getWaypoints();
+//       System.out.println("Sync Waypoints: "+waypoints);
 //       List tracks = gps_processor.getTracks(0L);
 //       System.out.println("Sync Tracks: "+tracks);
       
-      System.in.read(); // wait for keypress
+//       System.in.read(); // wait for keypress
 //      gps_processor.requestPowerOff();
       
       gps_processor.close();

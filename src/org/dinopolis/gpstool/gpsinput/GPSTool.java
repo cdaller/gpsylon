@@ -26,9 +26,11 @@ package org.dinopolis.gpstool.gpsinput;
 
 
 
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -41,6 +43,7 @@ import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import javax.imageio.ImageIO;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ParseErrorException;
@@ -179,7 +182,8 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
                     "nmea","n","garmin","g","sirf","i","test","downloadtracks",
                     "downloadwaypoints","downloadroutes","deviceinfo","printposonce",
                     "printpos","p","printalt","printspeed","printheading","printsat",
-                    "template*","outfile*","printdefaulttemplate","helptemplate"};
+                    "template*","outfile*","screenshot*", "printdefaulttemplate",
+                    "helptemplate"};
 
         // Check command arguments
         // Throw exception if arguments are invalid
@@ -326,6 +330,14 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         {
           System.out.println(infos[index]);
         }
+      }
+
+      if(args.isSet("screenshot"))
+      {
+        FileOutputStream out = new FileOutputStream((String)args.getValue("screenshot"));
+        BufferedImage image = gps_data_processor.getScreenShot();
+        ImageIO.write(image,"PNG",out);
+        
       }
 
       boolean print_waypoints = args.isSet("downloadwaypoints");
@@ -743,6 +755,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     System.out.println("--printspeed, prints the current speed and any changes.");
     System.out.println("--printheading, prints the current heading and any changes.");
     System.out.println("--deviceinfo, prints some information about the gps device (if available)");
+    System.out.println("--screenshot <filename>, saves a screenshot of the gps device in PNG format.");
     System.out.println("--downloadtracks, print tracks stored in the gps device.");
     System.out.println("--downloadwaypoints, print waypoints stored in the gps device.");
     System.out.println("--downloadroutes, print routes stored in the gpsdevice .");

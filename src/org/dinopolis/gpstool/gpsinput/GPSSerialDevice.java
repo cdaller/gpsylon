@@ -194,6 +194,28 @@ public class GPSSerialDevice implements GPSDevice
     else
       return(null);
   }
+
+//----------------------------------------------------------------------
+/**
+ * Sets the speed for the serial port.
+ * @param speed the speed to set (e.g. 4800, 9600, 19200, 38400, ...)
+ */
+  public void setSerialPortSpeed(int speed)
+    throws IOException
+  {
+    try
+    {
+      serial_port_.setSerialPortParams(speed,
+                                       SerialPort.DATABITS_8,
+                                       SerialPort.STOPBITS_1,
+                                       SerialPort.PARITY_NONE);
+    }
+    catch(UnsupportedCommOperationException e)
+    {
+      e.printStackTrace();
+      throw new IOException(e.getMessage());
+    }
+  }
 }
 
 

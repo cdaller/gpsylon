@@ -23,7 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import java.lang.UnsupportedOperationException;
 import java.util.List;
 
 //----------------------------------------------------------------------

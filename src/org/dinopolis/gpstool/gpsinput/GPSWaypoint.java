@@ -23,8 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import java.lang.UnsupportedOperationException;
-
 //----------------------------------------------------------------------
 /**
  * Describes a waypoint of a gps device.

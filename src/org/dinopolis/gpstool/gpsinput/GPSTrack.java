@@ -23,9 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import java.lang.UnsupportedOperationException;
-import java.util.List;
-
 //----------------------------------------------------------------------
 /**
  * Describes a track of a gps device. A track consists only of a list

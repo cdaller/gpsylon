@@ -22,8 +22,6 @@
 
 
 package org.dinopolis.gpstool.gpsinput.garmin;
-import java.util.List;
-import java.util.Vector;
 
 //----------------------------------------------------------------------
 /**

@@ -23,9 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
-import java.awt.Color;
-import java.util.List;
-import java.util.Vector;
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
 
 //----------------------------------------------------------------------

@@ -127,7 +127,7 @@ public class GPSMap
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.14-pre6";
+  public final static String GPSMAP_VERSION = "0.4.14-pre7";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -367,6 +367,7 @@ public class GPSMap
 
     SplashScreen splash_screen = new SplashScreen("GPSMap V"+GPSMAP_VERSION,10000);
 
+    property_change_support_ = new PropertyChangeSupport(this);
 
         // setup the GUI
     loadResources();
@@ -415,8 +416,6 @@ public class GPSMap
 
     action_store_ = ActionStore.getStore(ACTION_STORE_ID);
     action_store_.addActions(actions_);
-
-    property_change_support_ = new PropertyChangeSupport(this);
 
         // Create a Swing frame.  The OpenMapFrame knows how to use
         // the MapHandler to locate and place certain objects.
@@ -1326,7 +1325,6 @@ public class GPSMap
   {
     gui_plugins_.add(plugin);
     plugin.initializePlugin(hook_manager_);
-    addMouseModes(plugin.getMouseModes());
         // add layer of plugin:
     Layer layer = plugin.getLayer();
     if(layer != null)

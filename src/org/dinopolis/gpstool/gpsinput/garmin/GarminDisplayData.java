@@ -13,7 +13,7 @@ public class GarminDisplayData
   int line_;
   BufferedImage image_;
   Graphics graphics_;
-  boolean rotate_image_ = true; // garmin eTrex data is wrong orientation
+  int rotate_image_degrees_ = -90; // garmin eTrex data is wrong orientation, rotate degree clockwise
   final static Color COLORS[] = new Color[] {new Color(255,255,255),new Color(170,170,170),
                                              new Color(85,85,85), new Color(0,0,0)};
 
@@ -26,22 +26,25 @@ public class GarminDisplayData
   {
     width_ = (int)garmin_package.getLong(16);
     height_ = (int)garmin_package.getLong(20);
-    if(rotate_image_)
+    if(rotate_image_degrees_ != 0)
       image_ = new BufferedImage(height_,width_,BufferedImage.TYPE_INT_RGB);
     else
       image_ = new BufferedImage(width_,height_,BufferedImage.TYPE_INT_RGB);
     
     graphics_ = image_.createGraphics();
-    if(Debug.DEBUG && Debug.isEnabled("garmin_display_data"))
-      Debug.println("garmin_display_data","first display data package: "+garmin_package+", info"+this);
+    if(Debug.DEBUG && Debug.isEnabled("garmin_display_header"))
+      Debug.println("garmin_display_header","first display data package: "+garmin_package+", info"+this);
   }
 
   public void addLine(GarminPackage garmin_package)
   {
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_data"))
-      Debug.println("garmin_displaydata","next display data package: "+garmin_package);
+      Debug.println("garmin_display_data","next display data package: "+garmin_package);
     garmin_package.getNextAsLong(); // ignore this one (always 1??)
     long pixel_number = garmin_package.getNextAsLong();
+//     System.out.println("pixel number "+ pixel_number);
+//     System.out.println("pixel number/width "+ (pixel_number*4/width_));
+    int y = ((int)pixel_number*4/width_);
     
     int x = 0;
     int value;
@@ -50,10 +53,10 @@ public class GarminDisplayData
     for(int index_bytes = 0; index_bytes < width_/4; index_bytes++)
     {
       value = garmin_package.getNextAsByte();
-      drawPixel(x,line_,value & 0x03);
-      drawPixel(x+1,line_,(value >> 2) & 0x03);
-      drawPixel(x+2,line_,(value >> 4) & 0x03);
-      drawPixel(x+3,line_,(value >> 6) & 0x03);
+      drawPixel(x,y,value & 0x03);
+      drawPixel(x+1,y,(value >> 2) & 0x03);
+      drawPixel(x+2,y,(value >> 4) & 0x03);
+      drawPixel(x+3,y,(value >> 6) & 0x03);
       x += 4;
     }
     line_++;
@@ -63,10 +66,13 @@ public class GarminDisplayData
   protected void drawPixel(int x, int y, int value)
   {
     graphics_.setColor(COLORS[value]);
-    if(rotate_image_)
-      graphics_.drawLine(height_-y-1, x, height_-y-1, x);
+    if(rotate_image_degrees_ == -90)
+      graphics_.drawLine(y, width_-x-1, y, width_-x-1);
     else
-      graphics_.drawLine(x,y,x,y);
+      if(rotate_image_degrees_ == 90)
+        graphics_.drawLine(height_-y-1, x, height_-y-1, x);
+      else
+        graphics_.drawLine(x,y,x,y);
   }
 
 

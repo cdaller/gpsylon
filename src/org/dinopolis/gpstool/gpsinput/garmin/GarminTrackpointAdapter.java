@@ -242,6 +242,18 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
 
 //----------------------------------------------------------------------
 /**
+ * Returns null, as garmin trackpoints do not support symbols of
+ * trackpoints.
+ * @return null
+ */
+  public String getSymbolName()
+  {
+    return(null);
+  }
+
+
+//----------------------------------------------------------------------
+/**
  * Returns the seconds from 1.1.1990 from the given date.
  *
  * @param the date.

@@ -82,7 +82,7 @@ public class RouteImpl extends GPSRouteImpl implements Route
  * Return the projected routepoint at the given position. This method
  * returns the same object as the {@link #getWaypoint(int)} method but
  * allows convenient access (without cast to {@link
- * ProjectedWaypoint}) to the returned waypoint.
+ * Waypoint}) to the returned waypoint.
  *
  * @return the routepoint.
  *
@@ -102,7 +102,7 @@ public class RouteImpl extends GPSRouteImpl implements Route
  * done.
  *
  * @return minimal x value.
- * @see #forward(com.bbn.openmap.Projection)
+ * @see #forward(Projection)
  */
 
   public int getMinX()
@@ -119,7 +119,7 @@ public class RouteImpl extends GPSRouteImpl implements Route
  * done.
  *
  * @return maximal x value.
- * @see #forward(com.bbn.openmap.Projection)
+ * @see #forward(Projection)
  */
 
   public int getMaxX()
@@ -136,7 +136,7 @@ public class RouteImpl extends GPSRouteImpl implements Route
  * done.
  *
  * @return minimal y value.
- * @see #forward(com.bbn.openmap.Projection)
+ * @see #forward(Projection)
  */
 
   public int getMinY()
@@ -153,7 +153,7 @@ public class RouteImpl extends GPSRouteImpl implements Route
  * done.
  *
  * @return mayimal y value.
- * @see #forward(com.bbn.openmap.Projection)
+ * @see #forward(Projection)
  */
 
   public int getMaxY()
@@ -164,7 +164,7 @@ public class RouteImpl extends GPSRouteImpl implements Route
   }
   
 //----------------------------------------------------------------------
-// Implementaion of GeoScreen Interace:
+// Implementaion of GeoScreen Interface:
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 /**

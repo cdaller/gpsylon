@@ -45,7 +45,7 @@ public interface Route extends GPSRoute, GeoScreen
  * Return the projected routepoint at the given position. This method
  * returns the same object as the {@link #getWaypoint(int)} method but
  * allows convenient access (without cast to {@link
- * ProjectedWaypoint}) to the returned waypoint.
+ * Waypoint}) to the returned waypoint.
  *
  * @return the routepoint.
  *
@@ -62,7 +62,7 @@ public interface Route extends GPSRoute, GeoScreen
  * done.
  *
  * @return minimal x value.
- * @see com.bbn.openmap.Projection#forward(com.bbn.openmap.LatLonPoint)
+ * @see GeoScreen#forward(com.bbn.openmap.Projection)
  */
 
   public int getMinX();
@@ -74,7 +74,7 @@ public interface Route extends GPSRoute, GeoScreen
  * done.
  *
  * @return maximal x value.
- * @see com.bbn.openmap.Projection#forward(com.bbn.openmap.LatLonPoint)
+ * @see GeoScreen#forward(com.bbn.openmap.Projection)
  */
 
   public int getMaxX();
@@ -86,7 +86,7 @@ public interface Route extends GPSRoute, GeoScreen
  * done.
  *
  * @return minimal y value.
- * @see com.bbn.openmap.Projection#forward(com.bbn.openmap.LatLonPoint)
+ * @see GeoScreen#forward(com.bbn.openmap.Projection)
  */
 
   public int getMinY();
@@ -98,7 +98,7 @@ public interface Route extends GPSRoute, GeoScreen
  * done.
  *
  * @return mayimal y value.
- * @see com.bbn.openmap.Projection#forward(com.bbn.openmap.LatLonPoint)
+ * @see GeoScreen#forward(com.bbn.openmap.Projection)
  */
 
   public int getMaxY();

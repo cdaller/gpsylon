@@ -38,6 +38,7 @@ import org.dinopolis.gpstool.event.TrackChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.track.Track;
+import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.gpstool.track.Trackpoint;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
@@ -151,7 +152,8 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
               // finally draw the line:
           g2.drawLine(start_x,start_y,end_x,end_y);
           if(Debug.DEBUG)
-            Debug.println("trackplugin_paint","painting line: "+start_x+","+start_y+"/"+end_x+"."+end_y);
+            Debug.println("trackplugin_paint","painting line: from"+start_x+"/"
+                          +start_y+" to "+end_x+"/"+end_y);
           
               // last end is new start
           start_x = end_x;
@@ -184,12 +186,20 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
  */
   protected void setVisibleTracks(List tracks)
   {
+          // deep copy of tracks, as otherwise someone else could
+          // modify my tracks without being able to notice:
+    Iterator iterator = tracks.iterator();
+    Vector new_tracks = new Vector();
+    while(iterator.hasNext())
+    {
+      new_tracks.add(new TrackImpl((Track)iterator.next()));
+    }
     synchronized(tracks_lock_)
     {
-      tracks_ = tracks;
-      if(Debug.DEBUG)
-        Debug.println("trackplugin","visible tracks are "+tracks_);
+      tracks_ = new_tracks;
     }
+    if(Debug.DEBUG)
+      Debug.println("trackplugin","visible tracks are "+tracks_);
   }
 
 //----------------------------------------------------------------------
@@ -200,7 +210,7 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
  */
   public void trackChanged(TrackChangedEvent event)
   {
-    
+    recalculateCoordinates();
   }
 }
 

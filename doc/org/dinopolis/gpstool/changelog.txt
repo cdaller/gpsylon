@@ -1,5 +1,11 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/01/16: added GuiPlugin, LayerPlugin, MouseModePlugin. Added
+            implementation of MouseModePlugin that supports zoom
+            in/out.
+
+            Plugin things not finished yet, but seems to work ok.
+
 2003/01/09: added plugin functionality (any jars in a given directory
             are used as plugins).
 

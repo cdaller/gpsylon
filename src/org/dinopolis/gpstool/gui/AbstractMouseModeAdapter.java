@@ -67,6 +67,33 @@ public abstract class AbstractMouseModeAdapter implements MouseMode
  * @return the icon of the mouse mode.
  */
   public abstract Icon getMouseModeIcon();
+  
+  
+//----------------------------------------------------------------------
+/**
+ * Returns the mnemonic character that is used for manual (keyboard)
+ * selection in a menu. If possible, it should be the first letter of
+ * the name (default).
+ *
+ * @return a string describing the mnemonic character for this mouse
+ * mode when used in a menu.
+ */
+  public abstract char getMouseModeMnemonic();
+
+
+//----------------------------------------------------------------------
+/**
+ * Returns the accelerator key that is used for the mouse mode in the
+ * menu or toolbar. The format of the key strings is described in
+ * {@link javax.swing.KeyStroke#getKeyStroke(java.lang.String)}. Some
+ * examples are given: <code>INSERT</code>,<code>controle
+ * DELETE</code>,<code>alt shift X</code>,<code>shift
+ * F</code>.
+ *
+ * @return a string describing the accelerator key.
+ */
+  public abstract String getMouseModeAcceleratorKey();
+
 
 //----------------------------------------------------------------------
 /**

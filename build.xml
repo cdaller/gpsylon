@@ -12,7 +12,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.4.14-pre8"/>
+    <property name="release_version" value="0.4.14"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib/java"/>
@@ -41,6 +41,7 @@ Christof Dallermassl (cdaller@iicm.edu)
       <include name="hsqldb.jar" />
       <include name="mysql-connector-java-2.0.14-bin.jar" />
       <include name="pg73jdbc3.jar" />
+      <include name="velocity-dep-1.3.1-rc2.jar" />
     </patternset>
 
     <!-- patternset including all plugins -->
@@ -195,13 +196,15 @@ Christof Dallermassl (cdaller@iicm.edu)
       <fileset dir="${lib_dir}">
         <patternset refid="gpstool.lib.patternset"/>
       </fileset>
-<!--      <pathelement location="${lib_dir}"/> -->
+      <pathelement location="${lib_dir}"/>
       <pathelement location="${doc_dir}"/>
       <pathelement location="${aux_dir}"/>
     </path>
-    <pathconvert pathsep=" " dirsep="/" property="gpstool.dist.lib.classpath"
+    <pathconvert pathsep=" " property="gpstool.dist.lib.classpath"
       refid="gpstool.dist.classpath">
-      <map from="${user.dir}${file.separator}" to=""/> 
+      <map from="${user.dir}/${lib_dir}" to="lib/java"/> <!-- trailing '/' is required -->
+      <map from="${user.dir}/${doc_dir}" to="doc"/> <!-- in manifest Class-Path   -->
+      <map from="${user.dir}/${aux_dir}" to="auxiliary"/> 
     </pathconvert>
 
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->

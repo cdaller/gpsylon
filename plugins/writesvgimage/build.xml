@@ -70,6 +70,7 @@ The following targets are available:
     </path>
     <pathconvert pathsep=" " dirsep="/" property="gpstool_plugin_writesvgimage.dist.lib.classpath"
                  refid="gpstool_plugin_writesvgimage.dist.classpath">
+      <map from="${user.dir}${file.separator}plugins${file.separator}writesvgimage${file.separator}" to=""/> 
       <map from="${user.dir}${file.separator}" to=""/>
     </pathconvert>
 

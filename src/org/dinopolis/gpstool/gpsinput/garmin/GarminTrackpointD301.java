@@ -51,7 +51,7 @@ public class GarminTrackpointD301 implements GarminTrackpoint
     time_ = GarminDataConverter.getGarminInt(buffer,10);
     altitude_ = GarminDataConverter.getGarminFloat(buffer,14);
     depth_ = GarminDataConverter.getGarminFloat(buffer,18);
-    new_track_ = GarminDataConverter.getGarminBoolean(buffer,20);
+    new_track_ = GarminDataConverter.getGarminBoolean(buffer,22);
   }
 
 //----------------------------------------------------------------------

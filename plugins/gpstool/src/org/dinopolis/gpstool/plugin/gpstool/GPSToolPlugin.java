@@ -37,6 +37,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
@@ -98,7 +99,7 @@ public class GPSToolPlugin implements GuiPlugin
   public static final String KEY_LOCALIZE_UPLOAD_ROUTE = "localize.upload_route";
   public static final String KEY_LOCALIZE_DOWNLOAD_WAYPOINT = "localize.download_waypoint";
   public static final String KEY_LOCALIZE_UPLOAD_WAYPOINT = "localize.upload_waypoint";
-  
+  public static final String KEY_LOCALIZE_DISPLAY_DEVICE_INFO = "localize.display_device_info";
 
 	public static final String KEY_GPSTOOL_MAIN_MENU_NAME = "gpstoolplugin";
 
@@ -115,6 +116,7 @@ public class GPSToolPlugin implements GuiPlugin
   public final static String ACTION_UPLOAD_TO_GPS = "upload_to_gps";
   public final static String ACTION_DOWNLOAD_FROM_GPS = "download_from_gps";
   public final static String ACTION_GPS_SCREENSHOT = "gps_screenshot";
+  public final static String ACTION_DISPLAY_DEVICE_INFO = "display_device_info";
   
 	// ----------------------------------------------------------------------  
 	// Implementation of org.dinopolis.gpstool.plugin.Plugin
@@ -145,7 +147,8 @@ public class GPSToolPlugin implements GuiPlugin
 		action_store_.addActions(new Action[] {new ViewGPSDataAction(),
                                            new UploadToGPSAction(),
                                            new DownloadFromGPSAction(),
-                                           new ScreenShotAction()
+                                           new ScreenShotAction(),
+																					 new DisplayDeviceInfoAction()
     });
 
 	}
@@ -369,6 +372,57 @@ public class GPSToolPlugin implements GuiPlugin
 // Action Classes
 //----------------------------------------------------------------------
   
+      //----------------------------------------------------------------------
+      /**
+       * The Action that triggers the display for the device info
+       */
+
+  class DisplayDeviceInfoAction extends AbstractAction 
+  {
+
+        //----------------------------------------------------------------------
+        /**
+         * The Default Constructor.
+         */
+
+    public DisplayDeviceInfoAction()
+    {
+      super(ACTION_DISPLAY_DEVICE_INFO);
+    }
+
+        //----------------------------------------------------------------------
+        /**
+         * Open the frame to show gps data
+         * 
+         * @param event the action event
+         */
+
+    public void actionPerformed(ActionEvent event)
+    {
+      if(gps_data_processor_ != null)
+      {
+				try
+				{
+          String title = resources_.getString(KEY_LOCALIZE_DISPLAY_DEVICE_INFO);
+					String[] info = gps_data_processor_.getGPSInfo();
+					StringBuffer buffer = new StringBuffer();
+					for(int count = 0; count < info.length; count++)
+					{
+						buffer.append(info[count]).append("\n");
+					}
+          JOptionPane.showMessageDialog(plugin_support_.getMainFrame(), 
+																				buffer.toString(), title, 
+																				JOptionPane.INFORMATION_MESSAGE);
+					
+				}
+				catch(GPSException ge)
+				{
+					ge.printStackTrace();
+				}
+      }
+    }
+  }
+
       //----------------------------------------------------------------------
       /**
        * The Action that triggers the display for the gps data frame

@@ -78,11 +78,17 @@ public class FlatProjection extends Orthographic
 
   static double[] earth_radius = new double[201];
 
-      /** scale / PIXELFACT gives meters per pixel (for mapblast) */
-  static final public double PIXELFACT = 2817.947378; 
-  static final public double RADIUS_EQUATOR = 6378137;  // equatorial radius 
-  static final public double RADIUS_POLAR = 6356752.3;  // polar radius 
-  static final public double EARTH_FLATTENING = (RADIUS_EQUATOR - RADIUS_POLAR) / RADIUS_EQUATOR;
+      /** scale / PIXELFACT gives meters per pixel (for mapblast)<br>
+          d_screen [pixel] = d_map [m] * r_map [dpi] * (1/0.0254) in/m<br>
+          d_map = d_real / scale<br>
+          PIXELFACT = 72 dpi * 1/0.0254 in/m = 2834.65 pixel/m,<br>
+      */
+      // old value (from gpsdrive) public static final double PIXELFACT = 2817.947378;<br>
+  public static final double PIXELFACT = 2834.65;
+
+  public static final double RADIUS_EQUATOR = 6378137;  // equatorial radius 
+  public static final double RADIUS_POLAR = 6356752.3;  // polar radius 
+  public static final double EARTH_FLATTENING = (RADIUS_EQUATOR - RADIUS_POLAR) / RADIUS_EQUATOR;
 
   static final public double DIFF_LATITUDE_FACT = 2.00;
 

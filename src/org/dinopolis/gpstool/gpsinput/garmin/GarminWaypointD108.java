@@ -3,26 +3,26 @@ import java.awt.Color;
 
 public class GarminWaypointD108 implements GarminWaypoint
 {
-  public int class_type_;
-  public String class_name_;
-  public Color color_;
-  public String display_options_;
-  public short attributes_;
-  public int symbol_type_;
-  public String symbol_name_;
-  public double latitude_;
-  public double longitude_;
-  public float altitude_;
-  public float depth_;
-  public float distance_;
-  public String state_code_;
-  public String country_code_;
-  public String identification_;
-  public String comment_;
-  public String facility_;
-  public String city_;
-  public String address_;
-  public String cross_road_;
+  protected int class_type_;
+  protected String class_name_;
+  protected Color color_;
+  protected String display_options_;
+  protected short attributes_;
+  protected int symbol_type_;
+  protected String symbol_name_;
+  protected double latitude_;
+  protected double longitude_;
+  protected float altitude_;
+  protected float depth_;
+  protected float distance_;
+  protected String state_code_;
+  protected String country_code_;
+  protected String identification_;
+  protected String comment_;
+  protected String facility_;
+  protected String city_;
+  protected String address_;
+  protected String cross_road_;
 
   protected final static byte WAYPOINT_TYPE = 108;
   

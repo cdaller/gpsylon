@@ -23,8 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput.nmea;
 
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
@@ -42,6 +40,12 @@ import org.dinopolis.util.Debug;
  *
  * @author Christof Dallermassl
  * @version $Revision$
+ *
+ * Contributions:
+ * <ul>
+ *   <li>Didier Donsez <didier.donsez@imag.fr> added hanlding
+ *       of VTG and HTD nmea sentences</li>
+ * </ul>
  */
 
 public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Runnable
@@ -54,9 +58,6 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   Thread read_thread_;
 
   public final static int MAX_NMEA_MESSAGE_LENGTH = 90;
-  public final static String NMEA_LOCATION = "GLL";
-  public final static String NMEA_HEADING = "HDG";
-  public final static String NMEA_SPEED = "speed";
 
   SatelliteInfo[] satellite_infos_;
   int satellite_info_count_;
@@ -136,8 +137,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   public void open()
     throws GPSException
   {
-      if (gps_device_ == null)
-        throw new GPSException("no GPSDevice set!");
+    if (gps_device_ == null)
+      throw new GPSException("no GPSDevice set!");
     try
     {
       gps_device_.open();
@@ -217,7 +218,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
           if (count >= MAX_NMEA_MESSAGE_LENGTH-1)
           {
             System.err.println("ERROR: max. message length exceeded! ("+count+"):"
-                                  +new String(buffer));
+                               +new String(buffer));
             if(!readGarbage()) // try to (re)sync with nmea stream
               return;
             loopcount++;
@@ -305,7 +306,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       if(open_) // otherwise, this is the reason for the exception!
         ioe.printStackTrace();
     }
-    }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -393,6 +394,18 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       processDBT(sentence);
       return;
     }
+
+    if(id.equals("VTG"))
+		{
+			processVTG(sentence);
+			return;
+		}
+
+		if(id.equals("HDT"))
+		{
+			processHDT(sentence);
+			return;
+		}
   }
 
 //----------------------------------------------------------------------
@@ -419,7 +432,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     String east_west = (String)data_fields.elementAt(3);
     String utc_time = (String)data_fields.elementAt(4);
 
-    // check for empty messages:
+        // check for empty messages:
     if(latitude.length() == 0)
       return;
     
@@ -616,7 +629,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     catch(ArrayIndexOutOfBoundsException aiobe)
     {
       System.err.println("WARNING: ArrayIndexOutOfBoundsException in NMEA Sentence: "
-			 +sentence+": "+aiobe.getMessage());
+                         +sentence+": "+aiobe.getMessage());
     }
   }
 
@@ -645,6 +658,77 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       nfe.printStackTrace();
     }
   }
+
+//----------------------------------------------------------------------
+/**
+ * Processes a VTG nmea sentences and fires the specific events about
+ * the information contained in this sentence (property name
+ * GPSDataProcessor.SPEED).
+ *
+ * @param sentence a NMEA sentence.
+ *
+ * @link http://home.mira.net/~gnb/gps/nmea.html#gpvtg
+ */
+
+	protected void processVTG(NMEA0183Sentence sentence)
+	{
+		if(Debug.DEBUG)
+			Debug.println("gpstool_nmea","VTG detected: "+sentence);
+		Vector data_fields = sentence.getDataFields();
+		String trueCourse = (String)data_fields.elementAt(0); // True course made good over ground, degrees
+        //String magneticCourse = (String)data_fields.elementAt(2); // Magnetic course made good over ground, degrees
+        //String groundSpeedKnots = (String)data_fields.elementAt(4); // Ground speed, N=Knots
+		String groundSpeedKms = (String)data_fields.elementAt(6); // Ground speed, K=Kilometers per hour
+
+		Float heading = null;
+		try
+		{
+			heading = new Float(trueCourse);
+			changeGPSData(HEADING,heading);
+		}
+		catch(NumberFormatException nfe)
+		{
+			nfe.printStackTrace();
+		}
+
+		try
+		{
+			float speed = Float.parseFloat(groundSpeedKms);
+          // speed = speed / KM2NAUTIC;
+			changeGPSData(SPEED,new Float(speed));
+		}
+		catch(NumberFormatException nfe)
+		{
+			nfe.printStackTrace();
+		}
+	}
+
+//----------------------------------------------------------------------
+/**
+ * Processes a HDT nmea sentences and fires the specific events about
+ * the information contained in this sentence (property name
+ * GPSDataProcessor.HEADING). 
+ *
+ * @param sentence a NMEA sentence.
+ *
+ * @link http://home.mira.net/~gnb/gps/nmea.html#gphdt
+ */
+	protected void processHDT(NMEA0183Sentence sentence)
+	{
+		if(Debug.DEBUG)
+			Debug.println("gpstool_nmea","HDT detected: "+sentence);
+		String heading_str = (String)sentence.getDataFields().elementAt(0);
+		Float heading = null;
+		try
+		{
+			heading = new Float(heading_str);
+			changeGPSData(HEADING,heading);
+		}
+		catch(NumberFormatException nfe)
+		{
+			nfe.printStackTrace();
+		}
+	}
 
 
 //   protected void changeGPSData(String key, Object value)
@@ -677,7 +761,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 
   public GPSPosition getGPSPosition()
   {
-    return((GPSPosition)getGPSData(NMEA_LOCATION));
+    return((GPSPosition)getGPSData(LOCATION));
   }
 
 
@@ -731,7 +815,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
  */
 
   protected static double nmeaLatOrLongToWGS84(String nmea_pos)
-     throws NumberFormatException
+    throws NumberFormatException
   {
     int comma_pos = nmea_pos.indexOf('.');
     if ((comma_pos != 4) && (comma_pos != 5))
@@ -755,14 +839,14 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 //      if(sentence == null)
 //        return(-1.0);
 
-      Float heading = (Float)getGPSData(NMEA_HEADING);
-      if(heading != null)
-	  return(heading.floatValue());
-      else
-	  return (-1);
+    Float heading = (Float)getGPSData(HEADING);
+    if(heading != null)
+      return(heading.floatValue());
+    else
+      return (-1);
   }
 
-  //----------------------------------------------------------------------
+      //----------------------------------------------------------------------
 /**
  * Returns the last received heading (direction) from the GPSDevice or
  * <code>-1.0</code> if no heading was retrieved until now.

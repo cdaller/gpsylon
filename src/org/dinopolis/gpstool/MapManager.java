@@ -36,6 +36,7 @@ import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
@@ -65,8 +66,16 @@ import com.bbn.openmap.proj.Projection;
 
 public class MapManager implements MapManagerHook, GPSMapKeyConstants
 {
+	/** in scale 1.0, mapblast images have 2817 pixels per meter */
+	public static float MAPBLAST_METERS_PER_PIXEL = 1.0f / 2817.947378f;
+	public static final float EARTH_EQUATORIAL_RADIUS_M = 6378137f;
+	public static final float EARTH_POLAR_RADIUS_M = 6356752.3f;
+	public static final float VERTICAL_METER_PER_DEGREE =
+		(float) (EARTH_POLAR_RADIUS_M * 2 * Math.PI / 360.0);
+	/** how many meters is one pixel, default is the value of mapblast */
+	protected static double meters_per_pixel_ = MAPBLAST_METERS_PER_PIXEL;
 
-	/** a Set containing the map infos for the used maps */
+	/** a Set containing the map infos for the used maps. The set sorts the maps with ascending scales */
 	protected Collection map_infos_;
 	protected HashSet used_map_filenames_ = new HashSet();
 	protected Resources resources_;
@@ -74,6 +83,7 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 	protected Frame main_frame_;
 	protected Object map_info_lock_ = new Object();
 	protected String maps_filename_;
+	protected boolean changed_ = false;
 
 	//----------------------------------------------------------------------
 	/**
@@ -204,7 +214,9 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 			map_infos_.remove(info);
 			used_map_filenames_.remove(info.getFilename());
 		}
-		fireMapsChanged(new MapsChangedEvent(this,info,MapsChangedEvent.MAP_REMOVED));
+		changed_ = true;
+		fireMapsChanged(
+			new MapsChangedEvent(this, info, MapsChangedEvent.MAP_REMOVED));
 	}
 
 	//----------------------------------------------------------------------
@@ -232,9 +244,9 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 	 */
 	public void storeMapInfos() throws IOException
 	{
-	   storeMapInfos(maps_filename_);
+		storeMapInfos(maps_filename_);
 	}
-	
+
 	//----------------------------------------------------------------------
 	/**
 	 * Stores the map informations in a file. This is the counterpart method
@@ -244,12 +256,15 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 	 */
 	protected void storeMapInfos(String filename) throws IOException
 	{
- 		// TODO!!!!
+		if (!changed_)
+			return;
+		// TODO!!!!
 	}
 
 	//----------------------------------------------------------------------
 	/**
-	 * Loads the mapinfo data from the map description file and returns them.
+	 * Loads the mapinfo data from the map description file and returns them
+	 * (sorted by scale).
 	 *
 	 * @param filename the file to read from.
 	 * @return a TreeSet containing MapInfo objects.
@@ -355,6 +370,107 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 		}
 		map_reader.close();
 		return (map_infos);
+	}
+
+	//----------------------------------------------------------------------
+	/**
+	 * Returns a list of MapInfo objects that are located at the given position.
+	 * All maps that are at the given position are returned (not only the
+	 * visible one).
+	 *
+	 * @param latitude the latitude
+	 * @param longitude the longitude
+	 * @return a list of map info objects (or an empty list, if no maps were
+	 * found).
+	 */
+	public List getMapInfos(double latitude, double longitude)
+	{
+		return (getMapInfos(map_infos_, latitude, longitude,false));
+	}
+
+
+	//----------------------------------------------------------------------
+	/**
+	 * Returns the a list that contains at maximum one MapInfo object with the
+	 * smalles scale that is located at the given position.
+	 *
+	 * @param latitude the latitude
+	 * @param longitude the longitude
+	 * @return a list containing a map info object or nothing, if no map was
+	 * found.
+	 */
+	public List getBestMatchingMapInfo(double latitude, double longitude)
+	{
+		return(getMapInfos(map_infos_,latitude,longitude,true));		
+	}
+
+	//----------------------------------------------------------------------
+	/**
+	 * Returns a collection of ImageInfo objects that are located at the
+	 * given position. All maps that are at the given position are returned (not
+	 * only the visible one).
+	 *
+	 * @param map_infos the map infos to use as available maps.
+	 * @param latitude the latitude
+	 * @param longitude the longitude
+	 * @param return_first_only if set to true, the search is stopped after the
+	 * first map that matched. As the map infos are sorted by scale, the
+	 * returned map is the one with the smalles scale that matches the given
+	 * coordinates.
+	 * @return a list of map info objects (or an empty list, if no maps were
+	 * found).
+	 */
+	protected List getMapInfos(
+		Collection map_infos,
+		double latitude,
+		double longitude,
+		boolean return_first_only)
+	{
+		Vector result_map_infos = new Vector();
+		Iterator iterator = map_infos.iterator();
+		MapInfo info;
+		double map_center_latitude;
+		double map_center_longitude;
+		double horiz_meter_per_degree;
+		double image_width_degree;
+		double image_height_degree;
+		while (iterator.hasNext())
+		{
+			info = (MapInfo) iterator.next();
+			map_center_latitude = info.getLatitude();
+			map_center_longitude = info.getLongitude();
+
+			// check if lat/long is inside the given map:
+
+			// FIXXME: store these value in the map infos object? for later...
+			// calculate circumference of small circle at latitude:
+			horiz_meter_per_degree =
+				Math.cos(Math.toRadians(map_center_latitude))
+					* EARTH_EQUATORIAL_RADIUS_M
+					* 2
+					* Math.PI
+					/ 360.0;
+
+			image_width_degree =
+				info.getWidth()
+					* info.getScale()
+					* meters_per_pixel_
+					/ horiz_meter_per_degree;
+			image_height_degree =
+				info.getHeight()
+					* info.getScale()
+					* meters_per_pixel_
+					/ VERTICAL_METER_PER_DEGREE;
+
+			if ((Math.abs(latitude - map_center_latitude) < image_height_degree / 2)
+				&& (Math.abs(longitude - map_center_longitude) < image_width_degree / 2))
+				{
+					result_map_infos.add(info);
+					if(return_first_only)
+						return(result_map_infos);
+				}
+		}
+		return (result_map_infos);
 	}
 
 	//----------------------------------------------------------------------

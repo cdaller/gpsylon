@@ -24,6 +24,7 @@ package org.dinopolis.gpstool;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.dinopolis.gpstool.event.MapsChangedListener;
 
@@ -40,118 +41,135 @@ import com.bbn.openmap.proj.Projection;
 public interface MapManagerHook
 {
 
-//----------------------------------------------------------------------
-/**
- * Adds new maps to the system. This method is responsible to make
- * this information permantent and to add this map to the running
- * system. If the filename in map_info is already used, the map is not
- * added.
- *
- * @param map_infos the new maps
- */
+	//----------------------------------------------------------------------
+	/**
+	 * Adds new maps to the system. This method is responsible to make
+	 * this information permantent and to add this map to the running
+	 * system. If the filename in map_info is already used, the map is not
+	 * added.
+	 *
+	 * @param map_infos the new maps
+	 */
 
-//  public void addNewMaps(MapInfo[] map_infos)
+	//  public void addNewMaps(MapInfo[] map_infos)
 
-//----------------------------------------------------------------------
-/**
- * Adds a new map to the system. This method is responsible to make
- * this information permantent and to add this map to the running
- * system. If the filename in map_info is already used, the map is not
- * added.
- *
- * @param map_info the new map
- */
+	//----------------------------------------------------------------------
+	/**
+	 * Adds a new map to the system. This method is responsible to make
+	 * this information permantent and to add this map to the running
+	 * system. If the filename in map_info is already used, the map is not
+	 * added.
+	 *
+	 * @param map_info the new map
+	 */
 
-  public void addNewMap(MapInfo map_info); 
-  
-  //----------------------------------------------------------------------
-  /**
-   * Removes the given map from the map manager. This method does not store
-   * the information in the file.
-   * 
-   * @param info the map info
-   */
-  public void removeMap(MapInfo info);
+	public void addNewMap(MapInfo map_info);
 
-  //----------------------------------------------------------------------
-  /**
-   * Stores the map informations in (in the file, in the database, ...)
-   *
-   * @throws IOException if an error occured.
-   */
-  public void storeMapInfos() throws IOException;
+	//----------------------------------------------------------------------
+	/**
+	 * Removes the given map from the map manager. This method does not store
+	 * the information in the file.
+	 * 
+	 * @param info the map info
+	 */
+	public void removeMap(MapInfo info);
 
+	//----------------------------------------------------------------------
+	/**
+	 * Stores the map informations in (in the file, in the database, ...)
+	 *
+	 * @throws IOException if an error occured.
+	 */
+	public void storeMapInfos() throws IOException;
 
+	//----------------------------------------------------------------------
+	/**
+	 * Returns a list that holds information about all available maps
+	 * (MapInfo objects).
+	 *
+	 * @return information about all available maps.
+	 */
+	public Collection getMapInfos();
 
-//----------------------------------------------------------------------
-/**
- * Returns a list that holds information about all available maps
- * (MapInfo objects).
- *
- * @return information about all available maps.
- */
-  public Collection getMapInfos();
+	//----------------------------------------------------------------------
+	/**
+	 * Returns a list of MapInfo objects that are located at the given position.
+	 * All maps that are at the given position are returned (not only the
+	 * visible one).
+	 *
+	 * @param latitude the latitude
+	 * @param longitude the longitude
+	 * @return a list of map info objects (or an empty list, if no maps were
+	 * found).
+	 */
+	public List getMapInfos(double latitude, double longitude);
 
-  //----------------------------------------------------------------------
-/**
- * Returns a list of ImageInfo objects that describe all maps and
- * their position that are visible in the given projection. This list
- * holds also maps that are below other maps (on top). The
- * following algorithm is used to to determine the visibility of the
- * maps: if the distance between the center of the image and the
- * center of the viewport (the projection) is less than (image.width +
- * viewport.width)/2 (same with height), the image is visible. The
- * "visible_rectangle" info is not used in the returned ImageInfo
- * objects!
- *
- * @param projection the projection to find the images for.
- */
-  public Collection getAllVisibleImages(Projection projection);
+	//----------------------------------------------------------------------
+	/**
+	 * Returns the a list that contains at maximum one MapInfo object with the
+	 * smalles scale that is located at the given position.
+	 *
+	 * @param latitude the latitude
+	 * @param longitude the longitude
+	 * @return a list containing a map info object or nothing, if no map was
+	 * found.
+	 */
+	public List getBestMatchingMapInfo(double latitude, double longitude);
+	
+	//----------------------------------------------------------------------
+	/**
+	 * Returns a list of ImageInfo objects that describe all maps and
+	 * their position that are visible in the given projection. This list
+	 * holds also maps that are below other maps (on top). The
+	 * following algorithm is used to to determine the visibility of the
+	 * maps: if the distance between the center of the image and the
+	 * center of the viewport (the projection) is less than (image.width +
+	 * viewport.width)/2 (same with height), the image is visible. The
+	 * "visible_rectangle" info is not used in the returned ImageInfo
+	 * objects!
+	 *
+	 * @param projection the projection to find the images for.
+	 */
+	public Collection getAllVisibleImages(Projection projection);
 
-//----------------------------------------------------------------------
-/**
- * Returns a collection of ImageInfo objects that describe all maps and
- * their position that are visible in the given projection. This collection
- * holds also maps that are covered by other maps (on top). The
- * following algorithm is used to to determine the visibility of the
- * maps: if the distance between the center of the image and the
- * center of the viewport (the projection) is less than (image.width +
- * viewport.width)/2 (same with height), the image is visible. The
- * "visible_rectangle" info is not used in the returned ImageInfo
- * objects!
- *
- * @param projection the projection to find the images for.
- * @param min_scale_factor if the scale of the image divided by the
- * scale of the projection is less than this value, the image is not
- * used. So if the scale of the projection is 100000 and one map is
- * of scale 1000, the factor would be 0.01, so if a min_scale_factor
- * of 0.5 is given, the map would not be taken.
- */
-  public Collection getAllVisibleImages(Projection projection,
-					double min_scale_factor);
+	//----------------------------------------------------------------------
+	/**
+	 * Returns a collection of ImageInfo objects that describe all maps and
+	 * their position that are visible in the given projection. This collection
+	 * holds also maps that are covered by other maps (on top). The
+	 * following algorithm is used to to determine the visibility of the
+	 * maps: if the distance between the center of the image and the
+	 * center of the viewport (the projection) is less than (image.width +
+	 * viewport.width)/2 (same with height), the image is visible. The
+	 * "visible_rectangle" info is not used in the returned ImageInfo
+	 * objects!
+	 *
+	 * @param projection the projection to find the images for.
+	 * @param min_scale_factor if the scale of the image divided by the
+	 * scale of the projection is less than this value, the image is not
+	 * used. So if the scale of the projection is 100000 and one map is
+	 * of scale 1000, the factor would be 0.01, so if a min_scale_factor
+	 * of 0.5 is given, the map would not be taken.
+	 */
+	public Collection getAllVisibleImages(
+		Projection projection,
+		double min_scale_factor);
 
-//----------------------------------------------------------------------
-/**
- * Adds as a listener that is informed about changes of the maps
- * (adding, removal).
- *
- * @param listener the listener to add
- */
-  public void addMapsChangedListener(MapsChangedListener listener);
+	//----------------------------------------------------------------------
+	/**
+	 * Adds as a listener that is informed about changes of the maps
+	 * (adding, removal).
+	 *
+	 * @param listener the listener to add
+	 */
+	public void addMapsChangedListener(MapsChangedListener listener);
 
-
-  //----------------------------------------------------------------------
-/**
- * Remove a listener that is informed about changes of the maps
- * (adding, removal).
- *
- * @param listener the listener to be removed.
- */
-  public void removeMapsChangedListener(MapsChangedListener listener);
+	//----------------------------------------------------------------------
+	/**
+	 * Remove a listener that is informed about changes of the maps
+	 * (adding, removal).
+	 *
+	 * @param listener the listener to be removed.
+	 */
+	public void removeMapsChangedListener(MapsChangedListener listener);
 }
-
-
-
-
-
-

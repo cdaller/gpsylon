@@ -27,6 +27,7 @@ import javax.swing.Action;
 import org.dinopolis.gpstool.gui.MouseMode;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**
@@ -39,6 +40,10 @@ import javax.swing.JMenu;
  * The plugins are informed
  * about start and stop, so they may initialize and free their
  * resources on startup and on closing of the application.
+ * </p>
+ * <p>
+ * If the plugin wants to draw anything on the map, it may return a
+ * layer in the {@link #getLayer()} method.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -115,8 +120,38 @@ public interface GuiPlugin extends Plugin
  *
  */
   public MouseMode[] getMouseModes();
+
+//----------------------------------------------------------------------
+/**
+ * If the plugin wants to draw anything on the map it may
+ * return a layer here or <code>null</code> if not.
+ *
+ * @return the layer the plugin wants to paint into.
+ * @see com.bbn.openmap.Layer
+ */
+
+  public Layer getLayer();
+
+//----------------------------------------------------------------------
+/**
+ * Called by the application to switch the layer on or off. If the
+ * layer is switched off, it must not paint anything and should not
+ * consume any calculational power.
+ *
+ * @param active if <code>true</code> the layer is switched on and
+ * should react on changes of the projection and draw anything in the
+ * paintComponent method.
+ */
+  public void setActive(boolean active);
   
-  
+//----------------------------------------------------------------------
+/**
+ * Returns if the plugin is active or not.
+ *
+ * @return <code>true</code> if the plugin is active and paints
+ * something.
+ */
+  public boolean isActive();
 }
 
 

@@ -158,7 +158,7 @@ public class GarminWaypointAdapter implements GPSWaypoint
  */
   public boolean hasValidAltitude()
   {
-    return(getAltitude() == Double.NaN);
+    return(getAltitude() != Double.NaN);
   }
 
   

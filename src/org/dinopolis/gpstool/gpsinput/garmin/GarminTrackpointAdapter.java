@@ -160,7 +160,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  */
   public boolean hasValidAltitude()
   {
-    return(getAltitude() == Double.NaN);
+    return(getAltitude() != Double.NaN);
   }
 
   

@@ -321,6 +321,13 @@ public class GarminWaypointSymbols
     id_map_.put("wrecker",new Long(8253)); /* tow truck (wrecker) symbol */
     name_map_.put(new Long(8254),"border"); /* border crossing (port of entry) */
     id_map_.put("border",new Long(8254)); /* border crossing (port of entry) */
+
+// new by cdaller (etrex legend):
+    name_map_.put(new Long(8255),"geocache"); /* border crossing (port of entry) */
+    id_map_.put("geocache",new Long(8255)); /* border crossing (port of entry) */
+    name_map_.put(new Long(8256),"geocache_found"); /* border crossing (port of entry) */
+    id_map_.put("geocache_found",new Long(8256)); /* border crossing (port of entry) */
+
 /*---------------------------------------------------------------
   Symbols for aviation (group 2...16383-24575...bits 15-13=010).
   ---------------------------------------------------------------*/
@@ -379,7 +386,10 @@ public class GarminWaypointSymbols
       initMap();
     String name = (String)name_map_.get(new Long(symbol_type));
     if(name == null)
+		{
+//			System.out.println("unknown type: "+symbol_type);
       return(UNKNOWN_NAME);
+		}
     return(name);
   }
 

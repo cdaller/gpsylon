@@ -1,5 +1,11 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2003/11/18" javadoc fixes
+
+            fixes bug that prevented plugins to be
+            loaded when the path contained spaces (only happend on
+            "ant run" ??)
+
 2003/11/17: fixed bug in garmin protocol reading product information
 
 						added garmin command to read voltage, but does not work

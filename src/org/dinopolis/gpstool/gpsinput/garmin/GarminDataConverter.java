@@ -303,6 +303,47 @@ public class GarminDataConverter
 
 //----------------------------------------------------------------------
 /**
+ * Extracts an longword (unsinged 32bit) from the given buffer and
+ * returns it.
+ *
+ * @param buffer the buffer to extract the integer from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static long getGarminLong(int[] buffer, int offset)
+  {
+    long value = (buffer[offset] & 0xff)
+                | ((buffer[offset+1] & 0xff) << 8)
+                | ((buffer[offset+2] & 0xff) << 16)
+                | ((buffer[offset+3] & 0xff) << 24);
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert a given long (unsigned, only 32bit are used) to garmin data
+ * array.
+ *
+ * @param longword the long value to be converted to garmin data
+ * array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminLong(long longword, int[] buffer, int offset)
+  {
+    buffer[offset] = (int)longword & 0xff;
+    buffer[offset+1] = (int)(longword & (int)(0xff << 8)) >> 8;   
+    buffer[offset+2] = (int)(longword & (int)(0xff << 16)) >> 16; 
+    buffer[offset+3] = (int)(longword & (int)(0xff << 24)) >> 24; 
+    return(buffer);
+  }
+
+//----------------------------------------------------------------------
+/**
  * Extracts an float from the given character buffer and returns
  * it.
  *

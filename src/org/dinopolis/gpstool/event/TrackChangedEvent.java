@@ -35,8 +35,9 @@ import org.dinopolis.gpstool.gpsinput.GPSTrack;
 public class TrackChangedEvent
 {
 
-  public static int TRACK_REMOVED = 0;
-  public static int TRACK_ADDED = 1;
+  public static int TRACK_REMOVED = 1;
+  public static int TRACK_ADDED = 2;
+  public static int TRACK_CHANGED = 4;
 
   protected int action_;
   protected String track_id_;

@@ -606,6 +606,15 @@ public class DownloadMouseModeLayer extends BasicLayer
       mouse_drag_end_ = null;
       return;
     }
+        // ignore very small drags:
+    double distance_to_start = Math.abs(end.getX() - mouse_drag_start_.getX())
+                            + Math.abs(end.getY() - mouse_drag_start_.getY());
+    if(distance_to_start < 10.0)
+    {
+      mouse_drag_end_ = null;
+      return;
+    }
+    
     mouse_drag_end_ = new GeoScreenPoint(end);
     mouse_drag_end_.inverse(getProjection());
     download_mode_ = DOWNLOAD_MODE_AREA_MAP;

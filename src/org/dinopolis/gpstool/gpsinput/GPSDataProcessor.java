@@ -135,7 +135,8 @@ public interface GPSDataProcessor
  *
  * @return information about the gps connected.
  */
-  public String[] getGPSInfo();
+  public String[] getGPSInfo()
+		throws GPSException;
 
   
 //----------------------------------------------------------------------

@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<gpx
+  version="1.0"
+  creator="$author"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.topografix.com/GPX/1/0"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">
+  <time>${date_year}-${date_month}-${date_day}T${date_hour}:${date_minute}:${date_second}Z</time>
+  <bounds minlat="$min_latitude" minlon="$min_longitude"
+          maxlat="$max_latitude" maxlon="$max_longitude"/>
+
+## print all waypoints that are available:
+#if($printwaypoints)
+#foreach( $point in $waypoints )
+  <wpt lat="$point.Latitude" lon="$point.Longitude">
+#if($point.hasValidAltitude())
+    <ele>$point.Altitude</ele>
+#end
+    <name>$!point.Identification</name>
+    <desc>![CDATA[$!point.Comment]]</desc>
+  </wpt>
+#end
+#end
+## print all routes that are available:
+#if($printroutes)
+#foreach( $route in $routes )
+  <rte>
+    <name>$!route.Identification</name>
+    <desc>![CDATA[$!route.Comment]]</desc>
+    <number>$velocityCount</number>
+#set ($points = $route.getWaypoints())
+#foreach ($point in $points)
+    <rtept lat="$point.Latitude" lon="$point.Longitude">
+#if($point.hasValidAltitude())
+        <ele>$point.Altitude</ele>
+#end
+    </rtept>
+#end
+  </rte>
+#end
+#end
+## print all tracks that are available:
+#if($printtracks)
+#foreach( $track in $tracks )
+  <trk>
+    <name>$!track.Identification</name>
+    <desc>![CDATA[$!track.Comment]]</desc>
+##      <number>$velocityCount</number>
+#set ($points = $track.getWaypoints())##
+#foreach ($point in $points)##
+#if($point.isNewTrack())
+#if($close_segment)  ## close trkseg, if not the first occurence
+    </trkseg>
+#end
+    <trkseg>
+#set($close_segment = true)
+#end
+      <trkpt lat="$point.Latitude" lon="$point.Longitude">
+#if($point.hasValidAltitude())
+        <ele>$point.Altitude</ele>
+#end
+      </trkpt>
+#end
+    </trkseg>
+  </trk>
+#end
+#end
+</gpx>

@@ -67,7 +67,7 @@ public class GarminRouteD201 extends GarminRoute
   public GarminPackage toGarminPackage(int package_id)
   {
     byte id;
-    int data_length = 1 + Math.min(getComment().length(),20);
+    int data_length = 1 + 20;
     GarminPackage pack = new GarminPackage(package_id,data_length);
 
     // Try to parse route identification and get valid route id
@@ -75,14 +75,16 @@ public class GarminRouteD201 extends GarminRoute
     try
     {
       id = java.lang.Byte.parseByte(getIdentification());
+			pack.setNextAsByte(id);
+			pack.setNextAsString(getComment(),20,false);
     }
     catch (NumberFormatException nfe)
     {
       id = route_id_++;
+			pack.setNextAsByte(id);
+			pack.setNextAsString(getIdentification(),20,false); // set identificaton as comment
     }
 
-    pack.setNextAsByte(id);
-    pack.setNextAsString(getComment(),data_length-1,false);
     return (pack);
   }
 

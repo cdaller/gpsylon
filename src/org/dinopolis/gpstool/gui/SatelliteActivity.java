@@ -31,6 +31,8 @@ import java.awt.Graphics;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JComponent;
+import org.dinopolis.gpstool.GPSMap;
+import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
 
 //----------------------------------------------------------------------
@@ -53,8 +55,7 @@ public class SatelliteActivity extends JComponent
 
   Color active_color_;
   Color inactive_color_;
-  Color background_color_;
-  Color active_num_color_ = new Color(255,255,0,200);  // transparent white
+  Color active_num_color_ = new Color(255,255,0,220);  // transparent yellow
 
   Font active_num_font_;
 
@@ -70,6 +71,7 @@ public class SatelliteActivity extends JComponent
   int bar_width_ = column_width_ - 2;
   int bar_height_ = row_height_ - 2;
   SatelliteInfo[] satellite_infos_;
+  GPSPositionError position_error_;
   Object satellite_infos_lock_ = new Object();
   boolean lost_signal_ = true;
   Timer watchdog_;
@@ -87,7 +89,7 @@ public class SatelliteActivity extends JComponent
     super();
     active_color_ = Color.green; //new Color(0,0,0);
     inactive_color_ = Color.black; //new Color(200,200,200);
-    background_color_ = null;
+    inactive_color_ = new Color(160,160,160);
     columns_ = columns;
     rows_ = rows;
     setPreferredSize(new Dimension(columns * column_width_,rows * row_height_));
@@ -246,7 +248,7 @@ public class SatelliteActivity extends JComponent
 /**
  * Sets the infos about the satellites.
  *
- * @return infos an array of satelliteinfos.
+ * @param infos an array of satelliteinfos.
  */
   public void setSatelliteInfos(SatelliteInfo[] infos)
   {
@@ -256,6 +258,19 @@ public class SatelliteActivity extends JComponent
       satellite_infos_ = new SatelliteInfo[infos.length];
       System.arraycopy(infos,0,satellite_infos_,0,satellite_infos_.length);
     }
+    lost_signal_ = false;
+    repaint();
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Sets the estimated position error.
+ *
+ * @param pos_error the estimated position error.
+ */
+  public void setPositionError(GPSPositionError pos_error)
+  {
+    position_error_ = pos_error;
     lost_signal_ = false;
     repaint();
   }
@@ -310,20 +325,40 @@ public class SatelliteActivity extends JComponent
         }
       }
     }
-        // draw the number of active satellites over the bars:
-//     if(active_num_font_ == null)
-//     {
-//       font_metrics_ = g.getFontMetrics();
-//       active_num_font_ = font_metrics_.getFont().deriveFont((float)(getHeight()-4));
-//     }
-//     g.setFont(active_num_font_);
-//     font_metrics_ = g.getFontMetrics();
-//     text_ = String.valueOf(num_sat_active);
-//     text_width_ = font_metrics_.stringWidth(text_);
-//     text_height_ = font_metrics_.getAscent();
-//     System.out.println("textheight="+text_height_+" height="+getHeight());
-//     g.setColor(active_num_color_);
-//     g.drawString(text_,(getWidth()-text_width_)/2,(getHeight() + text_height_)/2 );
+//        draw the estimated position error over the bars:
+    if(position_error_ != null)
+    {
+      if(active_num_font_ == null)
+      {
+        font_metrics_ = g.getFontMetrics();
+        active_num_font_ = font_metrics_.getFont().deriveFont((float)(getHeight()-4));
+      }
+      g.setFont(active_num_font_);
+      font_metrics_ = g.getFontMetrics();
+      
+          // give error in correct unit (feet or meters):
+      int pos_error = (int)Math.round(GPSMap.getAltitude((float)position_error_.getSphericalError()));
+      text_ = String.valueOf(pos_error+GPSMap.getAltitudeUnit());
+      text_width_ = font_metrics_.stringWidth(text_);
+      text_height_ = font_metrics_.getAscent();
+
+          // check if text is wider than width of component:
+      while(text_width_ > getWidth())
+      {
+//        System.out.println("text does not match, decrease font size: "+text_height_);
+        active_num_font_ = font_metrics_.getFont().deriveFont((float)(text_height_-2));
+        g.setFont(active_num_font_);
+        font_metrics_ = g.getFontMetrics();
+        text_width_ = font_metrics_.stringWidth(text_);
+        text_height_ = font_metrics_.getAscent();
+      }
+        
+//      System.out.println("textheight="+text_height_+" height="+getHeight());
+      g.setColor(active_num_color_);
+      g.drawString(text_,(getWidth()-text_width_)/2,(getHeight() + text_height_)/2 );
+//      System.out.println("drawstring"+text_+","+((getWidth()-text_width_)/2)
+//                         +","+((getHeight() + text_height_)/2));
+    }
     
     if(lost_signal_)
     {

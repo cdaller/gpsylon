@@ -24,8 +24,6 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-
-
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -38,11 +36,15 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -72,94 +74,97 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   protected GPSDataProcessor gps_processor_;
 
   public final static String DEFAULT_TEMPLATE =
-  "<?xml version=\"1.0\"?>\n"
-  +"$dateformatter.applyPattern(\"yyyy-MM-dd'T'HH:mm:ss'Z'\")\n"
-  +"<gpx\n"
-  +"  version=\"1.0\"\n"
-  +"  creator=\"$author\"\n"
-  +"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-  +"  xmlns=\"http://www.topografix.com/GPX/1/0\"\n"
-  +"  xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n"
-  +"  <time>$dateformatter.format($creation_date)</time>\n"
-  +"  <bounds minlat=\"$min_latitude\" minlon=\"$min_longitude\"\n"
-  +"          maxlat=\"$max_latitude\" maxlon=\"$max_longitude\"/>\n"
-  +"\n"
-  +"## print all waypoints that are available:\n"
-  +"#if($printwaypoints)\n"
-  +"#foreach( $point in $waypoints )\n"
-  +"  <wpt lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
-  +"#if($point.hasValidAltitude())\n"
-  +"    <ele>$point.Altitude</ele>\n"
-  +"#end\n"
-  +"    <name>$!point.Identification</name>\n"
-  +"#if($point.getComment().length() > 0)\n"
-  +"    <desc>![CDATA[$!point.Comment]]</desc>\n"
-  +"#end\n"
-  +"#if($point.getSymbolName())\n"
-  +"    <sym>$point.getSymbolName()</sym>\n"
-  +"#end\n"
-  +"  </wpt>\n"
-  +"#end\n"
-  +"#end\n"
-  +"## print all routes that are available:\n"
-  +"#if($printroutes)\n"
-  +"#foreach( $route in $routes )\n"
-  +"  <rte>\n"
-  +"    <name>$!route.Identification</name>\n"
-  +"#if($route.getComment().length() > 0)\n"
-  +"    <desc>![CDATA[$!route.Comment]]</desc>\n"
-  +"#end\n"
-  +"    <number>$velocityCount</number>\n"
-  +"#set ($points = $route.getWaypoints())\n"
-  +"#foreach ($point in $points)\n"
-  +"    <rtept lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
-  +"#if($point.hasValidAltitude())\n"
-  +"        <ele>$point.Altitude</ele>\n"
-  +"#end\n"
-  +"#if($point.getIdentification().length() > 0)\n"
-  +"    <name>![CDATA[$!point.Identification]]</name>\n"
-  +"#end\n"
-  +"#if($point.getComment().length() > 0)\n"
-  +"    <desc>![CDATA[$!point.Comment]]</desc>\n"
-  +"#end\n"
-  +"    </rtept>\n"
-  +"#end\n"
-  +"  </rte>\n"
-  +"#end\n"
-  +"#end\n"
-  +"## print all tracks that are available:\n"
-  +"#if($printtracks)\n"
-  +"#foreach( $track in $tracks )\n"
-  +"#set($close_segment = false)\n"
-  +"  <trk>\n"
-  +"    <name>$!track.Identification</name>\n"
-  +"#if($point.getComment().length() > 0)\n"
-  +"    <desc>![CDATA[$!point.Comment]]</desc>\n"
-  +"#end\n"
-  +"##      <number>$velocityCount</number>\n"
-  +"#set ($points = $track.getWaypoints())##\n"
-  +"#foreach ($point in $points)##\n"
-  +"#if($point.isNewTrack())\n"
-  +"#if($close_segment)## close trkseg, if not the first occurence\n"
-  +"    </trkseg>\n"
-  +"#end\n"
-  +"    <trkseg>\n"
-  +"#set($close_segment = true)\n"
-  +"#end\n"
-  +"      <trkpt lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
-  +"#if($point.hasValidAltitude())\n"
-  +"        <ele>$point.Altitude</ele>\n"
-  +"#end\n"
-  +"#if($point.getDate())## only if there is a time set! \n"
-  +"        <time>$dateformatter.format($point.getDate())</time>\n"
-  +"#end\n"
-  +"      </trkpt>\n"
-  +"#end\n"
-  +"    </trkseg>\n"
-  +"  </trk>\n"
-  +"#end\n"
-  +"#end\n"
-  +"</gpx>\n";
+	"<?xml version=\"1.0\"?>"
+	+"$dateformatter.applyPattern(\"yyyy-MM-dd'T'HH:mm:ss'Z'\")"
+	+"$longitudeformatter.applyPattern(\"0.000000\")"
+	+"$latitudeformatter.applyPattern(\"0.000000\")"
+	+"$altitudeformatter.applyPattern(\"0\")\n"
+  +"<gpx"
+	+"  version=\"1.0\"\n"
+	+"  creator=\"$author\"\n"
+	+"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+	+"  xmlns=\"http://www.topografix.com/GPX/1/0\"\n"
+	+"  xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n"
+	+"  <time>$dateformatter.format($creation_date)</time>\n"
+	+"  <bounds minlat=\"$min_latitude\" minlon=\"$min_longitude\"\n"
+	+"          maxlat=\"$max_latitude\" maxlon=\"$max_longitude\"/>\n"
+	+"\n"
+	+"## print all waypoints that are available:\n"
+	+"#if($printwaypoints)\n"
+	+"#foreach( $point in $waypoints )\n"
+	+"  <wpt lat=\"$latitudeformatter.format($point.Latitude)\" lon=\"$longitudeformatter.format($point.Longitude)\">\n"
+	+"#if($point.hasValidAltitude())\n"
+	+"    <ele>$altitudeformatter.format($point.Altitude)</ele>\n"
+	+"#end\n"
+	+"    <name>$!point.Identification</name>\n"
+	+"#if($point.getComment().length() > 0)\n"
+	+"    <desc>![CDATA[$!point.Comment]]</desc>\n"
+	+"#end\n"
+	+"#if($point.getSymbolName())\n"
+	+"    <sym>$point.getSymbolName()</sym>\n"
+	+"#end\n"
+	+"  </wpt>\n"
+	+"#end\n"
+	+"#end\n"
+	+"## print all routes that are available:\n"
+	+"#if($printroutes)\n"
+	+"#foreach( $route in $routes )\n"
+	+"  <rte>\n"
+	+"    <name>$!route.Identification</name>\n"
+	+"#if($route.getComment().length() > 0)\n"
+	+"    <desc>![CDATA[$!route.Comment]]</desc>\n"
+	+"#end\n"
+	+"    <number>$velocityCount</number>\n"
+	+"#set ($points = $route.getWaypoints())\n"
+	+"#foreach ($point in $points)\n"
+	+"    <rtept lat=\"$latitudeformatter.format($point.Latitude)\" lon=\"$longitudeformatter.format($point.Longitude)\">\n"
+	+"#if($point.hasValidAltitude())\n"
+	+"        <ele>$altitudeformatter.format($point.Altitude)</ele>\n"
+	+"#end\n"
+	+"#if($point.getIdentification().length() > 0)\n"
+	+"    <name>![CDATA[$!point.Identification]]</name>\n"
+	+"#end\n"
+	+"#if($point.getComment().length() > 0)\n"
+	+"    <desc>![CDATA[$!point.Comment]]</desc>\n"
+	+"#end\n"
+	+"    </rtept>\n"
+	+"#end\n"
+	+"  </rte>\n"
+	+"#end\n"
+	+"#end\n"
+	+"## print all tracks that are available:\n"
+	+"#if($printtracks)\n"
+	+"#foreach( $track in $tracks )\n"
+	+"#set($close_segment = false)\n"
+	+"  <trk>\n"
+	+"    <name>$!track.Identification</name>\n"
+	+"#if($point.getComment().length() > 0)\n"
+	+"    <desc>![CDATA[$!point.Comment]]</desc>\n"
+	+"#end\n"
+	+"##      <number>$velocityCount</number>\n"
+	+"#set ($points = $track.getWaypoints())##\n"
+	+"#foreach ($point in $points)##\n"
+	+"#if($point.isNewTrack())\n"
+	+"#if($close_segment)## close trkseg, if not the first occurence\n"
+	+"    </trkseg>\n"
+	+"#end\n"
+	+"    <trkseg>\n"
+	+"#set($close_segment = true)\n"
+	+"#end\n"
+	+"      <trkpt lat=\"$latitudeformatter.format($point.Latitude)\" lon=\"$longitudeformatter.format($point.Longitude)\">\n"
+	+"#if($point.hasValidAltitude())\n"
+	+"        <ele>$altitudeformatter.format($point.Altitude)</ele>\n"
+	+"#end\n"
+	+"#if($point.getDate())## only if there is a time set! \n"
+	+"        <time>$dateformatter.format($point.getDate())</time>\n"
+	+"#end\n"
+	+"      </trkpt>\n"
+	+"#end\n"
+	+"    </trkseg>\n"
+	+"  </trk>\n"
+	+"#end\n"
+	+"#end\n"
+	+"</gpx>\n";
   
 //----------------------------------------------------------------------
 /**
@@ -177,6 +182,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
  */
   public void init(String[] arguments)
   {
+    
     if(arguments.length < 1)
     {
       printHelp();
@@ -512,7 +518,18 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
  */
   public void addDefaultValuesToContext(VelocityContext context)
   {
+		DecimalFormat latitude_formatter = (DecimalFormat)NumberFormat.getInstance(Locale.US);
+		latitude_formatter.applyPattern("0.0000000");
+		DecimalFormat longitude_formatter = (DecimalFormat)NumberFormat.getInstance(Locale.US);
+		longitude_formatter.applyPattern("0.0000000");
+		DecimalFormat altitude_formatter = (DecimalFormat)NumberFormat.getInstance(Locale.US);
+		altitude_formatter.applyPattern("000000");
+		OneArgumentMessageFormat string_formatter = new OneArgumentMessageFormat("{0}",Locale.US);
     context.put("dateformatter",new SimpleDateFormat());
+		context.put("latitudeformatter", latitude_formatter);
+		context.put("longitudeformatter", longitude_formatter);
+		context.put("altitudeformatter", altitude_formatter);
+		context.put("stringformatter", string_formatter);
         // current time, date
     Calendar now = Calendar.getInstance();
     context.put("creation_date",now.getTime());
@@ -848,4 +865,89 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   {
     new GPSTool().init(arguments);
   }
+
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+
+	static public class OneArgumentMessageFormat extends MessageFormat
+	{
+		public OneArgumentMessageFormat(String pattern)
+		{
+			super(pattern);
+		}
+
+		public OneArgumentMessageFormat(String pattern, Locale locale)
+		{
+			super(pattern,locale);
+		}
+
+		public String format(String argument)
+		{
+			System.out.println("OneArgumentMessageFormat: "+argument);
+			return(format(new Object[] {argument}));
+		}
+
+		public String format(String pattern, String argument)
+		{
+			return(format(pattern, new Object[] {argument}));
+		}
+
+//----------------------------------------------------------------------
+ /**
+  * Pad a string to a maximal length with spaces at the end.
+  * @param string the string to pad.
+  * @param length the length for the final string (if the given string is longer,
+  * it is shortened to the given length).
+	*/
+		public String pad(String string, int length) 
+		{
+			return(pad(string,length,' ',false));
+		}
+
+//----------------------------------------------------------------------
+ /**
+  * Pad a string to a maximal length with a given character at the end.
+  * @param string the string to pad.
+  * @param length the length for the final string (if the given string is longer,
+  * it is shortened to the given length).
+  * @param pad_char the character to pad with.
+	*/
+		public String pad(String string, int length, char pad_char) 
+		{
+			return(pad(string,length,pad_char,false));
+		}
+
+//----------------------------------------------------------------------
+ /**
+  * Pad a string to a maximal length with a given character on the beginning or
+  *	 on the end.
+  * @param string the string to pad.
+  * @param length the length for the final string (if the given string is longer,
+  * it is shortened to the given length).
+  * @param pad_char the character to pad with.
+  * @param pad_begin pad on the begin of the string, not at the end
+	*/
+		public String pad(String string, int length, char pad_char, boolean pad_begin) 
+		{
+			StringBuffer str = new StringBuffer(string);
+			if(length > string.length())
+			{
+				do
+				{
+					if(pad_begin) 
+						str.insert(0,pad_char);
+					else 
+						str.append(pad_char);
+				}
+				while(str.length() < length);
+				return(str.toString());
+			}
+			else
+			{
+				return(string.substring(0,length));
+			}
+		}
+	}
+
+
 }

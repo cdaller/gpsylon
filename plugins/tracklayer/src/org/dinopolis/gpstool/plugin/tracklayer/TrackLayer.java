@@ -43,6 +43,7 @@ import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.track.Track;
 import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.gpstool.track.Trackpoint;
+import org.dinopolis.gpstool.track.TrackpointImpl;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
 
@@ -67,6 +68,12 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
   BasicStroke active_track_line_stroke_;
   Color loaded_track_color_;
   Color active_track_color_;
+  boolean draw_trackpoints_;
+
+      /** the minimum distance between two adjacent trackpoints. If
+       * two trackpoints are closer than this value (x,y coordinates),
+       * they are not painted */
+  protected int min_distance_between_trackpoints_;
 
       // resource keys:
   public static final String KEY_TRACK_LOADED_TRACK_LINE_WIDTH = "track.loaded_track.line.width";
@@ -75,8 +82,12 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
   public static final String KEY_TRACK_ACTIVE_TRACK_COLOR = "track.active_track.color";
   public static final String KEY_TRACK_DISPLAY_MODE = "track.display_mode";
   public static final String KEY_TRACK_LAYER_ACTIVE = "track.layer_active";
+  public static final String KEY_TRACK_MIN_DISTANCE_BETWEEN_TRACKPOINTS = "track.min_distance_between_trackpoints";
+  public static final String KEY_TRACK_DRAW_MODE = "track.track_draw_mode";
 
-
+  public static final String VALUE_TRACK_DRAW_MODE_LINEONLY = "line_only";
+  public static final String VALUE_TRACK_DRAW_MODE_TRACKPOINT_LINE = "trackpoint_line";
+  
 //----------------------------------------------------------------------
 /**
  * Constructor
@@ -100,6 +111,7 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
     track_manager_ = support.getTrackManager();
     resources_ = support.getResources();
     track_manager_.addTrackListener(this);
+    resources_.addPropertyChangeListener(this);
         // set attributes for loaded tracks:
     loaded_track_color_ = resources_.getColor(KEY_TRACK_LOADED_TRACK_COLOR);
     loaded_track_line_stroke_ =
@@ -110,9 +122,12 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
       new BasicStroke((float)resources_.getDouble(KEY_TRACK_ACTIVE_TRACK_LINE_WIDTH));
     boolean active = resources_.getBoolean(KEY_TRACK_LAYER_ACTIVE);
     setActive(active);
+
+    min_distance_between_trackpoints_ = resources_.getInt(KEY_TRACK_MIN_DISTANCE_BETWEEN_TRACKPOINTS);
+    draw_trackpoints_ = !resources_.getString(KEY_TRACK_DRAW_MODE).equals(VALUE_TRACK_DRAW_MODE_LINEONLY);
   }
 
-  //----------------------------------------------------------------------
+      //----------------------------------------------------------------------
 /**
  * Paints the objects for this layer.
  *
@@ -159,13 +174,19 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
       Iterator point_iterator = trackpoints.iterator();
       int start_x,start_y, end_x, end_y;
       Trackpoint trackpoint;
-      
+
+      int screen_width = getWidth();
+      int screen_height = getHeight();
+
+      long start_time = System.currentTimeMillis();
           // goto first trackpoint:
       if(point_iterator.hasNext())
       {
         trackpoint = (Trackpoint)point_iterator.next();
         start_x = trackpoint.getX();
         start_y = trackpoint.getY();
+        if(draw_trackpoints_)
+          g2.drawRect(start_x-1,start_y-1,3,3);
 
             // draw the rest:
         while(point_iterator.hasNext())
@@ -173,18 +194,29 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
           trackpoint = (Trackpoint)point_iterator.next();
           end_x = trackpoint.getX();
           end_y = trackpoint.getY();
+
+              // only draw line, if the coordinates are different:
+          if((Math.abs(end_x - start_x) > min_distance_between_trackpoints_)
+             || (Math.abs(end_y - start_y) > min_distance_between_trackpoints_))
+          {
+                // finally draw the line:
+            g2.drawLine(start_x,start_y,end_x,end_y);
+//           g2.setColor(Color.green);
+            if(draw_trackpoints_)
+              g2.drawRect(end_x-1,end_y-1,3,3);
+            if(Debug.DEBUG)
+              Debug.println("trackplugin_paint","painting line: from"+start_x+"/"
+                            +start_y+" to "+end_x+"/"+end_y);
           
-              // finally draw the line:
-          g2.drawLine(start_x,start_y,end_x,end_y);
-          if(Debug.DEBUG)
-            Debug.println("trackplugin_paint","painting line: from"+start_x+"/"
-                          +start_y+" to "+end_x+"/"+end_y);
-          
-              // last end is new start
-          start_x = end_x;
-          start_y = end_y;
+                // last end is new start
+            start_x = end_x;
+            start_y = end_y;
+          }
         }
       }
+      long end_time = System.currentTimeMillis();
+//       System.out.println("painting track '"+track.getIdentification()
+//                          +"' ("+track.size()+"  points): "+(end_time-start_time));
     }
   }
 
@@ -214,13 +246,39 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
  */
   protected void setVisibleTracks(List tracks)
   {
-          // deep copy of tracks, as otherwise someone else could
-          // modify my tracks without being able to notice:
+        // deep copy of tracks, as otherwise someone else could
+        // modify my tracks without being able to notice:
     Iterator iterator = tracks.iterator();
     Vector new_tracks = new Vector();
+    Track track;
+    TrackImpl simplified_track;
     while(iterator.hasNext())
     {
+//       track = (Track)iterator.next();
+//       simplified_track = new TrackImpl();
+//       simplified_track.setIdentification(track.getIdentification());
+//       simplified_track.setComment(track.getComment());
+//       Iterator point_iterator = track.getWaypoints().iterator();
+//       Trackpoint point;
+//       Trackpoint old_point = null;
+//       while(point_iterator.hasNext())
+//       {
+//         point = (Trackpoint)point_iterator.next();
+//             // only use next point, if the screen coordinates are
+//             // different: BEWARE: this simplified track MUST NEVER be
+//             // set in the TrackManager as then lots of information is
+//             // LOST!
+//         if((old_point == null)
+//            || ((old_point.getX() != point.getX()) && (old_point.getY() != point.getY())))
+//         {
+//           simplified_track.addWaypoint(new TrackpointImpl(point));
+//           old_point = point;
+//         }
+//       }
       new_tracks.add(new TrackImpl((Track)iterator.next()));
+//      new_tracks.add(simplified_track);
+//       System.out.println("simplified track '"+track.getIdentification()
+//                          +"' from "+track.size()+" to "+simplified_track.size()+" points.");
     }
     synchronized(tracks_lock_)
     {
@@ -252,14 +310,30 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
   public void propertyChange(PropertyChangeEvent event)
   {
     String name = event.getPropertyName();
+    if(Debug.DEBUG)
+      Debug.println("tracklayer_properties","PropertyChangeEvent "+name);
     if(name.equals(KEY_TRACK_LOADED_TRACK_COLOR))
     {
       loaded_track_color_ = resources_.getColor(KEY_TRACK_LOADED_TRACK_COLOR);
+      repaint();
       return;
     }
     if(name.equals(KEY_TRACK_ACTIVE_TRACK_COLOR))
     {
       active_track_color_ = resources_.getColor(KEY_TRACK_ACTIVE_TRACK_COLOR);
+      repaint();
+      return;
+    }
+    if(name.equals(KEY_TRACK_MIN_DISTANCE_BETWEEN_TRACKPOINTS))
+    {
+      min_distance_between_trackpoints_ = resources_.getInt(KEY_TRACK_MIN_DISTANCE_BETWEEN_TRACKPOINTS);
+      repaint();
+      return;
+    }
+    if(name.equals(KEY_TRACK_DRAW_MODE))
+    {
+      draw_trackpoints_ = !resources_.getString(KEY_TRACK_DRAW_MODE).equals(VALUE_TRACK_DRAW_MODE_LINEONLY);
+      repaint();
       return;
     }
   }

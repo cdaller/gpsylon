@@ -198,8 +198,12 @@ public interface GPSMapKeyConstants
   public static final String KEY_POSITION_CIRCLE_RADIUS = "position.circle.radius";
   public static final String KEY_POSITION_CIRCLE_COLOR = "position.circle.color";
   public static final String KEY_POSITION_CIRCLE_LINE_WIDTH = "position.circle.line.width";
-  public static final String KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER = "position.follow_me.relative_border";
+//  public static final String KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER = "position.follow_me.relative_border";
   public static final String KEY_POSITION_FOLLOW_ME_MODE = "position.follow_me.mode";
+  public static final String KEY_POSITION_FOLLOW_ME_PITCH = "position.follow_me.pitch";
+  public static final String KEY_POSITION_FOLLOW_ME_PITCH_VALUE_PREFIX = "position.follow_me.pitch_value";
+
+
   
    /** track resources */
   public static final String KEY_TRACK_FILE_FORMAT = "track.file.format";

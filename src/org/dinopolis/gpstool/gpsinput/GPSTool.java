@@ -179,11 +179,11 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     
     String[] valid_args =
       new String[] {"device*","d*","help","h","speed#","s#","file*","f*",
-                    "nmea","n","garmin","g","sirf","i","test","downloadtracks",
+                    "nmea","n","garmin","g","sirf","i","rawdata","downloadtracks",
                     "downloadwaypoints","downloadroutes","deviceinfo","printposonce",
                     "printpos","p","printalt","printspeed","printheading","printsat",
                     "template*","outfile*","screenshot*", "printdefaulttemplate",
-                    "helptemplate"};
+                    "helptemplate","nmealogfile*","l"};
 
         // Check command arguments
         // Throw exception if arguments are invalid
@@ -204,6 +204,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     String serial_port_name = null;
     int serial_port_speed = -1;
     GPSDataProcessor gps_data_processor;
+    String nmea_log_file = null;
 
         // Handle given command arguments
     if (args.isSet("help") || (args.isSet("h")))
@@ -280,7 +281,15 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         serial_port_speed = 4800;
       }
     
-    if (args.isSet("test"))
+    if (args.isSet("nmealogfile") || (args.isSet("l")))
+    {
+      if(args.isSet("nmealogfile"))
+        nmea_log_file = args.getStringValue("nmealogfile");
+      else
+        nmea_log_file = args.getStringValue("l");
+    }
+    
+      if (args.isSet("rawdata"))
     {
       gps_data_processor.addGPSRawDataListener(
         new GPSRawDataListener()
@@ -320,7 +329,12 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
             // use progress listener to be informed about the number
             // of packages to download
       gps_data_processor.addProgressListener(this);
-      
+
+          // raw data logger (to file):
+      if((nmea_log_file != null) && (nmea_log_file.length() > 0))
+      {
+        gps_data_processor.addGPSRawDataListener(new GPSRawDataFileLogger(nmea_log_file));
+      }
           // check, what to do:
       if(args.isSet("deviceinfo"))
       {
@@ -746,6 +760,8 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     System.out.println("--nmea,   -n, the gps data is interpreted as NMEA data (default).");
     System.out.println("--garmin, -g, the gps data is interpreted as garmin data.");
     System.out.println("--sirf, -i, the gps data is interpreted as sirf data.");
+    System.out.println("--nmealogfile, -l <filename>, the gps data is logged into this file.");
+    System.out.println("--rawdata, the raw (nmea or garmin) gps data is printed to stdout.");
 //    System.out.println("--nogui, no frame is opened.\n");
     System.out.println("--printposonce, prints the current position and exits again.");
     System.out.println("--printpos, -p, prints the current position and any changes.");

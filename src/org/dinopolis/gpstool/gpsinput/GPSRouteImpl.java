@@ -36,9 +36,17 @@ import java.util.Vector;
 
 public class GPSRouteImpl implements GPSRoute
 {
-  Vector route_points_ = new Vector();
-  String identification_;
-  String comment_;
+  protected Vector route_points_ = new Vector();
+  protected String identification_;
+  protected String comment_;
+
+  protected boolean minmax_valid = false;
+  protected double min_latitude_ = 90.0;
+  protected double max_latitude_ = -90.0;
+  protected double min_longitude_ = 180.0;
+  protected double max_longitude_ = -180.0;
+  protected double min_altitude_ = Double.MAX_VALUE;
+  protected double max_altitude_ = Double.MIN_VALUE;
 
   public GPSRouteImpl()
   {
@@ -102,6 +110,7 @@ public class GPSRouteImpl implements GPSRoute
   public void setWaypoints(List routepoints)
   {
     route_points_ = new Vector(routepoints);
+    minmax_valid = false;
   }
 
 //--------------------------------------------------------------------------------
@@ -112,6 +121,7 @@ public class GPSRouteImpl implements GPSRoute
   public void addWaypoint(GPSWaypoint routepoint)
   {
     route_points_.add(routepoint);
+    minmax_valid = false;
   }
 
 //--------------------------------------------------------------------------------
@@ -123,6 +133,7 @@ public class GPSRouteImpl implements GPSRoute
   public void addWaypoint(int position, GPSWaypoint routepoint)
   {
     route_points_.add(position,routepoint);
+    minmax_valid = false;
   }
 
 //--------------------------------------------------------------------------------
@@ -150,6 +161,7 @@ public class GPSRouteImpl implements GPSRoute
     throws IndexOutOfBoundsException
   {
     route_points_.remove(position);
+    minmax_valid = false;
   }
 
 //--------------------------------------------------------------------------------
@@ -161,9 +173,135 @@ public class GPSRouteImpl implements GPSRoute
     route_points_.clear();
     identification_ = "";
     comment_ = "";
+    min_latitude_ = 90.0;
+    max_latitude_ = -90.0;
+    min_longitude_ = 180.0;
+    max_longitude_ = -180.0;
+    min_altitude_ = Double.MAX_VALUE;
+    max_altitude_ = Double.MIN_VALUE;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the minimum latitude (furthest south) covered by this route.
+ *
+ * @return the minimum latitude covered by this route.
+ */
+  public double getMinLatitude()
+  {
+    if(!minmax_valid)
+      calculateMinMax();
+    return(min_latitude_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the maximum latitude (furthest north) covered by this route.
+ *
+ * @return the maximum latitude covered by this route.
+ */
+  public double getMaxLatitude()
+  {
+    if(!minmax_valid)
+      calculateMinMax();
+    return(max_latitude_);
   }
 
 
+//----------------------------------------------------------------------
+/**
+ * Returns the minimum longitude (furthest west) covered by this route.
+ *
+ * @return the minimum longitude covered by this route.
+ */
+  public double getMinLongitude()
+  {
+    if(!minmax_valid)
+      calculateMinMax();
+    return(min_longitude);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the maximum longitude (furthest east) covered by this route.
+ *
+ * @return the maximum longitude covered by this route.
+ */
+  public double getMaxLongitude()
+  {
+    if(!minmax_valid)
+      calculateMinMax();
+    return(max_longitude_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the minimum altitude covered by this route.
+ *
+ * @return the minimum altitude covered by this route.
+ */
+  public double getMinAltitude()
+  {
+    if(!minmax_valid)
+      calculateMinMax();
+    return(min_altitude);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the maximum altitude covered by this route.
+ *
+ * @return the maximum altitude covered by this route.
+ */
+  public double getMaxAltitude()
+  {
+    if(!minmax_valid)
+      calculateMinMax();
+    return(max_altitude_);
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Finds the min/max lat/long/alt of all registered waypoints.
+ */
+  protected void calculateMinMax()
+  {
+    min_latitude_ = 90.0;
+    max_latitude_ = -90.0;
+    min_longitude_ = 180.0;
+    max_longitude_ = -180.0;
+    min_altitude_ = Double.MAX_VALUE;
+    max_altitude_ = Double.MIN_VALUE;
+
+    GPSWaypoint waypoint;
+    double value;
+    for(int index=0; index < route_points_.size(); index++)
+    {
+      waypoint = route_points_.get(index);
+      value = waypoint.getLatitude();
+      if(min_latitude > value)
+        min_latitude = value;
+      if(max_latitude < value)
+        max_latitude = value;
+      value = waypoint.getLongitude();
+      if(min_longitude > value)
+        min_longitude = value;
+      if(max_longitude < value)
+        max_longitude = value;
+      value = waypoint.getAltitude();
+      if(value != Double.NaN)
+      {
+        if(min_altitude > value)
+          min_altitude = value;
+        if(max_altitude < value)
+          max_altitude = value;
+      }
+    }
+    minmax_valid = true;
+  }
+
+  
 //   public void addRouteLinkData(GarminRouteLinkD210 link_type)
 //   {
 //     route_points_.add(link_type); // FIXXME: maybe not clever to mix route points and links!

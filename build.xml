@@ -52,6 +52,7 @@ Christof Dallermassl (cdaller@iicm.edu)
       <include name="writerasterimage/${dist_dir}/**/*.jar" />
       <include name="readgpsdrivetrack/${dist_dir}/**/*.jar" />
       <include name="readgpx/${dist_dir}/**/*.jar" />
+      <include name="readtop50ovl/${dist_dir}/**/*.jar" />
       <include name="mapmanager/${dist_dir}/**/*.jar" />
       <include name="kismetimport/${dist_dir}/**/*.jar" />
       <include name="tracklayer/${dist_dir}/**/*.jar" />
@@ -411,6 +412,9 @@ Christof Dallermassl (cdaller@iicm.edu)
       <fileset dir="${plugin_dir}/readgpx/${dist_dir}">
         <include name="**/*.jar"/>  
       </fileset>
+      <fileset dir="${plugin_dir}/readtop50ovl/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
       <fileset dir="${plugin_dir}/mapmanager/${dist_dir}">
         <include name="**/*.jar"/>  
       </fileset>
@@ -473,7 +477,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- compile_plugins target -->
   <target name="compile_plugins"
-    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_readgpx_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin,compile_trackchart_plugin"> 
+    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_readgpx_plugin,compile_readtop50ovl_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin,compile_trackchart_plugin"> 
   </target>
 
   <!-- compile_downloadmousemode_plugin target -->
@@ -504,6 +508,11 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- compile_readgpx_plugin target -->
   <target name="compile_readgpx_plugin" depends="init"> 
     <ant dir="${plugin_dir}/readgpx" target="compile" inheritAll="false"/>
+  </target>
+
+  <!-- compile_readtop50ovl_plugin target -->
+  <target name="compile_readtop50ovl_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/readtop50ovl" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_mapmanager_plugin target -->
@@ -543,7 +552,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- bin_dist_plugins target -->
   <target name="bin_dist_plugins"
-    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_readgpx_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin,bin_dist_trackchart_plugin"> 
+    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_readgpx_plugin,bin_dist_readtop50ovl_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin,bin_dist_trackchart_plugin"> 
   </target>
 
   <!-- bin_dist_downloadmousemode_plugin target -->
@@ -574,6 +583,11 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- bin_dist_readgpx_plugin target -->
   <target name="bin_dist_readgpx_plugin" depends="init"> 
     <ant dir="${plugin_dir}/readgpx" target="bin_dist" inheritAll="false"/>
+  </target>
+
+  <!-- bin_dist_readgpx_plugin target -->
+  <target name="bin_dist_readtop50ovl_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/readtop50ovl" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_mapmanager_plugin target -->
@@ -613,7 +627,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- install_plugins target -->
   <target name="install_plugins"
-    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_readgpx_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin,install_plugin_trackchart_plugin"> 
+    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_readgpx_plugin,install_readtop50ovl_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin,install_plugin_trackchart_plugin"> 
   </target>
 
   <!-- install_downloadmousemode_plugin target -->
@@ -644,6 +658,11 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- install_readgpx_plugin target -->
   <target name="install_readgpx_plugin" depends="init"> 
     <ant dir="${plugin_dir}/readgpx" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_readtop50ovl_plugin target -->
+  <target name="install_readtop50ovl_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/readtop50ovl" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_mapmanager_plugin target -->

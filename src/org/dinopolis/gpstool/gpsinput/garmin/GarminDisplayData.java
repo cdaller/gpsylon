@@ -41,8 +41,7 @@ public class GarminDisplayData
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_data"))
       Debug.println("garmin_displaydata","next display data package: "+garmin_package);
     garmin_package.getNextAsLong(); // ignore this one (always 1??)
-    long pixel_number = garmin_package.getLong(4);
-    garmin_package.getNextAsLong(); // ignore this one (???)
+    long pixel_number = garmin_package.getNextAsLong();
     
     int x = 0;
     int value;

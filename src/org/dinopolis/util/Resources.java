@@ -96,6 +96,9 @@ public interface Resources
   /** the delimiter used in resources for string arrays */
   public final static String RESOURCE_STRING_ARRAY_DELIMITER = ",";
   
+  /** the string used to escape the delimiter used in resources for string arrays */
+  public final static String RESOURCE_STRING_ARRAY_DELIMITER_ESCAPE = "\\";
+  
   /** the delimiter used for variable replacement. So '$key$' will be
    * replace by the value of 'key' */
   public final static String VAR_IDENTIFIER = "$";

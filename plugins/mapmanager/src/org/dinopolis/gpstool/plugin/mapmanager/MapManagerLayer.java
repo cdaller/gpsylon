@@ -23,22 +23,20 @@
 
 package org.dinopolis.gpstool.plugin.mapmanager;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
+import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.event.MapsChangedEvent;
 import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.gui.util.ImageInfo;
-import java.util.Set;
-import java.awt.Color;
-import org.dinopolis.gpstool.MapInfo;
-import org.dinopolis.util.Debug;
-import java.util.TreeSet;
 
 
 
@@ -98,7 +96,7 @@ public class MapManagerLayer extends BasicLayer
         return; // nothing to do, return
     }
 
-    System.out.println("selected: "+selected_maps_);
+//    System.out.println("selected: "+selected_maps_);
 
         // create projected position of all mapimages:
     Iterator iterator = visible_images.iterator();
@@ -117,7 +115,7 @@ public class MapManagerLayer extends BasicLayer
       }
       else
       {
-        System.out.println("drawing selected map");
+        //System.out.println("drawing selected map");
         g.setColor(selected_fill_color_);
         g.fillRect(image.getX(),image.getY(),image.getWidth(),image.getHeight());
         g.setColor(selected_color_);

@@ -36,6 +36,7 @@ import javax.swing.JFrame;
 import org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor;
 import org.dinopolis.gpstool.gpsinput.garmin.GarminPVT;
 import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
+import org.dinopolis.gpstool.gpsinput.sirf.GPSSirfDataProcessor;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
 
@@ -161,10 +162,11 @@ public class GPSTool implements PropertyChangeListener
     System.out.println("Usage: java org.dinopolis.gpstool.GPSTool [options]\n");
     System.out.println("Options:");
     System.out.println("--device, -d <device>, e.g. -d /dev/ttyS0 or COM1 (defaults depending on OS).");
-    System.out.println("--speed,  -s <speed>, e.g. -s 4800 (default for nmea, 9600 for garmin).");
+    System.out.println("--speed,  -s <speed>, e.g. -s 4800 (default for nmea, 9600 for garmin, 19200 for sirf).");
     System.out.println("--file,   -f <filename>, the gps data is read from the given file.");
     System.out.println("--nmea,   -n, the gps data is interpreted as NMEA data (default).");
     System.out.println("--garmin, -g, the gps data is interpreted as garmin data.");
+    System.out.println("--sirf, -i, the gps data is interpreted as sirf data.");
     System.out.println("--nogui, no frame is opened.\n");
     System.out.println("--printtrack, print tracks.");
     System.out.println("--printwaypoint, print waypoints.");
@@ -186,7 +188,7 @@ public class GPSTool implements PropertyChangeListener
 
     String[] valid_args =
       new String[] {"device*","d*","help","h","speed#","s#","file*","f*",
-                    "nmea","n","garmin","g","test","nogui","printtrack",
+                    "nmea","n","garmin","g","sirf","i","test","nogui","printtrack",
                     "printwaypoint","printroute","printdeviceinfo","printpvt"};
 
         // Check command arguments
@@ -255,12 +257,29 @@ public class GPSTool implements PropertyChangeListener
     {
       gps_data_processor = new GPSGarminDataProcessor();
       serial_port_speed = 9600;
+      if(filename != null)
+      {
+        System.err.println("ERROR: Cannor read garmin data from file, only serial port supported!");
+        return;
+      }
     }
     else
-    {
-      gps_data_processor = new GPSNmeaDataProcessor();
-      serial_port_speed = 4800;
-    }
+      if (args.isSet("sirf") || args.isSet("i"))
+      {
+        gps_data_processor = new GPSSirfDataProcessor();
+        serial_port_speed = 19200;
+        if(filename != null)
+        {
+          System.err.println("ERROR: Cannor read sirf data from file, only serial port supported!");
+          return;
+        }
+      }
+      else
+// default:      if (args.isSet("nmea") || args.isSet("n"))
+      {
+        gps_data_processor = new GPSNmeaDataProcessor();
+        serial_port_speed = 4800;
+      }
     
         // Define device to read data from
     GPSDevice gps_device;

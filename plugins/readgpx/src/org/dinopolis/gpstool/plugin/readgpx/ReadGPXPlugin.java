@@ -157,15 +157,15 @@ public class ReadGPXPlugin extends ReadGPX implements ReadTrackPlugin, GPSMapKey
     super.parseInputStream(in);
     List tracks = getTracks();
     Track[] track_array = (Track[])tracks.toArray(new Track[0]);
-    for(int index = 0; index < track_array.length; index++)
-    {
-      System.out.println("ReadGPXPlugin.getTracks: "+track_array[index].getIdentification());
-      List trackpoints = track_array[index].getWaypoints();
-      for(int index2 = 0; index2 < trackpoints.size(); index2++)
-      {
-        System.out.println("  Waypoint: "+trackpoints.get(index2));
-      }
-    }
+//     for(int index = 0; index < track_array.length; index++)
+//     {
+//       System.out.println("ReadGPXPlugin.getTracks: "+track_array[index].getIdentification());
+//       List trackpoints = track_array[index].getWaypoints();
+//       for(int index2 = 0; index2 < trackpoints.size(); index2++)
+//       {
+//         System.out.println("  Waypoint: "+trackpoints.get(index2));
+//       }
+//     }
     return(track_array);
   }
 

@@ -99,6 +99,7 @@ import org.dinopolis.gpstool.projection.FlatProjection;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
 import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.gpstool.util.GeoMath;
+import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
@@ -156,6 +157,8 @@ public class GPSMap
   protected StatusBar status_bar_;
   protected Tachometer tacho_meter_;
 
+  protected static UnitHelper unit_helper_;
+
 //  protected MouseDelegator mouse_delegator_;
   protected MouseModeManager mouse_mode_manager_;
 
@@ -170,10 +173,6 @@ public class GPSMap
   protected LatLonPoint destination_position_;
 
 
-      /** static variables for distance formatting */
-  protected static DecimalFormat distance_formatter_;
-  protected static String distance_unit_;
-  
   protected PropertyChangeSupport property_change_support_;
   
       /** the resource bundle (configuration) */
@@ -375,6 +374,9 @@ public class GPSMap
 
     property_change_support_ = new PropertyChangeSupport(this);
 
+        // create helper class for unit converstion and formatting:
+    unit_helper_ = new UnitHelper();
+
         // setup the GUI
     loadResources();
     setLocale();
@@ -461,7 +463,7 @@ public class GPSMap
     updateResources(null);
     updateWindowLocation();
 
-    
+ 
         // Create a MapBean
     map_bean_ = new MapBean();
     map_bean_.setBackgroundColor(new Color(0,0,0));
@@ -482,6 +484,7 @@ public class GPSMap
     hook_manager_.setResources(resources_);
     hook_manager_.setTrackManager(track_manager_);
     hook_manager_.setServiceDiscovery(service_discovery_);
+    hook_manager_.setUnitHelper(unit_helper_);
 
     track_manager_.initialize(hook_manager_);
 
@@ -506,7 +509,7 @@ public class GPSMap
 
     main_frame_.getContentPane().add(map_bean_,BorderLayout.CENTER);
 
-    status_bar_ = new StatusBar(resources_,this);
+    status_bar_ = new StatusBar(hook_manager_);
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
     
     
@@ -564,8 +567,8 @@ public class GPSMap
     
     addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, status_bar_);
     addPropertyChangeListener(PROPERTY_KEY_CURRENT_HEADING, status_bar_);
-    resources_.addPropertyChangeListener(KEY_ANGLE_FORMAT_LATLON, status_bar_);
-    resources_.addPropertyChangeListener(KEY_ANGLE_FORMAT_HEADING, status_bar_);
+//     resources_.addPropertyChangeListener(KEY_ANGLE_FORMAT_LATLON, status_bar_);
+//     resources_.addPropertyChangeListener(KEY_ANGLE_FORMAT_HEADING, status_bar_);
 //    addPropertyChangeListener(PROPERTY_KEY_GPS_SPEED, status_bar_);
     addPropertyChangeListener(PROPERTY_KEY_CURRENT_SPEED, status_bar_);
     addPropertyChangeListener(PROPERTY_KEY_TOTAL_DISTANCE, status_bar_);
@@ -1423,16 +1426,24 @@ public class GPSMap
 //        updateGPSConnection();
       }
 
-      if((key == null) || key.equals(KEY_NUMBER_FORMAT_DISTANCE))
-      {
-        distance_formatter_ = new DecimalFormat(resources_.getString(KEY_NUMBER_FORMAT_DISTANCE));
-      }
-
       if((key == null) || key.equals(KEY_UNIT_DISTANCE))
       {
-        distance_unit_ = resources_.getString(KEY_UNIT_DISTANCE);
+        String distance_unit = resources_.getString(KEY_UNIT_DISTANCE);
+        if(distance_unit.equals("metric"))
+          unit_helper_.setUnitSystem(UnitHelper.UNIT_SYSTEM_METRIC);
+        else if(distance_unit.equals("miles"))
+          unit_helper_.setUnitSystem(UnitHelper.UNIT_SYSTEM_MILES);
+        else if(distance_unit.equals("nautic"))
+          unit_helper_.setUnitSystem(UnitHelper.UNIT_SYSTEM_NAUTIC);
       }
-
+      if((key == null) || key.equals(KEY_ANGLE_FORMAT_LATLON))
+      {
+        unit_helper_.setAngleFormat(resources_.getString(KEY_ANGLE_FORMAT_LATLON));
+      }
+      if((key == null) || key.equals(KEY_ANGLE_FORMAT_HEADING))
+      {
+        unit_helper_.setHeadingFormat(resources_.getString(KEY_ANGLE_FORMAT_HEADING));
+      }
     }
     catch (MissingResourceException mre) 
     {
@@ -1730,18 +1741,11 @@ public class GPSMap
  *
  * @param distance_or_speed in km
  * @return the converted distance or speed.
+ * @deprecated use the UnitHelper class from the PluginSupport instead!
  */
   public static float getDistanceOrSpeed(float distance_or_speed)
   {
-    if(distance_unit_.equals("metric"))
-      return(distance_or_speed);
-    if(distance_unit_.equals("miles"))
-      return(distance_or_speed * KM2MILES);
-    if(distance_unit_.equals("nautic"))
-      return(distance_or_speed * KM2NAUTIC);
-    
-        // should never happen:
-    throw new IllegalArgumentException("Unknown distance unit in resources: "+distance_unit_);
+    return((float)unit_helper_.getDistance(distance_or_speed));
   }
 
   
@@ -1754,18 +1758,11 @@ public class GPSMap
  *
  * @param distance
  * @return a String containing the formatted distance including the unit.
+ * @deprecated use the UnitHelper class from the PluginSupport instead!
  */
   public static String getDistanceOrSpeedString(float distance)
   {
-    if(distance_unit_.equals("metric"))
-      return(distance_formatter_.format(distance));
-    if(distance_unit_.equals("miles"))
-      return(distance_formatter_.format(distance * KM2MILES));
-    if(distance_unit_.equals("nautic"))
-      return(distance_formatter_.format(distance * KM2NAUTIC));
-    
-        // should never happen:
-    throw new IllegalArgumentException("Unknown distance unit in resources: "+distance_unit_);
+    return(unit_helper_.getValueString(distance));
   }
 
 //----------------------------------------------------------------------
@@ -1773,20 +1770,12 @@ public class GPSMap
  * Returns the factor between kilometers and the chosen unit for
  * distances or speed (miles, nautic).
  *
- * @param distance
  * @return a String containing the formatted distance including the unit.
+ * @deprecated use the UnitHelper class from the PluginSupport instead!
  */
   public static float getDistanceOrSpeedFactor()
   {
-    if(distance_unit_.equals("metric"))
-      return(1.0f);
-    if(distance_unit_.equals("miles"))
-      return(KM2MILES);
-    if(distance_unit_.equals("nautic"))
-      return(KM2NAUTIC);
-    
-        // should never happen:
-    throw new IllegalArgumentException("Unknown distance unit in resources: "+distance_unit_);
+    return((float)unit_helper_.getDistanceOrSpeedFactor());
   }
 
 //----------------------------------------------------------------------
@@ -1796,19 +1785,12 @@ public class GPSMap
  *
  * @return a String that contains the unit of distances corresponding
  * to the settings in the resource file.
+ * @deprecated use the UnitHelper class from the PluginSupport instead!
  */
 
   public static String getDistanceUnit()
   {
-    if(distance_unit_.equals("metric"))
-      return("km");
-    if(distance_unit_.equals("miles"))
-      return("mi");
-    if(distance_unit_.equals("nautic"))
-      return("nmi");
-
-        // should never happen:
-    throw new IllegalArgumentException("Unknown distance unit in resources: "+distance_unit_);
+    return(unit_helper_.getDistanceUnit());
   }
   
 //----------------------------------------------------------------------
@@ -1818,19 +1800,12 @@ public class GPSMap
  *
  * @return a String that contains the unit for speed corresponding
  * to the settings in the resource file.
+ * @deprecated use the UnitHelper class from the PluginSupport instead!
  */
 
   public static String getSpeedUnit()
   {
-    if(distance_unit_.equals("metric"))
-      return("km/h");
-    if(distance_unit_.equals("miles"))
-      return("mph");
-    if(distance_unit_.equals("nautic"))
-      return("knots");
-
-        // should never happen:
-    throw new IllegalArgumentException("Unknown distance unit in resources: "+distance_unit_);
+    return(unit_helper_.getSpeedUnit());
   }
 
 
@@ -1841,16 +1816,11 @@ public class GPSMap
  *
  * @param altitude in meter
  * @return the converted altitude
+ * @deprecated use the UnitHelper class from the PluginSupport instead!
  */
   public static float getAltitude(float altitude)
   {
-    if(distance_unit_.equals("metric"))
-      return(altitude);
-    if(distance_unit_.equals("miles") || distance_unit_.equals("nautic"))
-      return(altitude * METER2FEET);
-
-        // should never happen:
-    throw new IllegalArgumentException("Unknown distance unit in resources: "+distance_unit_);
+    return((float)unit_helper_.getAltitude(altitude));
   }
 
 //----------------------------------------------------------------------
@@ -1860,19 +1830,12 @@ public class GPSMap
  *
  * @return a String that contains the unit for altitude corresponding
  * to the settings in the resource file.
+ * @deprecated use the UnitHelper class from the PluginSupport instead!
  */
 
   public static String getAltitudeUnit()
   {
-    if(distance_unit_.equals("metric"))
-      return("m");
-    if(distance_unit_.equals("miles"))
-      return("ft");
-    if(distance_unit_.equals("nautic"))
-      return("ft");
-
-        // should never happen:
-    throw new IllegalArgumentException("Unknown distance unit in resources: "+distance_unit_);
+    return(unit_helper_.getAltitudeUnit());
   }
 
 

@@ -186,7 +186,8 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Write the waypoints to the gps device.
- * @param waypoints The new waypoints.
+ * @param waypoints a list of {@link
+ * org.dinopolis.gpstool.gpsinput.GPSWaypoint} objects.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.
@@ -221,7 +222,8 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Write the routes to the gps device.
- * @param waypoints The new waypoints.
+ * @param routes a list of {@link
+ * org.dinopolis.gpstool.gpsinput.GPSRoute} objects.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.
@@ -238,7 +240,7 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Get a list of tracks from the gps device.
- * @return a list of <code>GPSRoute</code> objects.
+ * @return a list of <code>GPSTrack</code> objects.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.
@@ -255,7 +257,8 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Write the tracks to the gps device.
- * @param waypoints The new waypoints.
+ * @param tracks a list of {@link
+ * org.dinopolis.gpstool.gpsinput.GPSTrack} objects.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.

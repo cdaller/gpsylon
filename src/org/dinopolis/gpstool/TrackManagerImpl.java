@@ -38,6 +38,7 @@ import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
 import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
+import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.track.RouteIdentificationComparator;
 import org.dinopolis.gpstool.track.Track;
 import org.dinopolis.gpstool.track.TrackImpl;
@@ -71,23 +72,25 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
 /**
  * Empty constructor
  */
-  public TrackManagerImpl(Resources resources)
+  public TrackManagerImpl()
   {
-    resources_ = resources;
-    active_track_identifier_ = resources_.getString(KEY_TRACK_ACTIVE_TRACK_IDENTIFIER);
   }
+
 
 //----------------------------------------------------------------------
 /**
- * Set the gps data processor to use to down/upload tracks from the
- * gps device.
+ * Initialize with all the track manager needs (resources and gps data
+ * processor).
  *
- * @param processor a gps data processor.
+ * @param support 
  */
-  public void setGPSDataProcessor(GPSDataProcessor processor)
+  public void initialize(PluginSupport support)
   {
-    gps_data_processor_ = processor;
+    gps_data_processor_ = support.getGPSDataProcessor();
+    resources_ = support.getResources();
+    active_track_identifier_ = resources_.getString(KEY_TRACK_ACTIVE_TRACK_IDENTIFIER);
   }
+
   
 //----------------------------------------------------------------------
 /**

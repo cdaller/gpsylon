@@ -719,7 +719,7 @@ class GarminPackage
     for(int index = 0; index < package_size_; index++)
 		{
       buffer.append(data_[index]);
-			buffer.append("/").append((char)data_[index]);
+//			buffer.append("/").append((char)data_[index]);
 			buffer.append(" ");
 		}
 		buffer.append("]]");

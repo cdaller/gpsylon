@@ -164,6 +164,48 @@ public interface Resources
   public void store()
     throws IOException, UnsupportedOperationException;
 
+
+  //----------------------------------------------------------------------
+  /**
+   * Attach another set of resources. After they are attached, all
+   * getXXX() operations are able to read the values from the
+   * resources as well as the attached resources. To set any values
+   * (add new or change old values), the methods of the original
+   * resources must be used or otherwise the keys/values are contained
+   * in this resources (new value) and in the attached resources (old
+   * values).
+   * <p>
+   * As soon as additional resources are attached, the getXXX()
+   * methods read from them. If there are duplicate keys in the
+   * resources and in the attached resources, the original resources
+   * have priority (take care!!).
+   * <p>
+   * The {@link #store()} method calls <code>store()<code> on all
+   * attached resources as well.
+   * <p>
+   * Attaching resources has the advantage that read access to
+   * resources is easy for different resources (e.g. in the resource
+   * editor), but the place where the resources are stored can still
+   * be held separated.
+   *
+   * @exception UnsupportedOperationException if the resources is not
+   * capable of attaching other resources.
+   */
+
+  public void attachResources(Resources resources)
+    throws UnsupportedOperationException;
+  
+  //----------------------------------------------------------------------
+  /**
+   * Detach previously attached resources.
+   *
+   * @exception UnsupportedOperationException if the resources is not
+   * capable of attaching other resources.
+   */
+
+  public void detachResources(Resources resources)
+    throws UnsupportedOperationException;
+  
   //----------------------------------------------------------------------
   /**
    * Returns the title for the given key. If no title for this key is

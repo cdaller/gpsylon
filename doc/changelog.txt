@@ -1,5 +1,15 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2003/07/23: upload to garmin devices should work now (from command
+            line tool). GPX file format is supported to be read.
+
+            SimpleDemo plugin added for demonstation how to create a
+            new layer/plugin.
+
+2003/07/16: download of mappoint maps should work now (basically)
+
+2003/07/15: added nmea log (to file) to gpstool application
+
 2003/07/14: added a little tolerance before downloadmousemode thinks
             the user drags the mouse (10 pixels).
 

@@ -157,9 +157,7 @@ public class ImageInfo
 
 //----------------------------------------------------------------------
 /**
- * Get the unscaled width of the image. This is not necessarily the
- * original width of the image, as the dimension of the image depends
- * on the scale of the current projection.
+ * Get the unscaled width of the image. 
  *
  * @return the unscaled width of the image.
  */
@@ -171,9 +169,7 @@ public class ImageInfo
 
 //----------------------------------------------------------------------
 /**
- * Get the unscaled height of the image. This is not necessarily the original
- * height of the image, as the dimension of the image depends on the
- * scale of the current projection.
+ * Get the unscaled height of the image. 
  *
  * @return the unscaled height of the image.
  */
@@ -185,7 +181,7 @@ public class ImageInfo
 //----------------------------------------------------------------------
 /**
  * Get the scaled width of the image. This is the width, the image
- * will be drawn on screen.
+ * will be drawn on screen (so it is relativ to the scale factor).
  *
  * @return the scaled width of the image.
  */
@@ -198,7 +194,7 @@ public class ImageInfo
 //----------------------------------------------------------------------
 /**
  * Get the scaled height of the image. This is the height, the image
- * will be drawn on screen.
+ * will be drawn on screen (so it is relativ to the scale factor).
  *
  * @return the scaled height of the image.
  */

@@ -1,5 +1,9 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/06/11: added estimated position error in NMEA (garmin specific
+            nmea sentence) and garmin protocol. error is shown in
+            status bar (satellite info).
+
 2003/06/10: added way to download screenshot for garmin devices
             (GPSTool), works for eTrex Summit
 

@@ -28,6 +28,7 @@ import java.awt.Frame;
 import java.beans.PropertyChangeSupport;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
 
@@ -55,6 +56,7 @@ public class HookManager implements PluginSupport
   GPSDataProcessor gps_data_processor_;
   TrackManager track_manager_;
   ServiceDiscovery service_discovery_;
+  UnitHelper unit_helper_;
   
   public HookManager()
   {
@@ -263,7 +265,7 @@ public class HookManager implements PluginSupport
  *
  * @param the gps data processor
  */
-  public void setGPSDataProcessor(GPSDataProcessor processor)
+  protected void setGPSDataProcessor(GPSDataProcessor processor)
   {
     gps_data_processor_ = processor;
   }
@@ -283,13 +285,38 @@ public class HookManager implements PluginSupport
 /**
  * Set the service discovery that allows to find all kind of plugins.
  *
- * @return the service discovery.
+ * @param service_discovery the service discovery.
  */
-  public void setServiceDiscovery(ServiceDiscovery service_discovery)
+  protected void setServiceDiscovery(ServiceDiscovery service_discovery)
   {
     service_discovery_ = service_discovery;
   }
 
+//----------------------------------------------------------------------
+/**
+ * Set the unit helper.
+ *
+ * @param the unit helper
+ */
+  protected void setUnitHelper(UnitHelper unit_helper)
+  {
+    unit_helper_ = unit_helper;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the unit helper. This class may be used to print speed,
+ * latitude, longitude, distances, etc. in the correct format
+ * (kilomters, miles, etc.).
+ *
+ * @return the unit helper.
+ */
+  public UnitHelper getUnitHelper()
+  {
+    return(unit_helper_);
+  }
+
+    
 }
 
 

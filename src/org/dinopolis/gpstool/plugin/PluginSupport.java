@@ -137,6 +137,17 @@ public interface PluginSupport
  * @return the service discovery.
  */
   public ServiceDiscovery getServiceDiscovery();
+
+//----------------------------------------------------------------------
+/**
+ * Set the unit helper. This class may be used to print speed,
+ * latitude, longitude, distances, etc. in the correct format
+ * (kilomters, miles, etc.).
+ *
+ * @return the unit helper.
+ */
+  public UnitHelper getUnitHelper();
+
 }
 
 

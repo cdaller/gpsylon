@@ -162,6 +162,35 @@ public class GeoMath
     
   }
 
+//----------------------------------------------------------------------
+/**
+ * Checks if a ~= b.
+ * Use this to test equality of floating point numbers.
+ *
+ * @param a double
+ * @param b double
+ * @return true if Math.abs(a-b) <= EPSILON, false otherwise.
+ */
+  public static boolean approximatelyEqual(double a, double b)
+  {
+    return(approximatelyEqual(a,b,EPSILON));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Checks if a ~= b.
+ * Use this to test equality of floating point numbers.
+ *
+ * @param a double
+ * @param b double
+ * @param epsilon the allowable error
+ * @return true if Math.abs(a-b) <= epsilon, false otherwise.
+ */
+  public static boolean approximatelyEqual(double a, double b, double epsilon)
+  {
+    return(Math.abs(a-b) <= epsilon);
+  }
+
   
   public static void main(String[] args)
   {

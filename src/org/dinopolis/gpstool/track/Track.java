@@ -24,8 +24,6 @@
 package org.dinopolis.gpstool.track;
 
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
-import org.dinopolis.gpstool.util.geoscreen.GeoScreen;
-
 
 
 //----------------------------------------------------------------------

@@ -28,9 +28,6 @@ import com.bbn.openmap.proj.Projection;
 import java.awt.Color;
 import java.awt.Point;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
-import org.dinopolis.gpstool.util.geoscreen.GeoScreen;
-
-
 
 //----------------------------------------------------------------------
 /**

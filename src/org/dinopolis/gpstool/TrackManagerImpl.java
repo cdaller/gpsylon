@@ -39,7 +39,6 @@ import org.dinopolis.gpstool.gpsinput.GPSTrack;
 import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.track.RouteIdentificationComparator;
 import org.dinopolis.gpstool.track.Track;
 import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.gpstool.util.GeoExtent;

@@ -23,8 +23,6 @@
 
 package org.dinopolis.gpstool.track;
 
-import com.bbn.openmap.proj.Projection;
-import org.dinopolis.gpstool.gpsinput.GPSRouteImpl;
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
 import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 import java.util.Iterator;

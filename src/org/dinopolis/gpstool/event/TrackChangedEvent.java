@@ -22,8 +22,6 @@
 
 package org.dinopolis.gpstool.event;
 
-import org.dinopolis.gpstool.gpsinput.GPSTrack;
-
 //----------------------------------------------------------------------
 /**
  * 

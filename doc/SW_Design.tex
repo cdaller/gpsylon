@@ -1,0 +1,382 @@
+%% Template for an article following the Dino Documentation
+%% Guidelines.
+%%
+%% Please read the Dino Documentation Guidelines first before writing
+%% any Dino document as it is mandatory to fully make use of the dino.sty
+%% document style. This especially applies for the macros in there
+%% that define images, references, etc...
+
+\documentclass[a4paper]{article} %% never change options or the
+%% document class!!!
+
+\usepackage[dinodraft]{dino}                %% never change this line!!!
+
+%% insert necessary additional packages here - please keep in mind
+%% that dino.sty itself already includes the necessary standard
+%% packages like graphicx, etc... please read the Dino
+%% Documentation Guidelines for details.
+
+%% never change any latex variables like pagestyle, baselineskip,
+%% etc... here!!!
+
+\begin{document}
+\begin{Form}\end{Form}
+%% ======================================== start document header
+
+\title{Software Design of the GPSTool Package}                     %% insert title here
+\author{(\cdaller)\\                         %% insert names of authors here in
+  %% Dino Document Style form,
+  %% e.g. \cdaller, \hhaub
+  $Revision$}                      %% never change this line!!!
+
+
+\maketitle
+
+\vspace{1cm}
+
+\begin{abstract}
+
+This document describes the rough design of the modules in the
+\packagename{org.dinopolis.gpstool} package and the modules of the
+\classname{GPSMap} application.
+
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+%######################################################################
+%######################################################################
+\section{Architectural Design}
+\label{SoftwareDesignOfTheGpstoolPackage-ArchitecturalDesign}
+
+This section describes the modules contained in the
+\packagename{org.dinopolis.gpstool} package and explains the structure
+of the \classname{GPSMap} application.
+
+%######################################################################
+\subsection{GPS Data Sources}
+\label{SoftwareDesignOfTheGpstoolPackage-GpsDataSources}
+
+One of the major modules in the \packagename{org.dinopolis.gpstool}
+package is the one that reads and interprets data from a gps
+device. This module is named
+\packagename{org.dinopolis.gpstool.gpsinput}.
+
+The module was designed to be independent of the format of the data
+and of the source of the data. An example for different formats of the
+data could be NMEA or the proprietary Garmin protocol, the source
+could either be the serial port, a file or a network server that
+provides any clients with gps data (like
+\externalref{gpsd}{http://freshmeat.net/projects/gpsd/} does).
+
+So to be able to get gps information (like position, altitude, speed,
+etc.), the source in the form of a \classname{GPSDevice} has to be
+chosen and a way to interpret the data coming from the device, in the
+form of a \classname{GPSDataProcessor}.
+
+These two classes are connected and from this moment on, gps
+information can be obtained. This information is delivered in the form
+of events, anyone can register for. The listener can register for all
+gps events or just for a specific one. In
+\stdref{tab:SoftwareDesignOfTheGpstoolPackage-EventsFiredFromTheGpsdataprocessor}
+are the events and its value types listed.
+
+
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      Event Type & Value of Event \\
+      \hline
+      Location & \classname{GPSPosition}\\
+      Heading & \classname{Float}\\
+      Speed & \classname{Float}\\
+      Number of Satellites & \classname{Integer}\\
+      Altitude (in meters)& \classname{Float}\\
+      Satellite Info & \classname{SatelliteInfo}\\
+      Depth & \classname{Float}\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Events fired from the GPSDataProcessor}
+  \label{tab:SoftwareDesignOfTheGpstoolPackage-EventsFiredFromTheGpsdataprocessor}
+\end{table}
+
+
+A short code snipped shows how to read NMEA data from a serial device:
+
+\begin{lstlisting}{Read gps data from the serial device.}
+// create processor for NMEA data:
+  GPSDataProcessor gps_data_processor = new GPSNmeaDataProcessor();
+
+// create gps device for serial port:
+  Hashtable environment = new Hashtable();
+  environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS1");
+  environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(4800));
+  GPSDevice gps_device = new GPSSerialDevice();
+  gps_device.init(environment);
+
+// connect processor with device and open it:
+  gps_data_processor.setGPSDevice(gps_device);
+  gps_data_processor.open();
+
+
+// create property change listener for gps events:
+PropertyChangeListener listener = new ProperyChangeListener()
+{
+  public void propertyChange(PropertyChangeEvent event)
+  {
+    Object value = event.getNewValue();
+    String name = event.getPropertyName();
+    if(name.equals(GPSDataProcessor.LOCATION))
+    { 
+      System.out.println("The new location is"
+       +(GPSPosition)value.getLatitude() + "/"
+       +(GPSPosition)value.getLongitude());
+    }
+  }
+};
+
+// register as listener for location events:
+	gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.LOCATION,listener);
+\end{lstlisting}
+
+A little example that demonstrates the features of this module is the
+java application
+\classname{org.dinopolis.gpstool.gpsinput.GPSTool}. It shows how to
+read from a file or from the serial interface and how to register for
+gps events. As a matter of fact, this application was the beginning of
+the whole module.
+
+
+%######################################################################
+\subsection{GPSMap Application}
+\label{SoftwareDesignOfTheGpstoolPackage-GpsmapApplication}
+
+GPSMap is the main application of the \packagename{org.dinopolis.gpstool}
+package. It is a moving map application that is able to show the
+current position on maps that may be downloaded from the internet, a
+track of the positions in the past, location markers for points of
+interest, etc.
+
+GPSMap uses some parts of the open source
+\externalref{openmap}{http://openmap.bbn.com} framework. Although the
+openmap framework provides a lot of functionality, some was not reused
+but re-implemented to keep the dependencies to the library low.
+
+Nevertheless, GPSMap uses openmap's \classname{MapBean} class as its
+central component. A MapBean consists of layers that hold geographic
+information to be drawn for a specific area and scale. 
+
+The main class of the GPSMap application is
+\classname{org.dinopolis.gpstool.GPSMap}.
+
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+\subsubsection{Resources}
+\label{SoftwareDesignOfTheGpstoolPackage-Resources}
+
+GPSMap reads some command line parameters, but most if the
+configuration is read from a properties file
+(\texttt{GPSMap.properties}). This file must be in the classpath of
+the application and is read via the
+\classname{org.dinopolis.util.Resources} class. Any changes of the
+configuration are saved into a file into the directory
+\texttt{.gpsmap} under the user' home directory. Not all resources can
+be edited via the ``Preferences'' dialog, so if you are missing some
+screws to turn, try the file itself.
+
+The resources also hold the information for the resource editor
+(title, description, type).
+
+
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+\subsubsection{User Interface}
+\label{SoftwareDesignOfTheGpstoolPackage-UserInterface}
+
+The user interface is widely configured in the resource files. The
+structure of the menu is completely defined in the resource file and
+the actions that are executed by selecting a menu entry are named in
+the resource file as well.
+
+Localization can be done by creating a localized version of the
+resource file.
+
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+\subsubsection{Projection}
+\label{SoftwareDesignOfTheGpstoolPackage-Projection}
+
+This data is projected from the geoid coordinates (latitude,
+longitude) to screen coordinates. As the projections provided by
+openmap did not work for the maps of
+\externalref{mapblast}{http://www.mapblast.com} or
+\externalref{expedia}{http://www.expedia.com}, a new projection was
+developed. The maths was taken from the
+\externalref{gpsdrive}{http://www.gpsdrive.de} project of Fritz
+Ganter.
+
+This projection provides the calculation from latitude/longitude to
+screen (\methodname{forward} methods) and from screen coordinates to
+latitude/longitude (\methodname{inverse} methods).
+
+The class that implements the projection is
+\classname{org.dinopolis.gpstool.projection.FlatProjection}. 
+
+For a full understanding of this class it is necessary to read the
+documentation of the projections of the openmap framework.
+
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+\subsubsection{Layers}
+\label{SoftwareDesignOfTheGpstoolPackage-Layers}
+
+GPSMap organizes its data in layers that are administered by a
+\classname{com.bbn.openmap.MapBean}. Whenever the projection changes
+(scale or center is changed), the map bean informs all layers about
+this change (\methodname{projectionChanged} method). The layers have
+to recalculate (project) their data from latitude/longitude to the
+screen coordinates and paint them. As the calculation may take its
+time, this is usually done in a different task by a
+\classname{SwingWorker}. As soon as the calculation is done, the data
+is painted on the screen (\methodname{paintComponent} method).
+
+The usage of background tasks also explains the behavior of GPSMap,
+that after panning the map, other elements (in other layers) are drawn
+slightly later at their correct position.
+
+If one wants to add geographic information (e.g.~position of
+friends/cars, etc.) the best solution is to add a new layer that
+implements the \methodname{projectionChanged} and the
+\methodname{paintComponent} methods. That's all! Using the projection
+passed in the \methodname{projectionChanged} method, the conversion of
+geographical to screen coordinates is easy. Lengthy calculations
+should use a \classname{SwingWorker}, so the user interface is not
+blocked. 
+
+In the following, some detailed information about different layers is
+given.
+
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+\subsubsection{Map Layer}
+\label{SoftwareDesignOfTheGpstoolPackage-Map-Layer}
+
+The map layer is probably the most important layer at the moment. It
+displays raster maps that were previously downloaded form expedia or
+mapblast and stored locally on the hard disk (directory
+\path{<home>/.gpsmap/maps}). The informations about the files is kept
+in the file \path{<home>/.gpsmap/maps.txt} (name of file,
+latitude/longitude of center of map, scale of map (in mapblast style),
+height/width of image). In this file, relative and absolute paths are
+accepted for maps.
+
+One principle of the map painting algorithm is that if no maps for a
+given scale are available, maps of other scales are used as well and
+resized to fit the used scale (see
+\stdref{fig:SoftwareDesignOfTheGpstoolPackage-MapsOfDifferentScalesMayBeDisplayed}
+for an example).
+
+\image[1.0]{images/screenshot_diff_scales}{Maps of different scales
+may be
+displayed.}{}{fig:SoftwareDesignOfTheGpstoolPackage-MapsOfDifferentScalesMayBeDisplayed}
+
+The first attempt to draw the maps was the following: Find all maps
+that are visible and draw them in the order largest scale to smallest
+scale. So if there is a plan of the city Graz and a map of Europe, the
+city plan is painted over the map of Europe.
+
+This algorithm scales very badly, as all maps are painted, even if the
+user does not see the maps because of another map lying over the first
+one.
+
+So an algorithm was developed that searches the smallest map to show,
+paint it, and find the rectangles on the screen that are not covered
+by this map. For the remaining empty rectangles, the algorithm is
+repeated until the screen is filled, or no more maps are
+available. This algorithm is implemented and documented in the
+\classname{org.dinopolis.gpstool.gui.util.VisibleImage} class.
+
+Maps are only painted, if their scale is not completely different to
+the scale that is currently being used. This prevents the painting of
+the city plan, when the user wants to see western Europe, as the city
+plan would be so small anyway. So if the current scale is 1:200000,
+only maps up to (e.g.!) 1:100000 are used, other (more detailed) maps,
+are not even considered to be painted! This factor is configurable.
+
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+\subsubsection{Location Marker Layer}
+\label{SoftwareDesignOfTheGpstoolPackage-LocationMarkerLayer}
+
+The layer that displays location markers handles different
+sources\footnote{interface
+\classname{org.dinopolis.gpstool.gui.layer.location.LocationMarkerSource}}
+of markers. They may be read from a file or from a relation database
+and provide \classname{LocationMarker} objects for a given area
+(limited by north, south, west, east latitude/longitude).
+
+Additionally the sources can be asked to apply a given filter, so only
+location markers for one or more given categories should be
+retrieved. This Filter was designed to be independent of the source,
+so in the case of a relation database source it is translated into the
+correct SQL statements.
+
+
+%######################################################################
+\subsection{Debug}
+\label{SoftwareDesignOfTheGpstoolPackage-Debug}
+
+The \packagename{org.dinopolis} packages use the
+\classname{org.dinopolis.util.Debug} package for printing debug
+messages. This package is similar to the \packagename{log4j} package
+of the apache framework. It allows to define debug messages that are
+only printed if the attached debug level is activated.
+
+The debug levels may be activated by using the appropriate API or by
+editing the debug properties file. For a detailed description of the
+\classname{Debug} class, please see the design document of the debug
+utility. 
+
+
+%% list of acronyms
+%\addcontentsline{toc}{chapter}{\listacronymname}
+%\printglosstex(acr)
+
+
+%% ======================================== end document header
+
+%% ======================================== begin document body
+
+%% the document body following the Dino Documentation Rules.
+%% Please read the Dino Documentation Guidelines for structuring
+%% conventions, etc...
+
+%% ======================================== end document body
+
+%% glossary
+%\addcontentsline{toc}{chapter}{\glossaryname}
+%\printglosstex(glo)
+
+%% ======================================== begin references
+
+%\bibliographystyle{alpha}
+%\addcontentsline{toc}{chapter}{\bibname}
+%\bibliography{../../bibliography_entries} 
+
+%% ======================================== end references
+
+%% end of document marker to be able to see if the document is
+%% complete when printed
+
+\documentend
+
+\end{document}
+
+
+

@@ -452,7 +452,7 @@ public abstract class AbstractResources implements Resources
   //----------------------------------------------------------------------
   /**
    * Call this method to make all changes performed by unset and
-   * setter methods persistent. Overwrite the {@link @doStore()}
+   * setter methods persistent. Overwrite the {@link #doStore()}
    * method in classes extending AbstractResources, if modifications
    * are supported. Do NOT overwrite this method as otherwise the
    * attached resources are not stored anymore.

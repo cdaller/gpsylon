@@ -94,7 +94,7 @@ public class ColorEditor extends PropertyEditorSupport
  * Sets the given value.
  *
  * @param value the value to set.
- * @param IllegalArgumentException if value does not represent a valid
+ * @throws IllegalArgumentException if value does not represent a valid
  * color.
  */
 

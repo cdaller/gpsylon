@@ -259,7 +259,7 @@ public class SplashScreen extends JWindow
 
   //----------------------------------------------------------------------
   /**
-   * @param args the command line args, will be ignored
+   * @param arguments the command line args, will be ignored
    */
 
   public static void main(String[] arguments)

@@ -323,14 +323,14 @@ public class MapInfo implements Comparable
 	}
 
 	/**
-	 * Returns true if the two map info ibjects refer to the same
+	 * Returns true if the two map info objects refer to the same
 	 * file. No other attributes are compared!
    *
    * @param other the other object to compare to.
 	 */
   public boolean equals(Object other)
   {
-    return(((MapInfo)other).getFilename().equals(getFileName()));
+    return(((MapInfo)other).getFilename().equals(getFilename()));
   }
 
 }

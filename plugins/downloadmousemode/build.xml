@@ -6,6 +6,7 @@
   <property name="source_dir" value="src"/>
   <property name="dist_dir" value="dist"/>
   <property name="lib_dir" value="lib/java"/>
+  <property name="aux_dir" value="auxiliary"/>
   <property name="target_class_dir" value="classes"/>
   <property name="dinopolis_classes" value="./../../classes"/>
   <property name="dinopolis_lib_dir" value="./../../lib/java"/>
@@ -66,14 +67,20 @@ The following targets are available:
         <patternset refid="gpstool_plugin_downloadmousemode.lib.patternset"/>
       </fileset>
 -->
+      <pathelement location="${aux_dir}"/>
     </path>
-<!-- no other libraries needed
+
     <pathconvert pathsep=" " dirsep="/" property="gpstool_plugin_downloadmousemode.dist.lib.classpath"
                  refid="gpstool_plugin_downloadmousemode.dist.classpath">
-      <map from="${user.dir}${file.separator}" to=""/>
+<!--      <map from="${user.dir}/${lib_dir}" to="${lib_dir}"/> -->
+      <map from="${user.dir}${file.separator}" to=""/> 
     </pathconvert>
+<!--
+    <echo>
+      user dir: ${user.dir}
+      path: ${gpstool_plugin_downloadmousemode.dist.lib.classpath}
+    </echo>
 -->
-
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
     <!-- properties files and the images ! -->
     <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
@@ -85,15 +92,17 @@ The following targets are available:
           <attribute name="Specification-Title" value="Download Mouse Mode Plugin for GPSTool" />
           <attribute name="Specification-Version" value="${release_version}" />
           <attribute name="Specification-Vendor" value="Christof Dallermassl" />
-          <attribute name="Implementation-Title" value="Download Mouse Mode Plugin for GPSTool" />
+          <attribute name="Implementation-Title" value="Download Mouse Mode Layer Plugin for GPSTool" />
           <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
           <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
         </section>
       </manifest>
 
+      <fileset dir="${aux_dir}"/>
       <fileset dir="${target_class_dir}"/>
       <fileset dir=".">
         <include name="META-INF/services/org.dinopolis.gpstool.*"/>
+        <include name="${aux_dir}/**"/>
       </fileset>
     </jar>
 
@@ -107,11 +116,12 @@ The following targets are available:
     <tar longfile="gnu"
       tarfile="${dist_dir}/${dist_name}_bin-${release_version}.tar"
       basedir="${dist_dir}"           
-      includes="${dist_name}-${release_version}.jar,${lib_dir}/**,${doc_dir}/**"/>
+      includes="${dist_name}-${release_version}.jar,${lib_dir}/**"/>
     <gzip zipfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz" 
       src="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
     <delete file="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
   </target>
+
 
 <!-- src_dist target -->
   <target name="src_dist" depends="clean,compile"> 
@@ -127,10 +137,9 @@ The following targets are available:
 <!-- compile target -->
   <target name="compile">
     <mkdir dir="${target_class_dir}"/>
-    <javac srcdir="${source_dir}"
+    <javac srcdir="src"
            destdir="${target_class_dir}"
-           classpathref="gpstool_plugin_downloadmousemode_class_path"
-           debug="on">
+           classpathref="gpstool_plugin_downloadmousemode_class_path">
        <classpath id="gpstool_plugin_downloadmousemode_class_path">
 <!-- no other libraries needed
         <fileset dir="lib/java">
@@ -142,12 +151,12 @@ The following targets are available:
           <patternset refid="gpstool_plugin_downloadmousemode.dinopolis_lib.patternset"/>
         </fileset>
         <pathelement path="${dinopolis_classes}"/>
+        <pathelement location="${aux_dir}"/>
       </classpath>
       <patternset refid="compile.files"/>
     </javac>         
   </target>       
   
-
 <!-- clean_all target -->
   <target name="clean_all" depends="clean,clean_dist">
   </target>
@@ -179,19 +188,4 @@ The following targets are available:
       </fileset>
     </copy>
   </target>
-
-
-<!-- ======================================== -->
-<!--           upload targets                 -->
-<!-- ======================================== -->
-
-<!-- upload distributions target -->
-  <target name="upload_sourceforge_dist" depends="bin_dist,src_dist">
-    <exec dir="${dist_dir}" executable="/bin/sh">
-      <arg value="-c"/>
-      <arg value='ncftpput upload.sourceforge.net incoming ${dist_name}_???-${release_version}.tar.gz'/>
-    </exec>
-  </target>
-
-
 </project>

@@ -372,6 +372,7 @@ implements ActionListener, PropertyChangeListener
   
 //----------------------------------------------------------------------
 /**
+ * @param key the key to get the Editor for
  * @param editor the property editor to get the editing or view component from
  * @return the corresponding component.
  */
@@ -461,8 +462,6 @@ implements ActionListener, PropertyChangeListener
  * Updates the whole editor and shows all components for the given
  * Map. This method uses a swing worker to create all components in
  * background.
- *
- * @param node the node to show the properties.
  */
   public void updateEditors()
   {
@@ -504,8 +503,6 @@ implements ActionListener, PropertyChangeListener
 /**
  * Updates the whole editor and shows all components for the given
  * Map.
- *
- * @param node the node to show the properties.
  */
 
   protected void setAllEditors()

@@ -431,7 +431,7 @@ public interface Resources
    * within the properties value will be replaced.
    * 
    * @param key the key of the resource property to look for.
-   * @param default_value the default value that will be returned if no
+   * @param default_values the default value that will be returned if no
    * resource of the given key was found.
    * @return the string array loaded from the resource bundle.
    */

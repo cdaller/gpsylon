@@ -130,11 +130,12 @@ public class FileResources extends AbstractResources
   /**
    * Creates a new FileResources class.
    *
+   * @param user_resource_file the resource file of the user.
    * @param user_bundle the user resource bundle.
-   * @param user_resource_base_name_ the file name of the user_bundles
+   * @param user_resource_base_name the file name of the user_bundles
    * directory.
    * @param system_bundle the system resource bundle.
-   * @param system_resource_base_name_ the file name of the
+   * @param system_resource_base_name the file name of the
    * system_bundles directory.
    */
 

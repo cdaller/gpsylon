@@ -102,7 +102,7 @@ public class PrintUtilities implements Printable
   /** The speed and quality of printing suffers dramatically if
    *  any of the containers have double buffering turned on.
    *  So this turns if off globally.
-   *  @see enableDoubleBuffering
+   *  @see enableDoubleBuffering(Component)
    */
   public static void disableDoubleBuffering(Component c)
   {
@@ -110,7 +110,9 @@ public class PrintUtilities implements Printable
     currentManager.setDoubleBufferingEnabled(false);
   }
 
-  /** Re-enables double buffering globally. */
+  /** 
+   * Re-enables double buffering globally. 
+   */
   
   public static void enableDoubleBuffering(Component c)
   {

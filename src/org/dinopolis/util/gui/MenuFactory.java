@@ -420,7 +420,7 @@ public class MenuFactory
    *
    * @param menu_item the menu item to initialize.
    * @param prefix the prefix
-   * @param menu_names the name(s) of the menu.
+   * @param menu_name the name(s) of the menu.
    * @param resources the resource file to read the required resources
    * from. 
    * @param action_gen the ActionGenerator to generate the required
@@ -492,11 +492,9 @@ public class MenuFactory
    *
    * @param menu_item the menu item to initialize.
    * @param prefix the prefix
-   * @param menu_names the name(s) of the menu.
+   * @param menu_name the name(s) of the menu.
    * @param resources the resource file to read the required resources
    * from. 
-   * @param action_gen the ActionGenerator to generate the required
-   * action.
    * @return the bound action or null if no action was found.
    */
  

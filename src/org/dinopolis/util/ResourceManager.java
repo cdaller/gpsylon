@@ -108,7 +108,6 @@ public class ResourceManager
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
-   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
 
   public static Resources getResources(Class caller, String base_name,
@@ -130,8 +129,7 @@ public class ResourceManager
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
-   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
- */
+   */
  
   public static Resources getResources(String base_name, String dir_name)
     throws MissingResourceException
@@ -153,7 +151,6 @@ public class ResourceManager
    * to look for a property file.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
-   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
  
   public static Resources getResources(Class caller, String base_name,
@@ -177,7 +174,6 @@ public class ResourceManager
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
-   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
 
   public static Resources getResources(String base_name, String dir_name,
@@ -235,8 +231,7 @@ public class ResourceManager
    */
 
   public static Resources getResources(Class caller, String base_name,
-                                       String dir_name,
-                                       Locale locale)
+                                       String dir_name, Locale locale)
     throws MissingResourceException
   {
     return(FileResources.getResources(caller, base_name, dir_name, locale));

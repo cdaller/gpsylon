@@ -137,7 +137,7 @@ public class SelectedButtonActionSynchronizer
 /**
  * Resolves the weak reference for the action.
  *
- * @param action the action or <null> if the reference was garbage
+ * @return the action or <null> if the reference was garbage
  * collected.
  */
   public Action getAction()
@@ -159,7 +159,7 @@ public class SelectedButtonActionSynchronizer
 /**
  * Resolves the weak reference for the button.
  *
- * @param button the button or <null> if the reference was garbage
+ * @return the button or <null> if the reference was garbage
  * collected.
  */
   public AbstractButton getButton()

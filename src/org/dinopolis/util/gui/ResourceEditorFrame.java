@@ -145,7 +145,7 @@ implements ActionListener, PropertyChangeListener
  * private resource file is searched in resource_dir, relative to the
  * users home dir. 
  *
- * @param Resources the reource bounble to edit.
+ * @param resources the reource bounble to edit.
  * @param resource_dir the relative directory to search users
  * resources.
  * @param title the title to display, if null the default title is
@@ -368,8 +368,6 @@ implements ActionListener, PropertyChangeListener
    * Updates the whole editor and shows all components for the given
    * Map. This method uses a swing worker to create all components in
    * background.
-   *
-   * @param node the node to show the properties.
    */
   
   public void reset()

@@ -121,7 +121,7 @@ public class HTMLViewerFrame extends JFrame implements HyperlinkListener
 /**
  * Set the http proxy port to use.
  *
- * @param proxy_host the port of the proxy to use as.
+ * @param proxy_port the port of the proxy to use as.
  */
   public void setProxyPort(int proxy_port)
   {

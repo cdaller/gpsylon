@@ -751,7 +751,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Send request/command to GARMIN-Device.
  *
- * @param rqst Request to be sent to the device.
+ * @param request Request to be sent to the device.
  * @param cmd Command to be sent to the device.
  * @param timeout milliseconds to wait at maximum until the package
  * must be acknowledged by the device.
@@ -772,7 +772,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Send request to GARMIN-Device.
  *
- * @param rqst Request to be sent to the device.
+ * @param request Request to be sent to the device.
  * @param timeout milliseconds to wait at maximum until the package
  * must be acknowledged by the device.
  */
@@ -791,7 +791,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * Send request/command to GARMIN-Device. The command is sent to the
  * device, no answer is read.
  *
- * @param rqst Request to be sent to the device.
+ * @param request Request to be sent to the device.
  * @param cmd Command to be sent to the device.
  */
   protected void sendCommandAsync(int request, int cmd)
@@ -810,7 +810,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * Send request/command to GARMIN-Device. The command is sent to the
  * device, no answer is read.
  *
- * @param rqst Request to be sent to the device.
+ * @param request Request to be sent to the device.
  */
   protected void sendCommandAsync(int request)
     throws IOException

@@ -25,6 +25,7 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -80,17 +81,21 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected int send_package_id_ = 0;
 
       // lock objects and result objects for synchronous calls:
-  protected Object route_sync_request_lock_ = new Object();
   protected List result_routes_;
-  protected Object track_sync_request_lock_ = new Object();
   protected List result_tracks_;
-  protected Object waypoint_sync_request_lock_ = new Object();
   protected List result_waypoints_;
-  protected Object pvt_sync_request_lock_ = new Object();
   protected GarminPVT result_pvt_;
+  protected GarminFlashInfo result_flash_info_;
+  protected BufferedImage result_screenshot_;
+  protected GarminFile result_file_;
+  protected Object waypoint_sync_request_lock_ = new Object();
+  protected Object track_sync_request_lock_ = new Object();
+  protected Object route_sync_request_lock_ = new Object();
+  protected Object pvt_sync_request_lock_ = new Object();
   protected Object product_info_lock_ = new Object();
   protected Object screenshot_sync_request_lock_ = new Object();
-  protected BufferedImage result_screenshot_;
+  protected Object flash_info_sync_request_lock_ = new Object();
+  protected Object file_sync_request_lock_ = new Object();
 
       /** Listeners for the Result Packages */
   protected Vector result_listeners_;
@@ -136,6 +141,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Identifiers for L001 - Link Protocol 1
  */
+  public final static int Pid_Unit_Id_Info        = 9;  // 0x09 // from gpsexplorer
   public final static int Pid_Command_Data_L001   = 10;  // 0x0a
   public final static int Pid_Xfer_Cmplt_L001     = 12;  // 0x0c
   public final static int Pid_Date_Time_Data_L001 = 14;  // 0x0e
@@ -147,12 +153,22 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Pid_Rte_Hdr_L001        = 29;  // 0x1d
   public final static int Pid_Rte_Wpt_Data_L001   = 30;  // 0x1e
   public final static int Pid_Almanac_Data_L001   = 31;  // 0x1f
+  public final static int Pid_Version_Info        = 32;  // 0x20 // from gpsexplorer
   public final static int Pid_Trk_Data_L001       = 34;  // 0x22
   public final static int Pid_Wpt_Data_L001       = 35;  // 0x23
+  public final static int Pid_Communication_Speed = 49;  // 0x31  // from gpsexplorer
   public final static int Pid_Pvt_Data_L001       = 51;  // 0x33
-  public final static int Pid_Display_Data_L001   = 69;  // 0x45
+  public final static int Pid_Display_Data_L001   = 69;  // 0x45  // from garble
+  public final static int Pid_Flash_Erase_Response = 74;  // 0x4a  // from gpsexplorer
+  public final static int Pid_Flash_Erase_Request = 75;  // 0x4b  // from gpsexplorer
+  public final static int Pid_File_Data           = 90;  // 0x5a  // from gpsexplorer
+  public final static int Pid_File_Header         = 91;  // 0x5b  // from gpsexplorer
+  public final static int Pid_File_Not_Exist      = 92;  // 0x5c  // from gpsexplorer
+  public final static int Pid_Flash_Info          = 95;  // 0x5f  // from gpsexplorer
   public final static int Pid_Rte_Link_Data_L001  = 98;  // 0x62
   public final static int Pid_Trk_Hdr_L001        = 99;  // 0x63
+  public final static int Pid_Unlock_Code_Send    = 108;  // 0x6c  // from gpsexplorer
+  public final static int Pid_Unlock_Code_Response = 109;  // 0x6d  // from gpsexplorer
 
 /**
  * Identifiers for L002 - Link Protocol 2
@@ -182,6 +198,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Cmnd_Transfer_Screenbitmap_A010 = 32; // 0x20
   public final static int Cmnd_Start_Pvt_Data_A010 = 49;  // 0x31
   public final static int Cmnd_Stop_Pvt_Data_A010  = 50;  // 0x32
+  public final static int Cmnd_Get_Map_Flash_Info  = 63;  // 0x3f  // from gpsexplorer
 
 /**
  * Identifiers for A011 - Device Command Protocol 2
@@ -198,6 +215,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   public final static int Cmnd_Set_Serial_Speed    = 48; // 0x30 // from gpsexplorer
   public final static int Pid_Change_Serial_Speed  = 49; // 0x31 // from gpsexplorer
+  public final static int Pid_Request_File         = 89;  // 0x59  // from gpsexplorer
       /**
        * Other Commands
        */
@@ -1059,6 +1077,118 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     return(result_waypoints_);
   }
 
+  private void getMap(GarminMapDescription map_description, long timeout)
+    throws IOException
+  {
+    String[] suffices = new String[] { "TRE", "LBL" ,  "RGN", "NET", "NOD", "SRT" };
+    for(int suffix_index = 0; suffix_index < suffices.length; suffix_index++)
+    {
+      GarminFile map = getMapFile(map_description,suffices[suffix_index],timeout);
+    }
+  }
+
+  private GarminFile getMapFile(GarminMapDescription map_description,String suffix, long timeout)
+    throws IOException, FileNotFoundException
+  {
+    GarminFile map = null;
+    try
+    {
+      map = getFile(map_description.getImageFileName()+".TRE", timeout);
+      System.out.println("Successfully downloaded map by using the ImageFileName: "
+                         +map_description.getMapName());
+    }
+    catch(FileNotFoundException fnfe)
+    {
+      map = getFile(map_description.getMapNumberFileName()+".TRE", timeout);
+      System.out.println("Successfully downloaded map by using mapnumberfilename: "
+                         +map_description.getMapName());
+    }
+    return(map);
+  }
+  
+  private List getMaps(long timeout)
+    throws IOException
+  {
+    GarminFile map_dir = getFile("MAPSOURC.MPS",timeout);
+    System.out.println("getMaps:" + map_dir);
+    Vector maps_in_unit = new Vector();
+    int has_next = map_dir.getNextAsByte();
+    while(has_next == 76) // 0x4c
+    {
+      int length = map_dir.getNextAsWord();  
+      int product_number = map_dir.getNextAsInt(); // software id
+      int img_number = map_dir.getNextAsInt();
+      String map_type = map_dir.getNextAsString();
+      String map_name = map_dir.getNextAsString();
+      String map_area = map_dir.getNextAsString();
+      int map_number = map_dir.getNextAsInt();
+      map_dir.getNextAsInt(); // ???
+
+      GarminMapDescription map_description = new GarminMapDescription();
+      map_description.setMapLength(length);
+      map_description.setMapProductNumber(product_number);
+      map_description.setImageNumber(img_number);
+      map_description.setMapType(map_type);
+      map_description.setMapName(map_name);
+      map_description.setMapArea(map_area);
+      map_description.setMapNumber(map_number);
+
+      maps_in_unit.add(map_description);
+
+      has_next = map_dir.getNextAsByte();
+    }
+    return(maps_in_unit);
+  }
+
+  private GarminFile getFile(String filename, long timeout)
+    throws IOException, FileNotFoundException
+  {
+    synchronized(flash_info_sync_request_lock_)
+    {
+      result_flash_info_ = null;
+      requestMapFlashInfo();
+      try
+      {
+        flash_info_sync_request_lock_.wait(timeout);
+      }
+      catch(InterruptedException ignore) {}
+    }
+        // no result or FileNotExists:
+    if(result_flash_info_ == null)
+      return(null);
+    
+    int map_area = result_flash_info_.getMapArea();
+    GarminPackage request_package = new GarminPackage(Pid_Request_File,4+2+filename.length()+1);
+    request_package.setNextAsInt(0);
+    request_package.setNextAsWord(map_area);
+    request_package.setNextAsString(filename);
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin_map","Requesting file '"+filename+"' on map area "
+		    +map_area+" with package: "
+		    +request_package);
+    synchronized(file_sync_request_lock_)
+    {
+      result_file_ = null;
+      putPackageAsync(request_package);
+      try
+      {
+        file_sync_request_lock_.wait(timeout);
+      }
+      catch(InterruptedException ignore) {}
+      if(result_file_ == null)
+        throw new FileNotFoundException("File '"+filename+"' was not found on gps device.");
+      return(result_file_); // TODO clone before return, so next file does not overwrite this var!
+    }
+  }
+
+
+  private void setMaps()
+  {
+        // requestEraseFlash();
+        // if first short in response is 0, send unlock
+        // else error (message in data?)
+  }
+
 //----------------------------------------------------------------------
 /**
  * Switches off the gps device. This method is non blocking and returns
@@ -1129,6 +1259,37 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     garmin_package.put(0);
     putPackageAsync(garmin_package);
   }
+
+
+//----------------------------------------------------------------------
+/**
+ * Experimental method to request information about the flash
+ * memory. This information is taken from the gpsexplorer application.
+ */
+  protected void requestMapFlashInfo()
+    throws IOException
+  {
+    waitTillReady();
+    if (capabilities_.hasCapability("L1") &&
+        capabilities_.hasCapability("A10"))
+    {
+      sendCommandAsync(Pid_Command_Data_L001, Cmnd_Get_Map_Flash_Info);
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Experimental method to request eraseure of the flash memory!!! This
+ * information is taken from the gpsexplorer application. Completely untested! 
+ */
+  private void requestEraseFlash(int map_area)
+  {
+    waitTillReady();
+    GarminPackage garmin_package = new GarminPackage(Pid_Flash_Erase_Request,2);
+    garmin_package.setNextAsWord(map_area);
+    putPackageAsync(garmin_package);
+  }
+
 
 //----------------------------------------------------------------------
 /**
@@ -1474,6 +1635,60 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     {
       result_screenshot_ = display_data.getImage();
       screenshot_sync_request_lock_.notify();
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Method called out of the thread that reads the information from the
+ * gps device when display data was sent.
+ */
+  protected void fireFlashInfoReceived(GarminFlashInfo flash_info)
+  {
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","flash info received: "+flash_info);
+
+    synchronized(flash_info_sync_request_lock_)
+    {
+      result_flash_info_ = flash_info;
+      flash_info_sync_request_lock_.notify();
+    }
+  }
+
+  
+//----------------------------------------------------------------------
+/**
+ * Method called out of the thread that reads the information from the gps
+ * device when file not exist package was sent. Sets the
+ * <code>result_file</code> to null.
+ */
+  protected void fireFileNotFoundReceived(GarminPackage file_not_found)
+  {
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","file not found received: "+file_not_found);
+
+    synchronized(file_sync_request_lock_)
+    {
+      result_file_ = null;
+      file_sync_request_lock_.notify();
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Method called out of the thread that reads the information from the
+ * gps device when file was sent.
+ */
+  protected void fireFileReceived(GarminFile garmin_file)
+  {
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","file received (maybe shortened): "
+                    +garmin_file);
+
+    synchronized(file_sync_request_lock_)
+    {
+      result_file_ = garmin_file;
+      file_sync_request_lock_.notify();
     }
   }
 
@@ -1826,6 +2041,65 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //     case Pid_Satellite_Info:
 //       GarminSatelliteInfo info = new GarminSatelliteInfo(garmin_package);
 //       break;
+    case Pid_File_Data:
+      System.out.println("WARNING: unexpected File_Data: "+garmin_package);
+      break;
+    case Pid_File_Header:
+      GarminFile garmin_file = new GarminFile(garmin_package);
+      if(Debug.DEBUG)
+        Debug.println("gps_garmin","Pid_File_Header: "+garmin_file);
+//      System.out.println("Garmin file header :"+garmin_file);
+      package_count = 0;
+      while(package_count < garmin_file.getDataPackageCount())
+      {
+        do
+        {
+          next_garmin_package = getPackage();
+        }
+        while(next_garmin_package == null);
+//        System.out.println("File Data: "+next_garmin_package);
+        package_count++;
+        if(next_garmin_package.getPackageId() != Pid_File_Data)
+        {
+          System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
+                             +(int)buffer[0]+" while waiting for File Data!");
+          if(Debug.DEBUG)
+            Debug.println("gps_garmin","unknown package: "+garmin_package);
+        }
+        garmin_file.addDataPackage(next_garmin_package);
+      } 
+      fireFileReceived(garmin_file);
+      break;
+    case Pid_File_Not_Exist:
+      System.out.println("Pid_File_Not_Exist: "+garmin_package);
+      fireFileNotFoundReceived(garmin_package);
+      break;
+    case Pid_Flash_Info:
+      System.out.println("Pid_File_Flash_Info: "+garmin_package);
+      GarminFlashInfo flash_info = new GarminFlashInfo(garmin_package);
+      fireFlashInfoReceived(flash_info);
+      break;
+    case Pid_Flash_Erase_Response:
+      System.out.println("Pid_Flash_Erase_Response: "+garmin_package);
+      break;
+    case Pid_Unlock_Code_Response:
+      System.out.println("Pid_Unlock_Code_Response: "+garmin_package);
+      if(garmin_package.getPackageSize() != 2)
+      {
+        System.err.println("Wrong response for unlock code");
+        return;
+      }
+      int success = garmin_package.getNextAsByte();
+      if(success == 0)
+      {
+        System.err.println("Illegal unlock code");
+        return;
+      }
+      if(success == 1)
+      {
+            // unlock codes correct
+      }
+      break;
 	default:
 	  System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
 			     +(int)buffer[0]);
@@ -1898,10 +2172,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   {
     try
     {
+      String port_name = "/dev/ttyS0";
+      if(args.length > 0)
+	port_name = args[0];
       GPSGarminDataProcessor gps_processor = new GPSGarminDataProcessor();
       GPSDevice gps_device;
       Hashtable environment = new Hashtable();
-      environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS1");
+      environment.put(GPSSerialDevice.PORT_NAME_KEY,port_name);
       environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(9600));
       gps_device = new GPSSerialDevice();
       gps_device.init(environment);
@@ -1929,7 +2206,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //      List routes = gps_processor.getRoutes(0L);
 //      System.out.println("Sync Routes: "+routes);
 
-      gps_processor.requestScreenShot();
+      List maps_in_unit = gps_processor.getMaps(0L);
+      System.out.println("Maps in Unit:");
+      GarminMapDescription map_description = null;
+      Iterator iterator = maps_in_unit.iterator();
+      while(iterator.hasNext())
+      {
+        map_description = (GarminMapDescription)iterator.next();
+        System.out.println(map_description);
+      }
+//       System.out.println("Download last map:");
+//       if(map_description != null)
+//         gps_processor.getMap(map_description,0L);
+
       
       System.in.read();
 //       List waypoints = gps_processor.getWaypoints();
@@ -1945,6 +2234,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     catch(Exception e)
     {
       e.printStackTrace();
+      System.exit(1);
     }
     
   }

@@ -24,6 +24,7 @@
 package org.dinopolis.gpstool.gpsinput;
 
 import java.lang.UnsupportedOperationException;
+import java.util.Date;
 
 //----------------------------------------------------------------------
 /**
@@ -36,7 +37,21 @@ import java.lang.UnsupportedOperationException;
 public interface GPSTrackpoint extends GPSWaypoint
 {
 
+//----------------------------------------------------------------------
+/**
+ * Returns the date of the given trackpoint or null, if no date was set.
+ *
+ * @return the date of the given trackpoint or null, if no date was set.
+ */
+  public Date getDate();
 
+//----------------------------------------------------------------------
+/**
+ * Sets the date of the given trackpoit.
+ *
+ * @param date the date of the trackpoint.
+ */
+  public void setDate(Date date);
   
 //----------------------------------------------------------------------
 /**
@@ -44,7 +59,6 @@ public interface GPSTrackpoint extends GPSWaypoint
  * marks the beginning of a new track segment.
  *
  * @return Beginning of new track segment (boolean)
- * @throws GarminUnsupportedMethodException
  */
   public boolean isNewTrack();
 
@@ -55,7 +69,7 @@ public interface GPSTrackpoint extends GPSWaypoint
  *
  * @param new_segment beginning of new track segment
  */
-  public void  setNewTrack(boolean new_segment);
+  public void setNewTrack(boolean new_segment);
 
 }
 

@@ -51,7 +51,7 @@ import org.dinopolis.util.Debug;
 public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
 {
 /** the GPSDevice */
-  GPSDevice gps_device_ = null;
+  protected GPSDevice gps_device_ = null;
 /** the map the gps data is stored in */
   protected Map gps_data_ = new HashMap();
 /** the lock object for the gps data */

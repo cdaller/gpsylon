@@ -54,8 +54,11 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
   MapNavigationHook map_navigation_hook_;
   Cursor zoom_in_cursor_;
   Cursor zoom_out_cursor_;
+  Cursor pan_cursor_;
   int zoom_mode_ = ZOOM_IN_MODE;
   Component component_;
+  Point drag_start_;
+  boolean mouse_dragged_ = false;
   
   public static final int ZOOM_IN_MODE = 0;
   public static final int ZOOM_OUT_MODE = 1;
@@ -83,9 +86,11 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
     Resources resources = support.getResources();
     ImageIcon zoom_in = (ImageIcon)resources.getIcon(GPSMapKeyConstants.KEY_CURSOR_ZOOM_IN_ICON);
     ImageIcon zoom_out = (ImageIcon)resources.getIcon(GPSMapKeyConstants.KEY_CURSOR_ZOOM_OUT_ICON);
+    ImageIcon pan = (ImageIcon)resources.getIcon(GPSMapKeyConstants.KEY_CURSOR_PAN_ICON);
     Toolkit toolkit = component_.getToolkit();
     zoom_out_cursor_ = toolkit.createCustomCursor(zoom_out.getImage(),new Point(5,4),"zoom out");
     zoom_in_cursor_ = toolkit.createCustomCursor(zoom_in.getImage(),new Point(5,4),"zoom in");
+    pan_cursor_ = toolkit.createCustomCursor(pan.getImage(),new Point(5,4),"pan");
   }
 
   protected void updateZoomCursor(int mode)
@@ -248,7 +253,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
  */
   public String getMouseModeDescription()
   {
-    return("Zoom In/Out");
+    return("Zoom In/Out (Shift-Button1), Pan (Drag with Button1)");
   }
 
 //----------------------------------------------------------------------
@@ -361,14 +366,14 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
         map_navigation_hook_.reScale(2.0f);
       }
 
-      if(event.isControlDown())
-      {
+//       if(event.isControlDown())
+//       {
 
-      }
+//       }
 
-      if(event.isAltDown())
-      {
-      }
+//       if(event.isAltDown())
+//       {
+//       }
 
           // no modifiers pressed:
       if(!event.isAltDown() && !event.isShiftDown() && !event.isControlDown())
@@ -407,6 +412,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
       return;
     if(event.getButton() == MouseEvent.BUTTON1)
     {
+      drag_start_ = event.getPoint();
     }
 //    System.out.println("mousePressed: "+event.getSource());
   }
@@ -415,6 +421,23 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
   {
     if(!mode_active_)
       return;
+
+    if(event.getButton() == MouseEvent.BUTTON1)
+    {
+      if(drag_start_ == null)
+        return;
+      Point point = event.getPoint();
+      
+      float delta_x = (float)(drag_start_.getX() - point.getX());
+      float delta_y = (float)(drag_start_.getY() - point.getY());
+      float factor_x = delta_x / component_.getWidth();
+      float factor_y = delta_y / component_.getHeight();
+      
+      map_navigation_hook_.translateMapCenterRelative(factor_x,factor_y);
+      drag_start_ = null;
+      
+      updateZoomCursor(ZOOM_IN_MODE);
+    }
 //    System.out.println("mouseReleased: "+event.getSource());
   }
 
@@ -427,6 +450,10 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
   {
     if(!mode_active_)
       return;
+
+        // TODO FIXXME, set hand mouse cursor:
+    Component source = (Component)event.getSource();
+    source.setCursor(pan_cursor_);
 //     drag_current_x_ = event.getX();
 //     drag_current_y_ = event.getY();
 //     drag_mode_ = true;

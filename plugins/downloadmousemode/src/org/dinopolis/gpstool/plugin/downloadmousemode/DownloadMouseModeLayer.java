@@ -517,11 +517,11 @@ public class DownloadMouseModeLayer extends BasicLayer
     try
     {
       MapRetrievalPlugin plugin = download_frame_.getMapRetrievalPlugin();
-      double plugin_scale =  plugin.getUsedScale(download_frame_.getLatitude(),
-                                                 download_frame_.getLongitude(),
-                                                 download_frame_.getScale(),
-                                                 download_frame_.getImageWidth(),
-                                                 download_frame_.getImageHeight());
+      double plugin_scale =  plugin.getMapScale(download_frame_.getLatitude(),
+                                                download_frame_.getLongitude(),
+                                                download_frame_.getScale(),
+                                                download_frame_.getImageWidth(),
+                                                download_frame_.getImageHeight());
       download_calculator_.setImageScale((float)plugin_scale);
       download_calculator_.setImageDimension(download_frame_.getImageWidth(),
                                              download_frame_.getImageHeight());

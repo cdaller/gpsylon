@@ -158,19 +158,19 @@ public interface GPSRoute
 
 //----------------------------------------------------------------------
 /**
- * Returns the minimum longitude (furthest west) covered by this route.
+ * Returns the minimum altitude covered by this route.
  *
- * @return the minimum longitude covered by this route.
+ * @return the minimum altitude covered by this route.
  */
-  public double getMinLongitude();
+  public double getMinAltitude();
 
 //----------------------------------------------------------------------
 /**
- * Returns the maximum longitude (furthest east) covered by this route.
+ * Returns the maximum altitude covered by this route.
  *
- * @return the maximum longitude covered by this route.
+ * @return the maximum altitude covered by this route.
  */
-  public double getMaxLongitude();
+  public double getMaxAltitude();
 
 
 }

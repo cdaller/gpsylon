@@ -50,8 +50,6 @@ import org.dinopolis.gpstool.gui.util.ImageInfo;
 import java.util.Collection;
 import java.util.TreeSet;
 import org.dinopolis.gpstool.util.MapInfoScaleComparator;
-import org.dinopolis.gpstool.gui.util.ImageInfoScaleComparator;
-
 
 //----------------------------------------------------------------------
 /**

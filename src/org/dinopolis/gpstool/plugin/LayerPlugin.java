@@ -47,6 +47,7 @@ import com.bbn.openmap.event.LayerStatusEvent;
  *
  * @author Christof Dallermassl
  * @version $Revision$
+ * @see com.bbn.openmap.Layer
  */
 
 public abstract class LayerPlugin extends Layer implements GuiPlugin

@@ -24,17 +24,20 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
+
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Hashtable;
-
+import java.util.List;
 import javax.swing.JFrame;
-
+import org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor;
+import org.dinopolis.gpstool.gpsinput.garmin.GarminPVT;
+import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
-import java.io.IOException;
-import java.util.List;
 
 //----------------------------------------------------------------------
 /**

@@ -216,9 +216,9 @@ Christof Dallermassl (cdaller@iicm.edu)
     </path>
     <pathconvert pathsep=" " property="gpstool.dist.lib.classpath"
       refid="gpstool.dist.classpath">
-      <map from="${user.dir}/${lib_dir}" to="lib/java"/> <!-- trailing '/' is required -->
-      <map from="${user.dir}/${doc_dir}" to="doc"/> <!-- in manifest Class-Path   -->
-      <map from="${user.dir}/${aux_dir}" to="auxiliary"/> 
+      <map from="${user.dir}${file.separator}${lib_dir}" to="lib${file.separator}java"/> 
+      <map from="${user.dir}${file.separator}${doc_dir}" to="doc"/> 
+      <map from="${user.dir}${file.separator}${aux_dir}" to="auxiliary"/> 
     </pathconvert>
 
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->

@@ -23,13 +23,14 @@
 
 package org.dinopolis.gpstool.plugin;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.beans.PropertyChangeSupport;
-import org.dinopolis.gpstool.StatusHook;
-import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.MapManagerHook;
+import org.dinopolis.gpstool.MapNavigationHook;
+import org.dinopolis.gpstool.StatusHook;
+import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.util.Resources;
-import java.awt.Component;
 
 //----------------------------------------------------------------------
 /**
@@ -104,6 +105,20 @@ public interface PluginSupport
  * @return the resources
  */
   public Resources getResources();
+
+
+//----------------------------------------------------------------------
+/**
+ * Get the gps data processor that handles the input/output of the gps
+ * data. This class may be used to get/set routes, tracks, waypoints,
+ * etc. directly to the gps device. For position, heading, speed,
+ * etc. better use the {@link #getPropertyChangeSupport()}
+ * method. Please note, that not all implementations of the
+ * GPSDataProcessor interface support all operations!
+ *
+ * @return the gps data processor
+ */
+  public GPSDataProcessor getGPSDataProcessor();
 }
 
 

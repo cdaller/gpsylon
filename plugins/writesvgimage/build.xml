@@ -129,4 +129,5 @@ The following targets are available:
         <exclude name="*.tar.gz"/>
       </fileset>
     </copy>
+  </target>
 </project>

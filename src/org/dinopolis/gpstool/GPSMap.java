@@ -1258,34 +1258,23 @@ public class GPSMap
         // GuiPlugins
     Object[] plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.GuiPlugin.class);
     GuiPlugin gui_plugin;
-    Layer layer;
-    JMenuItem plugin_menu;
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       gui_plugin = (GuiPlugin)plugins[plugins_index];
-      System.out.println("Adding Gui Plugin: " + gui_plugin.getPluginName());
       addGuiPlugin(gui_plugin);
+      System.out.println("Added Gui Plugin: " + gui_plugin.getPluginName());
     }
-
-//          // LayerPlugins
-//      plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.LayerPlugin.class);
-//      LayerPlugin layer_plugin;
-//      for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
-//      {
-//        layer_plugin = (LayerPlugin)plugins[plugins_index];
-//        System.out.println("Adding Layer Plugin: " + layer_plugin.getPluginName());
-//        addLayerPlugin(layer_plugin);
-//      }
 
         // MouseMode Plugins:
     plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.MouseModePlugin.class);
         // initialize all mouse modes and add them as mouselisteners:
     MouseModePlugin mouse_mode_plugin;
+    Layer layer;
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       mouse_mode_plugin = (MouseModePlugin)plugins[plugins_index];
-      System.out.println("Adding Mouse Mode Plugin: " + mouse_mode_plugin.getMouseModeName());
       mouse_mode_plugin.initializePlugin(hook_manager_);
+      System.out.println("Added Mouse Mode Plugin: " + mouse_mode_plugin.getMouseModeName());
       layer = mouse_mode_plugin.getLayer();
       if(layer != null)
         map_bean_.add(layer);
@@ -2949,7 +2938,7 @@ public class GPSMap
 
          // inform me as well about any changes! (could also be implemented
          // by overriding the firePropertyChanged method)
-     GPSMap.this.addPropertyChangeListener(this);
+     addPropertyChangeListener(this);
    }
 
        //----------------------------------------------------------------------

@@ -28,15 +28,29 @@ package org.dinopolis.gpstool.gpsinput;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JFrame;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.exception.ParseErrorException;
 import org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor;
 import org.dinopolis.gpstool.gpsinput.garmin.GarminPVT;
 import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.gpstool.gpsinput.sirf.GPSSirfDataProcessor;
+import org.dinopolis.gpstool.util.ProgressListener;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
 
@@ -45,151 +59,113 @@ import org.dinopolis.util.commandarguments.CommandArguments;
  * Demo application to show the usage of this package (read and
  * interprete gps data from various devices (serial, file, ...).
  *
- * @author Sandra Brueckler, Christof Dallermassl, Stefan Feitl
+ * @author Christof Dallermassl
  * @version $Revision$
  */
 
-public class GPSTool implements PropertyChangeListener
+public class GPSTool implements PropertyChangeListener, ProgressListener
 {
   protected boolean gui_ = true;
   protected GPSDataProcessor gps_processor_;
+
+  public final static String DEFAULT_TEMPLATE =
+  "<?xml version=\"1.0\"?>\n"
+  + "<gpx\n"
+  +"  version=\"1.0\"\n"
+  +"  creator=\"$author\"\n"
+  +"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+  +"  xmlns=\"http://www.topografix.com/GPX/1/0\"\n"
+  +"  xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n"
+  +"  <time>${date_year}-${date_month}-${date_day}T${date_hour}:${date_minute}:${date_second}Z</time>\n"
+  +"  <bounds minlat=\"$min_latitude\" minlon=\"$min_longitude\"\n"
+  +"          maxlat=\"$max_latitude\" maxlon=\"$max_longitude\"/>\n"
+  +"\n"
+  +"## print all routes that are available:\n"
+  +"#if($printroutes)\n"
+  +"#foreach( $route in $routes )\n"
+  +"  <rte>\n"
+  +"    <name>$!route.Identification</name>\n"
+  +"    <desc>![CDATA[$!route.Comment]]</desc>\n"
+  +"    <number>$velocityCount</number>\n"
+  +"#set ($points = $route.getWaypoints())\n"
+  +"#foreach ($point in $points)\n"
+  +"    <rtept lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
+  +"#if($point.hasValidAltitude())\n"
+  +"        <ele>$point.Altitude</ele>\n"
+  +"#end\n"
+  +"    </rtept>\n"
+  +"#end\n"
+  +"  </rte>\n"
+  +"#end\n"
+  +"#end\n"
+  +"## print all tracks that are available:\n"
+  +"#if($printtracks)\n"
+  +"#foreach( $track in $tracks )\n"
+  +"  <trk>\n"
+  +"    <name>$!track.Identification</name>\n"
+  +"    <desc>![CDATA[$!track.Comment]]</desc>\n"
+  +"##      <number>$velocityCount</number>\n"
+  +"#set ($points = $track.getWaypoints())##\n"
+  +"#foreach ($point in $points)##\n"
+  +"#if($point.isNewTrack())\n"
+  +"#if($close_segment)  ## close trkseg, if not the first occurence\n"
+  +"    </trkseg>\n"
+  +"#end\n"
+  +"    <trkseg>\n"
+  +"#set($close_segment = true)\n"
+  +"#end\n"
+  +"      <trkpt lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
+  +"#if($point.hasValidAltitude())\n"
+  +"        <ele>$point.Altitude</ele>\n"
+  +"#end\n"
+  +"      </trkpt>\n"
+  +"#end\n"
+  +"    </trkseg>\n"
+  +"  </trk>\n"
+  +"#end\n"
+  +"#end\n"
+  +"## print all waypoints that are available:\n"
+  +"#if($printwaypoints)\n"
+  +"#foreach( $point in $waypoints )\n"
+  +"  <wpt lat=\"$point.Latitude\" lon=\"$point.Longitude\">\n"
+  +"    <name>$!point.Identification</name>\n"
+  +"    <desc>![CDATA[$!point.Comment]]</desc>\n"
+  +"#if($point.hasValidAltitude())\n"
+  +"    <ele>$point.Altitude</ele>\n"
+  +"#end\n"
+  +"  </wpt>\n"
+  +"#end\n"
+  +"#end\n"
+  +"</gpx>";
   
+//----------------------------------------------------------------------
+/**
+ * Default constructor
+ */
   public GPSTool()
   {
   }
   
-  public void open(GPSDevice gps_device, GPSDataProcessor gps_processor) throws GPSException
-  {
-    gps_processor.setGPSDevice(gps_device);
-    gps_processor.open();
-    gps_processor_ = gps_processor;
-  }
-
-  public void close() throws GPSException
-  {
-    gps_processor_.close();
-  }
-
-  public void registerEvents()
-  {
-    System.out.println("------------------------------------------------------------"); 
-    System.out.println("------------------------------------------------------------");
-    System.out.println("------------------------------------------------------------");
-
-    try
-    {
-      JFrame frame = null;
-      if(gui_)
-      {
-        GPSInfoPanel panel = new GPSInfoPanel();
-        frame = new JFrame("GPS Info");
-        frame.getContentPane().add(panel);
-        frame.pack();
-        frame.setVisible(true);
-      
-        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.LOCATION,panel);
-        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.HEADING,panel);
-        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.ALTITUDE,panel);
-        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SPEED,panel);
-        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.NUMBER_SATELLITES,panel);
-        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SATELLITE_INFO,panel);
-      }
-      gps_processor_.addGPSDataChangeListener(GPSDataProcessor.LOCATION,this);
-      gps_processor_.addGPSDataChangeListener(GPSDataProcessor.HEADING,this);
-      gps_processor_.addGPSDataChangeListener(GPSDataProcessor.ALTITUDE,this);
-      gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SPEED,this);
-      gps_processor_.addGPSDataChangeListener(GPSDataProcessor.NUMBER_SATELLITES,this);
-      gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SATELLITE_INFO,this);
-
-      System.out.println("press enter to quit");
-      System.in.read();
-      if(gui_)
-      {
-        frame.setVisible(false);
-        frame.dispose();
-      }
-//        try
-//        {
-//          Thread.sleep(200000);
-//        }
-//        catch(InterruptedException ie)
-//        {}
-//        gps_processor_.close();
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-    }
-   
-  }
-
-  public void propertyChange(PropertyChangeEvent event)
-  {
-    Object value = event.getNewValue();
-    String name = event.getPropertyName();
-    if(name.equals(GPSDataProcessor.SATELLITE_INFO))
-    {
-      SatelliteInfo[] infos = (SatelliteInfo[])value;
-      SatelliteInfo info;
-      for(int count=0; count < infos.length; count++)
-      {
-        info = infos[count];
-        System.out.println("sat "+info.getPRN()+": elev="+info.getElevation()
-                           + " azim="+info.getAzimuth()+" dB="+info.getSNR());
-      }
-    }
-    else
-      System.out.println(event.getPropertyName()+": "+event.getNewValue());
-//      System.out.println("EVENT:");
-//      System.out.println("source: "+event.getSource());
-//      System.out.println("Name  : "+event.getPropertyName());
-//      System.out.println("Old   : "+event.getOldValue());
-//      System.out.println("New   : "+event.getNewValue());
-//      GPSDataProcessor source = (GPSDataProcessor)event.getSource ();
-//      System.out.println("POS:"+source.getGPSPosition());
-//      System.out.println("HDG:"+source.getHeading());
-  }
-
 //----------------------------------------------------------------------
 /**
- * prints the help messages
+ * Initialize the gps device, the gps data processor and handle all
+ * command line arguments.
+ * @param arguments the command line arguments
  */
-
-  public static void printHelp()
+  public void init(String[] arguments)
   {
-    System.out.println("GPSTool 0.7.0 - Communication between GPS-Devices and Computers via serial port");
-    System.out.println("(c) 2000-2003 Sandra Brueckler, Christof Dallermassl, Stefan Feitl\n");
-    System.out.println("Usage: java org.dinopolis.gpstool.GPSTool [options]\n");
-    System.out.println("Options:");
-    System.out.println("--device, -d <device>, e.g. -d /dev/ttyS0 or COM1 (defaults depending on OS).");
-    System.out.println("--speed,  -s <speed>, e.g. -s 4800 (default for nmea, 9600 for garmin, 19200 for sirf).");
-    System.out.println("--file,   -f <filename>, the gps data is read from the given file.");
-    System.out.println("--nmea,   -n, the gps data is interpreted as NMEA data (default).");
-    System.out.println("--garmin, -g, the gps data is interpreted as garmin data.");
-    System.out.println("--sirf, -i, the gps data is interpreted as sirf data.");
-    System.out.println("--nogui, no frame is opened.\n");
-    System.out.println("--printtrack, print tracks.");
-    System.out.println("--printwaypoint, print waypoints.");
-    System.out.println("--printroute, print route.");
-  }
-
-  private static void test()
-  {
-//     double latitude = GPSNmeaDataProcessor.nmeaPosToWGS84("4703.555");
-//     double longitude = GPSNmeaDataProcessor.nmeaPosToWGS84("01527.553");
-//     System.out.println(new GPSPosition(latitude,"N",longitude,"E"));
-  }
-
-  
-  public static void main (String[] arguments) 
-  {
-        // If no arguments are specified, help page is displayed by default
-    if (Array.getLength(arguments) == 0) {arguments = new String[] {"-h"};}
-
+    if(arguments.length < 1)
+    {
+      printHelp();
+      return;
+    }
+    
     String[] valid_args =
       new String[] {"device*","d*","help","h","speed#","s#","file*","f*",
-                    "nmea","n","garmin","g","sirf","i","test","nogui","printtrack",
-                    "printwaypoint","printroute","printdeviceinfo","printpvt"};
+                    "nmea","n","garmin","g","sirf","i","test","downloadtracks",
+                    "downloadwaypoints","downloadroutes","deviceinfo","printposonce",
+                    "printpos","p","printalt","printspeed","printheading","printsat",
+                    "template*","outfile*","printdefaulttemplate"};
 
         // Check command arguments
         // Throw exception if arguments are invalid
@@ -200,7 +176,8 @@ public class GPSTool implements PropertyChangeListener
     }
     catch(CommandArgumentException cae) 
     {
-      cae.printStackTrace();
+      System.err.println("Invalid arguments: "+cae.getMessage());
+      printHelp(); 
       return;
     }
 
@@ -217,6 +194,10 @@ public class GPSTool implements PropertyChangeListener
       return;
     }
     
+    if (args.isSet("printdefaulttemplate"))
+    {
+      System.out.println(DEFAULT_TEMPLATE);
+    }
     if (args.isSet("test"))
     {
       test();
@@ -299,62 +280,437 @@ public class GPSTool implements PropertyChangeListener
       gps_device = new GPSSerialDevice();
     }
 
-        // Initialize GPS-Device and GPS-Processor
     try
     {
+          // set params needed to open device (file,serial, ...):
       gps_device.init(environment);
-      GPSTool gps_tool = new GPSTool();
-      gps_tool.gui_ = !args.isSet("nogui");
-    
-      gps_tool.open(gps_device,gps_data_processor);
+          // connect device and data processor:
+      gps_data_processor.setGPSDevice(gps_device);
+      gps_data_processor.open();
 
-      boolean work_done = false;
-      if(args.isSet("printwaypoint"))
+            // use progress listener to be informed about the number
+            // of packages to download
+      gps_data_processor.addProgressListener(this);
+      
+          // check, what to do:
+      if(args.isSet("deviceinfo"))
       {
-        List waypoints = ((GPSGarminDataProcessor)gps_data_processor).getWaypoints(0L);
-        System.out.println(waypoints);
-        work_done = true;
-      }
-      else
-        if(args.isSet("printtrack"))
+        System.out.println("GPSInfo:");
+        String[] infos = gps_data_processor.getGPSInfo();
+        for(int index=0; index < infos.length; index++)
         {
-          List tracks = ((GPSGarminDataProcessor)gps_data_processor).getTracks(0L);
-          System.out.println(tracks);
-          work_done = true;
+          System.out.println(infos[index]);
+        }
+      }
+
+      boolean print_waypoints = args.isSet("downloadwaypoints");
+      boolean print_routes = args.isSet("downloadroutes");
+      boolean print_tracks = args.isSet("downloadtracks");
+
+      if(print_waypoints || print_routes || print_tracks)
+      {
+            // create context for template printing:
+        VelocityContext context = new VelocityContext();
+        
+        if(print_waypoints)
+        {
+          List waypoints = gps_data_processor.getWaypoints();
+          if(waypoints != null)
+            context.put("waypoints",waypoints);
+          else
+            print_waypoints = false;
+//        System.out.println(waypoints);
+        }
+        if(print_tracks)
+        {
+          List tracks = gps_data_processor.getTracks();
+          if(tracks != null)
+            context.put("tracks",tracks);
+          else
+            print_tracks = false;
+//        System.out.println(tracks);
+        }
+        if(print_routes)
+        {
+          List routes = gps_data_processor.getRoutes();
+          if(routes != null)
+            context.put("routes",routes);
+          else
+            print_routes = false;
+//        System.out.println(routes);
+        }
+            // download finished, prepare context:
+        context.put("printwaypoints",new Boolean(print_waypoints));
+        context.put("printtracks",new Boolean(print_tracks));
+        context.put("printroutes",new Boolean(print_routes));
+
+        Writer writer;
+        Reader reader;
+        if(args.isSet("template"))
+        {
+          String template_file = (String)args.getValue("template");
+          reader = new FileReader(template_file);
         }
         else
-          if(args.isSet("printroute"))
-          {
-            List routes = ((GPSGarminDataProcessor)gps_data_processor).getRoutes(0L);
-            System.out.println(routes);
-            work_done = true;
-          }
-          else
-            if(args.isSet("printpvt"))
-            {
-              GarminPVT pvt = ((GPSGarminDataProcessor)gps_data_processor).getPVT(0L);
-              System.out.println(pvt);
-              work_done = true;
-            }
-            else
-              if(args.isSet("printdeviceinfo"))
-              {
-                System.out.println(((GPSGarminDataProcessor)gps_data_processor).getProductInfo());
-                System.out.println(((GPSGarminDataProcessor)gps_data_processor).getCapabilities());
-                work_done = true;
-              }
+        {
+          reader = new StringReader(DEFAULT_TEMPLATE);
+        }
+        if(args.isSet("outfile"))
+          writer = new FileWriter((String)args.getValue("outfile"));
+        else
+          writer = new OutputStreamWriter(System.out);
+
+        addDefaultValuesToContext(context);
+        boolean result = printTemplate(context,reader,writer);
+        
+      }
+      if(args.isSet("printposonce"))
+      {
+        GPSPosition pos = gps_data_processor.getGPSPosition();
+        System.out.println("Current Position: "+pos);
+      }
       
-      if(!work_done)
-        gps_tool.registerEvents();
-      gps_tool.close();
+          // register as listener to be informed about the chosen events
+      if(args.isSet("printpos") || args.isSet("p"))
+      {
+        gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.LOCATION,this);
+      }
+      if(args.isSet("printalt"))
+      {
+        gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.ALTITUDE,this);
+      }
+      if(args.isSet("printspeed"))
+      {
+        gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.SPEED,this);
+      }
+      if(args.isSet("printheading"))
+      {
+        gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.HEADING,this);
+      }
+      if(args.isSet("printsat"))
+      {
+        gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.NUMBER_SATELLITES,this);
+        gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.SATELLITE_INFO,this);
+      }
+      if(args.isSet("printpos") || args.isSet("p") || args.isSet("printalt")
+         || args.isSet("printsat") || args.isSet("speed") || args.isSet("heading"))
+      {
+            // tell gps processor to send curren position once every second:
+        gps_data_processor.startSendPositionPeriodically(1000L);
+
+        try
+        {
+              // wait for user pressing enter:
+          System.in.read();
+        }
+        catch(IOException ignore) {}
+      }
+            // close device and processor:
+      gps_data_processor.close();
     }
     catch(GPSException e)
     {
       e.printStackTrace();
     }
+    catch(FileNotFoundException fnfe)
+    {
+      System.err.println("ERROR: File not found: "+fnfe.getMessage());
+    }
     catch(IOException ioe)
     {
-      ioe.printStackTrace();
+      System.err.println("ERROR: I/O Error: "+ioe.getMessage());
     }
-  } // end of main ()
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Adds some important values to the velocity context (e.g. date, ...).
+ *
+ * @param context the velocity context holding all the data
+ */
+  public void addDefaultValuesToContext(VelocityContext context)
+  {
+        // current time, date
+    Calendar now = Calendar.getInstance();
+    int day = now.get(Calendar.DAY_OF_MONTH);
+    int month = now.get(Calendar.MONTH);
+    int year = now.get(Calendar.YEAR);
+    int hour = now.get(Calendar.HOUR_OF_DAY);
+    int minute = now.get(Calendar.MINUTE);
+    int second = now.get(Calendar.SECOND);
+    DecimalFormat two_digit_formatter = new DecimalFormat("00");
+    context.put("date_day",two_digit_formatter.format((long)day));
+    context.put("date_month",two_digit_formatter.format((long)month));
+    context.put("date_year",Integer.toString(year));
+    context.put("date_hour",two_digit_formatter.format((long)hour));
+    context.put("date_minute",two_digit_formatter.format((long)minute));
+    context.put("date_second",two_digit_formatter.format((long)second));
+
+        // author
+    context.put("author",System.getProperty("user.name"));
+
+        // extent of waypoint, routes and tracks:
+    double min_latitude = 90.0;
+    double min_longitude = 180.0;
+    double max_latitude = -90.0;
+    double max_longitude = -180.0;
+
+    List routes = (List)context.get("routes");
+    GPSRoute route;
+    if(routes != null)
+    {
+      Iterator route_iterator = routes.iterator();
+      while(route_iterator.hasNext())
+      {
+        route = (GPSRoute)route_iterator.next();
+        min_longitude = route.getMinLongitude();
+        max_longitude = route.getMaxLongitude();
+        min_latitude = route.getMinLatitude();
+        max_latitude = route.getMaxLatitude();
+      }
+    }
+
+    List tracks = (List)context.get("tracks");
+    GPSTrack track;
+    if(tracks != null)
+    {
+      Iterator track_iterator = tracks.iterator();
+      while(track_iterator.hasNext())
+      {
+        track = (GPSTrack)track_iterator.next();
+        min_longitude = Math.min(min_longitude,track.getMinLongitude());
+        max_longitude = Math.max(max_longitude,track.getMaxLongitude());
+        min_latitude = Math.min(min_latitude,track.getMinLatitude());
+        max_latitude = Math.max(max_latitude,track.getMaxLatitude());
+      }
+    }
+    List waypoints = (List)context.get("waypoints");
+    GPSWaypoint waypoint;
+    if(waypoints != null)
+    {
+      Iterator waypoint_iterator = waypoints.iterator();
+      while(waypoint_iterator.hasNext())
+      {
+        waypoint = (GPSWaypoint)waypoint_iterator.next();
+        min_longitude = Math.min(min_longitude,waypoint.getLongitude());
+        max_longitude = Math.max(max_longitude,waypoint.getLongitude());
+        min_latitude = Math.min(min_latitude,waypoint.getLatitude());
+        max_latitude = Math.max(max_latitude,waypoint.getLatitude());
+      }
+    }
+    context.put("min_latitude",new Double(min_latitude));
+    context.put("min_longitude",new Double(min_longitude));
+    context.put("max_latitude",new Double(max_latitude));
+    context.put("max_longitude",new Double(max_longitude));
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Prints the given context with the given velocity template to the
+ * given output writer.
+ *
+ * @param context the velocity context holding all the data
+ * @param template the reader providing the template to use
+ * @param out the writer to write the result to.
+ * @return true if successfull, false otherwise (see velocity log for
+ * details then).
+ * @throws IOException if an error occurs
+ */
+  public boolean printTemplate(VelocityContext context,Reader template, Writer out)
+    throws IOException
+  {
+    boolean result = false;
+    try
+    {
+      Velocity.init();
+      result = Velocity.evaluate(context,out,"gpstool",template);
+      out.flush();
+      out.close();
+    }
+    catch(ParseErrorException pee)
+    {
+      pee.printStackTrace();
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
+    return(result);
+  }
+  
+  
+//   public void registerListener()
+//   {
+//     System.out.println("------------------------------------------------------------"); 
+//     System.out.println("------------------------------------------------------------");
+//     System.out.println("------------------------------------------------------------");
+
+//     try
+//     {
+// //       JFrame frame = null;
+// //       if(gui_)
+// //       {
+// //         GPSInfoPanel panel = new GPSInfoPanel();
+// //         frame = new JFrame("GPS Info");
+// //         frame.getContentPane().add(panel);
+// //         frame.pack();
+// //         frame.setVisible(true);
+      
+// //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.LOCATION,panel);
+// //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.HEADING,panel);
+// //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.ALTITUDE,panel);
+// //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SPEED,panel);
+// //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.NUMBER_SATELLITES,panel);
+// //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SATELLITE_INFO,panel);
+// //       }
+
+//       System.in.read();
+//       if(gui_)
+//       {
+//         frame.setVisible(false);
+//         frame.dispose();
+//       }
+// //        try
+// //        {
+// //          Thread.sleep(200000);
+// //        }
+// //        catch(InterruptedException ie)
+// //        {}
+// //        gps_processor_.close();
+//     }
+//     catch(Exception e)
+//     {
+//       e.printStackTrace();
+//     }
+   
+//   }
+
+//----------------------------------------------------------------------
+// Callback method for PropertyChangeListener
+//----------------------------------------------------------------------
+  
+//----------------------------------------------------------------------
+/**
+ * Callback for any changes of the gps data (position, heading, speed,
+ * etc.).
+ * @param event the event holding the information.
+ */
+  public void propertyChange(PropertyChangeEvent event)
+  {
+    Object value = event.getNewValue();
+    String name = event.getPropertyName();
+    if(name.equals(GPSDataProcessor.SATELLITE_INFO))
+    {
+      SatelliteInfo[] infos = (SatelliteInfo[])value;
+      SatelliteInfo info;
+      for(int count=0; count < infos.length; count++)
+      {
+        info = infos[count];
+        System.out.println("sat "+info.getPRN()+": elev="+info.getElevation()
+                           + " azim="+info.getAzimuth()+" dB="+info.getSNR());
+      }
+    }
+    else
+      System.out.println(event.getPropertyName()+": "+event.getNewValue());
+  }
+
+//----------------------------------------------------------------------
+// Callback methods for ProgressListener
+//----------------------------------------------------------------------
+  
+//----------------------------------------------------------------------
+/**
+ * Callback to inform listeners about an action to start.
+ *
+ * @param action_id the id of the action that is started. This id may
+ * be used to display a message for the user.
+ * @param min_value the minimum value of the progress counter.
+ * @param max_value the maximum value of the progress counter. If the
+ * max value is unknown, max_value is set to <code>Integer.NaN</code>.
+ */
+  public void actionStart(String action_id, int min_value, int max_value)
+  {
+    System.err.println("Starting '"+action_id+"' ("+max_value+" packages): ");
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Callback to inform listeners about progress going on. It is not
+ * guaranteed that this method is called on every change of current
+ * value (e.g. only call this method on every 10th change).
+ *
+ * @param action_id the id of the action that is started. This id may
+ * be used to display a message for the user.
+ * @param current_value the current value
+ */
+  public void actionProgress(String action_id, int current_value)
+  {
+    System.err.print("\r"+current_value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Callback to inform listeners about the end of the action.
+ *
+ * @param action_id the id of the action that is started. This id may
+ * be used to display a message for the user.
+ */
+  public void actionEnd(String action_id)
+  {
+    System.err.println("\nfinished");
+  }
+
+
+  
+//----------------------------------------------------------------------
+/**
+ * Prints the help messages
+ */
+
+  public static void printHelp()
+  {
+    System.out.println("GPSTool 0.8.0 - Communication between GPS-Devices and Computers via serial port");
+    System.out.println("(c) 2000-2003 Christof Dallermassl\n");
+    System.out.println("Usage: java org.dinopolis.gpstool.GPSTool [options]\n");
+    System.out.println("Options:");
+    System.out.println("--device, -d <device>, e.g. -d /dev/ttyS0 or COM1 (defaults depending on OS).");
+    System.out.println("--speed,  -s <speed>, e.g. -s 4800 (default for nmea, 9600 for garmin, 19200 for sirf).");
+    System.out.println("--file,   -f <filename>, the gps data is read from the given file.");
+    System.out.println("--nmea,   -n, the gps data is interpreted as NMEA data (default).");
+    System.out.println("--garmin, -g, the gps data is interpreted as garmin data.");
+    System.out.println("--sirf, -i, the gps data is interpreted as sirf data.");
+//    System.out.println("--nogui, no frame is opened.\n");
+    System.out.println("--printposonce, prints the current position and exits again.");
+    System.out.println("--printpos, -p, prints the current position and any changes.");
+    System.out.println("                Loops until the user presses 'enter'.");
+    System.out.println("--printalt, prints the current altitude and any changes.");
+    System.out.println("--printsat, prints the current satellite info altitude and any changes.");
+    System.out.println("--printspeed, prints the current speed and any changes.");
+    System.out.println("--printheading, prints the current heading and any changes.");
+    System.out.println("--deviceinfo, prints some information about the gps device (if available)");
+    System.out.println("--downloadtracks, print tracks stored in the gps device.");
+    System.out.println("--downloadwaypoints, print waypoints stored in the gps device.");
+    System.out.println("--downloadroutes, print routes stored in the gpsdevice .");
+    System.out.println("--outfile <filename>, the file to print the tracks, routes and waypoints to, stdout is default");
+    System.out.println("--template <filename>, the velocity template to use for printing routes, tracks and waypoints");
+    System.out.println("--printdefaulttemplate, prints the default template used to print routes, waypoints, and tracks.");
+    System.out.println("--help -h, shows this page");
+    
+  }
+
+  private static void test()
+  {
+  }
+
+  
+//----------------------------------------------------------------------
+/**
+ * Main method
+ * @param arguments the command line arguments
+ */
+  public static void main (String[] arguments) 
+  {
+    new GPSTool().init(arguments);
+  }
 }

@@ -649,7 +649,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       out_stream_.flush();
       
           // inform listeners:
-      String buffer_string = "sent: "+garmin_package.toString();
+      String buffer_string = "sent: "+garmin_package.toString()+"\n";
       fireRawDataReceived(buffer_string.toCharArray(),0,buffer_string.length());
     }
     catch(IOException ioe)
@@ -849,7 +849,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       watch_dog_.stopWatching();
 
           // inform raw data listeners:
-      String buffer_string = "received: "+garmin_package.toString();
+      String buffer_string = "received: "+garmin_package.toString()+"\n";
       fireRawDataReceived(buffer_string.toCharArray(),0,buffer_string.length());
       
       return (garmin_package); 

@@ -58,7 +58,7 @@ import com.bbn.openmap.event.LayerStatusEvent;
 public abstract class BasicLayer extends Layer
 {
   protected SwingWorker swing_worker_;
-  protected boolean layer_active_ = true;
+  protected boolean layer_active_ = false; // default is off!
 
 //----------------------------------------------------------------------
 /**
@@ -73,7 +73,7 @@ public abstract class BasicLayer extends Layer
  * This method is called whenever the projection changed or the layer
  * was activated. It starts a SwingWorker and calls the {@link
  * #doCalculation()} method in another thread. After this method
- * finished, a repaint() is initialted.
+ * finished, a repaint() is initiated.
  */
   protected void recalculateCoordinates()
   {
@@ -130,6 +130,17 @@ public abstract class BasicLayer extends Layer
     repaint();
   }
 
+//----------------------------------------------------------------------
+/**
+ * Returns if the layer is active or not.
+ *
+ * @return <code>true</code> if the layer is active and paints
+ * something.
+ */
+  public boolean isActive()
+  {
+    return(layer_active_);
+  }
   
 //----------------------------------------------------------------------
 // ProjectionListener interface implementation

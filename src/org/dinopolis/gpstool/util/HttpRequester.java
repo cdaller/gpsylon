@@ -212,7 +212,7 @@ public class HttpRequester
 //        System.out.println("READ: "+header_line);
       }
           // content follows:
-      printMap(response_headers);
+//      printMap(response_headers);
       int content_length = Integer.parseInt((String)response_headers.get("Content-Length"));
       int left_to_read = content_length;
       StringBuffer content = new StringBuffer(4069);

@@ -22,9 +22,12 @@
 
 package org.dinopolis.gpstool;
 
-import org.dinopolis.gpstool.event.MapsChangedListener;
-import com.bbn.openmap.proj.Projection;
+import java.io.IOException;
 import java.util.Collection;
+
+import org.dinopolis.gpstool.event.MapsChangedListener;
+
+import com.bbn.openmap.proj.Projection;
 
 //----------------------------------------------------------------------
 /**
@@ -59,7 +62,26 @@ public interface MapManagerHook
  * @param map_info the new map
  */
 
-  public void addNewMap(MapInfo map_info);
+  public void addNewMap(MapInfo map_info); 
+  
+  //----------------------------------------------------------------------
+  /**
+   * Removes the given map from the map manager. This method does not store
+   * the information in the file.
+   * 
+   * @param info the map info
+   */
+  public void removeMap(MapInfo info);
+
+  //----------------------------------------------------------------------
+  /**
+   * Stores the map informations in (in the file, in the database, ...)
+   *
+   * @throws IOException if an error occured.
+   */
+  public void storeMapInfos() throws IOException;
+
+
 
 //----------------------------------------------------------------------
 /**

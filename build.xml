@@ -12,7 +12,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.4.15-pre4"/>
+    <property name="release_version" value="0.4.15-pre5"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib/java"/>
@@ -84,6 +84,7 @@ Christof Dallermassl (cdaller@iicm.edu)
       - clean_javadoc: deletes the '${javadoc_dir}' directory.
 
       - dist: creates the binary and the source dist tar.gz files in the '${dist_dir}' directory.
+      - jars: creates the jar files needed to execute GPSTool or GPSylon.
       - bin_dist: creates a tar.gz file in the dist directory that contains all
       needed files (plugin jar and libraries) in the '${dist_dir}' directory.
       - src_dist: creates a tar.gz file containing the source, javadoc and all
@@ -120,6 +121,13 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- clean target -->
   <target name="clean" depends="init">
+    <delete>
+      <fileset dir="${basedir}">
+        <include name="gpstool.jar"/>
+        <include name="gpsylon.jar"/>
+        <include name="${dist_name}-*.jar"/>
+      </fileset>
+    </delete>
     <delete dir="${target_class_dir}"/>
   </target>
 
@@ -193,10 +201,8 @@ Christof Dallermassl (cdaller@iicm.edu)
   <target name="dist" depends="init,bin_dist,src_dist">
   </target>
 
-  <!-- bin_dist target -->
-  <target name="bin_dist" depends="init,clean,clean_dist,compile,copy_default_plugins">
-    <mkdir dir="${dist_dir}"/>
-
+  <!-- jars target -->
+  <target name="jars" depends="init,clean,compile">
     <!-- create a property holding the Class-Path for the manifest -->
     <path id="gpstool.dist.classpath">
       <fileset dir="${lib_dir}">
@@ -215,7 +221,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
     <!-- properties files and the images ! -->
-    <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
+    <jar jarfile="${dist_name}-${release_version}.jar">
       <!-- make the MANIFEST.MF file -->
       <manifest>
         <attribute name="Built-By" value="${user.name}"/>
@@ -240,7 +246,7 @@ Christof Dallermassl (cdaller@iicm.edu)
     </jar>
 
 <!-- create gpsylon jar file for quickstart -->
-    <jar jarfile="${dist_dir}/gpsylon.jar">
+    <jar jarfile="gpsylon.jar">
       <!-- make the MANIFEST.MF file -->
       <manifest>
         <attribute name="Built-By" value="${user.name}"/>
@@ -258,7 +264,7 @@ Christof Dallermassl (cdaller@iicm.edu)
     </jar>
 
 <!-- create gpstool jar file for quickstart -->
-    <jar jarfile="${dist_dir}/gpstool.jar">
+    <jar jarfile="gpstool.jar">
       <!-- make the MANIFEST.MF file -->
       <manifest>
         <attribute name="Built-By" value="${user.name}"/>
@@ -274,6 +280,19 @@ Christof Dallermassl (cdaller@iicm.edu)
         </section>
       </manifest>
     </jar>
+  </target>
+
+  <!-- bin_dist target -->
+  <target name="bin_dist" depends="jars,clean_dist,copy_default_plugins">
+    <mkdir dir="${dist_dir}"/>
+
+    <copy todir="${dist_dir}">
+      <fileset dir=".">
+        <include name="${dist_name}-${release_version}.jar"/>
+        <include name="gpsylon.jar"/>
+        <include name="gpstool.jar"/>
+      </fileset>
+    </copy>
 
     <copy todir="${dist_dir}/${lib_dir}">
       <fileset dir="${lib_dir}">

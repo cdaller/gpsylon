@@ -1,4 +1,6 @@
 org.dinopolis.gpstool.plugin.downloadmousemode.MapblastDownloader
-org.dinopolis.gpstool.plugin.downloadmousemode.ExpediaWestDownloader
-org.dinopolis.gpstool.plugin.downloadmousemode.ExpediaEastDownloader
+#org.dinopolis.gpstool.plugin.downloadmousemode.ExpediaWestDownloader
+#org.dinopolis.gpstool.plugin.downloadmousemode.ExpediaEastDownloader
+org.dinopolis.gpstool.plugin.downloadmousemode.Custom1Downloader
+org.dinopolis.gpstool.plugin.downloadmousemode.MappointDownloader
 

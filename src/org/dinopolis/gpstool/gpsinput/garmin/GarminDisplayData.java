@@ -14,8 +14,7 @@ public class GarminDisplayData
   BufferedImage image_;
   Graphics graphics_;
   int rotate_image_degrees_ = -90; // garmin eTrex data is wrong orientation, rotate degree clockwise
-  final static Color COLORS[] = new Color[] {new Color(255,255,255),new Color(170,170,170),
-                                             new Color(85,85,85), new Color(0,0,0)};
+  Color[] colors_;
 
   
   public GarminDisplayData()
@@ -30,6 +29,17 @@ public class GarminDisplayData
       image_ = new BufferedImage(height_,width_,BufferedImage.TYPE_INT_RGB);
     else
       image_ = new BufferedImage(width_,height_,BufferedImage.TYPE_INT_RGB);
+
+        // colors: grey levels are byte 24,25,26,27 in display data:
+    colors_  = new Color[4];
+    int value;
+    int grey_value;
+    for(int color_index = 0; color_index < 4; color_index++)
+    {
+      value = garmin_package.getByte(color_index + 24);
+      grey_value = value * 16;
+      colors_[color_index] = new Color(grey_value,grey_value,grey_value);
+    }
     
     graphics_ = image_.createGraphics();
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_header"))
@@ -65,7 +75,7 @@ public class GarminDisplayData
 
   protected void drawPixel(int x, int y, int value)
   {
-    graphics_.setColor(COLORS[value]);
+    graphics_.setColor(colors_[value]);
     if(rotate_image_degrees_ == -90)
       graphics_.drawLine(y, width_-x-1, y, width_-x-1);
     else

@@ -27,7 +27,7 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Map;
-import org.dinopolis.gpstool.util.ProgressListener;
+import org.dinopolis.util.ProgressListener;
 
 //----------------------------------------------------------------------
 /**

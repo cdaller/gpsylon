@@ -50,7 +50,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor;
 import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.gpstool.gpsinput.sirf.GPSSirfDataProcessor;
-import org.dinopolis.gpstool.util.ProgressListener;
+import org.dinopolis.util.ProgressListener;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
 

@@ -129,7 +129,7 @@ public class GPSMap
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.15-pre8";
+  public final static String GPSMAP_VERSION = "0.4.15-pre9";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -708,7 +708,7 @@ public class GPSMap
         }
       catch(Exception e)
       {
-        System.err.println("ERROR: plugin '"+plugin.getPluginName()+" threw an exception on startup: ");
+        logger_.error("ERROR: plugin '"+plugin.getPluginName()+" threw an exception on startup: ");
         e.printStackTrace();
       }
     }
@@ -880,7 +880,7 @@ public class GPSMap
     }
     else
     {
-      System.err.println("ERROR: Could not find 'Mouse Mode' menu, no mouse modes added to menu!");
+      logger_.error("ERROR: Could not find 'Mouse Mode' menu, no mouse modes added to menu!");
     }
   }
 
@@ -902,7 +902,7 @@ public class GPSMap
     }
     else
     {
-      System.err.println("ERROR: Could not find 'Plugins' menu, no plugin menus added to menu!");
+      logger_.error("ERROR: Could not find 'Plugins' menu, no plugin menus added to menu!");
     }
   }
 
@@ -927,7 +927,9 @@ public class GPSMap
       menu_item.setSelected(active);
     }
     else
-      System.err.println("WARNING: could not find 'layers' menu, do not add on/off action");
+		{
+			logger_.warn("WARNING: could not find 'layers' menu, do not add on/off action");
+		}
   }
 //----------------------------------------------------------------------
 /**
@@ -995,8 +997,8 @@ public class GPSMap
 
         if((speed != default_speed) && (default_speed > 0))
         {
-          System.err.println("WARNING: selected speed ("+speed+") is not the default speed ("+default_speed+")");
-          System.err.println("         for the chosen protocol! GPS device may not work!");
+					logger_.warn("WARNING: selected speed ("+speed+") is not the default speed ("+default_speed+")\n"
+											 +"         for the chosen protocol! GPS device may not work!");
         }
         resources_.setInt(KEY_GPS_DEVICE_SERIAL_SPEED,speed);
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_SERIAL);
@@ -1325,6 +1327,11 @@ public class GPSMap
       int dir_name_end = url_path.lastIndexOf('/',exclamation_pos);
       int protocol_end = url_path.indexOf(':');
       String dir_name = url_path.substring(protocol_end+1,dir_name_end);
+
+					// fix escaped characters from url (e.g. spaces) in dirname:
+					// TODO FIXXME: fix other escaped chars as well, not only spaces!
+			dir_name = dir_name.replaceAll("%20"," ");
+
       Logger.getLogger("org.dinopolis.gpstool.GPSMap.plugin")
         .debug("URL of my class :"+url+", dir of jar is "+dir_name);
 //       if(Debug.DEBUG)
@@ -1335,6 +1342,10 @@ public class GPSMap
     {
       String url_path = url.getPath();
       String dir_name = url_path.substring(0,url_path.length() - class_name_path.length());
+					// fix escaped characters from url (e.g. spaces) in dirname:
+					// TODO FIXXME: fix other escaped chars as well, not only spaces!
+			dir_name = dir_name.replaceAll("%20"," ");
+
       dir_name = new File(dir_name).getParent(); // use parent of "classes" directory
       repository = FileUtil.getAbsolutePath(dir_name,STD_PLUGINS_DIR_NAME);
     }
@@ -1512,7 +1523,7 @@ public class GPSMap
         {
           String message = resources_.getString(KEY_LOCALIZE_MESSAGE_GPS_PROPERTIES_EFFECT_ON_RESTART);
           JOptionPane.showMessageDialog(main_frame_, message);
-          System.out.println("WARNING: "+message);
+          logger_.warn("WARNING: "+message);
           print_gps_device_properties_warning_ = false;
         }
 //        updateGPSConnection();
@@ -1620,7 +1631,7 @@ public class GPSMap
         }
         catch(Exception e)
         {
-          System.err.println("ERROR: Could not close the old gps data processor!");
+          logger_.error("ERROR: Could not close the old gps data processor!");
           e.printStackTrace();
         }
       }
@@ -2441,7 +2452,7 @@ public class GPSMap
         }
         catch(Exception e)
         {
-          System.err.println("ERROR: plugin '"+plugin.getPluginName()+" threw an exception on shutdown:");
+          logger_.error("ERROR: plugin '"+plugin.getPluginName()+" threw an exception on shutdown:");
           e.printStackTrace();
         }
       }
@@ -2485,7 +2496,7 @@ public class GPSMap
       }
       catch (IOException exc)
       {
-        System.err.println("ERROR: could not save resources: "+exc.getMessage());
+        logger_.error("ERROR: could not save resources: "+exc.getMessage());
       }
 
           // close connection to gps device
@@ -2496,8 +2507,8 @@ public class GPSMap
       }
       catch(GPSException gpse)
       {
-        System.err.println("WARNING: could not close connection to gps device: "
-                           +gpse.getMessage());
+        logger_.warn("WARNING: could not close connection to gps device: "
+										 +gpse.getMessage());
       }
       LogManager.shutdown(); // close log4j
       System.exit(0);
@@ -2745,7 +2756,7 @@ public class GPSMap
       }
       catch(FileNotFoundException fnfe)
       {
-        System.err.println("ERROR: Could not open map description file from gpsdrive '"+import_filename+"'");
+        logger_.error("ERROR: Could not open map description file from gpsdrive '"+import_filename+"'");
         return;
       }
 
@@ -2789,23 +2800,23 @@ public class GPSMap
                        new Double(longitude_string).doubleValue(),
                        new Float(scale_string).floatValue(),
                        1280,1024);
-	      map_manager_.addNewMap(info);
+							map_manager_.addNewMap(info);
             }
             catch(NoSuchElementException nsee)
             {
-              System.err.println("ERROR: reading map description in line "
-                                 +linenumber+" in file '"+import_filename+"'");
-              System.err.println("The correct format of the map description file is:");
-              System.err.println("<mapfilename> <latitude of center> <longitude of center> <scale>");
-              System.err.println("Ignoring line '"+line+"'");
+              logger_.error("ERROR: reading map description in line "
+														+linenumber+" in file '"+import_filename+"'\n"
+														+"The correct format of the map description file is:\n"
+														+"<mapfilename> <latitude of center> <longitude of center> <scale>\n"
+														+"Ignoring line '"+line+"'");
             }
             catch(NumberFormatException nfe)
             {
-              System.err.println("ERROR: reading map description in line "
-                                 +linenumber+" in file '"+import_filename+"'");
-              System.err.println("The correct format of the map description file is:");
-              System.err.println("<mapfilename> <latitude of center> <longitude of center> <scale>");
-              System.err.println("Ignoring line '"+line+"'");
+              logger_.error("ERROR: reading map description in line "
+                                 +linenumber+" in file '"+import_filename+"'\n"
+														+"The correct format of the map description file is:\n"
+														+"<mapfilename> <latitude of center> <longitude of center> <scale>\n"
+														+"Ignoring line '"+line+"'");
             }
           }
         }      
@@ -2933,7 +2944,7 @@ public class GPSMap
         if(!plugin_found)
         {
               // TODO: open dialog for error:
-          System.err.println("ERROR: no plugin found!");
+          logger_.error("ERROR: no plugin found!");
           return;
         }
       }

@@ -38,6 +38,7 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ import org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor;
 import org.dinopolis.gpstool.gpsinput.garmin.GarminPVT;
 import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.gpstool.gpsinput.sirf.GPSSirfDataProcessor;
+import org.dinopolis.gpstool.util.FormatUtility;
 import org.dinopolis.gpstool.util.ProgressListener;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
@@ -57,7 +59,10 @@ import org.dinopolis.util.commandarguments.CommandArguments;
 //----------------------------------------------------------------------
 /**
  * Demo application to show the usage of this package (read and
- * interprete gps data from various devices (serial, file, ...).
+ * interpret gps data from various devices (serial, file, ...).  <p>
+ * It uses a velocity (http://jakarta.apache.org/velocity) template to
+ * print the downloaded tracks, routes, and waypoints. See the help
+ * output for details about the usable variables.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -70,13 +75,16 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 
   public final static String DEFAULT_TEMPLATE =
   "<?xml version=\"1.0\"?>\n"
-  + "<gpx\n"
+  +"$dateformatter.applyPattern(\"yyyy-MM-dd'T'HH:mm:ss'Z'\")\n"
+  +"<gpx\n"
   +"  version=\"1.0\"\n"
   +"  creator=\"$author\"\n"
   +"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
   +"  xmlns=\"http://www.topografix.com/GPX/1/0\"\n"
   +"  xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n"
-  +"  <time>${date_year}-${date_month}-${date_day}T${date_hour}:${date_minute}:${date_second}Z</time>\n"
+//  +"  <time2>${date_year}-${date_month}-${date_day}T${date_hour}:${date_minute}:${date_second}Z</time2>\n"
+  +"  <time2>$formatutility.getDateString(\"yyyy-MM-dd'T'HH:mm:ss'Z'\",$creation_date)</time2>\n"
+  +"  <time>$dateformatter.format($creation_date)</time>\n"
   +"  <bounds minlat=\"$min_latitude\" minlon=\"$min_longitude\"\n"
   +"          maxlat=\"$max_latitude\" maxlon=\"$max_longitude\"/>\n"
   +"\n"
@@ -130,6 +138,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   +"#if($point.hasValidAltitude())\n"
   +"        <ele>$point.Altitude</ele>\n"
   +"#end\n"
+  +"        <time>$formatutility.getDateString(\"yyyy-MM-dd'T'HH:mm:ss'Z'\",$point.getDate())</time>\n"
   +"      </trkpt>\n"
   +"#end\n"
   +"    </trkseg>\n"
@@ -165,7 +174,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
                     "nmea","n","garmin","g","sirf","i","test","downloadtracks",
                     "downloadwaypoints","downloadroutes","deviceinfo","printposonce",
                     "printpos","p","printalt","printspeed","printheading","printsat",
-                    "template*","outfile*","printdefaulttemplate"};
+                    "template*","outfile*","printdefaulttemplate","helptemplate"};
 
         // Check command arguments
         // Throw exception if arguments are invalid
@@ -192,6 +201,11 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     {
       printHelp();
       return;
+    }
+
+    if(args.isSet("helptemplate"))
+    {
+      printHelpTemplate();
     }
     
     if (args.isSet("printdefaulttemplate"))
@@ -430,21 +444,23 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
  */
   public void addDefaultValuesToContext(VelocityContext context)
   {
+    context.put("dateformatter",new SimpleDateFormat());
         // current time, date
     Calendar now = Calendar.getInstance();
+    context.put("creation_date",now.getTime());
     int day = now.get(Calendar.DAY_OF_MONTH);
     int month = now.get(Calendar.MONTH);
     int year = now.get(Calendar.YEAR);
     int hour = now.get(Calendar.HOUR_OF_DAY);
     int minute = now.get(Calendar.MINUTE);
     int second = now.get(Calendar.SECOND);
-    DecimalFormat two_digit_formatter = new DecimalFormat("00");
-    context.put("date_day",two_digit_formatter.format((long)day));
-    context.put("date_month",two_digit_formatter.format((long)month));
-    context.put("date_year",Integer.toString(year));
-    context.put("date_hour",two_digit_formatter.format((long)hour));
-    context.put("date_minute",two_digit_formatter.format((long)minute));
-    context.put("date_second",two_digit_formatter.format((long)second));
+//     DecimalFormat two_digit_formatter = new DecimalFormat("00");
+//     context.put("date_day",two_digit_formatter.format((long)day));
+//     context.put("date_month",two_digit_formatter.format((long)month));
+//     context.put("date_year",Integer.toString(year));
+//     context.put("date_hour",two_digit_formatter.format((long)hour));
+//     context.put("date_minute",two_digit_formatter.format((long)minute));
+//     context.put("date_second",two_digit_formatter.format((long)second));
 
         // author
     context.put("author",System.getProperty("user.name"));
@@ -662,6 +678,33 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   }
 
 
+//----------------------------------------------------------------------
+/**
+ * Prints the help message for writing templates.
+ */
+  public static void printHelpTemplate()
+  {
+    System.out.println("GPSTool is able to write tracks, routes, and waypoints in various");
+    System.out.println("formats. It uses a velocity template for this. Please see");
+    System.out.println("http://jakarta.apache.org/velocity for details. GPSTool provides");
+    System.out.println("the following objects to be used in the template (the type is");
+    System.out.println("included in parentheses):");
+    System.out.println("  $waypoints (List of GPSWaypoint objects): the waypoints from the gps device");
+    System.out.println("  $routes (List of GPSRoute objects): the routes from the gps device");
+    System.out.println("  $tracks (List of GPSTrack objects) the tracks from the gps device");
+    System.out.println("  $printwaypoints (Boolean): true, if the user decided to download waypoints");
+    System.out.println("  $printtracks (Boolean): true, if the user decided to download tracks");
+    System.out.println("  $printroutes (Boolean): true, if the user decided to download routes");
+    System.out.println("  $creation_date (java.util.Date): the creation date (now)");
+    System.out.println("  $author (String): the system property 'user.name'");
+    System.out.println("  $min_latitude (Double): the minimum latitude of all downloaded data");
+    System.out.println("  $max_latitude (Double): the maximum latitude of all downloaded data");
+    System.out.println("  $min_longitude (Double): the minimum longitude of all downloaded data");
+    System.out.println("  $min_longitude (Double): the maximum longitude of all downloaded data");
+    System.out.println("  $dateformatter (java.text.SimpleDateFormat): helper object to format dates");
+    System.out.println("For an example use the commandline switch '--printdefaulttemplate'.");
+  }
+  
   
 //----------------------------------------------------------------------
 /**
@@ -695,6 +738,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     System.out.println("--outfile <filename>, the file to print the tracks, routes and waypoints to, stdout is default");
     System.out.println("--template <filename>, the velocity template to use for printing routes, tracks and waypoints");
     System.out.println("--printdefaulttemplate, prints the default template used to print routes, waypoints, and tracks.");
+    System.out.println("--helptemplate, prints some more information on how to write a template.");
     System.out.println("--help -h, shows this page");
     
   }

@@ -151,7 +151,20 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
 //    trackpoint_.setAltitude((float)altitude);
   }
 
-  //----------------------------------------------------------------------
+
+//----------------------------------------------------------------------
+/**
+ * Returns true if the altitude of this waypoint is valid. This is
+ * equal to the expression <code>getAltitude() == Double.NaN</code>.
+ * @param true if waypoint has valid altitude.
+ */
+  public boolean hasValidAltitude()
+  {
+    return(getAltitude() == Double.NaN);
+  }
+
+  
+//----------------------------------------------------------------------
 /**
  * Is this the beginning of a new track segment? If true, this point
  * marks the beginning of a new track segment.

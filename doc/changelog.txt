@@ -1,5 +1,13 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/06/13: fixed problem in GSV sentences of NMEA (satellite info)
+
+            Resources: allow to attach other resources so they can be
+            retrieved (getXXX methods) and set from the "main"
+            resources, but still write to their own files. This allows
+            to edit resources of plugins by the normal resource
+            editor!
+
 2003/06/11: added estimated position error in NMEA (garmin specific
             nmea sentence) and garmin protocol. error is shown in
             status bar (satellite info).

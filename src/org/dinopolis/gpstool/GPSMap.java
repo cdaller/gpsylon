@@ -94,7 +94,6 @@ import org.dinopolis.gpstool.gpsinput.GPSSerialDevice;
 import org.dinopolis.gpstool.gpsinput.GPSSimulationDataProcessor;
 import org.dinopolis.gpstool.gui.LatLongInputDialog;
 import org.dinopolis.gpstool.gui.MapKeyHandler;
-import org.dinopolis.gpstool.gui.MapMouseMode;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.gui.MouseModeManager;
 import org.dinopolis.gpstool.gui.NmeaDataTextFrame;
@@ -170,7 +169,6 @@ public class GPSMap
 
   protected JFrame main_frame_;
 
-  protected MapMouseMode map_mouse_mode_;
   protected MapKeyHandler map_key_handler_;
   
   protected StatusBar status_bar_;
@@ -515,11 +513,6 @@ public class GPSMap
     status_bar_ = new StatusBar(resources_,this);
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
     
-//     map_mouse_mode_ = new MapMouseMode(map_bean_);
-//     map_mouse_mode_.initializePlugin(hook_manager_);
-//     map_bean_.addMouseListener(map_mouse_mode_);
-//     map_bean_.addMouseMotionListener(map_mouse_mode_);
-//     mouse_mode_manager_.addMouseMode(map_mouse_mode_);
     
         // instantiate, initialize and add plugins (layers, gui and mousemdoes)
     initializePlugins();
@@ -627,8 +620,6 @@ public class GPSMap
     menu_bar_ = MenuFactory.createMenuBar(resources_, action_store_);
     
     addMouseModesToMenu();
-//    map_mouse_mode_.setActive(true); // default mode
-
     
     main_frame_.setJMenuBar(menu_bar_);
 
@@ -1323,11 +1314,15 @@ public class GPSMap
     plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.MouseModePlugin.class);
         // initialize all mouse modes and add them as mouselisteners:
     MouseModePlugin mouse_mode_plugin;
+    Layer layer;
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       mouse_mode_plugin = (MouseModePlugin)plugins[plugins_index];
       System.out.println("Adding Mouse Mode Plugin: " + mouse_mode_plugin.getMouseModeName());
       mouse_mode_plugin.initializePlugin(hook_manager_);
+      layer = mouse_mode_plugin.getLayer();
+      if(layer != null)
+        map_bean_.add(layer);
       addMouseMode(mouse_mode_plugin);
     }
   }

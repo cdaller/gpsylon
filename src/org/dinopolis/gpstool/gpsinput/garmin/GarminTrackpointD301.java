@@ -92,6 +92,8 @@ public class GarminTrackpointD301 implements GarminTrackpoint
  */
   public GarminPackage toGarminPackage(int package_id)
   {
+// 		System.out.println(this);
+//  		System.out.println(GarminDataConverter.convertGarminTimeToDate(time_));
     int data_length = 4 + 4 + 4 + 4 + 4 + 1;
     GarminPackage pack = new GarminPackage(package_id,data_length);
     pack.setNextAsSemicircleDegrees(latitude_);

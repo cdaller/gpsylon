@@ -1394,7 +1394,7 @@ public class GPSMap
     int proxy_port = resources_.getInt(KEY_HTTP_PROXY_PORT, -1);
 
     Properties props = System.getProperties();
-    if (use_proxy)
+    if (use_proxy && (proxy_host.length() > 0) && (proxy_port > 0))
     {
       props.put("http.proxyHost", proxy_host);
       props.put("http.proxyPort", Integer.toString(proxy_port));

@@ -470,20 +470,31 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //----------------------------------------------------------------------
 /**
  * Returns the heading
+ * 
+ * @param speed_north speed in direction north (m/s)
+ * @param speed_east speed in direction east (m/s)
+ * @return the heading [0,360] degrees
  */
-  protected float calcHeading(float speed_north, float speed_east)
+  protected static float calcHeading(float speed_north, float speed_east)
   {
-        // TODO check if correct!!!
-    return((float)Math.toDegrees(Math.atan2(speed_north,speed_east)));
+    double heading = Math.toDegrees(Math.atan2(speed_north,speed_east));
+        // conversion from mathematical model to geographical (0 is North, 90 is East)
+    heading = 90.0 - heading;
+    if(heading < 0)
+      heading = 360.0 + heading;
+    return((float)heading);
   }
 
 //----------------------------------------------------------------------
 /**
- * Returns the heading
+ * Returns the current speed in km/h.
+ *
+ * @param speed_north speed in direction north (m/s)
+ * @param speed_east speed in direction east (m/s)
  */
-  protected float calcSpeed(float speed_north, float speed_east)
+  protected static float calcSpeed(float speed_north, float speed_east)
   {
-    return((float)Math.sqrt(speed_north*speed_north+speed_east*speed_east));
+    return((float)(Math.sqrt(speed_north*speed_north + speed_east*speed_east)*3.6));
   }
 
 

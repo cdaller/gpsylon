@@ -101,5 +101,11 @@ public class GPSPositionError
            & (vertical_error_ == ((GPSPositionError)other).vertical_error_)
            & (spherical_error_ == ((GPSPositionError)other).spherical_error_));
   }
+
+
+  public String toString()
+  {
+    return("PositionError[epe="+spherical_error_+", eph="+horizontal_error_+", epv="+vertical_error_+"]");
+  }
 }
 

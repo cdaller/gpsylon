@@ -1,5 +1,12 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/07/01: finally added splash screen and progress bar
+
+2003/06/30: added imageserver plugin that answers http requests on
+            port 10080 (for screenshot)
+
+2003/06/28: started working on trackchart plugin
+
 2003/06/24: changed map download completely (now using plugins, so
             extending it should be easier now!
  

@@ -129,10 +129,6 @@ import java.io.FileInputStream;
  * Using a star as delimiter, the line <code>column1***column2<code>
  * could be correctly tokenized.
  * <p> 
- * For simplicity reasons, this implementation only supports a single
- * character as delimiter, extending subclasses may provide additional
- * functionality by overriding the isDelimiter method.
- * <p>
  * This tokenizer uses the LF character as end of line characters. It
  * ignores any CR characters, so it can be used in windows
  * environments as well.
@@ -145,7 +141,7 @@ public class Tokenizer
 {
   protected PushbackReader reader_;
   protected StringBuffer buffer_;
-  protected int delimiter_ = ',';
+  protected String delimiters_ = ",";
   protected int escape_char_ = '\\';
   protected int quote_char_ = '"';
 
@@ -216,22 +212,46 @@ public class Tokenizer
  *
  * @param delimiter_char the delimiter character.
  */
-  public void setDelimiter(int c)
+  public void setDelimiter(int delimiter_char)
   {
-    delimiter_ = c;
+    delimiters_ = new String(new char[]{(char)delimiter_char});
   }
 
+//----------------------------------------------------------------------
+/**
+ * Get the first delimiter character.
+ *
+ * @return the delimiter character.
+ * @deprecated use the getDelimiters() method now
+ */
+  public int getDelimiter()
+  {
+    return(delimiters_.charAt(0));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the delimiter characters. All characters in the delimiters are
+ * used as delimiter.
+ *
+ * @param delimiter the delimiter characters.
+ */
+  public void setDelimiters(String delimiters)
+  {
+    delimiters_ = delimiters;
+  }
+  
 //----------------------------------------------------------------------
 /**
  * Get the delimiter character.
  *
  * @return the delimiter character.
  */
-  public int getDelimiter()
+  public String getDelimiters()
   {
-    return(delimiter_);
+    return(delimiters_);
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Set the escape character. The default is the backslash.
@@ -403,7 +423,7 @@ public class Tokenizer
     if(escape_mode_)
       return(false);
 
-    return(c == delimiter_);
+    return(delimiters_.indexOf(c) >= 0);
   }
 
 //----------------------------------------------------------------------
@@ -650,7 +670,8 @@ public class Tokenizer
  * Returns a list of elements (Strings) from the next line of the
  * tokenizer. If there are multiple delimiters without any values in
  * between, empty (zero length) strings are added to the list. They
- * may be removed by the use of the removeZeroLengthElements method.
+ * may be removed by the use of the {@link
+ * #removeZeroLengthElements(List)} method.
  *
  * @return a list of elements (Strings) from the next line of the
  * tokenizer.
@@ -662,7 +683,8 @@ public class Tokenizer
     int token = nextToken();
     Vector list = new Vector();
     String word = "";
-    while(token != Tokenizer.EOF)
+//    while(token != Tokenizer.EOF)
+    while(true)
     {
       switch(token)
       {
@@ -677,6 +699,7 @@ public class Tokenizer
           word = "";
           break;
         case Tokenizer.EOL:
+        case Tokenizer.EOF:
           list.add(word);
           return(list);
         default:
@@ -684,7 +707,7 @@ public class Tokenizer
       }
       token = nextToken();
     }
-    return(list);
+//    return(list);
   }
 
 //----------------------------------------------------------------------

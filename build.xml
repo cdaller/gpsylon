@@ -1,0 +1,80 @@
+<project name="org.dinopolis.gpstool" default="help">
+ 
+<!-- patternset of gpstool files needed to compile the distribution -->
+  
+  <patternset id="compile.files">
+    <include name="org/dinopolis/gpstool/**/*.java"/>
+    <include name="org/dinopolis/util/**/*.java"/>
+  </patternset>
+    
+<!-- targets -->
+ 
+
+  <target name="help">
+    <echo message="The following targets are available:"/>
+    <echo message="  - help: shows all available targets of this build.xml file"/>
+    <echo message="  - compile:"/>
+    <echo message="  - run: starts GPSMap"/>
+  </target>
+
+  <target name="compile">
+     <mkdir dir="classes"/>
+     <javac srcdir="src" 
+            destdir="classes"
+            classpathref="compile_classpath">
+       <classpath id="compile_classpath">
+         <fileset dir="${basedir}/lib/java">
+            <include name="**/*.jar"/>
+         </fileset>
+       </classpath>
+       <patternset refid="compile.files"/>
+     </javac>
+  </target>
+
+  <target name="run">
+    <java classname="org.dinopolis.gpstool.GPSMap"
+          fork="yes"
+          classpathref="run_classpath">
+       <classpath id="run_classpath">
+         <fileset dir="${basedir}">
+           <include name="gpstool.jar"/>
+           <include name="lib/java/**/*.jar"/>
+         </fileset>
+         <pathelement location="classes"/>
+         <pathelement location="auxiliary"/>
+       </classpath>
+     </java>
+  </target>
+
+ <target name="javadoc" depends="compile">
+    <javadoc
+      packagenames="org.dinopolis.*"
+      sourcepath="src"
+      classpathref="build_dir_classpath"
+      destdir="javadoc"
+      author="true"
+      version="true"
+      use="true"
+      windowtitle="GPSTool API">
+       <classpath id="build_dir_classpath">
+         <fileset dir="${basedir}/lib/java/">
+            <include name="**/*.jar"/>
+         </fileset>
+         <fileset dir="classes/"/>
+       </classpath>
+      <link href="http://openmap.bbn.com/doc/api/"/>
+      <link href="http://java.sun.com/j2se/1.4/docs/api/"/>
+    </javadoc>
+<!-- use following syntax if behind a proxy 
+    <exec dir="${build_dir_dist}" executable="/bin/sh">
+      <arg value="-c"/>
+-->
+<!-- using a proxy: -->
+<!--
+      <arg value="javadoc -J-Dhttp.proxyHost=129.27.153.1 -J-Dhttp.proxyPort=3128 -classpath classes:lib/java/openmap.jar:lib/java/gnu-regexp-1.1.3.jar -d javadoc -sourcepath src/ -version -author -link http://openmap.bbn.com/doc/api/ -link http://java.sun.com/j2se/1.4/docs/api/ -subpackages org.dinopolis"/>
+-->
+<!--
+    </exec>
+-->
+  </target>
+</project>

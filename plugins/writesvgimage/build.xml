@@ -1,0 +1,140 @@
+
+<project name="org.dinopolis.gpstool.plugin.writesvgimage" default="help">
+
+  <property name="release_version" value="0.1"/>
+  <property name="dist_name" value="gpstool_plugin_writesvgimage"/>
+  <property name="dist_dir" value="dist"/>
+  <property name="lib_dir" value="lib/java"/>
+  <property name="dinopolis_classes" value="../../classes"/>
+
+<!-- patternset of gpstool files needed to compile the distribution (used by the common_compile_dist) -->
+  
+  <patternset id="compile.files">
+    <include name="org/dinopolis/gpstool/plugin/writesvgimage/WriteSvgImagePlugin.java"/>
+  </patternset>
+
+<!-- patternset including all required library jar files (other than dinopolis classes) -->
+  <patternset id="gpstool_plugin_writesvgimage.lib.patternset">
+    <include name="batik-awt-util.jar" />
+    <include name="batik-dom.jar" />
+    <include name="batik-svggen.jar" />
+    <include name="batik-util.jar" />
+    <include name="batik-xml.jar" />
+  </patternset>
+
+
+<!-- targets -->
+ 
+  <target name="help">
+    <echo>
+The following targets are available:
+ - help: shows all available targets of this build.xml file
+ - bin_dist: creates a tar.gz file in the dist directory that contains all
+      needed files (plugin jar and libraries).
+ - compile: compiles a distribution
+ - clean_dist: deletes the $$dist_dir directory.
+ - upload_sourceforge_web: uploads the webpages to sourceforge
+ - upload_sourceforge_dist: uploads the dist (bin and source)
+                             to ftpserver of sourceforge
+    </echo>
+  </target>
+
+
+<!-- make a binary distribution: includes documentation and jars.
+   In order to run the gpstool out of the binary distribution first unzip and
+   untar the distribution, switch to the gpstool directory and invoke the gpstool:
+   java -jar gpstool.jar 
+-->
+  <target name="bin_dist" depends="compile">
+    <tstamp/> <!-- needed for ${TODAY} -->
+
+    <mkdir dir="${dist_dir}"/>
+
+<!-- create a property holding the Class-Path for the manifest -->
+    <path id="gpstool_plugin_writesvgimage.dist.classpath">
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool_plugin_writesvgimage.lib.patternset"/>
+      </fileset>
+    </path>
+    <pathconvert pathsep=" " property="gpstool_plugin_writesvgimage.dist.lib.classpath"
+                 refid="gpstool_plugin_writesvgimage.dist.classpath">
+      <map from="${user.dir}/lib/java" to="lib/java"/>
+    </pathconvert>
+
+    <!-- build the jar file: Don't forget the MANIFEST.MF the -->
+    <!-- properties files and the images ! -->
+    <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
+      <!-- make the MANIFEST.MF file -->
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Class-Path" value="${gpstool_plugin_writesvgimage.dist.lib.classpath}" />
+        <section name="common">
+          <attribute name="Specification-Title" value="WriteSvgImage Plugin for GPSTool" />
+          <attribute name="Specification-Version" value="${release_version}" />
+          <attribute name="Specification-Vendor" value="Christof Dallermassl" />
+          <attribute name="Implementation-Title" value="WriteSvgImage Plugin for GPSTool" />
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
+        </section>
+      </manifest>
+
+      <fileset dir="classes"/>
+      <fileset dir=".">
+        <include name="META-INF/services/org.dinopolis.gpstool.*"/>
+      </fileset>
+    </jar>
+
+    <copy todir="${dist_dir}/${lib_dir}">
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool_plugin_writesvgimage.lib.patternset"/>
+      </fileset>
+    </copy>
+
+    <tar longfile="gnu"
+      tarfile="${dist_dir}/${dist_name}_bin-${release_version}.tar"
+      basedir="${dist_dir}"           
+      includes="${dist_name}-${release_version}.jar,${lib_dir}/**"/>
+    <gzip zipfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz" 
+      src="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
+    <delete file="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
+  </target>
+
+  
+  <!-- compile target -->
+  <target name="compile">
+    <mkdir dir="classes"/>
+    <javac srcdir="src"
+      destdir="classes"
+      classpathref="gpstool_plugin_writesvgimage_class_path">
+      <classpath id="gpstool_plugin_writesvgimage_class_path">
+        <fileset dir="lib/java">
+          <patternset refid="gpstool_plugin_writesvgimage.lib.patternset"/>
+        </fileset>
+        <pathelement path="${dinopolis_classes}"/>
+      </classpath>
+      <patternset refid="compile.files"/>
+    </javac>         
+  </target>       
+  
+
+<!-- compile target -->
+  <target name="clean_dist">
+    <delete dir="${dist_dir}"/>
+  </target>
+
+
+  <target name="upload_sourceforge_web">
+    <exec dir="${dino_doc_dir}/org/dinopolis/gpstool/" executable="/bin/sh">
+      <arg value="-c"/>
+      <arg value='tar cvf - *.html *.pdf changelog.txt images/*.png | ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; tar xf -)"'/>
+    </exec>
+  </target>
+   
+  <target name="upload_sourceforge_dist">
+    <exec dir="${dest_dir_dist}" executable="/bin/sh">
+      <arg value="-c"/>
+      <arg value='ncftpput upload.sourceforge.net incoming ${dest_dir_dist}/gpstool_???-${release_version}.tar.gz'/>
+    </exec>
+  </target>
+   
+</project>

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Created-By: Apache Ant 1.5
+Built-By: cdaller
+Class-Path: ${gpstool_service_writesvgimage.dist.classpath}
+
+Name: common
+Specification-Title: WriteSVGImage Service             for GPSTool
+Specification-Version: 0.1
+Specification-Vendor: Christof Dallermassl
+Implementation-Title: WriteSVGImage Service             for GPSTool
+Implementation-Version: 0.1 December 20 2002
+Implementation-Vendor: Christof Dallermassl
+

@@ -12,7 +12,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.4.15-pre3"/>
+    <property name="release_version" value="0.4.15-pre4"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib/java"/>
@@ -389,6 +389,18 @@ Christof Dallermassl (cdaller@iicm.edu)
         <include name="**/*.jar"/>  
       </fileset>
       <fileset dir="${plugin_dir}/kismetimport/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+      <fileset dir="${plugin_dir}/tracklayer/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+      <fileset dir="${plugin_dir}/averagepos/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+      <fileset dir="${plugin_dir}/gpstool/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+      <fileset dir="${plugin_dir}/importexport/${dist_dir}">
         <include name="**/*.jar"/>  
       </fileset>
     </copy>

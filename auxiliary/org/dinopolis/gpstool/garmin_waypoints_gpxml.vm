@@ -1,0 +1,9 @@
+<gpx>
+#foreach( $waypoint in $waypoints )
+  <wpt>
+    <name>$waypoint.Identification</name>
+    <lat>$waypoint.Latitude</lat>
+    <lon>$waypoint.Longitude</lon>
+  </wpt>
+#end
+</gpx>

@@ -1,0 +1,11 @@
+Routes: $routes.size()
+
+#foreach( $route in $routes )
+Route: $route.Identification
+#set ($points = $route.getRoutePoints())
+#foreach ($point in $points)
+  #if($point.Latitude != null)
+    Point: lat=$point.Latitude, long=$point.Longitude, alt=$point.Altitude
+  #end
+#end
+#end

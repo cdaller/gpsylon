@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 package org.dinopolis.gpstool;
+import com.bbn.openmap.proj.Projection;
 
 //----------------------------------------------------------------------
 /**
@@ -74,6 +75,17 @@ public interface MapNavigationHook
  */
 
   public void translateMapCenterRelative(float factor_x, float factor_y);
+
+//----------------------------------------------------------------------
+/**
+ * Returns the currently used projection of the map. This projection
+ * may be used to calculate the latititude/longitude from screen
+ * coordinates and vice versa.
+ *
+ * @return the projection currently used.
+ * @see com.bbn.openmap.proj.Projection
+ */
+  public Projection getMapProjection();
 
 }
 

@@ -1,5 +1,9 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/07/04: fixed a bug in displaying the correct maps (in some rare
+            cases, resp. not so rare if you use the multiple map
+            download :-)
+
 2003/07/01: finally added splash screen and progress bar
 
             added "jars" target in build.xml file

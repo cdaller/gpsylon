@@ -1,0 +1,4 @@
+# add GraphPlugin
+org.dinopolis.gpstool.plugin.graph.GraphPlugin
+# comment at end of file to ensure that the last line is terminated by
+# CR/LF

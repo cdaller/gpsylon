@@ -124,13 +124,11 @@ public interface GPSMapKeyConstants
       /** localization of GUI */
   public static final String KEY_LOCALIZE_LATITUDE = "localize.latitude";
   public static final String KEY_LOCALIZE_LONGITUDE = "localize.longitude";
-  public static final String KEY_LOCALIZE_DOWNLOADFRAME_TITLE = "localize.downloadframe_title";
   public static final String KEY_LOCALIZE_RAWGPSDATAFRAME_TITLE ="localize.raw_gps_data_frame_title";
   public static final String KEY_LOCALIZE_SCALE = "localize.scale";
   public static final String KEY_LOCALIZE_HEIGHT = "localize.height";
   public static final String KEY_LOCALIZE_WIDTH = "localize.width";
   public static final String KEY_LOCALIZE_INFO = "localize.info";
-  public static final String KEY_LOCALIZE_DOWNLOAD_BUTTON = "localize.download_button";
   public static final String KEY_LOCALIZE_CANCEL_BUTTON = "localize.cancel_button";
   public static final String KEY_LOCALIZE_CLOSE_BUTTON = "localize.close_button";
   public static final String KEY_LOCALIZE_CLEAR_BUTTON = "localize.clear_button";
@@ -141,11 +139,7 @@ public interface GPSMapKeyConstants
   public static final String KEY_LOCALIZE_MESSAGE_LONGITUDE_WRONG_FORMAT = "localize.message.longitude_wrong_format";
   public static final String KEY_LOCALIZE_MESSAGE_ERROR_TITLE = "localize.message.error_title";
   public static final String KEY_LOCALIZE_MESSAGE_INFO_TITLE = "localize.message.info_title";
-  public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE = "localize.message.download_error_message";
-  public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_NO_ROUTE_TO_HOST_MESSAGE = "localize.message.download_error.no_route_to_host_message";
-  public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_FILE_NOT_FOUND_MESSAGE = "localize.message.download_error.file_not_found_message";
   public static final String KEY_LOCALIZE_MESSAGE_FILE_NOT_FOUND_MESSAGE = "localize.message.file_not_found_message";
-  public static final String KEY_LOCALIZE_BYTES_READ = "localize.bytes_read";
   public static final String KEY_LOCALIZE_LOAD_SHAPE_DIALOG_TITLE = "localize.load_shape.dialog_title";
   public static final String KEY_LOCALIZE_LOAD_LOCATION_DIALOG_TITLE = "localize.load_location.dialog_title";
   public static final String KEY_LOCALIZE_LOAD_PROGRESS = "localize.load_progress";
@@ -184,12 +178,6 @@ public interface GPSMapKeyConstants
   public static final String KEY_LOCALIZE_NOTHING_FOUND = "localize.nothing_found";
   public static final String KEY_LOCALIZE_MESSAGE_GPS_PROPERTIES_EFFECT_ON_RESTART = "localize.message.gps_properties_effect_on_restart";
   
-      /** map server urls */
-  public static final String KEY_DOWNLOAD_MAP_URL_PREFIX = "download.map.url";
-  public static final String KEY_DOWNLOAD_MAP_URL_CHOICE = "download.map.url.choice";
-  public static final String KEY_DOWNLOAD_MAP_URL_MAPBLAST = "download.map.url.mapblast";
-  public static final String KEY_DOWNLOAD_MAP_URL_EXPEDIA_EAST = "download.map.url.expedia_east";
-  public static final String KEY_DOWNLOAD_MAP_URL_EXPEDIA_WEST = "download.map.url.expedia_west";
   
       /** current position */
   public static final String KEY_POSITION_ICON = "position.icon";
@@ -269,7 +257,6 @@ public interface GPSMapKeyConstants
 
       /** development resources */
   public static final String KEY_DEVELOPMENT_PLUGINS_CLASSLOADER_USE_DEFAULT_CLASSLOADER = "development.plugins.classloader.use_default_classloader";
-  public static final String KEY_DEVELOPMENT_DOWNLOAD_SIMULATE_ONLY = "development.download.simulate_only";
 
   
   // menu resources

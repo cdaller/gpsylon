@@ -1,5 +1,16 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2003/10/15: Added a quick'n'dirty import plugin for top40 overlay
+            tracks (ascii format). 
+
+						0.4.15-pre8 released
+
+2003/10/14: did some testing with Streetpilot III (screenshot), works
+            now, but the device I used switches off after sending 10
+            lines. So there are still some bugs in there (I know of at
+            least one), but without a working device, I do not want to
+            do further testing.
+
 2003/10/13: added support for screenshot on geko(201). Thanks to Frank
             Wilhelm for providing the log data!
 

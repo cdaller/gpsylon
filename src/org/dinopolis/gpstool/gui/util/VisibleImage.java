@@ -182,19 +182,19 @@ import java.util.Vector;
  * </p>
  * <p>
  * Figure 06:<br>
- *   image_xmin &lt; viewport_xmin &amp; image_xmax &gt; viewport_xmin &amp; image_xmax &lt; viewport_xmax  &amp; image_ymin &lt; viewport_ymin &amp; image_ymax &gt; viewport_ymax
+ *   image_xmin &lt;= viewport_xmin &amp; image_xmax &gt; viewport_xmin &amp; image_xmax &lt;= viewport_xmax  &amp; image_ymin &lt;= viewport_ymin &amp; image_ymax &gt;= viewport_ymax
  * </p>
  * <p>
  * Figure 07:<br>
- *   image_xmin &gt; viewport_xmin &amp; image_xmin &lt; viewport_xmax  &amp; image_xmax &gt; viewport_xmax &amp; image_ymin &lt; viewport_ymin &amp; image_ymax &gt; viewport_ymax
+ *   image_xmin &gt;= viewport_xmin &amp; image_xmin &lt; viewport_xmax  &amp; image_xmax &gt;= viewport_xmax &amp; image_ymin &lt;= viewport_ymin &amp; image_ymax &gt;= viewport_ymax
  * </p>
  * <p>
  * Figure 08:<br>
- *   image_xmin &lt; viewport_xmin &amp; image_xmax &gt; viewport_xmax &amp; image_ymin &lt; viewport_ymin &amp; image_ymax &gt; viewport_ymin &amp; image_ymax &lt; viewport_ymax
+ *   image_xmin &lt;= viewport_xmin &amp; image_xmax &gt;= viewport_xmax &amp; image_ymin &lt;= viewport_ymin &amp; image_ymax &gt; viewport_ymin &amp; image_ymax &lt;= viewport_ymax
  * </p>
  * <p>
  * Figure 09:<br>
- *   image_xmin &lt; viewport_xmin &amp; image_xmax &gt; viewport_xmax &amp; image_ymin &gt; viewport_ymin &amp; image_ymin &lt; viewport_ymax &amp; image_ymax &gt; viewport_ymax
+ *   image_xmin &lt;= viewport_xmin &amp; image_xmax &gt;= viewport_xmax &amp; image_ymin &gt;= viewport_ymin &amp; image_ymin &lt; viewport_ymax &amp; image_ymax &gt;= viewport_ymax
  * </p>
  * <p>
  * Figure 10:<br>
@@ -231,6 +231,8 @@ import java.util.Vector;
 
 public class VisibleImage
 {
+  protected static String debug_indent = "";
+  public static final boolean DEBUG = false;
 
 //----------------------------------------------------------------------
 /**
@@ -299,241 +301,251 @@ public class VisibleImage
       if(image_xmin>viewport_xmin & image_xmax<viewport_xmax
          & image_ymin>viewport_ymin & image_ymax<viewport_ymax)
       {
-        // System.out.println("figure 01 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 01 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(image_xmin, image_ymin,
                                      image_xmax-image_xmin, image_ymax-image_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,image_xmin,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(image_xmax,viewport_xmax,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
             // area 3:
-        // System.out.println("  finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 3...");}
         result = findVisibleImages(image_xmin,image_xmax,
                                 viewport_ymin,image_ymin,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 3...");}
             // area 4:
-        // System.out.println("  finding rectangles for area 4...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 4...");}
         result = findVisibleImages(image_xmin,image_xmax,
                                 image_ymax,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 4...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 4...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 02:
       if(image_xmin<viewport_xmin & image_xmax>viewport_xmin & image_xmax<viewport_xmax
          & image_ymin>viewport_ymin & image_ymax<viewport_ymax)
       {
-        // System.out.println("figure 02 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 02 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(viewport_xmin, image_ymin,
                                      image_xmax-viewport_xmin, image_ymax-image_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(image_xmax,viewport_xmax,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(viewport_xmin,image_xmax,
                                 viewport_ymin,image_ymin,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
             // area 3:
-        // System.out.println("  finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 3...");}
         result = findVisibleImages(viewport_xmin,image_xmax,
                                 image_ymax,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 3...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 03:
       if(image_xmin>viewport_xmin & image_xmin<viewport_xmax  & image_xmax>viewport_xmax
           & image_ymin>viewport_ymin & image_ymax<viewport_ymax)
       {
-        // System.out.println("figure 03 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 03 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(image_xmin, image_ymin,
                                      viewport_xmax-image_xmin, image_ymax-image_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,image_xmin,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(image_xmin,viewport_xmax,
                                 viewport_ymin,image_ymin,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
             // area 3:
-        // System.out.println("  finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 3...");}
         result = findVisibleImages(image_xmin,viewport_xmax,
                                 image_ymax,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 3...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 04:
       if(image_xmin>viewport_xmin & image_xmax<viewport_xmax
           & image_ymin<viewport_ymin & image_ymax>viewport_ymin & image_ymax<viewport_ymax)
       {
-        // System.out.println("figure 04 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 04 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(image_xmin, viewport_ymin,
                                      image_xmax-image_xmin, image_ymax-viewport_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,image_xmin,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(image_xmin,image_xmax,
                                 image_ymax,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
             // area 3:
-        // System.out.println("  finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 3...");}
         result = findVisibleImages(image_xmax,viewport_xmax,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 3...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 05:
       if(image_xmin>viewport_xmin & image_xmax<viewport_xmax
           & image_ymin>viewport_ymin & image_ymin<viewport_ymax & image_ymax>viewport_ymax)
       {
-        // System.out.println("figure 05 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 05 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(image_xmin, image_ymin,
                                      image_xmax-image_xmin, viewport_ymax-image_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,image_xmin,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(image_xmin,image_xmax,
                                 viewport_ymin,image_ymin,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
             // area 3:
-        // System.out.println("  finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 3...");}
         result = findVisibleImages(image_xmax,viewport_xmax,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 3...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 3...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 06:
-      if(image_xmin<viewport_xmin & image_xmax>viewport_xmin & image_xmax<viewport_xmax
-         & image_ymin<viewport_ymin & image_ymax>viewport_ymax)
+      if(image_xmin<=viewport_xmin & image_xmax>viewport_xmin & image_xmax<=viewport_xmax
+         & image_ymin<=viewport_ymin & image_ymax>=viewport_ymax)
       {
-        // System.out.println("figure 06 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 06 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(viewport_xmin, viewport_ymin,
                                      image_xmax-viewport_xmin, viewport_ymax-viewport_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(image_xmax,viewport_xmax,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 07:
-      if(image_xmin>viewport_xmin & image_xmin<viewport_xmax  & image_xmax>viewport_xmax
-         & image_ymin<viewport_ymin & image_ymax>viewport_ymax)
+      if(image_xmin>=viewport_xmin & image_xmin<viewport_xmax  & image_xmax>=viewport_xmax
+         & image_ymin<=viewport_ymin & image_ymax>=viewport_ymax)
       {
-        // System.out.println("figure 07 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 07 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(image_xmin, viewport_ymin,
                                      viewport_xmax-image_xmin, viewport_ymax-viewport_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,image_xmin,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 08:
-      if(image_xmin<viewport_xmin & image_xmax>viewport_xmax
-         & image_ymin<viewport_ymin & image_ymax>viewport_ymin & image_ymax<viewport_ymax)
+      if(image_xmin<=viewport_xmin & image_xmax>=viewport_xmax
+         & image_ymin<=viewport_ymin & image_ymax>viewport_ymin & image_ymax<=viewport_ymax)
       {
-        // System.out.println("figure 08 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 08 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(viewport_xmin, viewport_ymin,
                                      viewport_xmax-viewport_xmin, image_ymax-viewport_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,viewport_xmax,
                                 image_ymax,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 09:
-      if(image_xmin<viewport_xmin & image_xmax>viewport_xmax
-         & image_ymin>viewport_ymin & image_ymin<viewport_ymax & image_ymax>viewport_ymax)
+      if(image_xmin<=viewport_xmin & image_xmax>=viewport_xmax
+         & image_ymin>=viewport_ymin & image_ymin<viewport_ymax & image_ymax>=viewport_ymax)
       {
-        // System.out.println("figure 09 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 09 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(viewport_xmin, image_ymin,
                                      viewport_xmax-viewport_xmin, viewport_ymax-image_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,viewport_xmax,
                                 viewport_ymin,image_ymin,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 10:
       if(image_xmin<=viewport_xmin & image_xmax>=viewport_xmax
          & image_ymin<=viewport_ymin & image_ymax>=viewport_ymax)
       {
-        // System.out.println("figure 10 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 10 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(viewport_xmin, viewport_ymin,
                                      viewport_xmax-viewport_xmin,
                                      viewport_ymax-viewport_ymin);
         result.add(new_info);
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
         return(result);
       }
       else
@@ -541,152 +553,162 @@ public class VisibleImage
       if(image_xmin<viewport_xmin & image_xmax>viewport_xmin & image_xmax<viewport_xmax
          & image_ymin>viewport_ymin & image_ymin<viewport_ymax & image_ymax>viewport_ymax)
       {
-        // System.out.println("figure 11 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 11 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(viewport_xmin, image_ymin,
                                      image_xmax-viewport_xmin, viewport_ymax-image_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,image_xmax,
                                 viewport_ymin,image_ymin,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(image_xmax,viewport_xmax,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 12:
       if(image_xmin>viewport_xmin & image_xmin<viewport_xmax  & image_xmax>viewport_xmax
          & image_ymin>viewport_ymin & image_ymin<viewport_ymax & image_ymax>viewport_ymax)
       {
-        // System.out.println("figure 12 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 12 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(image_xmin, image_ymin,
                                      viewport_xmax-image_xmin, viewport_ymax-image_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(image_xmin,viewport_xmax,
                                 viewport_ymin,image_ymin,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(viewport_xmin,image_xmin,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 13:
       if(image_xmin<viewport_xmin & image_xmax>viewport_xmin & image_xmax<viewport_xmax
          & image_ymin<viewport_ymin & image_ymax>viewport_ymin & image_ymax<viewport_ymax)
       {
-        // System.out.println("figure 13 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 13 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(viewport_xmin, viewport_ymin,
                                      image_xmax-viewport_xmin, image_ymax-viewport_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
-        result = findVisibleImages(viewport_xmin,image_xmax,
-                                image_ymax,viewport_ymax,
-                                available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
-            // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(image_xmax,viewport_xmax,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
-
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
+            // area 2:
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
+        if(DEBUG){System.out.println("available: "+available);}
+        if(DEBUG){System.out.println("viewport_xmin: "+viewport_xmin);}
+        if(DEBUG){System.out.println("image_xmax: "+image_xmax);}
+        if(DEBUG){System.out.println("image_ymax: "+image_ymax);}
+        if(DEBUG){System.out.println("viewport_ymax: "+viewport_ymax);}
+        result = findVisibleImages(viewport_xmin,image_xmax,
+                                image_ymax,viewport_ymax,
+                                available,result,empty_rect);
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 14:
       if(image_xmin>viewport_xmin & image_xmin<viewport_xmax  & image_xmax>viewport_xmax
          & image_ymin<viewport_ymin & image_ymax>viewport_ymin & image_ymax<viewport_ymax)
       {
-        // System.out.println("figure 14 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 14 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(image_xmin, viewport_ymin,
                                      viewport_xmax-image_xmin, image_ymax-viewport_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(image_xmin,viewport_xmax,
                                 image_ymax,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(viewport_xmin,image_xmin,
                                 viewport_ymin,viewport_ymax,
                                 available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 15:
       if(image_xmin>viewport_xmin & image_xmin <viewport_xmax  & image_xmax>viewport_xmin
          & image_xmax<viewport_xmax & image_ymin<viewport_ymin & image_ymax>viewport_ymax)
       {
-        // System.out.println("figure 15 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 15 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(image_xmin, viewport_ymin,
                                      image_xmax-image_xmin, viewport_ymax-viewport_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,image_xmin,
                                    viewport_ymin,viewport_ymax,
                                    available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(image_xmax,viewport_xmax,
                                    viewport_ymin,viewport_ymax,
                                    available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
       else
 // Figure 16:
       if(image_xmin<viewport_xmin & image_xmax>viewport_xmax & image_ymin>viewport_ymin
          & image_ymin<viewport_ymax & image_ymax>viewport_ymin & image_ymax<viewport_ymax)
       {
-        // System.out.println("figure 15 detected");
+        if(DEBUG){System.out.println(debug_indent+"figure 15 detected"); debug_indent=debug_indent+"  ";}
         image_found = true;
         ImageInfo new_info = new ImageInfo(info);
         new_info.setVisibleRectangle(viewport_xmin,image_ymin,
                                      viewport_xmax-viewport_xmin, image_ymax-image_ymin);
         result.add(new_info);
             // area 1:
-        // System.out.println("  finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 1...");}
         result = findVisibleImages(viewport_xmin,viewport_xmax,
                                    viewport_ymin,image_ymin,
                                    available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 1...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 1...");}
             // area 2:
-        // System.out.println("  finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"finding rectangles for area 2...");}
         result = findVisibleImages(viewport_xmin,viewport_xmax,
                                    image_ymax,viewport_ymax,
                                    available,result,empty_rect);
-        // System.out.println("  returned from finding rectangles for area 2...");
+        if(DEBUG){System.out.println(debug_indent+"returned from finding rectangles for area 2...");}
+        if(DEBUG){debug_indent = debug_indent.substring(2);}
       }
     }
     if(!image_found)
     {
       empty_rect.add(new Rectangle(viewport_xmin,viewport_ymin,
                                    viewport_xmax-viewport_xmin,viewport_ymax-viewport_ymin));
-       // System.out.println("no image for rectangle found");
+      if(DEBUG){System.out.println(debug_indent+"no image for rectangle found");}
     }
     return(result);
   }

@@ -22,9 +22,17 @@
 
 package org.dinopolis.gpstool.gui.layer;
 
+
+
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.proj.Projection;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,10 +40,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.MapManagerHook;
@@ -50,11 +56,6 @@ import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
 import org.dinopolis.util.gui.SwingWorker;
-
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.LayerStatusEvent;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.proj.Projection;
 
 
 //----------------------------------------------------------------------
@@ -289,7 +290,7 @@ public class MultiMapLayer extends Layer
     if(!layer_active_)
       return;
     Graphics2D g2 = (Graphics2D) g;
-//    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         // draw images:
 
     if(Debug.DEBUG && Debug.isEnabled("MapLayer_measure"))

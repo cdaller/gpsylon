@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="plugins/averagepos/src"/>
-	<classpathentry kind="src" path="plugins/downloadmousemode/src"/>
-	<classpathentry kind="src" path="plugins/gpstool/src"/>
-	<classpathentry kind="src" path="plugins/graph/src"/>
-	<classpathentry kind="src" path="plugins/imageserver/src"/>
-	<classpathentry kind="src" path="plugins/importexport/src"/>
-	<classpathentry kind="src" path="plugins/kismetimport/src"/>
-	<classpathentry kind="src" path="plugins/mapmanager/src"/>
-	<classpathentry kind="src" path="plugins/memorymonitor/src"/>
-	<classpathentry kind="src" path="plugins/modifytracks/src"/>
-	<classpathentry kind="src" path="plugins/navigationmousemode/src"/>
-	<classpathentry kind="src" path="plugins/readgpsdrivetrack/src"/>
-	<classpathentry kind="src" path="plugins/readgpx/src"/>
-	<classpathentry kind="src" path="plugins/readtop50ovl/src"/>
-	<classpathentry kind="src" path="plugins/simpledemo/src"/>
-	<classpathentry kind="src" path="plugins/trackchart/src"/>
-	<classpathentry kind="src" path="plugins/tracklayer/src"/>
-	<classpathentry kind="src" path="plugins/writerasterimage/src"/>
-	<classpathentry kind="src" path="plugins/writesvgimage/src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry output="plugins/averagepos/classes" kind="src" path="plugins/averagepos/src"/>
+	<classpathentry output="plugins/downloadmousemode/classes" kind="src" path="plugins/downloadmousemode/src"/>
+	<classpathentry output="plugins/gpstool/classes" kind="src" path="plugins/gpstool/src"/>
+	<classpathentry output="plugins/graph/classes" kind="src" path="plugins/graph/src"/>
+	<classpathentry output="plugins/imageserver/classes" kind="src" path="plugins/imageserver/src"/>
+	<classpathentry output="plugins/importexport/classes" kind="src" path="plugins/importexport/src"/>
+	<classpathentry output="plugins/kismetimport/classes" kind="src" path="plugins/kismetimport/src"/>
+	<classpathentry output="plugins/mapmanager/classes" kind="src" path="plugins/mapmanager/src"/>
+	<classpathentry output="plugins/memorymonitor/classes" kind="src" path="plugins/memorymonitor/src"/>
+	<classpathentry output="plugins/modifytracks/classes" kind="src" path="plugins/modifytracks/src"/>
+	<classpathentry output="plugins/navigationmousemode/classes" kind="src" path="plugins/navigationmousemode/src"/>
+	<classpathentry output="plugins/readgpsdrivetrack/classes" kind="src" path="plugins/readgpsdrivetrack/src"/>
+	<classpathentry output="plugins/readgpx/classes" kind="src" path="plugins/readgpx/src"/>
+	<classpathentry output="plugins/readtop50ovl/classes" kind="src" path="plugins/readtop50ovl/src"/>
+	<classpathentry output="plugins/simpledemo/classes" kind="src" path="plugins/simpledemo/src"/>
+	<classpathentry output="plugins/trackchart/classes" kind="src" path="plugins/trackchart/src"/>
+	<classpathentry output="plugins/tracklayer/classes" kind="src" path="plugins/tracklayer/src"/>
+	<classpathentry output="plugins/writerasterimage/classes" kind="src" path="plugins/writerasterimage/src"/>
+	<classpathentry output="plugins/writesvgimage/classes" kind="src" path="plugins/writesvgimage/src"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/java/comm.jar"/>
 	<classpathentry kind="lib" path="lib/java/gnu-regexp-1.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/java/hsqldb.jar"/>

@@ -83,6 +83,7 @@ public class GarminWaypointD108 implements GarminWaypoint
   protected final static String[] DISPLAY_OPTIONS =
     new String[] {"symbol+name","symbol","symbol+comment"};
 
+      // TODO mapping from names to values is wrong!!!!!! (see garmin specification, page 39)
   protected final static String[] CLASS_NAMES =
   new String[] {"user","aviation_airport","aviation_intersection", "aviation_NDB",
                 "aviation_VOR","aviation_airport_runway","aviation_airport_intersection",

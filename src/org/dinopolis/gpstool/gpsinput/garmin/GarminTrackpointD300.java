@@ -33,7 +33,7 @@ public class GarminTrackpointD300 implements GarminTrackpoint
 {
   public double latitude_;
   public double longitude_;
-  public int time_;
+  public long time_;
   public boolean new_track_;
 
   protected final static int TRACKPOINT_TYPE = 300;
@@ -46,7 +46,7 @@ public class GarminTrackpointD300 implements GarminTrackpoint
   {
     latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,2);
     longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,6);
-    time_ = GarminDataConverter.getGarminInt(buffer,10);
+    time_ = GarminDataConverter.getGarminLong(buffer,10);
     new_track_ = GarminDataConverter.getGarminBoolean(buffer,14);
   }
 
@@ -94,7 +94,7 @@ public class GarminTrackpointD300 implements GarminTrackpoint
  * @return Time (seconds)
  * @throws GarminUnsupportedMethodException
  */
- public float getTime() throws GarminUnsupportedMethodException
+ public long getTime() throws GarminUnsupportedMethodException
  {
    return(time_);
  }

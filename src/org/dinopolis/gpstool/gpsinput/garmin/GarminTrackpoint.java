@@ -66,7 +66,7 @@ public interface GarminTrackpoint
  * @return Time (seconds)
  * @throws GarminUnsupportedMethodException
  */
- public float getTime() throws GarminUnsupportedMethodException;
+ public long getTime() throws GarminUnsupportedMethodException;
 	
 //----------------------------------------------------------------------
 /**

@@ -173,9 +173,9 @@ public class DownloadMapCalculator
     end_lat = north_;
     end_long = east_;
 
-    System.out.println("Calculation: from lat "+ start_lat +" to "+ end_lat
-                       + " from long "+start_long+" to "+ end_long
-      +" step lat: "+image_height_degree +" long: "+image_width_degree);
+//     System.out.println("Calculation: from lat "+ start_lat +" to "+ end_lat
+//                        + " from long "+start_long+" to "+ end_long
+//       +" step lat: "+image_height_degree +" long: "+image_width_degree);
 
         // center of image are not at corners of rectangle:
     start_lat += image_height_degree/2;

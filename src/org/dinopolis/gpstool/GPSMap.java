@@ -1375,7 +1375,8 @@ public class GPSMap
     while(iterator.hasNext())
     {
       plugin = (GuiPlugin)iterator.next();
-      addOnOffActionToLayersMenu(new GuiPluginOnOffAction(plugin));
+      if(plugin.getLayer() != null)
+        addOnOffActionToLayersMenu(new GuiPluginOnOffAction(plugin));
           // add sub menus of plugin:
       JMenuItem plugin_menu = plugin.getSubMenu();
       if(plugin_menu != null)

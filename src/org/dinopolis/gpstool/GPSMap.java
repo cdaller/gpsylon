@@ -478,6 +478,9 @@ public class GPSMap
     map_manager_.initialize(resources_,main_frame_);
 
     track_manager_ = new TrackManagerImpl();
+
+        // create MouseModeManager
+    mouse_mode_manager_ = new MouseModeManager();
     
         // initialize data for plugins (PluginSupport):
     splash_screen.setStatus("Initialize modules for plugins",splash_progress+=5);
@@ -491,11 +494,10 @@ public class GPSMap
     hook_manager_.setTrackManager(track_manager_);
     hook_manager_.setServiceDiscovery(service_discovery_);
     hook_manager_.setUnitHelper(unit_helper_);
+    hook_manager_.setMouseModeManager(mouse_mode_manager_);
 
     track_manager_.initialize(hook_manager_);
 
-        // create MouseModeManager
-    mouse_mode_manager_ = new MouseModeManager();
 
      // Set the default gps position
     double latitude = resources_.getDouble(KEY_CURRENT_GPS_POSITION_LATITUDE);

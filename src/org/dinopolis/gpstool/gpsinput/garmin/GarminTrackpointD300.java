@@ -59,7 +59,7 @@ public class GarminTrackpointD300 implements GarminTrackpoint
   {
     latitude_ = pack.getNextAsSemicircleDegrees();
     longitude_ = pack.getNextAsSemicircleDegrees();
-    time_ = pack.getNextAsInt();
+    time_ = pack.getNextAsLongWord();
     new_track_ = pack.getNextAsBoolean();
   }
 

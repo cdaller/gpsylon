@@ -59,6 +59,9 @@ import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
+import org.dinopolis.util.gui.HTMLViewerFrame;
+import java.net.NoRouteToHostException;
+import java.io.FileNotFoundException;
 
 
 //----------------------------------------------------------------------
@@ -682,8 +685,25 @@ public class DownloadMouseModeLayer extends BasicLayer
         String mime_type = connection.getContentType().toLowerCase();
         if(!mime_type.startsWith("image"))
         {
+              // handle wrong mime type. the most probable error is a
+              // 404-not found or an invalid proxy settings:
+//           for (int i =1; connection.getHeaderFieldKey(i) != null; i++)
+//           {
+//             System.out.println("header" + connection.getHeaderFieldKey(i)
+//                                +"="+connection.getHeaderField(connection.getHeaderFieldKey(i)));
+//           }
+          
+          if(mime_type.startsWith("text"))
+          {
+            HTMLViewerFrame viewer = new HTMLViewerFrame(url);
+            viewer.setSize(640,480);
+            viewer.setTitle("ERROR on loading url: "+url);
+            viewer.setVisible(true);
+            throw new IOException("Invalid mime type (expected 'image/*'): "
+                                  +mime_type+"\nPage is displayed in HTML frame.");
+          }
           throw new IOException("Invalid mime type (expected 'image/*'): "
-                                +connection.getContentType());
+                                +mime_type);
         }
 
         int content_length = connection.getContentLength();
@@ -725,8 +745,21 @@ public class DownloadMouseModeLayer extends BasicLayer
         downloadTerminated(map_info,DOWNLOAD_SUCCESS,
                            sum_bytes+" "+resources_.getString(KEY_LOCALIZE_BYTES_READ));
       }
+      catch(NoRouteToHostException nrhe)
+      {
+        String message = nrhe.getMessage() + ":\n"
+                    + resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_NO_ROUTE_TO_HOST_MESSAGE);
+        downloadTerminated(map_info,DOWNLOAD_ERROR,message);
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        String message = fnfe.getMessage() + ":\n"
+                    + resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_FILE_NOT_FOUND_MESSAGE);
+        downloadTerminated(map_info,DOWNLOAD_ERROR,message);
+      }
       catch(Exception e)
       {
+//        e.printStackTrace();
         downloadTerminated(map_info,DOWNLOAD_ERROR,e.getMessage());
       }
     }

@@ -31,7 +31,6 @@ import java.awt.Graphics;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JComponent;
-import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
 import org.dinopolis.gpstool.plugin.PluginSupport;

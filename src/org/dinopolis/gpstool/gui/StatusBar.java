@@ -30,7 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent; 
 import java.beans.PropertyChangeListener; 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import javax.swing.Action;
 import javax.swing.Icon;

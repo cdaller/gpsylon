@@ -40,6 +40,7 @@ import org.dinopolis.gpstool.gui.util.TrackListComboBoxModel;
 import org.dinopolis.gpstool.track.Track;
 import org.dinopolis.gpstool.track.Trackpoint;
 import org.dinopolis.gpstool.util.GeoMath;
+import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -63,6 +64,7 @@ public class TrackChartFrame extends JFrame implements ActionListener
   protected Resources application_resources_ ;
   protected Resources plugin_resources_ ;
   protected JComboBox track_box_;
+  protected UnitHelper unit_helper_;
 
   public TrackChartFrame(String title)
   {
@@ -71,11 +73,13 @@ public class TrackChartFrame extends JFrame implements ActionListener
 
   public void initialize(Resources application_resources,
                          Resources plugin_resources,
-                         TrackManager track_manager)
+                         TrackManager track_manager,
+                         UnitHelper unit_helper)
   {
     track_manager_ = track_manager;
     application_resources_ = application_resources;
     plugin_resources_ = plugin_resources;
+    unit_helper_ = unit_helper;
 
     List tracks = track_manager_.getTracks();
     if(tracks.size() > 0)
@@ -120,9 +124,10 @@ public class TrackChartFrame extends JFrame implements ActionListener
       {
         trackpoint = (Trackpoint)waypoint_iterator.next();
             // calculate distance from last trackpoint (in km)
-        double distance = GeoMath.distance(last_trackpoint.getLatitude(), last_trackpoint.getLongitude(),
-                                           trackpoint.getLatitude(),trackpoint.getLongitude())/1000.0;
-        xy_series.add(distance,trackpoint.getAltitude());
+        double distance_km = GeoMath.distance(last_trackpoint.getLatitude(), last_trackpoint.getLongitude(),
+                                              trackpoint.getLatitude(),trackpoint.getLongitude())/1000.0;
+        xy_series.add(unit_helper_.getDistance(distance_km),
+                      unit_helper_.getAltitude(trackpoint.getAltitude()));
       }
     }
       
@@ -130,14 +135,13 @@ public class TrackChartFrame extends JFrame implements ActionListener
     String chart_title = application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_TRACK)
                          + " '" + track.getIdentification() +"' - "+
                          application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_ALTITUDE);
-    JFreeChart chart =
-      ChartFactory.createLineXYChart(chart_title,
-                                     application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_DISTANCE),
-                                     application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_ALTITUDE),
-                                     data, 
-                                     true,
-                                     true,
-                                     false);
+    String title_distance =  application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_DISTANCE)
+                             + " ["+unit_helper_.getDistanceUnit()+"]";
+    String title_altitude =  application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_ALTITUDE)
+                              + " ["+unit_helper_.getAltitudeUnit()+"]";
+    JFreeChart chart = 
+      ChartFactory.createLineXYChart(chart_title, title_distance, title_altitude,
+                                     data, true, true, false);
     return(chart);
   }
 

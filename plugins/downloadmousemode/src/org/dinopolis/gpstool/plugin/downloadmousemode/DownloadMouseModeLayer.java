@@ -34,9 +34,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.NoRouteToHostException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
@@ -47,6 +49,7 @@ import java.util.MissingResourceException;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.MapManagerHook;
@@ -54,14 +57,15 @@ import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.gui.util.AngleJTextField;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
+import org.dinopolis.gpstool.plugin.MapRetrievalPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
 import org.dinopolis.util.Debug;
+import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.HTMLViewerFrame;
-import java.net.NoRouteToHostException;
-import java.io.FileNotFoundException;
+import org.dinopolis.gpstool.util.ProgressListener;
 
 
 //----------------------------------------------------------------------
@@ -84,13 +88,14 @@ import java.io.FileNotFoundException;
  */
 
 public class DownloadMouseModeLayer extends BasicLayer
-  implements ActionListener, FocusListener, GPSMapKeyConstants
+  implements ActionListener, FocusListener, GPSMapKeyConstants, ProgressListener
 {
 
   GeoScreenPoint mouse_drag_start_;
   GeoScreenPoint mouse_drag_end_;
   MapManagerHook map_manager_;
   MapNavigationHook man_navigation_;
+  Resources application_resources_;
   Resources resources_;
   DownloadMouseMode download_mouse_mode_;
   DownloadMapCalculator download_calculator_;
@@ -101,6 +106,9 @@ public class DownloadMouseModeLayer extends BasicLayer
   DownloadThread download_thread_;
   DownloadInfoQueue download_queue_;
   boolean mouse_mode_active_ = false;
+  MapRetrievalPlugin map_retrieval_plugin_;
+  MapRetrievalPlugin[] map_retrieval_plugins_;
+  MapRetrievalPlugin last_map_retrieval_plugin_;
 
   public static final int DOWNLOAD_MODE_SINGLE_MAP = 1;
   public static final int DOWNLOAD_MODE_AREA_MAP = 2;
@@ -110,6 +118,40 @@ public class DownloadMouseModeLayer extends BasicLayer
   static final int DOWNLOAD_ERROR = 1;
 
   public static final float EXPEDIA_FACTOR = 1378.6f;
+
+
+      // keys for resources:
+  public static final String KEY_DOWNLOADMOUSEMODE_PLUGIN_IDENTIFIER =
+  "downloadmousemode.plugin.identifier";
+  public static final String KEY_DOWNLOADMOUSEMODE_PLUGIN_VERSION =
+  "downloadmousemode.plugin.version";
+  public static final String KEY_DOWNLOADMOUSEMODE_PLUGIN_NAME =
+  "downloadmousemode.plugin.name";
+  public static final String KEY_DOWNLOADMOUSEMODE_PLUGIN_DESCRIPTION =
+  "downloadmousemode.plugin.description";
+        /** the name of the resource file */
+  private final static String RESOURCE_BUNDLE_NAME = "DownloadMouseMode";
+
+      /** the name of the directory containing the resources */
+  private final static String USER_RESOURCE_DIR_NAME = GPSMap.USER_RESOURCE_DIR_NAME;
+
+      // properties keys:
+  public static final String KEY_LOCALIZE_DOWNLOADFRAME_TITLE = "localize.downloadframe_title";
+  public static final String KEY_LOCALIZE_DOWNLOAD_BUTTON = "localize.download_button";
+  public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE = "localize.message.download_error_message";
+  public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_NO_ROUTE_TO_HOST_MESSAGE = "localize.message.download_error.no_route_to_host_message";
+  public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_FILE_NOT_FOUND_MESSAGE = "localize.message.download_error.file_not_found_message";
+      /** map server urls */
+  public static final String KEY_DOWNLOAD_MAP_URL_PREFIX = "download.map.url";
+  public static final String KEY_DOWNLOAD_MAP_SCALE_FACTOR_PREFIX = "download.map.scale_factor";
+//  public static final String KEY_DOWNLOAD_MAP_URL_CHOICE = "download.map.url.choice";
+//   public static final String KEY_DOWNLOAD_MAP_URL_MAPBLAST = "download.map.url.mapblast";
+//   public static final String KEY_DOWNLOAD_MAP_URL_EXPEDIA_EAST = "download.map.url.expedia_east";
+//   public static final String KEY_DOWNLOAD_MAP_URL_EXPEDIA_WEST = "download.map.url.expedia_west";
+  public static final String KEY_DEVELOPMENT_DOWNLOAD_SIMULATE_ONLY = "development.download.simulate_only";
+  public static final String KEY_LOCALIZE_BYTES_READ = "localize.bytes_read";
+  public static final String KEY_LOCALIZE_MAP_SERVER = "localize.map_server";
+  public static final String KEY_DOWNLOAD_MAP_LAST_MAP_RETRIEVAL_PLUGIN_USED = "download.map.last_map_retrieval_plugin_used";
   
 //----------------------------------------------------------------------
 /**
@@ -130,8 +172,30 @@ public class DownloadMouseModeLayer extends BasicLayer
   {
     map_manager_ = support.getMapManagerHook();
     man_navigation_ = support.getMapNavigationHook();
-    resources_ = support.getResources();
+    application_resources_ = support.getResources();
+    loadResources();
+        // attach my resources to the main resources, so the property
+        // editor sees them:
+    application_resources_.attachResources(resources_);
     download_calculator_ = new DownloadMapCalculator();
+        // find all available map retrieval plugins:
+        // (do not use a string here, so the compiler checks for typos)
+    Object[] plugins = support.getServiceDiscovery().getServices(
+      org.dinopolis.gpstool.plugin.MapRetrievalPlugin.class);
+
+    if(plugins.length == 0)
+      setEnabled(false);
+    else
+    {
+      map_retrieval_plugins_ = new MapRetrievalPlugin[plugins.length];
+      MapRetrievalPlugin plugin;
+      for(int index = 0; index < map_retrieval_plugins_.length; index++)
+      {
+        plugin = ((MapRetrievalPlugin)plugins[index]);
+        plugin.initializePlugin(support);
+        map_retrieval_plugins_[index] = plugin;
+      }
+    }
   }
 
 
@@ -246,7 +310,22 @@ public class DownloadMouseModeLayer extends BasicLayer
         // display downloadframe on activation
     if((download_frame_ == null) && active)
     {
-      download_frame_ = new DownloadFrame(resources_,this,this);
+          // create the downloadframe and set the map retrieval plugins:
+      MapRetrievalPlugin default_plugin = null;
+      String default_plugin_name = resources_.getString(KEY_DOWNLOAD_MAP_LAST_MAP_RETRIEVAL_PLUGIN_USED);
+      int index = 0;
+      while((index < map_retrieval_plugins_.length) && (default_plugin == null))
+      {
+        if(map_retrieval_plugins_[index].getPluginIdentifier().equals(default_plugin_name))
+          default_plugin = map_retrieval_plugins_[index];
+
+        index++;
+      }
+      if(default_plugin == null)
+        default_plugin = map_retrieval_plugins_[0];
+      download_frame_ = new DownloadFrame(application_resources_,this,this,
+                                          map_retrieval_plugins_,
+                                          default_plugin);
     }
     if(download_frame_ != null)
       download_frame_.setVisible(active);
@@ -288,6 +367,10 @@ public class DownloadMouseModeLayer extends BasicLayer
 
     if(event.getActionCommand().equals(DownloadFrame.COMMAND_DOWNLOAD_DOWNLOAD))
     {
+      map_retrieval_plugin_ = download_frame_.getMapRetrievalPlugin();
+          // save the plugin used, so it is reused the next time!
+      resources_.setString(KEY_DOWNLOAD_MAP_LAST_MAP_RETRIEVAL_PLUGIN_USED,
+                           map_retrieval_plugin_.getPluginIdentifier());
       downloadMaps(map_rectangles_);
     }
   }
@@ -322,8 +405,8 @@ public class DownloadMouseModeLayer extends BasicLayer
                     +" long:"+map_rectangle.getLongitude()
                     +" scale="+map_rectangle.getScale());
 
-    String dirname = FileUtil.getAbsolutePath(resources_.getString(KEY_FILE_MAINDIR),
-                                              resources_.getString(KEY_FILE_MAP_DIR));
+    String dirname = FileUtil.getAbsolutePath(application_resources_.getString(KEY_FILE_MAINDIR),
+                                              application_resources_.getString(KEY_FILE_MAP_DIR));
     
     File dir = new File(dirname);
     if(!dir.isDirectory())
@@ -342,35 +425,6 @@ public class DownloadMouseModeLayer extends BasicLayer
                                    map_rectangle.getScale(),
                                    (int)map_rectangle.getWidth(),
                                    (int)map_rectangle.getHeight());
-    String map_server = "";
-    try
-    {
-      map_server = resources_.getString(KEY_DOWNLOAD_MAP_URL_CHOICE);
-      float scale;
-          // expedia uses a differen scaling system in its urls:
-      if(map_server.toLowerCase().startsWith("expedia"))
-      {
-        scale = Math.round(map_info.getScale() / EXPEDIA_FACTOR);
-        map_info.setScale(scale * EXPEDIA_FACTOR);
-      }
-      else
-        scale = map_info.getScale();
-
-//      System.out.println("Map info after: "+map_info);
-      
-      Object[] params = new Object[] {new Double(map_info.getLatitude()), 
-                                      new Double(map_info.getLongitude()),
-                                      new Float(scale),
-                                      new Integer(map_info.getWidth()), 
-                                      new Integer(map_info.getHeight())};
-      String message = resources_.getString(KEY_DOWNLOAD_MAP_URL_PREFIX + "." + map_server);
-
-      MessageFormat message_format = new MessageFormat(message,Locale.US); // for the decimal points!
-      String url = message_format.format(params,new StringBuffer(), null).toString();
-
-      if(Debug.DEBUG)
-          Debug.println("GPSMap_downloadmap","using url"+url);
-      
       if(download_thread_ == null)
       {
         download_queue_ = new DownloadInfoQueue();
@@ -378,27 +432,29 @@ public class DownloadMouseModeLayer extends BasicLayer
         download_thread_.start();
       }
             
-      download_queue_.put(new DownloadInfo(new URL(url),map_info));
+      download_queue_.put(map_info);
     
-    }
-    catch(MissingResourceException mre)
-    {
-      System.err.println("ERROR: Server "+map_server+" not specified correctly in the resource file.");
-      JOptionPane.showMessageDialog(this,
-                resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE)
-                +"\nServer "+map_server+" not specified correctly in the resource file.",
-                resources_.getString(KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
-                JOptionPane.ERROR_MESSAGE);
+//     }
+//     catch(MissingResourceException mre)
+//     {
+//       System.err.println("ERROR: Server "+map_server+" not specified correctly in the resource file.");
+//       mre.printStackTrace();
+//       JOptionPane.showMessageDialog(this,
+//                 resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE)
+//                 +"\nServer "+map_server+" not specified correctly in the resource file.",
+//                 application_resources_.getString(KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
+//                 JOptionPane.ERROR_MESSAGE);
 
-    }
-    catch(MalformedURLException mfue)
-    {
-      JOptionPane.showMessageDialog(this,
-				    resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE)
-				    +"\n"+mfue.getMessage(),
-				    resources_.getString(KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
-				    JOptionPane.ERROR_MESSAGE);
-    }
+//     }
+//     catch(MalformedURLException mfue)
+//     {
+//       mfue.printStackTrace();
+//       JOptionPane.showMessageDialog(this,
+// 				    resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE)
+// 				    +"\n"+mfue.getMessage(),
+// 				    application_resources_.getString(KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
+// 				    JOptionPane.ERROR_MESSAGE);
+//     }
   }
 
 //----------------------------------------------------------------------
@@ -561,7 +617,7 @@ public class DownloadMouseModeLayer extends BasicLayer
     {
       preview_rectangles_ = rectangles;
     }
-    download_frame_.setInfo(rectangles.length + " " +  resources_.getString(KEY_LOCALIZE_MAPS));
+    download_frame_.setInfo(rectangles.length + " " +  application_resources_.getString(KEY_LOCALIZE_MAPS));
   }
 
 //----------------------------------------------------------------------
@@ -592,7 +648,7 @@ public class DownloadMouseModeLayer extends BasicLayer
       JOptionPane.showMessageDialog(this,
                                     resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE)
                                     +"\n"+message,
-                                    resources_.getString(KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
+                                    application_resources_.getString(KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
                                     JOptionPane.ERROR_MESSAGE);
       download_frame_.setInfo("");
     }
@@ -604,6 +660,91 @@ public class DownloadMouseModeLayer extends BasicLayer
       if(map_manager_ != null)
         map_manager_.addNewMap(map_info);
     }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Loads the resource file, or exits the application on a
+ * MissingResourceException.
+ */
+	void loadResources()
+	{
+	  try
+	  {
+	    resources_ =
+	      ResourceManager.getResources(
+          DownloadMouseMode.class,
+          RESOURCE_BUNDLE_NAME,
+          USER_RESOURCE_DIR_NAME,
+          Locale.getDefault());
+	  }
+	  catch (MissingResourceException mre)
+	  {
+	    if (Debug.DEBUG)
+	      Debug.println(
+          "DownloadMouseModePlugin",
+          mre.toString() + '\n' + Debug.getStackTrace(mre));
+	    System.err.println(
+	      "DownloadMouseModePlugin: resource file '"
+	      + RESOURCE_BUNDLE_NAME
+	      + "' not found");
+	    System.err.println(
+	      "please make sure that this file is within the classpath !");
+	    System.exit(1);
+	  }
+	}
+
+// ----------------------------------------------------------------------
+// ProgressListener Implementation
+// ----------------------------------------------------------------------
+
+//----------------------------------------------------------------------
+/**
+ * Callback to inform listeners about an action to start.
+ *
+ * @param action_id the id of the action that is started. This id may
+ * be used to display a message for the user.
+ * @param min_value the minimum value of the progress counter.
+ * @param max_value the maximum value of the progress counter. If the
+ * max value is unknown, max_value is set to <code>Integer.NaN</code>.
+ */
+  public void actionStart(String action_id, int min_value, int max_value)
+  {
+    download_frame_.progress_bar_bytes_.setMinimum(min_value);
+    if(max_value == Integer.MIN_VALUE)
+      download_frame_.progress_bar_bytes_.setIndeterminate(true);
+    else
+      download_frame_.progress_bar_bytes_.setMaximum(max_value);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Callback to inform listeners about progress going on. It is not
+ * guaranteed that this method is called on every change of current
+ * value (e.g. only call this method on every 10th change).
+ *
+ * @param action_id the id of the action that is started. This id may
+ * be used to display a message for the user.
+ * @param current_value the current value
+ */
+  public void actionProgress(String action_id, int current_value)
+  {
+    download_frame_.progress_bar_bytes_.setValue(current_value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Callback to inform listeners about the end of the action.
+ *
+ * @param action_id the id of the action that is started. This id may
+ * be used to display a message for the user.
+ */
+  public void actionEnd(String action_id)
+  {
+    if(download_frame_.progress_bar_bytes_.isIndeterminate())
+      download_frame_.progress_bar_bytes_.setIndeterminate(false);
+    else
+      download_frame_.progress_bar_bytes_.setValue(download_frame_.progress_bar_bytes_.getMaximum());
   }
 
 
@@ -622,7 +763,7 @@ public class DownloadMouseModeLayer extends BasicLayer
     public static final int BUFFER_SIZE = 4096;
     boolean run_ = true; // while true, keep on running
     DownloadInfoQueue queue_;
-    boolean simulate_only = resources_.getBoolean(KEY_DEVELOPMENT_DOWNLOAD_SIMULATE_ONLY);
+    boolean simulate_only = application_resources_.getBoolean(KEY_DEVELOPMENT_DOWNLOAD_SIMULATE_ONLY);
     
 //----------------------------------------------------------------------
 /**
@@ -646,200 +787,223 @@ public class DownloadMouseModeLayer extends BasicLayer
     {
       while(run_)
       {
-        DownloadInfo info = (DownloadInfo)queue_.get();
-        if(simulate_only)
-          System.out.println("Downloading URL: "+info.getUrl());
-        else
-          download(info.getUrl(),info.getMapInfo());
-      }
-    }
-    
-
-//----------------------------------------------------------------------
-/**
- * Download the given map info with the use of the given url. This
- * method creates the final filename for the map by the use of the
- * directory name in the MapInfo object.
- *
- * @param url the url to download
- * @param map_info the MapInfo object describing the map.
- */
-
-    public void download(URL url, MapInfo map_info)
-    {
-      try
-      {
-        URLConnection connection = url.openConnection();
-
-        if(resources_.getBoolean(KEY_HTTP_PROXY_AUTHENTICATION_USE))
-        {
-          String proxy_userid = resources_.getString(KEY_HTTP_PROXY_AUTHENTICATION_USERNAME);
-          String proxy_password = resources_.getString(KEY_HTTP_PROXY_AUTHENTICATION_PASSWORD);
-          String auth_string = proxy_userid +":" + proxy_password;
-
-          auth_string = "Basic " + new sun.misc.BASE64Encoder().encode(auth_string.getBytes());
-          connection.setRequestProperty("Proxy-Authorization", auth_string);
-        }
-
-        connection.connect();
-        String mime_type = connection.getContentType().toLowerCase();
-        if(!mime_type.startsWith("image"))
-        {
-              // handle wrong mime type. the most probable error is a
-              // 404-not found or an invalid proxy settings:
-//           for (int i =1; connection.getHeaderFieldKey(i) != null; i++)
-//           {
-//             System.out.println("header" + connection.getHeaderFieldKey(i)
-//                                +"="+connection.getHeaderField(connection.getHeaderFieldKey(i)));
-//           }
-          
-          if(mime_type.startsWith("text"))
-          {
-            HTMLViewerFrame viewer = new HTMLViewerFrame(url);
-            viewer.setSize(640,480);
-            viewer.setTitle("ERROR on loading url: "+url);
-            viewer.setVisible(true);
-            throw new IOException("Invalid mime type (expected 'image/*'): "
-                                  +mime_type+"\nPage is displayed in HTML frame.");
-          }
-          throw new IOException("Invalid mime type (expected 'image/*'): "
-                                +mime_type);
-        }
-
-        int content_length = connection.getContentLength();
-        if(content_length < 0)
-          download_frame_.progress_bar_bytes_.setIndeterminate(true);
-        else
-          download_frame_.progress_bar_bytes_.setMaximum(content_length);
-        
-        String extension = mime_type.substring(mime_type.indexOf('/')+1);
-
+            // get the next MapInfo object from the queue (block
+            // unless one is available):
+        MapInfo map_info = (MapInfo)queue_.get();
+            // read dirname from the map info object
         String dirname  = map_info.getFilename();
-
-        String filename = FileUtil.getNextFileName(dirname,
-                                                   resources_.getString(KEY_FILE_MAP_FILENAME_PREFIX),
-                                                   resources_.getString(KEY_FILE_MAP_FILENAME_PATTERN),
-                                                   "." + extension);
-        map_info.setFilename(filename);
-          
-        FileOutputStream out = new FileOutputStream(filename);
-
-        byte[] buffer = new byte[BUFFER_SIZE];
-        BufferedInputStream in = new BufferedInputStream(connection.getInputStream(), BUFFER_SIZE);
-
-        int sum_bytes = 0;
-        int num_bytes = 0;
-            // Read (and print) till end of file
-        while ((num_bytes = in.read(buffer)) != -1)
-        {
-          out.write(buffer, 0, num_bytes);
-//          System.out.println(getName()+": read and wrote "+num_bytes+" bytes");
-          sum_bytes += num_bytes;
-          download_frame_.progress_bar_bytes_.setValue(sum_bytes);
-        }
-
-        download_frame_.progress_bar_bytes_.setIndeterminate(false);
+            // create the new filename for the map:
+        String filename = 
+          FileUtil.getNextFileName(dirname,
+                                   application_resources_.getString(KEY_FILE_MAP_FILENAME_PREFIX),
+                                   application_resources_.getString(KEY_FILE_MAP_FILENAME_PATTERN),
+                                   ".???"); // extension, not known yet (done by plugin)
         
-        in.close();
-        out.close();
-        downloadTerminated(map_info,DOWNLOAD_SUCCESS,
-                           sum_bytes+" "+resources_.getString(KEY_LOCALIZE_BYTES_READ));
-      }
-      catch(NoRouteToHostException nrhe)
-      {
-        String message = nrhe.getMessage() + ":\n"
-                    + resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_NO_ROUTE_TO_HOST_MESSAGE);
-        downloadTerminated(map_info,DOWNLOAD_ERROR,message);
-      }
-      catch(FileNotFoundException fnfe)
-      {
-        String message = fnfe.getMessage() + ":\n"
-                    + resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_FILE_NOT_FOUND_MESSAGE);
-        downloadTerminated(map_info,DOWNLOAD_ERROR,message);
-      }
-      catch(Exception e)
-      {
-//        e.printStackTrace();
-        downloadTerminated(map_info,DOWNLOAD_ERROR,e.getMessage());
+        String file_path_wo_extension = filename.substring(0,filename.length()-3); // cut off ".???" again
+        if(Debug.DEBUG)
+          Debug.println("map_download","Filename (without extension): "+file_path_wo_extension);
+        try
+        {
+          MapInfo result = map_retrieval_plugin_.getMap(map_info.getLatitude(),map_info.getLongitude(),
+                                                        map_info.getScale(),map_info.getWidth(),
+                                                        map_info.getHeight(),file_path_wo_extension,
+                                                        DownloadMouseModeLayer.this);
+          downloadTerminated(result,DOWNLOAD_SUCCESS,"downloaded");
+        }
+        catch(Exception e)
+        {
+//          System.out.println("in run(), exception message: "+e.getMessage());
+          downloadTerminated(null,DOWNLOAD_ERROR,e.getMessage());
+        }
       }
     }
   }
 
-//-----------------------------------------------------------------------
-//-----------------------------------------------------------------------
-/**
- * Download Info
- */
+// //----------------------------------------------------------------------
+// /**
+//  * Download the given map info with the use of the given url. This
+//  * method creates the final filename for the map by the use of the
+//  * directory name in the MapInfo object.
+//  *
+//  * @param url the url to download
+//  * @param map_info the MapInfo object describing the map.
+//  */
 
-  class DownloadInfo
-  {
-    URL url_;
-    MapInfo info_;
+//     public void download(URL url, MapInfo map_info)
+//     {
+//       try
+//       {
+//         URLConnection connection = url.openConnection();
+
+//         if(application_resources_.getBoolean(KEY_HTTP_PROXY_AUTHENTICATION_USE))
+//         {
+//           String proxy_userid = application_resources_.getString(KEY_HTTP_PROXY_AUTHENTICATION_USERNAME);
+//           String proxy_password = application_resources_.getString(KEY_HTTP_PROXY_AUTHENTICATION_PASSWORD);
+//           String auth_string = proxy_userid +":" + proxy_password;
+
+//           auth_string = "Basic " + new sun.misc.BASE64Encoder().encode(auth_string.getBytes());
+//           connection.setRequestProperty("Proxy-Authorization", auth_string);
+//         }
+
+//         connection.connect();
+//         String mime_type = connection.getContentType().toLowerCase();
+//         if(!mime_type.startsWith("image"))
+//         {
+//               // handle wrong mime type. the most probable error is a
+//               // 404-not found or an invalid proxy settings:
+// //           for (int i =1; connection.getHeaderFieldKey(i) != null; i++)
+// //           {
+// //             System.out.println("header" + connection.getHeaderFieldKey(i)
+// //                                +"="+connection.getHeaderField(connection.getHeaderFieldKey(i)));
+// //           }
+          
+//           if(mime_type.startsWith("text"))
+//           {
+//             HTMLViewerFrame viewer = new HTMLViewerFrame(url);
+//             viewer.setSize(640,480);
+//             viewer.setTitle("ERROR on loading url: "+url);
+//             viewer.setVisible(true);
+//             throw new IOException("Invalid mime type (expected 'image/*'): "
+//                                   +mime_type+"\nPage is displayed in HTML frame.");
+//           }
+//           throw new IOException("Invalid mime type (expected 'image/*'): "
+//                                 +mime_type);
+//         }
+
+//         int content_length = connection.getContentLength();
+//         if(content_length < 0)
+//           download_frame_.progress_bar_bytes_.setIndeterminate(true);
+//         else
+//           download_frame_.progress_bar_bytes_.setMaximum(content_length);
+        
+//         String extension = mime_type.substring(mime_type.indexOf('/')+1);
+//         String dirname  = map_info.getFilename();
+//         String filename = FileUtil.getNextFileName(dirname,
+//                                                    application_resources_.getString(KEY_FILE_MAP_FILENAME_PREFIX),
+//                                                    application_resources_.getString(KEY_FILE_MAP_FILENAME_PATTERN),
+//                                                    "." + extension);
+//         map_info.setFilename(filename);
+          
+//         FileOutputStream out = new FileOutputStream(filename);
+
+//         byte[] buffer = new byte[BUFFER_SIZE];
+//         BufferedInputStream in = new BufferedInputStream(connection.getInputStream(), BUFFER_SIZE);
+
+//         int sum_bytes = 0;
+//         int num_bytes = 0;
+//             // Read (and print) till end of file
+//         while ((num_bytes = in.read(buffer)) != -1)
+//         {
+//           out.write(buffer, 0, num_bytes);
+// //          System.out.println(getName()+": read and wrote "+num_bytes+" bytes");
+//           sum_bytes += num_bytes;
+//           download_frame_.progress_bar_bytes_.setValue(sum_bytes);
+//         }
+
+//         download_frame_.progress_bar_bytes_.setIndeterminate(false);
+        
+//         in.close();
+//         out.close();
+//         downloadTerminated(map_info,DOWNLOAD_SUCCESS,
+//                            sum_bytes+" "+resources_.getString(KEY_LOCALIZE_BYTES_READ));
+//       }
+//       catch(NoRouteToHostException nrhe)
+//       {
+//         String message = nrhe.getMessage() + ":\n"
+//                     + resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_NO_ROUTE_TO_HOST_MESSAGE);
+//         downloadTerminated(map_info,DOWNLOAD_ERROR,message);
+//       }
+//       catch(FileNotFoundException fnfe)
+//       {
+//         String message = fnfe.getMessage() + ":\n"
+//                     + resources_.getString(KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_FILE_NOT_FOUND_MESSAGE);
+//         downloadTerminated(map_info,DOWNLOAD_ERROR,message);
+//       }
+//       catch(Exception e)
+//       {
+// //        e.printStackTrace();
+//         downloadTerminated(map_info,DOWNLOAD_ERROR,e.getMessage());
+//       }
+//     }
+//   }
+
+  
+// //-----------------------------------------------------------------------
+// //-----------------------------------------------------------------------
+// /**
+//  * Download Info
+//  */
+
+//   class DownloadInfo
+//   {
+//     URL url_;
+//     MapInfo info_;
+// //    MapDownloaderInstance instance_;
     
-//-----------------------------------------------------------------------
-/**
- * Constructor
- */
-    public DownloadInfo()
-    {
-    }
+// //-----------------------------------------------------------------------
+// /**
+//  * Constructor
+//  */
+//     public DownloadInfo()
+//     {
+//     }
 
-//-----------------------------------------------------------------------
-/**
- * Constructor
- */
-    public DownloadInfo(URL url, MapInfo info)
-    {
-      url_ = url;
-      info_ = info;
-    }
+// //-----------------------------------------------------------------------
+// /**
+//  * Constructor
+//  */
+//     public DownloadInfo(URL url, MapInfo info)
+//     {
+//       url_ = url;
+//       info_ = info;
+//     }
 
 
-//----------------------------------------------------------------------
-/**
- * Get the url.
- *
- * @return the url.
- */
-    public URL getUrl()
-    {
-      return (url_);
-    }
+// //----------------------------------------------------------------------
+// /**
+//  * Get the url.
+//  *
+//  * @return the url.
+//  */
+//     public URL getUrl()
+//     {
+//       return (url_);
+//     }
     
-//----------------------------------------------------------------------
-/**
- * Set the url.
- *
- * @param url the url.
- */
-    public void setUrl(URL url)
-    {
-      url_ = url;
-    }
+// //----------------------------------------------------------------------
+// /**
+//  * Set the url.
+//  *
+//  * @param url the url.
+//  */
+//     public void setUrl(URL url)
+//     {
+//       url_ = url;
+//     }
 
 
-//----------------------------------------------------------------------
-/**
- * Get the info.
- *
- * @return the info.
- */
-    public MapInfo getMapInfo()
-    {
-      return (info_);
-    }
+// //----------------------------------------------------------------------
+// /**
+//  * Get the info.
+//  *
+//  * @return the info.
+//  */
+//     public MapInfo getMapInfo()
+//     {
+//       return (info_);
+//     }
     
-//----------------------------------------------------------------------
-/**
- * Set the info.
- *
- * @param info the info.
- */
-    public void setMapInfo(MapInfo info)
-    {
-      info_ = info;
-    }
-  }
+// //----------------------------------------------------------------------
+// /**
+//  * Set the info.
+//  *
+//  * @param info the info.
+//  */
+//     public void setMapInfo(MapInfo info)
+//     {
+//       info_ = info;
+//     }
+//   }
 
 //-----------------------------------------------------------------------
 //-----------------------------------------------------------------------

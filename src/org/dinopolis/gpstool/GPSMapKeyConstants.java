@@ -70,6 +70,8 @@ public interface GPSMapKeyConstants
   public static final String KEY_FILE_MAINDIR = "file.maindir";
   public static final String KEY_FILE_MAP_DIR = "file.map.dir";
   public static final String KEY_FILE_MAP_DESCRIPTION_FILE = "file.map.description_file";
+  public static final String KEY_FILE_MAP_FILENAME_PREFIX = "file.map.filename.prefix";
+  public static final String KEY_FILE_MAP_FILENAME_PATTERN = "file.map.filename.pattern";
   public static final String KEY_FILE_TRACK_DIR = "file.track.dir";
   public static final String KEY_FILE_LOCATION_DIR = "file.location.dir";
   public static final String KEY_FILE_LOCATION_FILENAME = "file.location.filename";
@@ -264,9 +266,15 @@ public interface GPSMapKeyConstants
       /** other resources */
   public static final String KEY_RESOURCE_EDITOR_TITLE = "resource.editor_title";
 
+      /** development resources */
+  public static final String KEY_DEVELOPMENT_PLUGINS_CLASSLOADER_USE_DEFAULT_CLASSLOADER = "development.plugins.classloader.use_default_classloader";
+  public static final String KEY_DEVELOPMENT_DOWNLOAD_SIMULATE_ONLY = "development.download.simulate_only";
+
+  
       /** menu resources */
   public static final String KEY_MENU_CONTROL_LABEL = "menu.control.label";
   public static final String KEY_MENU_MOUSE_MODE_LABEL = "menu.mouse_mode.label";
+  public static final String KEY_MENU_PLUGIN_LABEL = "menu.plugin.label";
 
       /** cursor resources */
   public static final String KEY_CURSOR_ZOOM_IN_ICON = "cursor.zoom_in.icon";

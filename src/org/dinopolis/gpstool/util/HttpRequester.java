@@ -249,7 +249,7 @@ public class HttpRequester
     while(iterator.hasNext())
     {
       String key = (String)iterator.next();
-      String value = (String)map.get(key);
+      Object value = map.get(key);
       System.out.println(key+": '"+value+"'");
     }
   }

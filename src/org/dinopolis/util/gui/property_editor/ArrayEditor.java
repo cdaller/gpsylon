@@ -96,7 +96,6 @@ public class ArrayEditor extends PropertyEditorSupport
       buffer.append(escape(base_editor_.getAsText()));
 //      buffer.append(base_editor_.getAsText());
     }
-    System.out.println("ArrayEditor.getAsText: "+buffer.toString());
     return(buffer.toString());
   }
   
@@ -109,7 +108,6 @@ public class ArrayEditor extends PropertyEditorSupport
 
   public void setAsText(String value)
   {
-    System.out.println("ArrayEditor.setAsText: "+value);
     int delim_start_pos = 0;
     int delim_pos = value.indexOf(DELIMITER, delim_start_pos);
     Vector elements = new Vector();
@@ -140,7 +138,6 @@ public class ArrayEditor extends PropertyEditorSupport
       Array.set(array, count, base_editor_.getValue());
     }
     setValue(array);
-    System.out.println("ArrayEditor.setAsText result: "+elements);
   }
   
   //----------------------------------------------------------------------

@@ -128,6 +128,8 @@ import org.dinopolis.util.gui.ResourceEditorFrame;
 import org.dinopolis.util.gui.SplashScreen;
 import org.dinopolis.util.servicediscovery.RepositoryClassLoader;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
+import javax.swing.JCheckBoxMenuItem;
+import org.dinopolis.util.gui.SelectedButtonActionSynchronizer;
 
 //----------------------------------------------------------------------
 /**
@@ -145,7 +147,7 @@ public class GPSMap
 	Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.14-pre3";
+  public final static String GPSMAP_VERSION = "0.4.14-pre4";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -176,6 +178,9 @@ public class GPSMap
 
 //  protected MouseDelegator mouse_delegator_;
   protected MouseModeManager mouse_mode_manager_;
+
+  protected Vector gui_plugins_ = new Vector();
+  protected Vector layer_plugins_ = new Vector();
 
       /** the default center point */
   protected LatLonPoint current_gps_position_ = new LatLonPoint(47.06005f,15.47314f);
@@ -399,9 +404,9 @@ public class GPSMap
         /** the Actions */
     Action[] actions_ = { new QuitAction(),
                           new EditResourcesAction(),
-                          new MouseDistanceModeAction(),
-                          new MouseNavigationModeAction(),
-                          new MousePositionModeAction(),
+//                            new MouseDistanceModeAction(),
+//                            new MouseNavigationModeAction(),
+//                            new MousePositionModeAction(),
                           new ZoomInAction(),
                           new ZoomOutAction(),
                           new PanAction(ACTION_PAN_WEST,-0.2f,0f),
@@ -620,6 +625,10 @@ public class GPSMap
     menu_bar_ = MenuFactory.createMenuBar(resources_, action_store_);
     
     addMouseModesToMenu();
+    // disable the menus "mouse modes" and "plugins" if they are not used:
+    disableMenuIfEmpty(resources_.getString(KEY_MENU_PLUGIN_LABEL));
+    disableMenuIfEmpty(resources_.getString(KEY_MENU_MOUSE_MODE_LABEL));
+    mouse_mode_manager_.activateMouseMode(resources_.getString(KEY_MOUSE_MODE_DEFAULT_MODE));
     
     main_frame_.setJMenuBar(menu_bar_);
 
@@ -877,6 +886,21 @@ public class GPSMap
 
 //----------------------------------------------------------------------
 /**
+ * Disables the menu with the given name in the menu bar if it does
+ * not contain any menu items.
+ *
+ * @param  main_menu_name the name of the menu
+ */
+  protected void disableMenuIfEmpty(String main_menu_name)
+  {
+    JMenu menu = (JMenu)findMenuItem(menu_bar_,main_menu_name);
+    if ((menu != null) && (menu.getItemCount() == 0))
+      menu.setEnabled(false);
+  }
+
+  
+//----------------------------------------------------------------------
+/**
  * Adds the mouse modes of the MouseModeManager to the menu bar (Menu
  * Mouse Mode).
  *
@@ -927,6 +951,25 @@ public class GPSMap
     }
   }
 
+//----------------------------------------------------------------------
+/**
+ * Adds the sub menus of plugins to the  menu bar (Menu Plugin).
+ */
+  protected void addOnOffActionToLayersMenu(Action action)
+  {
+    JMenu layer_menu = (JMenu)findMenuItem(menu_bar_,
+					   resources_.getString(KEY_MENU_LAYERS_LABEL));
+    if(layer_menu != null)
+    {
+      JCheckBoxMenuItem menu_item = new JCheckBoxMenuItem(action);
+      // keep the state of the menu and the action in sync
+      SelectedButtonActionSynchronizer syncer =
+	new SelectedButtonActionSynchronizer(menu_item,action);
+      layer_menu.add(menu_item);
+    }
+    else
+      System.err.println("WARNING: could not find 'layers' menu, do not add on/off action");
+  }
 //----------------------------------------------------------------------
 /**
  * Processes the command line arguments and sets resource values if
@@ -1332,8 +1375,7 @@ public class GPSMap
         // TODO FIXXME check for duplicate plugins (old and new version)
         // and remove the old one
 
-    Vector mouse_modes = new Vector();
-    
+
         // GuiPlugins
     Object[] plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.GuiPlugin.class);
     GuiPlugin gui_plugin;
@@ -1341,6 +1383,7 @@ public class GPSMap
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       gui_plugin = (GuiPlugin)plugins[plugins_index];
+      gui_plugins_.add(gui_plugin);
       System.out.println("Adding Gui Plugin: " + gui_plugin.getPluginName());
       gui_plugin.initializePlugin(hook_manager_);
       addMouseModes(gui_plugin.getMouseModes());
@@ -1361,17 +1404,7 @@ public class GPSMap
     {
       layer_plugin = (LayerPlugin)plugins[plugins_index];
       System.out.println("Adding Layer Plugin: " + layer_plugin.getPluginName());
-      layer_plugin.initializePlugin(hook_manager_);
-      addMouseModes(layer_plugin.getMouseModes());
-      map_bean_.add(layer_plugin);
-          // add sub menus of plugin:
-      plugin_menu = layer_plugin.getSubMenu();
-      if(plugin_menu != null)
-        addToPluginsMenu(plugin_menu);
-
-          // add main menu of plugin:
-      plugin_menu = layer_plugin.getMainMenu();
-      menu_bar_.add(plugin_menu);
+      addLayerPlugin(layer_plugin);
     }
 
         // MouseMode Plugins:
@@ -1422,8 +1455,32 @@ public class GPSMap
       addMouseMode(mouse_modes[index]);
   }
 
+//----------------------------------------------------------------------
+/**
+ * Adds the given layer plugin to the layers menu and creates an
+ * action to switch the layer on/off.
+ *
+ * @param layer_plugin the plugin to add
+ */
+  protected void addLayerPlugin(LayerPlugin layer_plugin)
+  {
+    layer_plugins_.add(layer_plugin);
+    layer_plugin.initializePlugin(hook_manager_);
+    addMouseModes(layer_plugin.getMouseModes());
+    map_bean_.add(layer_plugin);
+    // add sub menus of plugin:
+    JMenuItem plugin_menu = layer_plugin.getSubMenu();
+    if(plugin_menu != null)
+      addToPluginsMenu(plugin_menu);
+    
+    // add main menu of plugin:
+    plugin_menu = layer_plugin.getMainMenu();
+    menu_bar_.add(plugin_menu);
 
-  
+    addOnOffActionToLayersMenu(new LayerPluginOnOffAction(layer_plugin));
+  }
+
+
 //----------------------------------------------------------------------
 /**
  * Updates the resource for the given key, or all resources if key
@@ -3147,6 +3204,52 @@ public class GPSMap
       setScale(scale_);
     }
   }
+
+     //----------------------------------------------------------------------
+     /**
+      * The Action for switching a layer on or off
+      */
+
+ class LayerPluginOnOffAction extends AbstractAction 
+ {
+
+   LayerPlugin layer_plugin_;
+
+       //----------------------------------------------------------------------
+       /**
+        * The Default Constructor.
+        */
+
+   public LayerPluginOnOffAction(LayerPlugin layer_plugin)
+   {
+     super(layer_plugin.getName());
+     layer_plugin_ = layer_plugin;
+   }
+
+       //----------------------------------------------------------------------
+       /**
+        * Ouputs some test message
+        * 
+        * @param event the action event
+        */
+
+   public void actionPerformed(ActionEvent event)
+   {
+     
+   }
+
+   public void propertyChange(PropertyChangeEvent event)
+   {
+     String property_name = event.getPropertyName();
+     if(SelectedButtonActionSynchronizer.SELECTED.equals(property_name))
+     {
+        Object selected = event.getNewValue();
+//        System.out.println("changed "+event.getPropertyName()+" to " +selected);
+        if((selected != null) && (selected instanceof Boolean))
+          layer_plugin_.setActive(((Boolean)selected).booleanValue());
+     }
+   }
+ }
 
 //       //----------------------------------------------------------------------
 //       /**

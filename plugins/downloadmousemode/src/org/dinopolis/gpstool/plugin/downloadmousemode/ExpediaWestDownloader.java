@@ -23,6 +23,10 @@
 
 package org.dinopolis.gpstool.plugin.downloadmousemode;
 
+import java.net.URLConnection;
+
+
+
 
 //----------------------------------------------------------------------
 /**
@@ -43,5 +47,27 @@ public class ExpediaWestDownloader extends SimpleUrlDownloader
   {
     return("expedia_west");
   }
-  
+
+
+//----------------------------------------------------------------------
+/**
+ * Set some request properties for the url connection. This method may
+ * be overwritten to set some additional http header fields. This
+ * implementation sets the "Cookie: jscript=1" header field. (Thanks
+ * to Chris Sutton and Fritz Ganter).
+ *
+ * @param connection the connection that is used to request the url
+ * for the map.
+ * @return the same (or new connection) with some request properties
+ * set.
+ */
+  protected URLConnection setRequestProperties(URLConnection connection)
+  {
+    connection.setDoOutput(true);
+    connection.setDoInput(true);
+    connection.setUseCaches(false);
+    connection.setRequestProperty("Cookie","jscript=1");
+    return(connection);
+  }
+
 }

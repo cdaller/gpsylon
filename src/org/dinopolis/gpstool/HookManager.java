@@ -52,6 +52,7 @@ public class HookManager implements PluginSupport
   PropertyChangeSupport property_change_support_;
   Resources resources_;
   GPSDataProcessor gps_data_processor_;
+  TrackManager track_manager_;
   
   public HookManager()
   {
@@ -212,6 +213,28 @@ public class HookManager implements PluginSupport
   protected void setResources(Resources resources)
   {
     resources_ = resources;
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Get the track manager (may be used to set/get tracks).
+ *
+ * @return the track manager
+ */
+  public TrackManager getTrackManager()
+  {
+    return(track_manager_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the track manager  (may be used to set/get tracks).
+ *
+ * @param track_manager the trackmanager
+ */
+  protected void setTrackManager(TrackManager track_manager)
+  {
+    track_manager_ = track_manager;
   }
 
 

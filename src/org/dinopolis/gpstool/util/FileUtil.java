@@ -49,12 +49,14 @@ public class FileUtil
  * pattern and suffix. E.g. using the prefix "map_", the pattern
  * "0000" and the suffix ".txt" and there exist the files
  * "map_0001.txt" and "map_0002.txt" it returns "map_0003.txt". The
- * pattern must be a valid NumberFormat pattern.
+ * pattern must be a valid NumberFormat pattern. If wildcards are used
+ * for the prefix or the suffix, they are contained in the returned
+ * filename!
  *
  * @param directory the directory the files are located in
- * @param prefix the prefix of the files
+ * @param prefix the prefix of the files (may contain '?'s as wildcard).
  * @param pattern the number pattern of the files
- * @param suffix the suffix of the files
+ * @param suffix the suffix of the files (may contain '?'s as wildcard).
  * @return the next available filename (including the given directory name!)
  */
 
@@ -71,7 +73,8 @@ public class FileUtil
         public boolean accept(File dir, String name)
         {
           return(!(new File(dir,name).isDirectory())
-                 && name.startsWith(prefix) && name.endsWith(suffix)
+                 && wildcardStartsWith(name,prefix) && wildcardEndsWith(name,suffix)
+//                 && name.startsWith(prefix) && name.endsWith(suffix)
                  && (name.length() == prefix.length() + pattern.length() + suffix.length()));
         }
     };
@@ -144,20 +147,123 @@ public class FileUtil
   }
 
 
+//----------------------------------------------------------------------
+/**
+ * Returns true, if s1 starts with s2 respecting the wildcards (* =
+ * 0 or more characters; ? = exactly 1 character) in s2.
+ * Example:
+ * <xmp>
+ * wildcardStartsWith("abc.txt","ab?") returns true.
+ * </xmp>
+ *
+ * @param s1 the first string (may not contain wildcards)
+ * @param s2 the second string (may contain wildcards!)
+ * @return true if s1 starts with s2 respecting the wildcards in s2,
+ * false otherwise.
+ */
+  public static boolean wildcardStartsWith(String s1, String s2)
+  {
+    int length = s2.length();
+    return(wildcardEqual(s2,s1.substring(0,length)));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns true, if s1 ends with s2 respecting the wildcards (* =
+ * 0 or more characters; ? = exactly 1 character) in s2.
+ * Example:
+ * <xmp>
+ * wildcardEndsWith("abc.txt","t?t") returns true.
+ * </xmp>
+ *
+ * @param s1 the first string (may not contain wildcards)
+ * @param s2 the second string (may contain wildcards!)
+ * @return true if s1 ends with s2 respecting the wildcards in s2,
+ * false otherwise.
+ */
+  public static boolean wildcardEndsWith(String s1, String s2)
+  {
+    int length = s2.length();
+    return(wildcardEqual(s2,s1.substring(s1.length()-length)));
+  }
+
+  
+//----------------------------------------------------------------------
+/**
+ * Compare s1 with s2; s1 can use wildcards.
+ * * = 0 or more characters; ? = exactly 1 character
+ * returns true for same, false for different
+ *
+ * Ripped out of org.javalobby.util.StringUtils resp.
+ * from http://www.ulfdittmer.com/old/java/TextUtils.java
+ *
+ * This function works by moving both Strings forward when they are the same
+ * if either s1 or s2 has any elements left at the end, when
+ * the other has none, the compare is invalid.
+ *
+ * @param s1 the first string (may contain wildcards)
+ * @param s2 the second string (may not contain wildcards!)
+ * @return true if the comparison was successful, false otherwise.
+ */
+  public static boolean wildcardEqual (String s1, String s2) {
+    while (s2.length() != 0)
+    {
+          //make sure we have atleast 1 character in s1
+      if (s1.length() == 0)
+        return false;    //s1 ended, but s2 has not ended yet
+      if (s1.charAt(0) == s2.charAt(0))
+      {     //character the same?
+            //move both strings forward
+        s1 = s1.substring(1);
+        s2 = s2.substring(1);
+      }
+      else if (s1.charAt(0) == '?')
+      {         //exactly 1 char
+            //move both strings forward
+        s1 = s1.substring(1);
+        s2 = s2.substring(1);
+      }
+      else if (s1.charAt(0) == '*')
+      {         //0 or many chars
+            //try carrying on as if the * ended on the current character in s2
+        if (wildcardEqual(s1.substring(1), s2))
+          return true;
+        else
+          s2 = s2.substring(1);    //only move s2 forward
+            //next iteration we will be back here, to try matching against the new s2
+      }
+      else
+        return false;    //not the same
+    }
+        //s2.length()==0, as it is the only exit condition from the loop
+        //if s1 has finished, then they are the same
+    if (s1.length()==0)
+      return true;
+        //s1 could be a *, which can be 0 characters
+    if (s1.charAt(0)=='*' && s1.length()==1)
+      return true;
+    return false;//not the same
+  }
+  
   public static void main(String[] args)
   {
-    if(args.length < 4)
-    {
-      System.out.println("Returns next matching filename");
-      System.out.println("Usage: FileUtil <dir> <prefix> <pattern> <suffix>");
-      System.out.println("       e.g. FileUtil ~/.gpsmap/maps maps_ 00000 .gif");
-      System.exit(1);
-    }
-    String dir = args[0];
-    String prefix = args[1];
-    String pattern = args[2];
-    String suffix = args[3];
-    System.out.println("new name: "+getNextFileName(dir,prefix,pattern,suffix));
+//     if(args.length < 4)
+//     {
+//       System.out.println("Returns next matching filename");
+//       System.out.println("Usage: FileUtil <dir> <prefix> <pattern> <suffix>");
+//       System.out.println("       e.g. FileUtil ~/.gpsmap/maps maps_ 00000 .gif");
+//       System.exit(1);
+//     }
+//     String dir = args[0];
+//     String prefix = args[1];
+//     String pattern = args[2];
+//     String suffix = args[3];
+//     System.out.println("new name: "+getNextFileName(dir,prefix,pattern,suffix));
+    String s1 = args[0];
+    String s2 = args[1];
+    System.out.println("WildcardEqual of "+s1+" and "+ s2 +" = "+wildcardEqual(s1,s2));
+    System.out.println("WildcardStartWith of "+s1+" and "+ s2 +" = "+wildcardStartsWith(s1,s2));
+    System.out.println("WildcardEndsWith of "+s1+" and "+ s2 +" = "+wildcardEndsWith(s1,s2));
   }
 }
 

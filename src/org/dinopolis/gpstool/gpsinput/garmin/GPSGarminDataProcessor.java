@@ -1494,8 +1494,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         case Pid_Rte_Wpt_Data_L002:
           if(package_count % 10 == 0)
             fireProgressActionProgress(GETROUTES,package_count);
-          if(capabilities_.hasCapability("D108"))
-            ((GarminRoute)item).addWaypoint(new GarminWaypointD108(buffer));
+          if(capabilities_.hasCapability("D103"))
+            ((GarminRoute)item).addWaypoint(new GarminWaypointD103(buffer));
+          else
+            if(capabilities_.hasCapability("D107"))
+              ((GarminRoute)item).addWaypoint(new GarminWaypointD107(buffer));
+            else
+              if(capabilities_.hasCapability("D108"))
+                ((GarminRoute)item).addWaypoint(new GarminWaypointD108(buffer));
+              else
+                if(capabilities_.hasCapability("D109"))
+                  ((GarminRoute)item).addWaypoint(new GarminWaypointD109(buffer));
+                else
+                  System.err.println("WARNING: unsupported garmin waypoint type!");
           if(Debug.DEBUG)
             Debug.println("gps_garmin","Received Waypoint");
           break;
@@ -1548,10 +1559,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
           }
           if(package_count % 10 == 0)
             fireProgressActionProgress(GETWAYPOINTS,package_count);
-          if(capabilities_.hasCapability("D108"))
-          {
-            items.add(new GarminWaypointAdapter(new GarminWaypointD108(buffer)));
-          }
+          if(capabilities_.hasCapability("D103"))
+            items.add(new GarminWaypointAdapter(new GarminWaypointD103(buffer)));
+          else
+            if(capabilities_.hasCapability("D107"))
+              items.add(new GarminWaypointAdapter(new GarminWaypointD107(buffer)));
+            else
+              if(capabilities_.hasCapability("D108"))
+                items.add(new GarminWaypointAdapter(new GarminWaypointD108(buffer)));
+              else
+                if(capabilities_.hasCapability("D109"))
+                  items.add(new GarminWaypointAdapter(new GarminWaypointD109(buffer)));
+                else
+                  System.err.println("WARNING: unsupported garmin waypoint type!");
           if(Debug.DEBUG)
             Debug.println("gps_garmin","Received Waypoint");
           break;
@@ -1680,8 +1700,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       GPSGarminDataProcessor gps_processor = new GPSGarminDataProcessor();
       GPSDevice gps_device;
       Hashtable environment = new Hashtable();
-      environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS1");
-      environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(9600));
+      environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS0");
+      environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(115200));
       gps_device = new GPSSerialDevice();
       gps_device.init(environment);
       gps_processor.setGPSDevice(gps_device);
@@ -1699,7 +1719,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //      gps_processor.requestTracks();
 
       System.out.println("requesting async events");
-      gps_processor.requestAsyncEvents();
+//      gps_processor.requestAsyncEvents();
 
 //       System.out.println("Requesting PVT");
 //       GarminPVT pvt = gps_processor.getPVT(1000L);
@@ -1707,8 +1727,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	
 //      List routes = gps_processor.getRoutes(0L);
 //      System.out.println("Sync Routes: "+routes);
-//	List waypoints = gps_processor.getWaypoints(0L);
-//	System.out.println("Sync Waypoints: "+waypoints);
+      
+      System.in.read();
+      List waypoints = gps_processor.getWaypoints();
+      System.out.println("Sync Waypoints: "+waypoints);
 //       List tracks = gps_processor.getTracks(0L);
 //       System.out.println("Sync Tracks: "+tracks);
       

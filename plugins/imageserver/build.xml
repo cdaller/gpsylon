@@ -4,6 +4,7 @@
   <property name="release_version" value="0.01"/>
   <property name="dist_name" value="gpstool_plugin_imageserver"/>
   <property name="target_class_dir" value="classes"/>
+  <property name="source_dir" value="src"/>
   <property name="dist_dir" value="dist"/>
   <property name="lib_dir" value="lib/java"/>
   <property name="aux_dir" value="auxiliary"/>

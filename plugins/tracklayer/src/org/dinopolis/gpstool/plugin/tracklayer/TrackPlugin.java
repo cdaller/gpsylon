@@ -158,7 +158,7 @@ public class TrackPlugin implements GuiPlugin
 // 		action_store_ = ActionStore.getStore(TRACK_ACTION_STORE_ID);
 // 		action_store_.addActions(new Action[] { new LoadTrackAction()});
     
-    loadTestTrack();
+//    loadTestTrack();
 	}
 
 	//----------------------------------------------------------------------

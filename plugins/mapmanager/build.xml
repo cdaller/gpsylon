@@ -5,6 +5,7 @@
   <property name="dist_name" value="gpstool_plugin_mapmanager"/>
   <property name="dist_dir" value="dist"/>
   <property name="lib_dir" value="lib/java"/>
+  <property name="aux_dir" value="auxiliary"/>
   <property name="dinopolis_classes" value="./../../classes"/>
   <property name="dinopolis_lib_dir" value="./../../lib/java"/>
   <property name="plugin_install_dir" value="./../"/>
@@ -64,13 +65,15 @@ The following targets are available:
         <patternset refid="gpstool_plugin_mapmanager.lib.patternset"/>
       </fileset>
 -->
+      <pathelement location="${aux_dir}"/>
     </path>
-<!-- no other libraries needed
+
     <pathconvert pathsep=" " property="gpstool_plugin_mapmanager.dist.lib.classpath"
                  refid="gpstool_plugin_mapmanager.dist.classpath">
-      <map from="${user.dir}/lib/java" to="lib/java"/>
+<!--      <map from="${user.dir}/${lib_dir}" to="${lib_dir}"/> -->
+      <map from="${user.dir}/${aux_dir}" to="${aux_dir}"/> 
     </pathconvert>
--->
+
 
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
     <!-- properties files and the images ! -->
@@ -89,6 +92,7 @@ The following targets are available:
         </section>
       </manifest>
 
+      <fileset dir="${aux_dir}"/>
       <fileset dir="classes"/>
       <fileset dir=".">
         <include name="META-INF/services/org.dinopolis.gpstool.*"/>
@@ -140,6 +144,7 @@ The following targets are available:
           <patternset refid="gpstool_plugin_mapmanager.dinopolis_lib.patternset"/>
         </fileset>
         <pathelement path="${dinopolis_classes}"/>
+        <pathelement location="${aux_dir}"/>
       </classpath>
       <patternset refid="compile.files"/>
     </javac>         

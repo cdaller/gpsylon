@@ -391,7 +391,7 @@ public class GarminWaypointSymbols
  * garmin protocol specification, page 33).
  * @return the id of the symbol or -1, if no symbol could be found.
  */
-  public static long getSymbolId(String symbol_name)
+  public static int getSymbolId(String symbol_name)
   {
     if(id_map_ == null)
       initMap();

@@ -121,7 +121,7 @@ public class GPSSimulationDataProcessor extends GPSGeneralDataProcessor implemen
 /**
  * Sets the destination position for the simulation.
  *
- * @param start the position to start with.
+ * @param destination the destination to start with.
  */
   public void setDestinationPosition(GPSPosition destination)
   {

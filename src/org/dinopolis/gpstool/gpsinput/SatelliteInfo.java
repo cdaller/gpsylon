@@ -45,7 +45,7 @@ public class SatelliteInfo
  * @param PRN the number of the satellite
  * @param elevation elevation in degrees (90 maximum)
  * @param azimuth Azimuth, degrees from true north, 000 to 359
- * @param SNR, 00-99 dB (null when not tracking)
+ * @param SNR 00-99 dB (null when not tracking)
  */
 
   public SatelliteInfo(int PRN, float elevation, float azimuth, int SNR)

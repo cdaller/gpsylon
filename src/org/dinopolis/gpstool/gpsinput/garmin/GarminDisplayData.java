@@ -233,9 +233,9 @@ public class GarminDisplayData
 /**
  * Sets the pixel to the given coordinates. This method respects the 
  * rotation given in the header. 
- * @param x: the x coordinate (before the rotation)
- * @param y: the y coordinate (before the rotation)
- * @param value: the color value for the given pixel
+ * @param x the x coordinate (before the rotation)
+ * @param y the y coordinate (before the rotation)
+ * @param value the color value for the given pixel
  */
   protected void drawPixel(int x, int y, int value)
   {
@@ -253,7 +253,7 @@ public class GarminDisplayData
 /**
  * Guess the orientation depending on some values in the package. This is more or less a guess, as the
  * detailed information about the garmin protocol is unknown!!!
- * @param garmin_package: the header package
+ * @param garmin_package the header package
  * @return the angle the image should be rotated (0,-90 (counter clockwise),
  * 90 (clockwise),180).
  */

@@ -41,7 +41,7 @@ public class GarminTrack extends GarminRoute implements GPSTrack
 //--------------------------------------------------------------------------------
 /**
  * Add a garmin trackpoint at the end of the list.
- * @param routepoint The routepoint to add.
+ * @param trackpoint The routepoint to add.
  */
   public void addWaypoint(GarminTrackpoint trackpoint)
   {

@@ -66,7 +66,7 @@ public class GarminPVT
 /**
  * Set the value for type of position fix.
  *
- * @param comment the value representing the type of position fix.
+ * @param fix the value representing the type of position fix.
  */
   protected void setFix(int fix)
   {

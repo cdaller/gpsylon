@@ -179,7 +179,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
 /**
  * Returns true if the altitude of this waypoint is valid. This is
  * equal to the expression <code>!Double.isNaN(getAltitude())</code>.
- * @param true if waypoint has valid altitude.
+ * @return true if waypoint has valid altitude.
  */
   public boolean hasValidAltitude()
   {
@@ -258,7 +258,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
 /**
  * Returns the seconds from 1.1.1990 from the given date.
  *
- * @param the date.
+ * @param date the date.
  * @return the seconds from 1.1.1990 from the given date.
  */
   protected static long getGarminTimeFromDate(Date date)
@@ -274,7 +274,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  * Returns the date from the seconds since 1.1.1990 or null, if
  * <code>garmin_time</code> is <0.
  *
- * @param the seconds.
+ * @param garmin_time the seconds.
  * @return the date from the seconds since 1.1.1990 or null.
  */
   protected static Date getDateFromGarminTime(long garmin_time)

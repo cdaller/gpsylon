@@ -121,7 +121,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
  * Set if invalid nmea checksums should be ignored. If set to true,
  * invalid checksums are ignored (may be used for broken nmea devices).
  *
- * @param ignore_invalid_checksum.
+ * @param ignore_invalid_checksum if set to true, invalid checksums are
+ * ignored.
  */
   public void setIgnoreInvalidChecksum(boolean ignore_invalid_checksum)
   {

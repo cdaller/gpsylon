@@ -94,7 +94,7 @@ public class GarminDataConverter
 /**
  * Generate a garmin data array from the given byte array.
  *
- * @param array the byte array to be converted to garmin data.
+ * @param byteArray the byte array to be converted to garmin data.
  * @param buffer the buffer to write the value(s) to.
  * @param offset the offset to write the value(s) into the buffer.
  * @return the buffer holding the given value at the given position
@@ -446,7 +446,7 @@ public class GarminDataConverter
 /**
  * Convert a given double to garmin data array.
  *
- * @param double the double to be converted to garmin data array.
+ * @param doub the double to be converted to garmin data array.
  * @param buffer the buffer to write the value(s) to.
  * @param offset the offset to write the value(s) into the buffer.
  * @return the buffer holding the given value at the given position
@@ -538,7 +538,7 @@ public class GarminDataConverter
 /**
  * Converts Semicircles to Degrees.
  *
- * @param semicircles
+ * @param semicircle
  * @return degrees
  */
   public static double convertSemicirclesToDegrees(int semicircle)
@@ -562,7 +562,7 @@ public class GarminDataConverter
 /**
  * Returns the seconds from 1.1.1990 from the given date.
  *
- * @param the date.
+ * @param date the date.
  * @return the seconds from 1.1.1990 from the given date.
  */
   public static long convertDateToGarminTime(Date date)
@@ -578,7 +578,7 @@ public class GarminDataConverter
  * Returns the date from the seconds since 1.1.1990 or null, if
  * <code>garmin_time</code> is <0.
  *
- * @param the seconds.
+ * @param garmin_time the seconds.
  * @return the date from the seconds since 1.1.1990 or null.
  */
   public static Date convertGarminTimeToDate(long garmin_time)

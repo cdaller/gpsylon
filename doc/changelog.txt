@@ -1,5 +1,10 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2004/01/14: the file resources now use the current classloader, not
+            the system's. This is needed for java web start. Still,
+            the plugins are not found, as the RepositoryClassLoader is
+            not able to find the jar files via an url.
+
 2004/01/13: fixed bug in TrackManagerImpl.getVisibleTracks, that
             sometimes did not find all visible tracks.
 

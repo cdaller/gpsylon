@@ -77,6 +77,9 @@ public class GPSPosition
  * @exception IllegalArgumentException if north_south or east_west are
  * neither "N","S" resp. "E", "W" or the latitude/longitude are
  * incorrect.
+ * @deprecated Altitude is not sent from all gps devices (or just in
+ * some messages (e.g. NMEA), so do not use it. Better use the
+ * <code>ALTITUDE</code> event sent from the {@link GPSDataProcessor}.
  */
 
   public GPSPosition(double latitude_wgs84,String north_south,
@@ -122,6 +125,9 @@ public class GPSPosition
  * @exception IllegalArgumentException if north_south or east_west are
  * neither "N","S" resp. "E", "W" or the latitude/longitude are
  * incorrect.
+ * @deprecated Altitude is not sent from all gps devices (or just in
+ * some messages (e.g. NMEA), so do not use it. Better use the
+ * <code>ALTITUDE</code> event sent from the {@link GPSDataProcessor}.
  */
 
   public GPSPosition(double latitude_wgs84,String north_south,
@@ -170,11 +176,14 @@ public class GPSPosition
  * @param latitude the latitude (pos for north, negativ for south)
  * @param longitude the longitude (pos for east, negativ for west).
  * @param altitude
+ * @deprecated Altitude is not sent from all gps devices (or just in
+ * some messages (e.g. NMEA), so do not use it. Better use the
+ * <code>ALTITUDE</code> event sent from the {@link GPSDataProcessor}.
  */
 
   public GPSPosition(double latitude,
                      double longitude,
-		     double altitude)
+                     double altitude)
   {
     this(latitude,longitude,altitude,"");
   }
@@ -186,6 +195,9 @@ public class GPSPosition
  * @param latitude the latitude (pos for north, negativ for south)
  * @param longitude the longitude (pos for east, negativ for west).
  * @param altitude
+ * @deprecated Altitude is not sent from all gps devices (or just in
+ * some messages (e.g. NMEA), so do not use it. Better use the
+ * <code>ALTITUDE</code> event sent from the {@link GPSDataProcessor}.
  */
 
   public GPSPosition(double latitude,double longitude,
@@ -272,6 +284,9 @@ public class GPSPosition
  *
  * @return the altitude of the gps position or <code>Double.NaN</code> if
  * the altitude is unknown (not set).
+ * @deprecated Altitude is not sent from all gps devices (or just in
+ * some messages (e.g. NMEA), so do not use it. Better use the
+ * <code>ALTITUDE</code> event sent from the {@link GPSDataProcessor}.
  */
   public double getAltitude()
   {
@@ -283,6 +298,9 @@ public class GPSPosition
  * Sets the altitude of the gps position.
  *
  * @param altitude the altitude of the gps position.
+ * @deprecated Altitude is not sent from all gps devices (or just in
+ * some messages (e.g. NMEA), so do not use it. Better use the
+ * <code>ALTITUDE</code> event sent from the {@link GPSDataProcessor}.
  */
   public void setAltitude(double altitude)
   {
@@ -299,8 +317,8 @@ public class GPSPosition
 
     tostring.append("lat: "+ latitude_ + ", long:" + longitude_ );
 
-    if (altitude_ != Double.NaN)
-      tostring.append(", alt:" + altitude_);
+//     if (altitude_ != Double.NaN)
+//       tostring.append(", alt:" + altitude_);
     tostring.append("]");
     return(tostring.toString());
   }

@@ -8,6 +8,9 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
             added geocache and geochache_found symbols (when reading
             waypoints) in gpx file
 
+            added getRoutes/setRoutes again - no idea when and why I
+            deleted those!
+
 2003/11/21: fixed bug in handling long values from garmin devices
 
             added device info window in gpstool plugin

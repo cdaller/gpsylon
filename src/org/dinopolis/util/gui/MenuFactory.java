@@ -100,6 +100,9 @@ public class MenuFactory
   /** the type identifier for menus */
   public final static String TYPE_MENU = "menu";
 
+  /** the type identifier for menus */
+  public final static String TYPE_EMPTY_MENU = "empty_menu";
+
   /** the type identifier for radio buttons */
   public final static String TYPE_RADIO = "radio";
 
@@ -161,7 +164,7 @@ public class MenuFactory
     if (item_keys.length<1)
       return (null);
     JMenu menu = new JMenu();
-    initializeMenu(menu, prefix, menu_name, resources, action_gen); 
+    initializeMenu(menu, prefix, menu_name, resources); 
 
     for (int count = 0; count < item_keys.length; count++)
     {
@@ -260,6 +263,12 @@ public class MenuFactory
     if (type.equalsIgnoreCase(TYPE_CHECK)) 
       return(createCheckBoxMenuItem(prefix, menu_name,
                                     resources, action_gen));
+    if(type.equalsIgnoreCase(TYPE_EMPTY_MENU))
+    {
+      JMenu menu = new JMenu();
+      initializeMenu(menu,prefix,menu_name,resources);
+      return(menu);
+    }
     
     // TYPE_ITEM (normal menu entry)
     return(createMenuItem(prefix, menu_name, resources, action_gen));
@@ -484,8 +493,7 @@ public class MenuFactory
   protected static void initializeMenu(JMenu menu, 
                                        String prefix,
                                        String menu_name, 
-                                       Resources resources,
-                                       ActionGenerator action_gen) 
+                                       Resources resources)
   {
     String menu_label =
       resources.getString(prefix+menu_name+KEY_RESOURCE_LABEL_SUFFIX,
@@ -618,8 +626,3 @@ class MenuButtonActionChangedListener implements PropertyChangeListener
       menu_item_.setSelected(((Boolean)e.getNewValue()).booleanValue());
   }
 }
-
-
-
-
-

@@ -361,6 +361,34 @@ public class FileResources extends AbstractResources
                                            Locale locale)
     throws MissingResourceException
   {
+    return(getResources(caller,base_name,dir_name,locale,null));
+  }
+
+  //----------------------------------------------------------------------
+  /**
+   * Get the appropriate ResourceBundle with the use of the given
+   * classloader.
+   *
+   * @param caller the caller, to search the system bundle for.
+   * @param base_name the base name of the resource bundle.
+   * @param dir_name the name of the directory within the users homedir
+   * to look for a property file.
+   * @param locale the locale.
+   * @param loader the class loader to use (if null, the class loader
+   * of the caller is used (or of the FileResource class, if call is null)).
+   * @return the Resource.
+   * @exception MissingResourceException if the system resource file
+   * could not be located.
+   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
+   */
+   
+   public static FileResources getResources(Class caller, 
+                                           String base_name,
+                                           String dir_name,
+                                           Locale locale,
+                                           ClassLoader loader)
+    throws MissingResourceException
+  {
     String system_resource_base_name =
       getSystemResourceBaseName(caller);
     String user_resource_base_name = getUserResourceBaseName(dir_name);
@@ -371,10 +399,18 @@ public class FileResources extends AbstractResources
     FileResources bound = (FileResources)mapping_.get(key);
     if (bound == null)
     {
+      if(loader == null)
+      {
+        if(caller == null)
+          loader = FileResources.class.getClassLoader();
+        else
+          loader = caller.getClassLoader();
+      }
       bound = new FileResources(user_resource_file,
                                 getUsersResourceBundle(user_resource_file),
                                 user_resource_base_name,
-                                getSystemResourceBundle(system_resource_base_name, base_name, locale),
+                                getSystemResourceBundle(system_resource_base_name,
+                                                        base_name, locale, loader),
                                 system_resource_base_name);
       mapping_.put(key, bound);
     }
@@ -410,7 +446,8 @@ public class FileResources extends AbstractResources
    * @param system_resource_base_dir he base directory of the system
    * resource bundle.
    * @param base_name he base name of the resource file.
-   * @param locale the locale.
+   * @param locale the locale (if null, the default locale is used.)
+   * @param loader the class loader to use.
    * @return the system resource bundle if found.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
@@ -418,7 +455,8 @@ public class FileResources extends AbstractResources
 
   protected static ResourceBundle getSystemResourceBundle(String system_resource_base_dir,
                                                           String base_name,
-                                                          Locale locale)
+                                                          Locale locale,
+                                                          ClassLoader loader)
     throws MissingResourceException
   {
     String resource = system_resource_base_dir;
@@ -426,8 +464,8 @@ public class FileResources extends AbstractResources
       resource += ".";
     resource += base_name;
     if (locale != null)
-      return(ResourceBundle.getBundle(resource, locale));
-    return(ResourceBundle.getBundle(resource));
+      return(ResourceBundle.getBundle(resource, locale,loader));
+    return(ResourceBundle.getBundle(resource,Locale.getDefault(),loader));
   }
 
   //----------------------------------------------------------------------

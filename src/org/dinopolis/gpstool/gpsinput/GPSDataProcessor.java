@@ -48,6 +48,7 @@ import org.dinopolis.gpstool.util.ProgressListener;
  * <li><code>ALTITUDE</code>: the value is a Float and is in meters</li>
  * <li><code>SATELLITE_INFO</code>: the value is a {@link org.dinopolis.gpstool.gpsinput.SatelliteInfo} object.</li>
  * <li><code>DEPTH</code>: the value is a Float and is in meters.</li>
+ * <li><code>EPE</code>: estimated position error, the value is a GPSPositionError object.</li>
  * <ul>
  * <p>
  
@@ -78,6 +79,7 @@ public interface GPSDataProcessor
   public final static String ALTITUDE = "altitude";
   public final static String SATELLITE_INFO = "satellite_info";
   public final static String DEPTH = "depth";
+  public final static String EPE = "epe";
 
   public final static String GETROUTES = "getroutes";
   public final static String SETROUTES = "setroutes";

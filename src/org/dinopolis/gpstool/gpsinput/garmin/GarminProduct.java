@@ -37,19 +37,27 @@ public class GarminProduct
   int product_software_;
   String product_name_;
 
-  public GarminProduct(char[] buffer)
+//----------------------------------------------------------------------
+/**
+ * Constructor using a array of data.
+ */
+  public GarminProduct(int[] buffer)
   {
-        product_id_=(int)(buffer[2]+256*buffer[3]);
-        product_software_=(int)(buffer[4]+256*buffer[5]);
-
-        char helper[] = new char[255];
-
-        for (int i=0;i<249;i++)
-        {
-          helper[i]=buffer[i+6];
-        }
-        product_name_ = new String(helper);
+    product_id_= GarminDataConverter.getGarminWord(buffer,2);
+    product_software_= GarminDataConverter.getGarminWord(buffer,4);
+    product_name_ = GarminDataConverter.getGarminString(buffer,6);
   }
+
+// //----------------------------------------------------------------------
+// /**
+//  * Constructor using a GarminPackage
+//  */
+//   public GarminProduct(GarminPackage garmin_package)
+//   {
+//     product_id_= garmin_package.getNextAsInteger();
+//     product_software_ = garmin_package.getNextAsInteger();
+//     product_name_ = garmin_package.getNextAsString();
+//   }
 
 //----------------------------------------------------------------------
 /**

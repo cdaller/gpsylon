@@ -54,7 +54,7 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 public class GarminPVTD800 extends GarminPVT
 {
-  public GarminPVTD800(char[] buffer)
+  public GarminPVTD800(int[] buffer)
   {
     // Altitude above WGS84-Ellipsoid [meters]
     alt_ = GarminDataConverter.getGarminFloat(buffer,2);

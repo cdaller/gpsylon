@@ -44,7 +44,7 @@ public class GarminTrackpointD301 implements GarminTrackpoint
   {
   }
 
-  public GarminTrackpointD301(char[] buffer)
+  public GarminTrackpointD301(int[] buffer)
   {
     latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,2);
     longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,6);

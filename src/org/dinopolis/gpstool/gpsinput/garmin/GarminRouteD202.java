@@ -31,7 +31,7 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 public class GarminRouteD202 extends GarminRoute  
 {
-  public GarminRouteD202(char[] buffer)
+  public GarminRouteD202(int[] buffer)
   {
     setIdentification(GarminDataConverter.getGarminString(buffer,2));
   }

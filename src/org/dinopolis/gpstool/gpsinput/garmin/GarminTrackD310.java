@@ -32,7 +32,7 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 public class GarminTrackD310 extends GarminTrack
 {
-  public GarminTrackD310(char[] buffer)
+  public GarminTrackD310(int[] buffer)
   {
     display_ = GarminDataConverter.getGarminBoolean(buffer,2);
     color_ = GarminDataConverter.getGarminByte(buffer,3);

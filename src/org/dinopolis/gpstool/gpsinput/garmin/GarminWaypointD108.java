@@ -58,7 +58,7 @@ public class GarminWaypointD108 implements GarminWaypoint
   {
   }
 
-  public GarminWaypointD108(char[] buffer)
+  public GarminWaypointD108(int[] buffer)
   {
     class_type_ = GarminDataConverter.getGarminByte(buffer,2);
     if(class_type_ < CLASS_NAMES.length)

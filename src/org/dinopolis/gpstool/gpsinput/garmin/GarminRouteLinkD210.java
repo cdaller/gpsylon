@@ -39,7 +39,7 @@ public class GarminRouteLinkD210
   public static final String[] CLASS_NAME = new String[] {"line","link","net","direct"
                                                           ,"snap"};
   
-  public GarminRouteLinkD210(char[] buffer)
+  public GarminRouteLinkD210(int[] buffer)
   {
     class_ = GarminDataConverter.getGarminWord(buffer,2);
     int class_index = class_;

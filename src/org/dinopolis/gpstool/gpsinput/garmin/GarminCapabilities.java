@@ -37,27 +37,28 @@ public class GarminCapabilities
     Vector product_capabilities_ = new Vector();
     HashSet capabilities_ = new HashSet();
 
-  public GarminCapabilities(char[] buffer)
+  public GarminCapabilities(int[] buffer)
   {
-      for (int i=0;i<(buffer[1]/3);i++)
-      {
-	  // Add received capability to global capability variable
-	  String cap = new String(buffer,2+3*i,1) +(int)(buffer[3+3*i]+256*buffer[4+3*i]);
-	  capabilities_.add(cap);
-          product_capabilities_.add(cap);
-	  
-// 	  // Set capabilities due to received tag values
-//           if ((char)buffer[2+3*i] == 'L') L[(int)(buffer[3+3*i]+256*buffer[4+3*i])]=true;
-//           if ((char)buffer[2+3*i] == 'A') A[(int)(buffer[3+3*i]+256*buffer[4+3*i])]=true;
-//           if ((char)buffer[2+3*i] == 'D') D[(int)(buffer[3+3*i]+256*buffer[4+3*i])]=true;
-      }
-  }
-
-    public String toString()
+    String full_name;
+    String letter;
+    int number;
+    for (int i=0; i < (buffer[1]/3); i++)
     {
-	return(product_capabilities_.toString());
+          // Add received capability to global capability variable
+      letter = GarminDataConverter.getGarminString(buffer,2+3*i,1);
+      number = GarminDataConverter.getGarminWord(buffer,3+3*i);
+      full_name = letter + number;
+//      String cap = new String(buffer,2+3*i,1) +(int)(buffer[3+3*i]+256*buffer[4+3*i]);
+      capabilities_.add(full_name);
+      product_capabilities_.add(full_name);
     }
-
+  }
+  
+  public String toString()
+  {
+    return(product_capabilities_.toString());
+  }
+  
 //----------------------------------------------------------------------
 /**
  * Get the identification.

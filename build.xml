@@ -239,7 +239,9 @@ Christof Dallermassl (cdaller@iicm.edu)
         </section>
       </manifest>
 
-      <fileset dir="${aux_dir}"/>
+      <fileset dir="${aux_dir}">
+         <exclude name="**/*.xcf"/>
+      </fileset>
       <fileset dir="${target_class_dir}"/>
       <fileset dir=".">
         <include name="META-INF/services/org.dinopolis.gpstool.*"/>

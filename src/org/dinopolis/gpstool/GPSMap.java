@@ -91,7 +91,7 @@ import org.dinopolis.gpstool.gui.layer.MultiMapLayer;
 import org.dinopolis.gpstool.gui.layer.PositionLayer;
 import org.dinopolis.gpstool.gui.layer.ScaleLayer;
 import org.dinopolis.gpstool.gui.layer.ShapeLayer;
-import org.dinopolis.gpstool.gui.layer.TrackLayer;
+//import org.dinopolis.gpstool.gui.layer.TrackLayer;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.WriteImagePlugin;

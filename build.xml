@@ -56,6 +56,7 @@ Christof Dallermassl (cdaller@iicm.edu)
       <include name="gpstool/${dist_dir}/**/*.jar" />
       <include name="importexport/${dist_dir}/**/*.jar" />
       <include name="tracklayer/${dist_dir}/**/*.jar" />
+      <include name="averagepos/${dist_dir}/**/*.jar" />
     </patternset>
   </target>
   
@@ -431,7 +432,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- compile_plugins target -->
   <target name="compile_plugins"
-    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin"> 
+    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin"> 
   </target>
 
   <!-- compile_downloadmousemode_plugin target -->
@@ -484,9 +485,14 @@ Christof Dallermassl (cdaller@iicm.edu)
     <ant dir="${plugin_dir}/gpstool" target="compile" inheritAll="false"/>
   </target>
 
+  <!-- compile_averagepos_plugin target -->
+  <target name="compile_averagepos_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/averagepos" target="compile" inheritAll="false"/>
+  </target>
+
   <!-- bin_dist_plugins target -->
   <target name="bin_dist_plugins"
-    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin"> 
+    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin"> 
   </target>
 
   <!-- bin_dist_downloadmousemode_plugin target -->
@@ -539,9 +545,14 @@ Christof Dallermassl (cdaller@iicm.edu)
     <ant dir="${plugin_dir}/gpstool" target="bin_dist" inheritAll="false"/>
   </target>
 
+  <!-- bin_dist_averagepos_plugin target -->
+  <target name="bin_dist_averagepos_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/averagepos" target="bin_dist" inheritAll="false"/>
+  </target>
+
   <!-- install_plugins target -->
   <target name="install_plugins"
-    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin"> 
+    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin"> 
   </target>
 
   <!-- install_downloadmousemode_plugin target -->
@@ -593,5 +604,11 @@ Christof Dallermassl (cdaller@iicm.edu)
   <target name="install_plugin_gpstool_plugin" depends="init"> 
     <ant dir="${plugin_dir}/gpstool" target="install_plugin" inheritAll="false"/>
   </target>
+
+  <!-- install_plugin_averagepos_plugin target -->
+  <target name="install_plugin_averagepos_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/averagepos" target="install_plugin" inheritAll="false"/>
+  </target>
+
 
 </project>

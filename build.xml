@@ -15,7 +15,7 @@ Christof Dallermassl (cdaller@iicm.edu)
     <property name="release_version" value="0.4.15-pre7"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
-    <property name="lib_dir" value="lib/java"/>
+    <property name="lib_dir" value="lib${file.separator}java"/>
     <property name="javadoc_dir" value="javadoc"/>
     <property name="dist_name" value="gpstool"/>
     <property name="dist_dir" value="dist"/>

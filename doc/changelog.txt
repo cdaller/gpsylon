@@ -1,5 +1,11 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/05/04: added garmin support (download of
+            tracks/routes/waypoints), periodically sending the
+            position (not tested yet), added getTrack(),
+            getWaypoints(), getRoutes() in GPSDataProcessor interface.
+            garmin support is not well tested yet!
+
 2003/03/31: added VTG and HTD nmea sentences to GPSNmeaDataProcessor
             (thanks to Didier Donsez!)
 

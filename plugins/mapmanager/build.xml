@@ -72,6 +72,7 @@ The following targets are available:
                  refid="gpstool_plugin_mapmanager.dist.classpath">
 <!--      <map from="${user.dir}/${lib_dir}" to="${lib_dir}"/> -->
       <map from="${user.dir}/${aux_dir}" to="${aux_dir}"/> 
+      <map from="${user.dir}\\${aux_dir}" to="${aux_dir}"/>  <!-- for windows -->
     </pathconvert>
 
 

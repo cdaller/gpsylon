@@ -24,23 +24,25 @@
 package org.dinopolis.gpstool.plugin.mapmanager;
 
 import java.awt.Graphics;
-import org.dinopolis.gpstool.MapManagerHook;
-import org.dinopolis.gpstool.gui.util.BasicLayer;
-import org.dinopolis.gpstool.event.MapsChangedListener;
-import org.dinopolis.gpstool.event.MapsChangedEvent;
-import com.bbn.openmap.proj.Projection;
-import java.util.Iterator;
-import org.dinopolis.gpstool.gui.util.ImageInfo;
-import java.util.Vector;
-import java.awt.Point;
-import java.util.List;
-import org.dinopolis.gpstool.MapInfo;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import org.dinopolis.gpstool.MapManagerHook;
+import org.dinopolis.gpstool.event.MapsChangedEvent;
+import org.dinopolis.gpstool.event.MapsChangedListener;
+import org.dinopolis.gpstool.gui.util.BasicLayer;
+import org.dinopolis.gpstool.gui.util.ImageInfo;
+
 
 
 
 //----------------------------------------------------------------------
 /**
+ * This layer displays the information used in the map manager plugin (e.g. the
+ * frames for all available maps).
+ * 
  * @author Christof Dallermassl
  * @version $Revision$
  */

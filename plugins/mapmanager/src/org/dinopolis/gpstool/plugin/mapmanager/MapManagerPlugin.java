@@ -23,21 +23,22 @@
 
 package org.dinopolis.gpstool.plugin.mapmanager;
 
-import org.dinopolis.gpstool.plugin.GuiPlugin;
-import org.dinopolis.gpstool.plugin.Plugin;
-import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.MapManagerHook;
-import javax.swing.JMenuItem;
 import javax.swing.JMenu;
-import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+
+import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.gui.MouseMode;
+import org.dinopolis.gpstool.plugin.GuiPlugin;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+
 import com.bbn.openmap.Layer;
-import java.awt.event.ActionEvent;
 
 
 
 //----------------------------------------------------------------------
 /**
+ * This plugin shows allows to manager the available maps.
+ * 
  * @author Christof Dallermassl
  * @version $Revision$
  */

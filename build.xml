@@ -7,82 +7,453 @@ Christof Dallermassl (cdaller@iicm.edu)
 
 
 <project name="org.dinopolis.gpstool" default="help">
- 
-<!-- patternset of gpstool files needed to compile the distribution -->
+
+
+  <!-- initialize properties (this is done as a target to allow conditionals -->
+  <!-- (that does not seem to work outside of a target!) -->
+  <target name="init">
+    <property name="release_version" value="0.4.14-pre3"/>
+    <property name="target_class_dir" value="classes"/>
+    <property name="source_dir" value="src"/>
+    <property name="lib_dir" value="lib/java"/>
+    <property name="javadoc_dir" value="javadoc"/>
+    <property name="dist_name" value="gpstool"/>
+    <property name="dist_dir" value="dist"/>
+    <property name="doc_dir" value="doc"/>
+    <property name="aux_dir" value="auxiliary"/>
+    <property name="plugin_dir" value="plugins"/>
+    <property name="plugin_install_dir" value="${user.home}/.gpsmap/plugins"/>
+    <property name="http_proxy_host" value="129.27.153.1"/>
+    <property name="http_proxy_port" value="3128"/>
+    <property name="use_http_proxy" value="no"/>
+    <tstamp/> <!-- needed for ${TODAY} -->
+    
+    <!-- create or not create a property, depending on the value of use_http_proxy -->
+    <condition property="internal_use_proxy">
+      <istrue value="${use_http_proxy}"/>
+    </condition>
+
+    <!-- patternset including all required library jar files -->
+    <patternset id="gpstool.lib.patternset">
+      <include name="gnu-regexp-1.1.3.jar" />
+      <include name="openmap.jar" />
+      <include name="comm.jar" />
+      <include name="hsqldb.jar" />
+      <include name="mysql-connector-java-2.0.14-bin.jar" />
+      <include name="pg73jdbc3.jar" />
+    </patternset>
+
+    <!-- patternset including all plugins -->
+    <patternset id="gpstool.default_plugin_names">
+      <include name="navigationmousemode/${dist_dir}/**/*.jar" />
+      <include name="downloadmousemode/${dist_dir}/**/*.jar" />
+      <include name="writerasterimage/${dist_dir}/**/*.jar" />
+      <include name="readgpsdrivetrack/${dist_dir}/**/*.jar" />
+    </patternset>
+  </target>
+  
+  <!-- patternset of gpstool files needed to compile the distribution -->
   
   <patternset id="compile.files">
-    <include name="org/dinopolis/gpstool/**/*.java"/>
-    <include name="org/dinopolis/util/**/*.java"/>
+    <include name="org/dinopolis/**/*.java"/>
+    <exclude name="**/CVS/**/*.java"/>
   </patternset>
-    
-<!-- targets -->
- 
+  
+  <!-- targets -->
+  
 
-  <target name="help">
-    <echo message="The following targets are available:"/>
-    <echo message="  - help: shows all available targets of this build.xml file"/>
-    <echo message="  - compile:"/>
-    <echo message="  - run: starts GPSMap"/>
+  <!-- help target -->
+  <target name="help" depends="init">
+    <echo>
+      The following targets are available:
+      - help: shows all available targets of this build.xml file
+      - compile: compiles the gpstool library and the GPSMap application
+      
+      - clean_all: deletes the '${target_class_dir}','${dist_dir}' and '${javadoc_dir}' directory.
+      - clean: removes all compiled classes in the '${target_class_dir}' directory.
+      - clean_dist: deletes the '${dist_dir}' directory.
+      - clean_javadoc: deletes the '${javadoc_dir}' directory.
+
+      - dist: creates the binary and the source dist tar.gz files in the '${dist_dir}' directory.
+      - bin_dist: creates a tar.gz file in the dist directory that contains all
+      needed files (plugin jar and libraries) in the '${dist_dir}' directory.
+      - src_dist: creates a tar.gz file containing the source, javadoc and all
+      needed files (libraries) in the '${dist_dir}' directory.
+
+      - upload_sourceforge_dist: uploads the source and the binary distribution to
+      the sourceforge server.
+      - upload_sourceforge_web: uploads the web pages to the sourceforge server.
+
+      - install_plugin: installs the plugins and all needed libraries into the
+      '${plugin_install_dir}' directory.
+    </echo>
   </target>
 
-  <target name="compile">
-     <mkdir dir="classes"/>
-     <javac srcdir="src" 
-            destdir="classes"
-            classpathref="compile_classpath">
-       <classpath id="compile_classpath">
-         <fileset dir="${basedir}/lib/java">
-            <include name="**/*.jar"/>
-         </fileset>
-       </classpath>
-       <patternset refid="compile.files"/>
-     </javac>
+  <!-- compile target -->
+  <target name="compile" depends="init">
+    <mkdir dir="${target_class_dir}"/>
+    <javac srcdir="${source_dir}" 
+      destdir="${target_class_dir}"
+      classpathref="compile_classpath"
+      debug="on">
+      <classpath id="compile_classpath">
+        <fileset dir="${basedir}/${lib_dir}">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+      <patternset refid="compile.files"/>
+    </javac>
+  </target>
+  
+  <!-- clean_all target -->
+  <target name="clean_all" depends="init,clean,clean_dist,clean_javadoc">
   </target>
 
-  <target name="run">
+  <!-- clean target -->
+  <target name="clean" depends="init">
+    <delete dir="${target_class_dir}"/>
+  </target>
+
+  <!-- clean_dist target -->
+  <target name="clean_dist" depends="init">
+    <delete dir="${dist_dir}"/>
+  </target>
+
+  <!-- clean_javadoc target -->
+  <target name="clean_javadoc" depends="init">
+    <delete dir="${javadoc_dir}"/>
+  </target>
+
+  <!-- compile target -->
+  <target name="run" depends="init,compile,compile_plugins,install_plugins">
     <java classname="org.dinopolis.gpstool.GPSMap"
-          fork="yes"
-          classpathref="run_classpath">
-       <classpath id="run_classpath">
-         <fileset dir="${basedir}">
-           <include name="gpstool.jar"/>
-           <include name="lib/java/**/*.jar"/>
-         </fileset>
-         <pathelement location="classes"/>
-         <pathelement location="auxiliary"/>
-       </classpath>
-     </java>
+      fork="yes"
+      classpathref="run_classpath">
+      <classpath id="run_classpath">
+        <fileset dir="${basedir}">
+          <include name="gpstool.jar"/>
+        </fileset>
+        <fileset dir="${lib_dir}">
+          <patternset refid="gpstool.lib.patternset"/>
+        </fileset>
+        <pathelement location="${target_class_dir}"/>
+        <pathelement location="${aux_dir}"/>
+      </classpath>
+    </java>
   </target>
 
- <target name="javadoc" depends="compile">
+  <!-- javadoc target -->
+  <target name="javadoc" depends="init,compile,javadoc_no_proxy,javadoc_proxy">
+    <mkdir dir="${javadoc_dir}"/>
+  </target>
+
+  <!-- javadoc target without proxy (ineternet connection used for third party -->
+  <!-- javadoc) -->
+  <target name="javadoc_no_proxy" depends="compile" unless="internal_use_proxy">
     <javadoc
       packagenames="org.dinopolis.*"
-      sourcepath="src"
+      sourcepath="${source_dir}"
       classpathref="build_dir_classpath"
-      destdir="javadoc"
+      destdir="${javadoc_dir}"
       author="true"
+      defaultexcludes="yes"
       version="true"
       use="true"
       windowtitle="GPSTool API">
-       <classpath id="build_dir_classpath">
-         <fileset dir="${basedir}/lib/java/">
-            <include name="**/*.jar"/>
-         </fileset>
-         <fileset dir="classes/"/>
-       </classpath>
+      <classpath id="build_dir_classpath">
+        <fileset dir="${basedir}/lib/java/">
+          <patternset refid="gpstool.lib.patternset"/>
+        </fileset>
+        <!--         <fileset dir="classes/"/> -->
+      </classpath>
       <link href="http://openmap.bbn.com/doc/api/"/>
       <link href="http://java.sun.com/j2se/1.4/docs/api/"/>
     </javadoc>
-<!-- use following syntax if behind a proxy 
-    <exec dir="${build_dir_dist}" executable="/bin/sh">
-      <arg value="-c"/>
--->
-<!-- using a proxy: -->
-<!--
-      <arg value="javadoc -J-Dhttp.proxyHost=129.27.153.1 -J-Dhttp.proxyPort=3128 -classpath classes:lib/java/openmap.jar:lib/java/gnu-regexp-1.1.3.jar -d javadoc -sourcepath src/ -version -author -link http://openmap.bbn.com/doc/api/ -link http://java.sun.com/j2se/1.4/docs/api/ -subpackages org.dinopolis"/>
--->
-<!--
-    </exec>
--->
   </target>
+
+  <!-- javadoc target with proxy (ineternet connection used for third party -->
+  <!-- javadoc) -->
+  <target name="javadoc_proxy" depends="compile" if="internal_use_proxy">
+    <exec executable="/bin/sh">
+      <arg value="-c"/>
+      <arg value="javadoc -J-Dhttp.proxyHost=${http_proxy_host} -J-Dhttp.proxyPort=${http_proxy_port} -classpath ${target_class_dir}:lib/java/openmap.jar:lib/java/gnu-regexp-1.1.3.jar -d ${javadoc_dir} -sourcepath ${source_dir}/ -version -author -link http://openmap.bbn.com/doc/api/ -link http://java.sun.com/j2se/1.4/docs/api/ -subpackages org.dinopolis"/>
+    </exec>
+  </target>
+
+  <!-- dist target -->
+  <target name="dist" depends="init,bin_dist,src_dist">
+  </target>
+
+  <!-- bin_dist target -->
+  <target name="bin_dist" depends="init,clean,clean_dist,compile,copy_default_plugins">
+    <mkdir dir="${dist_dir}"/>
+
+    <!-- create a property holding the Class-Path for the manifest -->
+    <path id="gpstool.dist.classpath">
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool.lib.patternset"/>
+      </fileset>
+      <pathelement location="${lib_dir}"/>
+      <pathelement location="${doc_dir}"/>
+      <pathelement location="${aux_dir}"/>
+    </path>
+    <pathconvert pathsep=" " property="gpstool.dist.lib.classpath"
+      refid="gpstool.dist.classpath">
+      <map from="${user.dir}/${lib_dir}" to="lib/java"/> <!-- trailing '/' is required -->
+      <map from="${user.dir}/${doc_dir}" to="doc"/> <!-- in manifest Class-Path   -->
+      <map from="${user.dir}/${aux_dir}" to="auxiliary"/> 
+    </pathconvert>
+
+    <!-- build the jar file: Don't forget the MANIFEST.MF the -->
+    <!-- properties files and the images ! -->
+    <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
+      <!-- make the MANIFEST.MF file -->
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Class-Path" value="${gpstool.dist.lib.classpath}" />
+        <attribute name="Main-Class" value="org.dinopolis.gpstool.GPSMap"/>
+        <section name="common">
+          <attribute name="Specification-Title" value="GPSTool" />
+          <attribute name="Specification-Version" value="${release_version}" />
+          <attribute name="Specification-Vendor" value="Christof Dallermassl" />
+          <attribute name="Implementation-Title" value="GPSTool" />
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
+        </section>
+      </manifest>
+
+      <fileset dir="${aux_dir}"/>
+      <fileset dir="${target_class_dir}"/>
+      <fileset dir=".">
+        <include name="META-INF/services/org.dinopolis.gpstool.*"/>
+        <include name="readme.txt"/>
+      </fileset>
+    </jar>
+
+    <copy todir="${dist_dir}/${lib_dir}">
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool.lib.patternset"/>
+      </fileset>
+    </copy>
+
+    <copy todir="${dist_dir}/${doc_dir}">
+      <fileset dir="${doc_dir}"/>
+    </copy>
+
+    <!-- create directory with the name using the release number -->
+    <mkdir dir="${dist_dir}/${dist_name}_bin-${release_version}"/>
+    <move todir="${dist_dir}/${dist_name}_bin-${release_version}">
+      <fileset dir="${dist_dir}"/>
+    </move>
+
+    <!-- remove left over directories (no idea why they are left!) -->
+    <delete dir="${dist_dir}/${doc_dir}"/>
+    <delete dir="${dist_dir}/${lib_dir}"/>
+    <delete dir="${dist_dir}/${plugin_dir}"/>
+
+    <!-- create tar file -->
+    <tar longfile="gnu"
+      destfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz"
+      basedir="${dist_dir}"           
+      includes="${dist_name}_bin-${release_version}/**/*"
+      excludes="${dist_name}_bin-${release_version}/${dist_name}_bin-${release_version}"
+      compression="gzip"/>
+
+    <!-- remove temp directory -->
+    <delete dir="${dist_dir}/${dist_name}_bin-${release_version}"/>
+  </target>
+
+  <!-- src_dist target -->
+  <target name="src_dist" depends="init,clean,compile,javadoc">  
+    <mkdir dir="${dist_dir}"/>
+
+    <!-- create directory with the name using the release number -->
+    <mkdir dir="${dist_dir}/${dist_name}_src-${release_version}"/>
+
+    <copy todir="${dist_dir}/${dist_name}_src-${release_version}/${lib_dir}">
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool.lib.patternset"/>
+      </fileset>
+    </copy>
+
+    <copy todir="${dist_dir}/${dist_name}_src-${release_version}">
+      <fileset dir="${basedir}">
+        <include name="${doc_dir}/**"/>
+        <include name="${aux_dir}/**"/>
+        <include name="${source_dir}/**"/>
+        <include name="${lib_dir}/**"/>
+        <include name="${javadoc_dir}/**"/>
+        <include name="META-INF/**"/>
+        <include name="readme.txt"/>
+        <include name="build.xml"/>
+        <include name="${plugin_dir}/*/META-INF/**"/>
+        <include name="${plugin_dir}/*/${source_dir}/**"/>
+        <include name="${plugin_dir}/*/${doc_dir}/**"/>
+        <include name="${plugin_dir}/*/${aux_dir}/**"/>
+        <include name="${plugin_dir}/*/${javadoc_dir}/**"/>
+        <include name="${plugin_dir}/*/${lib_dir}/**"/>
+        <include name="${plugin_dir}/*/build.xml"/>
+        <exclude name="${plugin_dir}/writesvgimage/**"/>
+        <exclude name="*CVS*"/>
+        <exclude name="*~"/>
+        <exclude name="*.flc"/>
+        <exclude name="*.~*"/>
+      </fileset>
+    </copy>
+
+    <tar longfile="gnu"
+      basedir="${dist_dir}"
+      destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
+      excludes="*CVS*,${dist_name}_bin-${release_version}*"
+      compression="gzip"/>
+
+    <!-- remove temp directory -->
+    <delete dir="${dist_dir}/${dist_name}_src-${release_version}"/>
+  </target>
+
+  <!-- copy_default_plugins target -->
+  <target name="copy_default_plugins" depends="init,bin_dist_plugins"> 
+    <mkdir dir="${dist_dir}/${plugin_dir}"/>
+    <copy todir="${dist_dir}/${plugin_dir}">
+      <fileset dir="${plugin_dir}/navigationmousemode/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+      <fileset dir="${plugin_dir}/downloadmousemode/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+      <fileset dir="${plugin_dir}/writerasterimage/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+      <fileset dir="${plugin_dir}/readgpsdrivetrack/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- plugins_dist target -->
+  <target name="plugins_dist" depends="init,bin_dist_plugins"> 
+    <mkdir dir="${dist_dir}"/>
+    <tar longfile="gnu"
+      basedir="${basedir}"
+      destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
+      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${javadoc_dir}/**,${aux_dir}/**,build.xml"
+      excludes="*CVS*"
+      compression="gzip"/>
+  </target>
+
+  <!-- ======================================== -->
+  <!--           upload targets                 -->
+  <!-- ======================================== -->
+
+  <!-- upload webpages target -->
+  <target name="upload_sourceforge_web" depends="init">
+    <exec dir="${doc_dir}/org/dinopolis/gpstool/" executable="/bin/sh">
+      <arg value="-c"/>
+      <arg value='tar cvf - *.html *.pdf changelog.txt images/*.png | ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; tar xf -)"'/>
+    </exec>
+  </target>
+
+
+  <!-- upload distributions target -->
+  <target name="upload_sourceforge_dist" depends="init">
+    <exec dir="${dist_dir}" executable="/bin/sh">
+      <arg value="-c"/>
+      <arg value='ncftpput upload.sourceforge.net incoming ${dist_name}_???-${release_version}.tar.gz'/>
+    </exec>
+  </target>
+
+  <!-- ======================================== -->
+  <!--           plugin targets                 -->
+  <!-- ======================================== -->
+
+  <!-- compile_plugins target -->
+  <target name="compile_plugins"
+    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin"> 
+  </target>
+
+  <!-- compile_downloadmousemode_plugin target -->
+  <target name="compile_downloadmousemode_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/downloadmousemode" target="compile" inheritAll="false"/>
+  </target>
+
+  <!-- compile_navigationmousemode_plugin target -->
+  <target name="compile_navigationmousemode_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/navigationmousemode" target="compile" inheritAll="false"/>
+  </target>
+
+  <!-- compile_writerasterimage_plugin target -->
+  <target name="compile_writerasterimage_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/writerasterimage" target="compile" inheritAll="false"/>
+  </target>
+
+  <!-- compile_writesvgimage_plugin target -->
+  <target name="compile_writesvgimage_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/writesvgimage" target="compile" inheritAll="false"/>
+  </target>
+
+  <!-- compile_readgpsdrivetrack_plugin target -->
+  <target name="compile_readgpsdrivetrack_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/readgpsdrivetrack" target="compile" inheritAll="false"/>
+  </target>
+
+  <!-- bin_dist_plugins target -->
+  <target name="bin_dist_plugins"
+    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin"> 
+  </target>
+
+  <!-- bin_dist_downloadmousemode_plugin target -->
+  <target name="bin_dist_downloadmousemode_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/downloadmousemode" target="bin_dist" inheritAll="false"/>
+  </target>
+
+  <!-- bin_dist_navigationmousemode_plugin target -->
+  <target name="bin_dist_navigationmousemode_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/navigationmousemode" target="bin_dist" inheritAll="false"/>
+  </target>
+
+  <!-- bin_dist_writerasterimage_plugin target -->
+  <target name="bin_dist_writerasterimage_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/writerasterimage" target="bin_dist" inheritAll="false"/>
+  </target>
+
+  <!-- bin_dist_writesvgimage_plugin target -->
+  <target name="bin_dist_writesvgimage_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/writesvgimage" target="bin_dist" inheritAll="false"/>
+  </target>
+
+  <!-- bin_dist_readgpsdrivetrack_plugin target -->
+  <target name="bin_dist_readgpsdrivetrack_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/readgpsdrivetrack" target="bin_dist" inheritAll="false"/>
+  </target>
+
+  <!-- install_plugins target -->
+  <target name="install_plugins"
+    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin"> 
+  </target>
+
+  <!-- install_downloadmousemode_plugin target -->
+  <target name="install_downloadmousemode_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/downloadmousemode" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_navigationmousemode_plugin target -->
+  <target name="install_navigationmousemode_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/navigationmousemode" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_writerasterimage_plugin target -->
+  <target name="install_writerasterimage_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/writerasterimage" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_writesvgimage_plugin target -->
+  <target name="install_writesvgimage_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/writesvgimage" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_readgpsdrivetrack_plugin target -->
+  <target name="install_readgpsdrivetrack_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/readgpsdrivetrack" target="install_plugin" inheritAll="false"/>
+  </target>
+
 </project>

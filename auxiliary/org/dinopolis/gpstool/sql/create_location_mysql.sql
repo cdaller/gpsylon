@@ -4,6 +4,8 @@
 
 #USE gpsmap;
 
+GRANT all on gpsmap.* to sa@localhost identified by '';
+
 # markers table:
 CREATE TABLE markers ( marker_id INTEGER NOT NULL AUTO_INCREMENT, 
                        name VARCHAR(255), 
@@ -15,8 +17,6 @@ CREATE TABLE markers ( marker_id INTEGER NOT NULL AUTO_INCREMENT,
 CREATE INDEX markers_name ON markers ( name );
 CREATE INDEX markers_cat ON markers ( category_id );
 CREATE INDEX markers_coordinates ON markers (latitude, longitude);
-
-GRANT all on gpsmap.* to sa@localhost identified by '';
 
 # if table should be a csv file (change table def as well (identity is
 # not supported!) 

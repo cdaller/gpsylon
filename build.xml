@@ -12,7 +12,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.4.14-pre6"/>
+    <property name="release_version" value="0.4.14-pre7"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib/java"/>
@@ -49,6 +49,7 @@ Christof Dallermassl (cdaller@iicm.edu)
       <include name="downloadmousemode/${dist_dir}/**/*.jar" />
       <include name="writerasterimage/${dist_dir}/**/*.jar" />
       <include name="readgpsdrivetrack/${dist_dir}/**/*.jar" />
+      <include name="mapmanager/${dist_dir}/**/*.jar" />
     </patternset>
   </target>
   
@@ -257,8 +258,16 @@ Christof Dallermassl (cdaller@iicm.edu)
       destfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz"
       basedir="${dist_dir}"           
       includes="${dist_name}_bin-${release_version}/**/*"
-      excludes="${dist_name}_bin-${release_version}/${dist_name}_bin-${release_version}"
+      excludes="${dist_name}_bin-${release_version}/${dist_name}_bin-${release_version},*.zip,*.tar.gz"
       compression="gzip"/>
+
+    <!-- create zip file -->
+    <zip
+      destfile="${dist_dir}/${dist_name}_bin-${release_version}.zip"
+      basedir="${dist_dir}"           
+      includes="${dist_name}_bin-${release_version}/**/*"
+      excludes="${dist_name}_bin-${release_version}/${dist_name}_bin-${release_version},*.tar.gz,*.zip"/>
+   
 
     <!-- remove temp directory -->
     <delete dir="${dist_dir}/${dist_name}_bin-${release_version}"/>
@@ -305,8 +314,13 @@ Christof Dallermassl (cdaller@iicm.edu)
     <tar longfile="gnu"
       basedir="${dist_dir}"
       destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
-      excludes="*CVS*,${dist_name}_bin-${release_version}*"
+      excludes="*CVS*,${dist_name}_bin-${release_version}*,*.zip,*.tar.gz"
       compression="gzip"/>
+
+    <zip 
+      basedir="${dist_dir}"
+      destfile="${dist_dir}/${dist_name}_src-${release_version}.zip"
+      excludes="*CVS*,${dist_name}_bin-${release_version}*,*.zip,*.tar.gz"/>
 
     <!-- remove temp directory -->
     <delete dir="${dist_dir}/${dist_name}_src-${release_version}"/>
@@ -326,6 +340,9 @@ Christof Dallermassl (cdaller@iicm.edu)
         <include name="**/*.jar"/>  
       </fileset>
       <fileset dir="${plugin_dir}/readgpsdrivetrack/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
+      <fileset dir="${plugin_dir}/mapmanager/${dist_dir}">
         <include name="**/*.jar"/>  
       </fileset>
     </copy>
@@ -359,7 +376,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <target name="upload_sourceforge_dist" depends="init">
     <exec dir="${dist_dir}" executable="/bin/sh">
       <arg value="-c"/>
-      <arg value='ncftpput upload.sourceforge.net incoming ${dist_name}_???-${release_version}.tar.gz'/>
+      <arg value='ncftpput upload.sourceforge.net incoming ${dist_name}_???-${release_version}.tar.gz ${dist_name}_???-${release_version}.zip'/>
     </exec>
   </target>
 
@@ -369,7 +386,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- compile_plugins target -->
   <target name="compile_plugins"
-    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin"> 
+    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_mapmanager_plugin"> 
   </target>
 
   <!-- compile_downloadmousemode_plugin target -->
@@ -397,9 +414,14 @@ Christof Dallermassl (cdaller@iicm.edu)
     <ant dir="${plugin_dir}/readgpsdrivetrack" target="compile" inheritAll="false"/>
   </target>
 
+  <!-- compile_mapmanager_plugin target -->
+  <target name="compile_mapmanager_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/mapmanager" target="compile" inheritAll="false"/>
+  </target>
+
   <!-- bin_dist_plugins target -->
   <target name="bin_dist_plugins"
-    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin"> 
+    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_mapmanager_plugin"> 
   </target>
 
   <!-- bin_dist_downloadmousemode_plugin target -->
@@ -427,9 +449,14 @@ Christof Dallermassl (cdaller@iicm.edu)
     <ant dir="${plugin_dir}/readgpsdrivetrack" target="bin_dist" inheritAll="false"/>
   </target>
 
+  <!-- bin_dist_mapmanager_plugin target -->
+  <target name="bin_dist_mapmanager_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/mapmanager" target="bin_dist" inheritAll="false"/>
+  </target>
+
   <!-- install_plugins target -->
   <target name="install_plugins"
-    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin"> 
+    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_mapmanager_plugin"> 
   </target>
 
   <!-- install_downloadmousemode_plugin target -->
@@ -455,6 +482,11 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- install_readgpsdrivetrack_plugin target -->
   <target name="install_readgpsdrivetrack_plugin" depends="init"> 
     <ant dir="${plugin_dir}/readgpsdrivetrack" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_mapmanager_plugin target -->
+  <target name="install_mapmanager_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/mapmanager" target="install_plugin" inheritAll="false"/>
   </target>
 
 </project>

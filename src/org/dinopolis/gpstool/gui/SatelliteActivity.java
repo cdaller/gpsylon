@@ -250,9 +250,11 @@ public class SatelliteActivity extends JComponent
  */
   public void setSatelliteInfos(SatelliteInfo[] infos)
   {
+    // copy satellite info:
     synchronized(satellite_infos_lock_)
     {
-      satellite_infos_ = infos;
+      satellite_infos_ = new SatelliteInfo[infos.length];
+      System.arraycopy(infos,0,satellite_infos_,0,satellite_infos_.length);
     }
     lost_signal_ = false;
     repaint();
@@ -286,9 +288,10 @@ public class SatelliteActivity extends JComponent
         if(satellite_infos_ != null)
         {
 	  // copy satellite info, so changes during painting do not disturb:
-          SatelliteInfo[] sat_infos = new SatelliteInfo[satellite_infos_.length];
+          SatelliteInfo[] sat_infos;
           synchronized(satellite_infos_lock_)
           {
+	    sat_infos = new SatelliteInfo[satellite_infos_.length];
             System.arraycopy(satellite_infos_,0,sat_infos,0,satellite_infos_.length);
           }
           g.setColor(active_color_);

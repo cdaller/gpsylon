@@ -23,9 +23,11 @@
 
 package org.dinopolis.util.resource;
 
+
+
+
 import gnu.regexp.RE;
 import gnu.regexp.REException;
-
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -40,11 +42,10 @@ import java.util.MissingResourceException;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-
 import org.dinopolis.util.Resources;
+import java.util.Iterator;
 
 //----------------------------------------------------------------------
 /**
@@ -116,6 +117,9 @@ public abstract class AbstractResources implements Resources
   /** the unset key */
   protected final static String UNSET_KEY = "unset";
 
+      /** attached resources */
+  protected Vector attached_resources_;
+
   //----------------------------------------------------------------------
   /**
    * The Default Constructor.
@@ -140,6 +144,54 @@ public abstract class AbstractResources implements Resources
   protected abstract String getValue(String key)
     throws MissingResourceException;
 
+
+  //----------------------------------------------------------------------
+  /**
+   * Gets the bound value for the given key from the resources and
+   * from the attached resources.
+   *
+   * @param key the key of the resource property to look for.
+   * @return the string loaded from the resource bundle.
+   * @exception MissingResourceException if the given key is not defined
+   * within the resources.
+   */
+
+  protected String getAlsoAttachedValue(String key)
+    throws MissingResourceException
+  {
+    MissingResourceException missing_exception = null;
+    try
+    {
+      return(getValue(key));
+    }
+    catch(MissingResourceException mre)
+    {
+      missing_exception = mre;
+    }
+
+    if(attached_resources_ == null)
+      throw missing_exception;
+    
+        // search in all merged resources for the given key:
+    synchronized(attached_resources_)
+    {
+      Iterator resources_iterator = attached_resources_.iterator();
+      while(resources_iterator.hasNext())
+      {
+        try
+        {
+          return(((Resources)resources_iterator.next()).getString(key));
+        }
+        catch(MissingResourceException mre)
+        {
+          missing_exception = mre;
+        }
+      }
+    }
+        // nowhere found, throw exception:
+    throw missing_exception;
+  }
+
   //----------------------------------------------------------------------
   /**
    * Returns an Enumeration containing all keys of all resources.
@@ -147,7 +199,55 @@ public abstract class AbstractResources implements Resources
    * @return an Enumeration containing all keys of all resources.
    */
 
-  public abstract Enumeration getKeys();
+  protected abstract Enumeration doGetKeys();
+
+  //----------------------------------------------------------------------
+  /**
+   * Returns an Enumeration containing all keys of all resources.
+   *
+   * @return an Enumeration containing all keys of all resources.
+   */
+
+  public Enumeration getKeys()
+  {
+    Vector all_keys = new Vector();
+    HashSet added = new HashSet();
+    String key;
+    Enumeration enum;
+        // collect my keys:
+    enum = doGetKeys();
+    while(enum.hasMoreElements())
+    {
+      key = (String)enum.nextElement();
+      if(!added.contains(key))
+      {
+        added.add(key);
+        all_keys.add(key);
+      }
+    }
+        // collect keys from my attached resources:
+    if(attached_resources_ != null)
+    {
+      synchronized(attached_resources_)
+      {
+        Iterator resources_iterator = attached_resources_.iterator();
+        while(resources_iterator.hasNext())
+        {
+          enum = ((Resources)resources_iterator.next()).getKeys();
+          while(enum.hasMoreElements())
+          {
+            key = (String)enum.nextElement();
+            if(!added.contains(key))
+            {
+              added.add(key);
+              all_keys.add(key);
+            }
+          }
+        }
+      }
+    }
+    return(all_keys.elements());
+  }
 
   //----------------------------------------------------------------------
   /**
@@ -214,11 +314,29 @@ public abstract class AbstractResources implements Resources
 
   //----------------------------------------------------------------------
   /**
-   * Call this method to make all changes performed by unset and
-   * setter methods persistent.
    * Overwrite this method in classes extending AbstractResources, if
    * modifications are supported. by default, this method throws an
    * UnsupportedOperationException.
+   *
+   * @exception IOException in case of an IOError.
+   * @exception UnsupportedOperationException if the resources is not
+   * capable of persistently storing the resources.
+   */
+  protected void doStore()
+    throws IOException, UnsupportedOperationException
+  {
+    throw(new UnsupportedOperationException("storing in not "+
+                                            "supported by this"+
+                                            "Resources class"));
+  }
+  
+  //----------------------------------------------------------------------
+  /**
+   * Call this method to make all changes performed by unset and
+   * setter methods persistent. Overwrite the {@link @doStore()}
+   * method in classes extending AbstractResources, if modifications
+   * are supported. Do NOT overwrite this method as otherwise the
+   * attached resources are not stored anymore.
    *
    * @exception IOException in case of an IOError.
    * @exception UnsupportedOperationException if the resources is not
@@ -228,12 +346,87 @@ public abstract class AbstractResources implements Resources
   public void store()
     throws IOException, UnsupportedOperationException
   {
-    throw(new UnsupportedOperationException("storing in not "+
-                                            "supported by this"+
-                                            "Resources class"));    
+    doStore();
+    if(attached_resources_ == null)
+      return;
+    UnsupportedOperationException exception = null;
+    synchronized(attached_resources_)
+    {
+      Iterator resources_iterator = attached_resources_.iterator();
+      while(resources_iterator.hasNext())
+      {
+        try
+        {
+          ((Resources)resources_iterator.next()).store();
+        }
+        catch(UnsupportedOperationException e)
+        {
+          exception = e;
+        }
+      }
+    }
+    if(exception != null)
+      throw exception;
   }
 
   //----------------------------------------------------------------------
+  /**
+   * Attach another set of resources. After they are attached, all
+   * getXXX() operations are able to read the values from the
+   * resources as well as the attached resources. To set any values
+   * (add new or change old values), the methods of the original
+   * resources must be used or otherwise the keys/values are contained
+   * in this resources (new value) and in the attached resources (old
+   * values).
+   * <p>
+   * As soon as additional resources are attached, the getXXX()
+   * methods read from them. If there are duplicate keys in the
+   * resources and in the attached resources, the original resources
+   * have priority (take care!!).
+   * <p>
+   * The {@link #store()} method calls <code>store()<code> on all
+   * attached resources as well.
+   * <p>
+   * Attaching resources has the advantage that read access to
+   * resources is easy for different resources (e.g. in the resource
+   * editor), but the place where the resources are stored can still
+   * be held separated.
+   *
+   * @exception UnsupportedOperationException if the resources is not
+   * capable of attaching other resources.
+   */
+
+  public void attachResources(Resources resources)
+    throws UnsupportedOperationException
+  {
+    if(attached_resources_ == null)
+      attached_resources_ = new Vector();
+    synchronized(attached_resources_)
+    {
+      attached_resources_.add(resources);
+    }
+  }
+  
+  //----------------------------------------------------------------------
+  /**
+   * Detach previously attached resources.
+   *
+   * @exception UnsupportedOperationException if the resources is not
+   * capable of attaching other resources.
+   */
+
+  public void detachResources(Resources resources)
+    throws UnsupportedOperationException
+  {
+    if(attached_resources_ == null)
+      return;
+    synchronized(attached_resources_)
+    {
+      attached_resources_.remove(resources);
+    }
+  }
+
+ //----------------------------------------------------------------------
   /**
    * Returns the title for the given key. If no title for this key is
    * available, <code>null</code> is returned.
@@ -587,14 +780,14 @@ public abstract class AbstractResources implements Resources
             else
               if (replaced == null)
                 if (deep_replace)
-                  replaced = replaceVariables(getValue(variable),
+                  replaced = replaceVariables(getAlsoAttachedValue(variable),
                                               set);
                 else
                   replaced = replaceVariables(variable, set);
               else
                 if (deep_replace)
                   replaced += RESOURCE_STRING_ARRAY_DELIMITER+
-                    replaceVariables(getValue(variable),
+                    replaceVariables(getAlsoAttachedValue(variable),
                                      set);
                 else
                   replaced += RESOURCE_STRING_ARRAY_DELIMITER+
@@ -715,7 +908,7 @@ public abstract class AbstractResources implements Resources
   {
     if (key == null)
       throw(new IllegalArgumentException("'key' must not be 'null'"));
-    String value = getValue(key);
+    String value = getAlsoAttachedValue(key);
     if (value == null)
       //      return(null);
       throw(new MissingResourceException("Can't find resource for "+

@@ -631,12 +631,18 @@ public class FileResources extends AbstractResources
 
   protected synchronized void unsetValue(String key)
   {
-    //   System.err.println("unsetValue() key: "+key);
-    if(system_bundle_.getString(key) == null)
-      user_properties_.remove(key);
-    else
+//    System.err.println("unsetValue() key: "+key);
+    try
+    {
+      system_bundle_.getString(key);
+    }
+    catch(Exception e)
+    {
+      user_properties_.remove(key); // it was not in the system bundle
+      return;
+    }
           // mark it with a special key, so it is unset from now on!
-      user_properties_.put(key,"$"+UNSET_KEY+"$");
+    user_properties_.put(key,"$"+UNSET_KEY+"$");
   }
 
   //----------------------------------------------------------------------
@@ -659,16 +665,13 @@ public class FileResources extends AbstractResources
    * Call this method to make all changes performed by unset and
    * setter methods persistent.
    * Overwrite this method in classes extending AbstractResources, if
-   * modifications are supported. by default, this method throws an
-   * UnsupportedOperationException.
+   * modifications are supported. 
    *
    * @exception IOException in case of an IOError.
-   * @exception UnsupportedOperationException if the resources is not
-   * capable of persistently storing the resources.
    */
 
   protected synchronized void doStore()
-    throws IOException, UnsupportedOperationException
+    throws IOException
   {
     String tmp_file_name = user_resource_file_.getName()+".tmp";
     File parent = user_resource_file_.getParentFile();
@@ -706,12 +709,9 @@ public class FileResources extends AbstractResources
    * @param key the key to set the title for.
    * @param title the title to set.
    * @exception IllegalArgumentException if key is 'null'.
-   * @exception UnsupportedOperationException if setTitle operations
-   * are not supported.
    */
 
   public void setTitle(String key, String title)
-    throws UnsupportedOperationException
   {
     if (title == null)
       unsetValue(key+TITLE_SUFFIX);
@@ -742,13 +742,10 @@ public class FileResources extends AbstractResources
    *
    * @param key the key to set the description for.
    * @param description the description to set.
-   * @exception UnsupportedOperationException if setDescription
-   * operations are not supported.
    * @exception IllegalArgumentException if key is 'null'.
    */
 
   public void setDescription(String key, String description)
-    throws UnsupportedOperationException
   {
     if (description == null)
       unsetValue(key+DESCRIPTION_SUFFIX);
@@ -782,13 +779,10 @@ public class FileResources extends AbstractResources
    *
    * @param key the key to set the type for.
    * @param type the type to set.
-   * @exception UnsupportedOperationException if setType operations
-   * are not supported.
    * @exception IllegalArgumentException if key is 'null'.
    */
 
   public void setType(String key, Class type)
-    throws UnsupportedOperationException
   {
     String class_name = getTypeForClass(type);
     if (class_name == null)
@@ -824,13 +818,10 @@ public class FileResources extends AbstractResources
    *
    * @param key the key to set the possible Values for.
    * @param possible_values the possible Values to set.
-   * @exception UnsupportedOperationException if setPossibleValues
-   * operations are not supported.
    * @exception IllegalArgumentException if is 'null'. 
    */
 
   public void setPossibleValues(String key, String[] possible_values)
-    throws UnsupportedOperationException
   {
     if (possible_values == null)
       unsetValue(key+POSSIBLE_VALUES_SUFFIX);

@@ -31,13 +31,14 @@ import java.util.Vector;
  * @version $Revision$
  */
 
-public class GarminRoute  
+public class GarminTrack
 {
-  Vector route_points_ = new Vector();
+  Vector track_points_ = new Vector();
+  boolean display_;
+  short color_;
   String identification_;
-  String comment_;
 
-  public GarminRoute()
+  public GarminTrack()
   {
   }
 
@@ -65,77 +66,31 @@ public class GarminRoute
 
 //----------------------------------------------------------------------
 /**
- * Get the comment.
+ * Get a list of track_points (GarminTrackpoint objects).
  *
- * @return the comment.
- * @throws GarminUnsupportedMethodException
+ * @return a list of track_points.
  */
-  public String getComment()
-    throws GarminUnsupportedMethodException
+  public List getTrackPoints() 
   {
-    if(comment_ == null)
-      throw new GarminUnsupportedMethodException("Comment not supported");
-    else
-      return(comment_);
+    return (track_points_);
   }
   
 //----------------------------------------------------------------------
 /**
- * Set the comment.
+ * Add a track_point.
  *
- * @param comment the comment.
+ * @param track_point the route point to add.
  */
-  protected void setComment(String comment) 
+  public void addTrackPoint(GarminTrackpoint track_point) 
   {
-    comment_ = comment;
-  }
-  
-  
-//----------------------------------------------------------------------
-/**
- * Get a list of route_points (GarminWaypoint objects) and Link objects.
- *
- * @return a list of  route_points.
- */
-  public List getRoutePoints() 
-  {
-    return (route_points_);
-  }
-  
-// //----------------------------------------------------------------------
-// /**
-//  * Set the route_points.
-//  *
-//  * @param route_points the route_points.
-//  */
-//   public void setRoutePoints(GarminWaypoint[] route_points) 
-//   {
-//     for(int index = 0; index < route_points.length; index++)
-//       addRoutePoint(route_points[index]);
-//   }
-  
-//----------------------------------------------------------------------
-/**
- * Add a route point.
- *
- * @param route_point the route point to add.
- */
-  public void addRoutePoint(GarminWaypoint route_point) 
-  {
-    route_points_.add(route_point);
-  }
-
-  public void addRouteLinkData(GarminRouteLinkD210 link_type)
-  {
-    route_points_.add(link_type); // FIXXME: maybe not clever to mix route points and links!
+    track_points_.add(track_point);
   }
 
   public String toString()
   {
     StringBuffer buf = new StringBuffer();
-    buf.append("GarminRoute[identification=").append(identification_).append(",");
-    buf.append("route points/links=").append(route_points_.toString()).append("]");
+    buf.append("GarminTrack[identification=").append(identification_).append(",");
+    buf.append("track points/links=").append(track_points_.toString()).append("]");
     return(buf.toString());
   }
-  
 }

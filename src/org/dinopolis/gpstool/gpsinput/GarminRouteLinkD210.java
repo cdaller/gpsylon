@@ -29,11 +29,34 @@ package org.dinopolis.gpstool.gpsinput;
  * @version $Revision$
  */
 
-public class GarminRouteD201 extends GarminRoute  
+public class GarminRouteLinkD210 
 {
-  public GarminRouteD201(char[] buffer)
+  int class_;
+  String class_name_;
+  byte[] subclass_;
+  String identification_;
+
+  public static final String[] CLASS_NAME = new String[] {"line","link","net","direct"
+                                                          ,"snap"};
+  
+  public GarminRouteLinkD210(char[] buffer)
   {
-    setIdentification(Short.toString(GarminDataConverter.getGarminByte(buffer,2)));
-    setComment(GarminDataConverter.getGarminString(buffer,3,20));
+    class_ = GarminDataConverter.getGarminWord(buffer,2);
+    int class_index = class_;
+    if(class_ == -1)
+      class_index = CLASS_NAME.length;
+    if(class_index < CLASS_NAME.length)
+      class_name_ = CLASS_NAME[class_index];
+    else
+      class_name_ = "unknown";
+    subclass_ = GarminDataConverter.getGarminByteArray(buffer,4,18);
+    identification_ = GarminDataConverter.getGarminString(buffer,22,(int)buffer[1]-21);
+  }
+
+
+  public String toString()
+  {
+    return("GarminRouteLinkD210[class="+class_+", class_name="+class_name_
+           +", identification="+identification_+"]");
   }
 }

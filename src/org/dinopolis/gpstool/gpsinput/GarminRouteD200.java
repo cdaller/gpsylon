@@ -1,8 +1,8 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
  *
- * Copyright (c) 2003 IICM, Graz University of Technology
- * Inffeldgasse 16c, A-8010 Graz, Austria.
+ * Copyright (c) 2001-2003 Sandra Brueckler, Stefan Feitl
+ * Written during an XPG-Project at the IICM of the TU-Graz, Austria
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
@@ -25,15 +25,14 @@ package org.dinopolis.gpstool.gpsinput;
 
 //----------------------------------------------------------------------
 /**
- * @author Christof Dallermassl
+ * @author Sandra Brueckler, Stefan Feitl
  * @version $Revision$
  */
 
-public class GarminRouteD201 extends GarminRoute  
+public class GarminRouteD200 extends GarminRoute  
 {
-  public GarminRouteD201(char[] buffer)
+  public GarminRouteD200(char[] buffer)
   {
     setIdentification(Short.toString(GarminDataConverter.getGarminByte(buffer,2)));
-    setComment(GarminDataConverter.getGarminString(buffer,3,20));
   }
 }

@@ -23,67 +23,75 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 import java.util.Hashtable;
+
 import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**
- * All classes extending this class are interpreting data from
- * a GPSDevice (serial gps-receivier, file containing gps data, ...)
- * and provide this information in a uniform way. So an NMEA-processor
- * interprets NMEA sentences, while a Garmin-Processor understands the
- * garmin protocol.
+ * This class implements a GARMIN-Processor that is able to connect
+ * to a connected GARMIN-device, retrieve its capabilities, live
+ * position-velocity-time-data and waypoint/route/track-information
+ * stored in the device.
+ * Waypoint/route/track-information may also be sent to the device
+ * using the functions of this class.
  * <P>
- * This abstract class adds some basic functionality all
- * GSPDataProcessors might use.
  *
  * @author Sandra Brueckler, Stefan Feitl
  * @version $Revision$ */
 
 public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements Runnable
 {
-
-  public final static String GARMIN_OPTIONS_KEY = "garmin_options";
-
-      /** the inputstream from the GPSDevice */
+/**
+ * Declaration of required in-/output-streams and a communications thread
+ * for firing position-change-events.
+ */
   InputStream in_stream_ = null;
-      /** the outputstream to the GPSDevice */
   OutputStream out_stream_ = null;
-      /** the communications thread */
   Thread comm_thread_;
 
-      // Basic values for garmin devices
-  public static int PROD_ID       = 0;
-  public static int PROD_SW       = 0;
-  public static String PROD_NAME  = "Not available";
-  public static String[] PROD_CAP;
-  private static String options_ = null;
-  private static boolean running = false;
-  public final static int MAX_GARMIN_MESSAGE_LENGTH = 260;
+/**
+ * Basic values for garmin devices
+ */
+  public int product_id_       = 0;
+  public int product_sw_       = 0;
+  public String product_name_  = "Not available";
+  public String[] product_capabilities_;
 
-      // Variables for determining product capabilities
+  protected final static int MAX_GARMIN_MESSAGE_LENGTH = 260;
+
+/** 
+ * Variables for determining product capabilities.
+ * These variables desribes the abilities of the GARMIN-device
+ * connected to the computer.
+ *
+ * Array L is true for all supported link protocols
+ * Array A is true for all supported application protocols
+ * Array D is true for all supported data types
+ */
   private static boolean[] L = new boolean[9];
   private static boolean[] A = new boolean[999];
   private static boolean[] D = new boolean[999];
 
-  public final static String GARMIN_LOCATION = "GLL";
-  public final static String GARMIN_HEADING = "HDG";
-
-      // Definitions for DLE and ETX
+      // Definitions for DLE, ETX, ACK and NAK
   private final static char DLE = (char)16;
   private final static char ETX = (char)3;
   private final static char ACK = (char)6;
   private final static char NAK = (char)21;
   
-      // Identifiers for L000 - Basic Link Protocol
+/**
+ * Identifiers for L000 - Basic Link Protocol
+ */
   public final static char Pid_Protocol_Array = (char)253;
   public final static char Pid_Product_Rqst   = (char)254;
   public final static char Pid_Product_Data   = (char)255;
 
-      // Identifiers for L001 - Link Protocol 1
+/**
+ * Identifiers for L001 - Link Protocol 1
+ */
   public final static char Pid_Command_Data_L001   = (char)10;
   public final static char Pid_Xfer_Cmplt_L001     = (char)12;
   public final static char Pid_Date_Time_Data_L001 = (char)14;
@@ -99,18 +107,22 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
   public final static char Pid_Rte_Link_Data_L001  = (char)98;
   public final static char Pid_Trk_Hdr_L001        = (char)99;
 
-      // Identifiers for L002 - Link Protocol 2
+/**
+ * Identifiers for L002 - Link Protocol 2
+ */
   public final static char Pid_Almanac_Data_L002   = (char)4;
   public final static char Pid_Command_Data_L002   = (char)11;
   public final static char Pid_Xfer_Cmplt_L002     = (char)12;
   public final static char Pid_Date_Time_Data_L002 = (char)20;
-  public final static char Pid_Posotion_Data_L002  = (char)24;
+  public final static char Pid_Position_Data_L002  = (char)24;
   public final static char Pid_Records_L002        = (char)35;
   public final static char Pid_Rte_Hdr_L002        = (char)37;
   public final static char Pid_Rte_Wpt_Data_L002   = (char)39;
   public final static char Pid_Wpt_Data_L002       = (char)43;
 
-      // Identifiers for A010 - Device Command Protocol 1
+/**
+ * Identifiers for A010 - Device Command Protocol 1
+ */
   public final static char Cmnd_Abort_Transfer_A010 = (char)0;
   public final static char Cmnd_Transfer_Alm_A010   = (char)1;
   public final static char Cmnd_Transfer_Posn_A010  = (char)2;
@@ -123,7 +135,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
   public final static char Cmnd_Start_Pvt_Data_A010 = (char)49;
   public final static char Cmnd_Stop_Pvt_Data_A010  = (char)50;
 
-      // Identifiers for A011 - Device Command Protocol 2
+/**
+ * Identifiers for A011 - Device Command Protocol 2
+ */
   public final static char Cmnd_Abort_Transfer_A011 = (char)0;
   public final static char Cmnd_Transfer_Alm_A011   = (char)4;
   public final static char Cmnd_Transfer_Rte_A011   = (char)8;
@@ -139,46 +153,66 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
   {
   }
   
+  
 //----------------------------------------------------------------------
 /**
- * Initializes the GPS-Processor. Retrieves information on possible
- * commands and instruction sets.
+ * Returns the product id.
+ * @return the product id.
+ */
+  public int getProductId()
+  {
+    return(product_id_);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Returns the product software.
+ * @return the product software.
+ */
+  public int getProductSoftware()
+  {
+    return(product_sw_);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Returns the product name.
+ * @return the product name.
+ */
+  public String getProductName()
+  {
+    return(product_name_);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Returns the product capabilities.
+ * @return the product capabilities.
+ */
+  public String[] getProductCapabilities()
+  {
+    return(product_capabilities_);
+  }
+  
+  
+//----------------------------------------------------------------------
+/**
+ * Initialize the GPS-Processor.
  *
+ * @param environment Environment the processor should use
  * @exception if an error occured on initializing.
  */
-  public void init(Hashtable environment)
-    throws GPSException
+  public void init(Hashtable environment) throws GPSException
   {
     if (gps_device_ == null)
       throw new GPSException("No GPSDevice set!");
-
-//      try
-//      {
-//        gps_device_.open();
-//        in_stream_ = gps_device_.getInputStream();
-//        out_stream_ = gps_device_.getOutputStream();
-
-//            // Receive product data for information purposes
-//        readProductData();
-
-//        gps_device_.close();
-//      }
-//      catch(IOException e)
-//      {
-//        throw new GPSException(e.getMessage());
-//      }
-
-//      if (environment.containsKey(GARMIN_OPTIONS_KEY))
-//        options_ = (String)environment.get(GARMIN_OPTIONS_KEY);
-
-    if (Debug.DEBUG)
-      Debug.print("gpstool_message","options: "+options_);
   }
 
 //----------------------------------------------------------------------
 /**
  * Starts the data processing. The Data Processor connects to the
- * GPSDevice and starts sending/retrieving information.
+ * GPSDevice and starts sending/retrieving information. Additionally
+ * basic product capabilities of the connected device are determined.
  *
  * @exception if an error occured on connecting.
  */
@@ -186,15 +220,17 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
   {
     if (gps_device_ == null)
       throw new GPSException("no GPSDevice set!");
+
     try
     {
       gps_device_.open();
       in_stream_ = gps_device_.getInputStream();
+      out_stream_ = gps_device_.getOutputStream();
+
       comm_thread_ = new Thread(this,"GPSGarminDataProcessorIn");
       comm_thread_.setDaemon(true); // so thread is finished after exit of application
       comm_thread_.start();
 
-      out_stream_ = gps_device_.getOutputStream();
           // read product data
       readProductData();
     }
@@ -221,44 +257,22 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 
   
 //----------------------------------------------------------------------
+/**
+ * Start reading of position-time-velocity-data from the connected
+ * device using the communicaions thread.
+ */
   public void run()
   {
-//          // Only one thread may perform operations at the same time
-//      if (!running)
-//      {
-//        running = true;
-
-//            // Perform operation due to parameter(s) passed to the program
-//        if (options_.startsWith("p"))
-//        {
-//  	System.out.println("\nPVT mode...");
-//  	printPVTData();
-//        }
-//        if (options_.startsWith("dw"))
-//        {
-//  	System.out.println("\nDownload waypoints...");
-//  	printWaypointData();
-//        }
-//        if (options_.startsWith("dr"))
-//        {
-//  	System.out.println("\nDownlaod routes...");
-//  	printRouteData();
-//        }
-//        if (options_.startsWith("dt"))
-//        {
-//  	System.out.println("\nDownload tracks...");
-//  	printTrackData();
-//        }
-//      }
-//      running = false;
+    readMessages();
   }
 
 
 //----------------------------------------------------------------------
 /**
  * Send request/command to GARMIN-Device.
- *  Function is overloaded to support multiple communication
- *  methods with the device connected. May be extended if necessary.
+ *
+ * @param rqst Request to be sent to the device.
+ * @param cmnd Command to be sent to the device.
  */
   protected void sendCommand(char rqst, char cmnd)
   {
@@ -283,8 +297,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
         out_stream_.write((char)2);
 
             // Write packet data to device
-            // Highbyte of command data is always 0 because all command id's
-            // are <= 255
+            // Highbyte of command data is always 0 because all command id's are <= 255
         out_stream_.write(cmnd);
         out_stream_.write((char)(0));
         if (cmnd == DLE) {out_stream_.write(DLE);}
@@ -339,6 +352,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
     }
   }
 
+//----------------------------------------------------------------------
+/**
+ * Send request/command to GARMIN-Device.
+ *
+ * @param rqst Request to be sent to the device.
+ * @param data Data to be sent to the device.
+ */
   protected void sendCommand(char rqst, String data)
   {
     char check = (char)0;
@@ -526,7 +546,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 //----------------------------------------------------------------------
 /**
  * Get product information from attached device to determine which
- * communication functions may bes used.
+ * communication functions may be used.
  */
   protected void readProductData()
   {
@@ -542,8 +562,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
       buffer=getPackage();
       if ((int)buffer[0]==255)
       {
-        PROD_ID=(int)(buffer[2]+256*buffer[3]);
-        PROD_SW=(int)(buffer[4]+256*buffer[5]);
+        product_id_=(int)(buffer[2]+256*buffer[3]);
+        product_sw_=(int)(buffer[4]+256*buffer[5]);
 
         char helper[] = new char[255];
 
@@ -551,7 +571,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
         {
           helper[i]=buffer[i+6];
         }
-        PROD_NAME = new String(helper);
+        product_name_ = new String(helper);
       }
       else
       {
@@ -575,11 +595,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
           // Store capabilities into global variable
       if ((int)buffer[0] == 253)
       {
-        PROD_CAP = new String[(buffer[1]/3)];
+        product_capabilities_ = new String[(buffer[1]/3)];
         for (int i=0;i<(buffer[1]/3);i++)
         {
               // Add received capability to global capability variable
-          PROD_CAP[i] = buffer[2+3*i]+""+(int)(buffer[3+3*i]+256*buffer[4+3*i]);
+          product_capabilities_[i] = buffer[2+3*i]+""+(int)(buffer[3+3*i]+256*buffer[4+3*i]);
 
               // Set capabilities due to received tag values
           if ((char)buffer[2+3*i] == 'L') L[(int)(buffer[3+3*i]+256*buffer[4+3*i])]=true;
@@ -601,13 +621,15 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * @exception if an error occured during access to the device
  * @return current position, velocity and time
  */
-  public GarminPVT readPVTData()
-    throws GPSException
+  public GarminPVT readPVTData(boolean events) throws GPSException
   {
     char[] buffer;
-    int count = 0;
-
     GarminPVT pvt = new GarminPVT();
+
+        // If communications thread is alive and not using
+        // this function let it sleep until work is done.
+        // Otherwise data transfer is highly likely to fail
+    if (!events && comm_thread_.isAlive()) comm_thread_.interrupt();
 
         // Does device support PVT protocol
     if (A[800])
@@ -619,60 +641,21 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 
             // Wait if device transmits data or is not ready to transmit data
             // If device does not send PVT data return to calling function
-        while(in_stream_.available()==0)
+        Thread.sleep(1500);
+        if (in_stream_.available()==0)
         {
-          count++;
-          if (count==1000000)
-          {
-            pvt.fix_ = -1;
-            return(pvt);
-          }
+          pvt.setFix(1);
+          return(pvt);
         }
 
-            // Read PVT data if available from device
+            // Read PVT data as available from device
         buffer=getPackage();
 
             // Check if a PVT data packet has been received
         if ((int)buffer[0] == Pid_Pvt_Data_L001)
         {
-              // Altitude above WGS84-Ellipsoid [meters]
-          pvt.alt_ = GarminDataConverter.FloatLEtoBE(buffer[2],buffer[3],buffer[4],buffer[5]);
-
-              // Estimated position error
-              // epe - 2sigma [meters]
-              // eph - horizontal only [meters]
-              // epv - vertical only [meters]
-              // fix - type of position fix
-          pvt.epe_ = GarminDataConverter.FloatLEtoBE(buffer[6],buffer[7],buffer[8],buffer[9]);
-          pvt.eph_ = GarminDataConverter.FloatLEtoBE(buffer[10],buffer[11],buffer[12],buffer[13]);
-          pvt.epv_ = GarminDataConverter.FloatLEtoBE(buffer[14],buffer[15],buffer[16],buffer[17]);
-          pvt.fix_ = buffer[18]+256*buffer[19];
-
-              // Time of week [seconds]
-          pvt.tow_ = GarminDataConverter.DoubleLEtoBE(buffer[20],buffer[21],buffer[22],buffer[23],
-                                  buffer[24],buffer[25],buffer[26],buffer[27]);
-
-              // Latitude and longitude is reported in radiant, so it has
-              // to be converted into degree
-          pvt.lat_ = GarminDataConverter.DoubleLEtoBE(buffer[28],buffer[29],buffer[30],buffer[31],
-                                  buffer[32],buffer[33],buffer[34],buffer[35])*(180/Math.PI);
-          pvt.lon_ = GarminDataConverter.DoubleLEtoBE(buffer[36],buffer[37],buffer[38],buffer[39],
-                                  buffer[40],buffer[41],buffer[42],buffer[43])*(180/Math.PI);
-
-              // Movement speeds in east, north, up-direction. Opposite directions
-              // are reported by negative speeds [meters/second]
-          pvt.east_ = GarminDataConverter.FloatLEtoBE(buffer[44],buffer[45],buffer[46],buffer[47]);
-          pvt.north_ = GarminDataConverter.FloatLEtoBE(buffer[48],buffer[49],buffer[50],buffer[51]);
-          pvt.up_ = GarminDataConverter.FloatLEtoBE(buffer[52],buffer[53],buffer[54],buffer[55]);
-
-              // Height of WGS84-Ellipsoid above MSL [meters]
-          pvt.msl_height_ = GarminDataConverter.FloatLEtoBE(buffer[56],buffer[57],buffer[58],buffer[59]);
-
-              // Difference between GPS and UTS [seconds]
-          pvt.leap_seconds_ = buffer[60]+256*buffer[61];
-
-              // Week number days
-          pvt.wn_days_ = GarminDataConverter.IntLEtoBE(buffer[62],buffer[63],buffer[64],buffer[65]);
+              // Data is in data format D800
+          if (D[800]) pvt = new GarminPVTD800(buffer);
         }
 
             // No more PVT data required
@@ -683,9 +666,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
         ioe.printStackTrace();
         throw new GPSException(ioe.getMessage());
       }
+      catch(InterruptedException inte)
+      {}
     }
-        // PVT data is not supported by other protocols so nothing else to do
-        // except returning received data
+
+        // If communications thread is alive awake it again
+    if (!events && comm_thread_.isAlive()) comm_thread_.interrupt();
+
     return(pvt);
   }
 
@@ -696,31 +683,15 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * @exception if an error occured during access to the device
  * @return waypoints stored in device
  */
-  public GarminWaypoint[] readWaypointData()
-    throws GPSException
+  public GarminWaypoint[] readWaypointData() throws GPSException
   {
     char[] buffer;
-    int count = 0;
-
-    char wpt_class;
-    char color;
-    char display;
-    char attributes;
-    int symbol;
-    double lat;
-    double lon;
-    float alt;
-    float depth;
-    float dist;
-    char[] state = new char[2];
-    char[] country = new char[2];
-    char[] desc = new char[51];
-
-    String[][] wptdata = new String[][] {};
-
     GarminWaypoint[] waypoints = null;
-    double latlon_factor = 180.0/Math.pow(2,31);
     
+        // If communications thread is alive let it sleep until work is done.
+        // Otherwise data transfer is highly likely to fail
+    if (comm_thread_.isAlive()) comm_thread_.interrupt();
+
         // Does device support waypoint transfer protocol
     if (A[100])
     {
@@ -734,15 +705,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 
             // Wait if device transmits data or is not ready to transmit data
             // If device does not send waypoints return to calling function
-        while(in_stream_.available()==0)
+        Thread.sleep(1500);
+        if (in_stream_.available()==0)
         {
-          count++;
-          if (count==1000000)
-            break;
+          return(waypoints);
         }
 
-            // Reset delay counter and read waypoint data as available from device
-        count = 0;
+            // Read waypoint data as available from device
         buffer = getPackage();
 
             // Has the beginning package been received from device?
@@ -754,23 +723,41 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
           System.out.println("Receiving "+length+" waypoints from device");
 
               // Initialize waypoint buffer
-          if (D[108])
-            waypoints = new GarminWaypoint[length];
+          waypoints = new GarminWaypoint[length];
 
               // Receive waypoints from device
           for (int wpt_count = 0; wpt_count < length; wpt_count++)
           {
             buffer = getPackage();
 
+                // Data is in data format D100
+
+                // Data is in data format D101
+
+                // Data is in data format D102
+
+                // Data is in data format D103
+
+                // Data is in data format D104
+
+                // Data is in data format D105
+
+                // Data is in data format D106
+
+                // Data is in data format D107
+
                 // Data is in data format D108
-            
-                // FIXXME who tells that is is in format D108?????
-                // what if a device is able to send differnt waypoint
-                // formats???
-            if (D[108])
-            {
-              waypoints[wpt_count] = new GarminWaypointD108(buffer);
-            }
+            if (D[108]) waypoints[wpt_count] = new GarminWaypointD108(buffer);
+
+                // Data is in data format D150
+
+                // Data is in data format D151
+
+                // Data is in data format D152
+
+                // Data is in data format D154
+
+                // Data is in data format D155
           }
 
               // Receive signal that transfer is completed
@@ -782,7 +769,12 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
         ioe.printStackTrace();
         throw new GPSException(ioe.getMessage());
       }
+      catch(InterruptedException inte)
+      {}
     }
+
+        // If communications thread is alive awake it again
+    if (comm_thread_.isAlive()) comm_thread_.interrupt();
 
     return(waypoints);
   }
@@ -794,17 +786,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * @exception if an error occured during access to the device
  * @return routes stored in device
  */
-  public GarminRoute readRouteData()
+  public GarminRoute[] readRouteData() throws GPSException
   {
     char[] buffer;
-    int count = 0;
-
-    char rte_class;
-    byte[] rte_subclass;
-    String rte_ident;
-
-    GarminRoute route = new GarminRoute();
+    int rte_count = 0;
+    GarminRoute[] routes = new GarminRoute[99];
     
+        // If communications thread is alive let it sleep until work is done.
+        // Otherwise data transfer is highly likely to fail
+    if (comm_thread_.isAlive()) comm_thread_.interrupt();
+
         // Does device support route transfer protocol
     if (A[200] || A[201])
     {
@@ -818,14 +809,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 
             // Wait if device transmits data or is not ready to transmit data
             // If device does not send routes return to calling function
-        while(in_stream_.available()==0)
+        Thread.sleep(1500);
+        if (in_stream_.available()==0)
         {
-          count++;
-          if (count==1000000) break;
+          return(routes);
         }
 
-            // Reset delay counter and read route data as available from device
-        count = 0;
+            // Read route data as available from device
         buffer=getPackage();
 
             // Has the beginning package been received from device?
@@ -836,14 +826,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 
           System.out.println("Receiving "+length+" route informations from device");
 
-              // Initialize routedata buffer
-//          if (D[108]) rtedata = new String[1+length][14];
-
               // Receive routes from device
           for (int i=0;i<length;i++)
           {
             buffer=getPackage();
             System.out.println("Route: "+(i+1));
+
+                // Process received data using application protocol A200
+            if (A[200])
+            {
+            }
 
                 // Process received data using application protocol A201
             if (A[201])
@@ -851,35 +843,26 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
                   // Has a route header been received
               if ((buffer[0] == Pid_Rte_Hdr_L001) || (buffer[0] == Pid_Rte_Hdr_L002))
               {
-                    // Data is in data format D200
+                rte_count++;
 
-                    // Data is in data format D201
-
-                    // Data is in data format D202
-                if (D[202])
-                {
-                  route = new GarminRouteD202(buffer);
-                }
+                    // Data is in supported data formats D200, D201, D202
+                if (D[200]) routes[rte_count] = new GarminRouteD200(buffer);
+                if (D[201]) routes[rte_count] = new GarminRouteD201(buffer);
+                if (D[202]) routes[rte_count] = new GarminRouteD202(buffer);
               }
 
                   // Has route waypoint data been received
               if ((buffer[0] == Pid_Rte_Wpt_Data_L001) || (buffer[0] == Pid_Rte_Wpt_Data_L002))
               {
                     // Data is in data format D108
-                if (D[108])
-                {
-                  route.addRoutePoint(new GarminWaypointD108(buffer));
-                }
+                if (D[108]) routes[rte_count].addRoutePoint(new GarminWaypointD108(buffer));
               }
 
                   // Has route link data been received
               if (buffer[0] == Pid_Rte_Link_Data_L001)
               {
-                    // Data is in format D210
-                if (D[210])
-                {
-                  route.addRouteLinkData(new GarminRouteLinkTypeD210(buffer));
-                }
+                    // Data is in supported data format D210
+                if (D[210]) routes[rte_count].addRouteLinkData(new GarminRouteLinkD210(buffer));
               }
             }
           }
@@ -891,37 +874,35 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
       catch(IOException ioe)
       {
         ioe.printStackTrace();
+        throw new GPSException(ioe.getMessage());
       }
+      catch(InterruptedException inte)
+      {}
     }
 
-    return(route);
+        // If communications thread is alive awake it again
+    if (comm_thread_.isAlive()) comm_thread_.notify();
+
+    return(routes);
   }
 
 //----------------------------------------------------------------------
 /**
- * Read track-data from connected device
+ * Read track-data from connected device.
+ * Supported data protocols:<br>
+ * <b>Command protocols</b> A300, A301<br>
+ * <b>Data protocols</b> D300, D301, D310<br>
  *
  * @exception if an error occured during access to the device
  * @return tracks stored in device
  */
-  public String[][] readTrackData()
+  public GarminTrack[] readTrackData() throws GPSException
   {
     char[] buffer;
-    int count = 0;
-
-    char color;
-    char display;
-    char[] trk_ident = new char[] {};
-    double lat;
-    double lon;
-    float time;
-    float alt;
-    float depth;
-    char new_track;
-
-    String[][] trkdata = new String[][] {};
+    int trk_count = 0;
+    GarminTrack[] tracks = new GarminTrack[99];
     
-        // Does device support waypoint transfer protocol
+        // Does device use supported track transfer protocol
     if (A[300] || A[301])
     {
       try
@@ -930,15 +911,14 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
         if (L[1] && A[10]) sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Trk_A010);
 
             // Wait if device transmits data or is not ready to transmit data
-            // If device does not send waypoints return to calling function
-        while(in_stream_.available()==0)
+            // If device does not send tracks return to calling function
+        Thread.sleep(1500);
+        if (in_stream_.available()==0)
         {
-          count++;
-          if (count==1000000) break;
+          return(tracks);
         }
 
-            // Reset delay counter and read waypoint data as available from device
-        count = 0;
+            // Read waypoint data as available from device
         buffer=getPackage();
 
             // Has the beginning package been received from device?
@@ -949,67 +929,27 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 
           System.out.println("Receiving "+length+" track informations from device");
 
-              // Initialize trackdata buffer
-          if (D[300]) trkdata = new String[1+length][4];
-          if (D[301]) trkdata = new String[1+length][6];
-          trkdata[0] = new String[] {""+length};
-
-              // Receive tracks from device
+              // Receive tracks from device using protocols A300, A301
           for (int i=0;i<length;i++)
           {
             buffer=getPackage();
             System.out.println("Track: "+(i+1));
 
-                // Initialize character buffers
-            trk_ident = new char[] {};
-
-                // Process received data using application protocol A301
-            if (A[301])
+                // Protocol A301 supports track headers, so check for them
+            if (A[301] && (buffer[0] == Pid_Trk_Hdr_L001))
             {
-                  // Has a track header been received
-              if (buffer[0] == Pid_Trk_Hdr_L001)
-              {
-                    // Data is in data format D310
-                if (D[310])
-                {
-                  display = buffer[2];
-                  color = buffer[3];
-                  for (int j=0;j<(int)buffer[1]-4;j++)
-                  {
-                    trk_ident[j] = buffer[4+j];
-                  }
+              trk_count++;
 
-                  trkdata[i+1] = new String[] {"Header",""+display,""+color,new String(trk_ident)};
-                }
-              }
+                  // Data is in supported data format D310
+              if (D[310]) tracks[trk_count] = new GarminTrackD310(buffer);
+            }
 
-                  // Has track data been received
-              if (buffer[0] == Pid_Trk_Data_L001)
-              {
-                    // Data is in format D300
-                if (D[300])
-                {
-                  lat = GarminDataConverter.IntLEtoBE(buffer[2],buffer[3],buffer[4],buffer[5])*(180/Math.pow(2,31));
-                  lon = GarminDataConverter.IntLEtoBE(buffer[6],buffer[7],buffer[8],buffer[9])*(180/Math.pow(2,31));
-                  time = GarminDataConverter.FloatLEtoBE(buffer[10],buffer[11],buffer[12],buffer[13]);
-                  new_track = buffer[22];
-
-                  trkdata[i+1] = new String[] {""+lat,""+lon,""+time,""+new_track};
-                }
-
-                    // Data is in format D301
-                if (D[301])
-                {
-                  lat = GarminDataConverter.IntLEtoBE(buffer[2],buffer[3],buffer[4],buffer[5])*(180/Math.pow(2,31));
-                  lon = GarminDataConverter.IntLEtoBE(buffer[6],buffer[7],buffer[8],buffer[9])*(180/Math.pow(2,31));
-                  time = GarminDataConverter.FloatLEtoBE(buffer[10],buffer[11],buffer[12],buffer[13]);
-                  alt = GarminDataConverter.FloatLEtoBE(buffer[14],buffer[15],buffer[16],buffer[17]);
-                  depth = GarminDataConverter.FloatLEtoBE(buffer[18],buffer[19],buffer[20],buffer[21]);
-                  new_track = buffer[22];
-
-                  trkdata[i+1] = new String[] {""+lat,""+lon,""+time,""+alt,""+depth,""+new_track};
-                }
-              }
+                // Read and process received track data
+            if (buffer[0] == Pid_Trk_Data_L001)
+            {
+                  // Data is in supported data formats D300, D301
+              if (D[300]) tracks[trk_count].addTrackPoint(new GarminTrackpointD300(buffer));
+              if (D[301]) tracks[trk_count].addTrackPoint(new GarminTrackpointD301(buffer));
             }
           }
 
@@ -1020,10 +960,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
       catch(IOException ioe)
       {
         ioe.printStackTrace();
+        throw new GPSException(ioe.getMessage());
       }
+      catch(InterruptedException inte)
+      {}
     }
 
-    return trkdata;
+    return(tracks);
   }
 
 //----------------------------------------------------------------------
@@ -1047,15 +990,56 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
         // Power of devices with other capabilities can't be turned off so nothing else to do
   }
 
+/**
+ * Reads the GARMIN position-velocity-time-data from the device when
+ * Processor is used in thread mode.
+ */
+  protected void readMessages()
+  {
+    int loopcount = 0;
+    GarminPVT pvtdata;
+
+    Object lock_ = new Object();
+
+    try
+    {
+      while(true)
+      {
+        loopcount++;
+        pvtdata = readPVTData(true);
+
+            // Has valid PVT-data been received
+        if (pvtdata.fix_ > 1)
+        {
+              /** Fire data change event for location (degrees) */
+          GPSPosition pos = new GPSPosition(pvtdata.lat_,pvtdata.lon_);
+          changeGPSData(LOCATION, pos);
+
+              /** Fire data change event for height / depth above msl (meters) */
+          if (pvtdata.alt_ >= 0)
+            changeGPSData(ALTITUDE, new Float(pvtdata.alt_));
+          else
+            changeGPSData(DEPTH, new Float(pvtdata.alt_));
+        }
+
+        Thread.sleep(1000);
+      }
+    }
+    catch (GPSException gpse)
+    {
+      gpse.printStackTrace();
+    }
+    catch (InterruptedException inte)
+    {}
+  }
+
 //----------------------------------------------------------------------
 /**
  * Reads the GARMIN position-velocity-time-data from the device
  * Protected function for reading and handling data without GUI
  */
-  public void printPVTData()
-    throws GPSException
+  public void printPVTData() throws GPSException
   {
-    int loopcount = 0;
     GarminPVT pvtdata;
 
     if (Debug.DEBUG)
@@ -1064,35 +1048,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
       Debug.print("gpstool_readmessage","inputstream: "+in_stream_);
     }
 
-    while(true && D[800])
+    while(true)
     {
-      loopcount++;
-      pvtdata = readPVTData();
-
+      pvtdata = readPVTData(false);
       System.out.println(pvtdata);
-
-//           // Handle received data
-//       if (Integer.parseInt(pvtdata[3])>=0)
-//       {
-//         System.out.println("Position information received:");
-//         System.out.println("Latitude:  "+pvtdata[0]);
-//         System.out.println("Longitude: "+pvtdata[1]);
-//         System.out.println("Altitude:  "+pvtdata[2]);
-//         System.out.println("Validity:  "+pvtdata[3]+"\n");
-//         System.out.println("Pos.error - 2sigma:     "+pvtdata[4]);
-//         System.out.println("Pos.error - horizontal: "+pvtdata[5]);
-//         System.out.println("Pos.error - vertical:   "+pvtdata[6]+"\n");
-//         System.out.println("Velocity - east:  "+pvtdata[7]);
-//         System.out.println("Velocity - north: "+pvtdata[8]);
-//         System.out.println("Velocity - up:    "+pvtdata[9]+"\n");
-//         System.out.println("Time of week (s):   "+pvtdata[10]);
-//         System.out.println("Difference GPS-UTC: "+pvtdata[11]);
-//         System.out.println("Week number days:   "+pvtdata[12]);
-//       }
-//       else
-//       {
-//         System.out.println("No PVT data received!");
-//       }
     }
   }
 
@@ -1101,28 +1060,22 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * Reads waypoints from the connected device
  * Protected function for reading and handling data without GUI
  */
-  public void printWaypointData()
-    throws GPSException
+  public void printWaypointData() throws GPSException
   {
-    int length;
-
+    GarminWaypoint[] waypoints;
+    
     if (Debug.DEBUG)
     {
       Debug.println("gpstool","start reading waypoint-data from GPSDevice...");
       Debug.print("gpstool_readmessage","inputstream: "+in_stream_);
     }
 
-    GarminWaypoint[] waypoints = readWaypointData();
+    waypoints = readWaypointData();
     System.out.println(waypoints.length + " Waypoints received.");
 
-        // Handling for packets in data format D108
-    if (D[108])
+    for (int i=1; i<(waypoints.length-1); i++)
     {
-      for (int i = 0; i < waypoints.length; i++)
-      {
-        System.out.println("Waypoint: "+i);
-        System .out.println(waypoints[i]);
-      }
+      if (waypoints[i] != null) System.out.println(waypoints[i]);
     }
   }
 
@@ -1131,9 +1084,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * Reads routes from the connected device
  * Protected function for reading and handling data without GUI
  */
-  public void printRouteData()
+  public void printRouteData() throws GPSException
   {
-    int length;
+    GarminRoute[] routes;
 
     if (Debug.DEBUG)
     {
@@ -1141,9 +1094,12 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
       Debug.print("gpstool_readmessage","inputstream: "+in_stream_);
     }
 
-    GarminRoute route = readRouteData();
+    routes = readRouteData();
 
-    System.out.println(route);
+    for (int i=1; i<(routes.length-1); i++)
+    {
+      if (routes[i] != null) System.out.println(routes[i]);
+    }
   }
 
 //----------------------------------------------------------------------
@@ -1151,10 +1107,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * Reads tracks from the connected device
  * Protected function for reading and handling data without GUI
  */
-  public void printTrackData()
+  public void printTrackData() throws GPSException
   {
-    String[][] trkdata;
-    int length;
+    GarminTrack[] tracks;
 
     if (Debug.DEBUG)
     {
@@ -1162,53 +1117,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
       Debug.print("gpstool_readmessage","inputstream: "+in_stream_);
     }
 
-    trkdata = readTrackData();
-    length = Integer.parseInt(trkdata[0][0]);
+    tracks = readTrackData();
 
-        // Handle received data
-    if (length > 0)
+        // Loop has to start with 0 because device supprots only single tracks
+        // it is stored at index 0. If device supports multiple tracks, these
+        // tracks start at index 1.
+    for (int i=0; i<(tracks.length-1); i++)
     {
-	    for (int i=0;i<length;i++)
-	    {
-            // Handle track headers
-        if (trkdata[i+1][0] == "Header")
-        {
-          System.out.println("Track: "+trkdata[i+1][3]);
-          System.out.println("Display: "+trkdata[i+1][1]+", Color: "+trkdata[i+1][2]+"\n");
-          System.out.println("Trackdata:");
-        }
-        else
-        {
-          System.out.println("Trackpoint: ");
-
-              // Handling for packets in data format D300
-          if (D[300])
-          {
-            System.out.println("Latitude:  "+trkdata[i+1][0]);
-            System.out.println("Longitude: "+trkdata[i+1][1]);
-            System.out.print("Time: "+trkdata[i+1][2]);
-            System.out.println(", New Track: "+trkdata[i+1][3]);
-          }
-
-              // Handling for packets in data format D301
-          if (D[301])
-          {
-            System.out.println("Latitude:  "+trkdata[i+1][0]);
-            System.out.println("Longitude: "+trkdata[i+1][1]);
-            System.out.println("Altitude: "+trkdata[i+1][3]);
-            System.out.print("Depth: "+trkdata[i+1][4]);
-            System.out.print(", Time: "+trkdata[i+1][2]);
-            System.out.println(", New Track: "+trkdata[i+1][5]);
-          }
-        }
-	    }
-    }
-    else
-    {
-      System.out.println("No tracks received.");
+      if (tracks[i] != null) System.out.println(tracks[i]);
     }
   }
-
 
 //----------------------------------------------------------------------
 /**
@@ -1219,7 +1137,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 
   public GPSPosition getGPSPosition()
   {
-    return(null);
+    try
+    {
+      GarminPVT pvtdata = readPVTData(false);
+      return(new GPSPosition(pvtdata.lat_,pvtdata.lon_));
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+      return(null);
+    }
   }
 
 //----------------------------------------------------------------------

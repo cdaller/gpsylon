@@ -25,8 +25,11 @@ package org.dinopolis.gpstool.gpsinput;
 
 public class GarminDataConverter
 {
-      /** Semicircle to Degrees conversion values */
-	protected final static double	SEMICIRCLE_FACTOR					= (double)( 1L << 31 ) / 180.0d;
+  /** Semicircle to Degrees conversion values */
+  protected final static double SEMICIRCLE_FACTOR = (double)( 1L << 31 ) / 180.0d;
+
+  /** Radiant to Degrees conversion values */
+  protected final static double RADIANT_FACTOR    = (double)(Math.PI/180);
 
 
 //----------------------------------------------------------------------
@@ -148,29 +151,17 @@ public class GarminDataConverter
 
   //----------------------------------------------------------------------
   /**
-   * Extracts an integer from the given character buffer and returns
+   * Extracts an boolean from the given character buffer and returns
    * it.
    *
-   * @param buffer the character buffer to extract the integer from.
+   * @param buffer the character buffer to extract the boolean from.
    * @param offset the offset to start reading the buffer.
    * @return the value extracted from the buffer.
    */
-  public static int getGarminInt(char[] buffer, int offset)
+  public static boolean getGarminBoolean(char[] buffer, int offset)
   {
-    int value = (buffer[offset] & 0xff)
-                | ((buffer[offset+1] & 0xff) << 8)
-                | ((buffer[offset+2] & 0xff) << 16)
-                | ((buffer[offset+3] & 0xff) << 24);
-
-
-//     System.out.println("garminint called buffer=: "
-//                        +(int)buffer[offset]+","
-//                        +(int)buffer[offset+1]+","
-//                        +(int)buffer[offset+2]+","
-//                        +(int)buffer[offset+3]);
-    return(value);
+    return(buffer[offset] != 0);
   }
-  
 
   //----------------------------------------------------------------------
   /**
@@ -186,7 +177,6 @@ public class GarminDataConverter
     return((short)(buffer[offset] & 0xff));
   }
   
-
   //----------------------------------------------------------------------
   /**
    * Extracts an word (unsigned, java int) from the given character
@@ -203,6 +193,23 @@ public class GarminDataConverter
     return(value);
   }
   
+  //----------------------------------------------------------------------
+  /**
+   * Extracts an integer from the given character buffer and returns
+   * it.
+   *
+   * @param buffer the character buffer to extract the integer from.
+   * @param offset the offset to start reading the buffer.
+   * @return the value extracted from the buffer.
+   */
+  public static int getGarminInt(char[] buffer, int offset)
+  {
+    int value = (buffer[offset] & 0xff)
+                | ((buffer[offset+1] & 0xff) << 8)
+                | ((buffer[offset+2] & 0xff) << 16)
+                | ((buffer[offset+3] & 0xff) << 24);
+    return(value);
+  }
 
   //----------------------------------------------------------------------
   /**
@@ -233,33 +240,27 @@ public class GarminDataConverter
    */
   public static double getGarminDouble(char[] buffer, int offset)
   {
-    long value = (buffer[offset] & 0xff)
-                | ((buffer[offset+1] & 0xff) << 8)
-                | ((buffer[offset+2] & 0xff) << 16)
-                | ((buffer[offset+3] & 0xff) << 24)
-                | ((buffer[offset+4] & 0xff) << 32)
-                | ((buffer[offset+5] & 0xff) << 40)
-                | ((buffer[offset+6] & 0xff) << 48)
-                | ((buffer[offset+7] & 0xff) << 56);
-    return(Double.longBitsToDouble(value));
+      long accum = 0;
+
+      for (int shiftBy=0; shiftBy<64; shiftBy+=8)
+      {
+            // Cast to long or shift done modulo 32 required to work properly
+        accum |= ((long)(buffer[(int)offset+shiftBy/8] & 0xff)) << shiftBy;
+      }
+
+// FIXXME: does not seem to work properly???
+//     long value =  (long)(buffer[offset] & 0xff)
+//                 | (long)((buffer[offset+1] & 0xff) << 8)
+//                 | (long)((buffer[offset+2] & 0xff) << 16)
+//                 | (long)((buffer[offset+3] & 0xff) << 24)
+//                 | (long)((buffer[offset+4] & 0xff) << 32)
+//                 | (long)((buffer[offset+5] & 0xff) << 40)
+//                 | (long)((buffer[offset+6] & 0xff) << 48)
+//                 | (long)((buffer[offset+7] & 0xff) << 56);
+
+    return(Double.longBitsToDouble(accum));
   }
   
-
-  //----------------------------------------------------------------------
-  /**
-   * Extracts an boolean from the given character buffer and returns
-   * it.
-   *
-   * @param buffer the character buffer to extract the boolean from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static boolean getGarminBoolean(char[] buffer, int offset)
-  {
-    return(buffer[offset] != 0);
-  }
-
-
   //----------------------------------------------------------------------
   /**
    * Extracts a degree value from the given character buffer and
@@ -270,9 +271,24 @@ public class GarminDataConverter
    * @param offset the offset to start reading the buffer.
    * @return the value extracted from the buffer.
    */
-  public static double getGarminDegrees(char[] buffer, int offset)
+  public static double getGarminSemicircleDegrees(char[] buffer, int offset)
   {
     return(convertSemicirclesToDegrees(getGarminInt(buffer,offset)));
+  }
+
+  //----------------------------------------------------------------------
+  /**
+   * Extracts a degree value from the given character buffer and
+   * returns it. It extracs a radiant value and converts it to
+   * degrees afterwards.
+   *
+   * @param buffer the character buffer to extract the boolean from.
+   * @param offset the offset to start reading the buffer.
+   * @return the value extracted from the buffer.
+   */
+  public static double getGarminRadiantDegrees(char[] buffer, int offset)
+  {
+    return(convertRadiantToDegrees(getGarminDouble(buffer,offset)));
   }
 
   //----------------------------------------------------------------------
@@ -299,12 +315,33 @@ public class GarminDataConverter
     return((int)degrees * SEMICIRCLE_FACTOR);
   }
 
+  //----------------------------------------------------------------------
+  /**
+   * Converts Radiant to Degrees.
+   *
+   * @param radiant
+   * @return degrees
+   */
+  public static double convertRadiantToDegrees(double radiant)
+  {
+    return((double)radiant / RADIANT_FACTOR);
+  }
+
+  //----------------------------------------------------------------------
+  /**
+   * Converts Degrees to Radiant.
+   *
+   * @param degrees
+   * @return radiant
+   */
+  public static double convertDegreesToRadiant(double degrees)
+  {
+    return((int)degrees * RADIANT_FACTOR);
+  }
 
 
 
-
-
-  
+    // not necessary anymore
   public static String[] D202toData(char[] buffer)
   {
       char[] rte_ident = new char[51];

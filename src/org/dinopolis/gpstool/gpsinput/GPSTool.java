@@ -2,7 +2,8 @@
  * @(#)$RCSfile$   $Revision$ $Date$
  *
  * Copyright (c) 2001 IICM, Graz University of Technology
- * Inffeldgasse 16c, A-8010 Graz, Austria.
+ * Copyright (c) 2001-2003 Sandra Brueckler, Stefan Feitl
+ * Written during an XPG-Project at the IICM of the TU-Graz, Austria
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
@@ -23,19 +24,22 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import org.dinopolis.util.commandarguments.CommandArguments;
-import org.dinopolis.util.commandarguments.CommandArgumentException;
-import java.util.Hashtable;
-import javax.swing.JFrame;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Array;
+import java.util.Hashtable;
+
+import javax.swing.JFrame;
+
+import org.dinopolis.util.commandarguments.CommandArgumentException;
+import org.dinopolis.util.commandarguments.CommandArguments;
 
 //----------------------------------------------------------------------
 /**
  * Demo application to show the usage of this package (read and
- * interpret gps data from various devices (serial, file, ...).
+ * interprete gps data from various devices (serial, file, ...).
  *
- * @author Christof Dallermassl
+ * @author Sandra Brueckler, Christof Dallermassl, Stefan Feitl
  * @version $Revision$
  */
 
@@ -48,16 +52,14 @@ public class GPSTool implements PropertyChangeListener
   {
   }
   
-  public void open(GPSDevice gps_device, GPSDataProcessor gps_processor)
-    throws GPSException
+  public void open(GPSDevice gps_device, GPSDataProcessor gps_processor) throws GPSException
   {
     gps_processor.setGPSDevice(gps_device);
     gps_processor.open();
     gps_processor_ = gps_processor;
   }
 
-  public void close()
-    throws GPSException
+  public void close() throws GPSException
   {
     gps_processor_.close();
   }
@@ -67,23 +69,24 @@ public class GPSTool implements PropertyChangeListener
     System.out.println("------------------------------------------------------------"); 
     System.out.println("------------------------------------------------------------");
     System.out.println("------------------------------------------------------------");
-   try
+
+    try
     {
       JFrame frame = null;
       if(gui_)
       {
-	GPSInfoPanel panel = new GPSInfoPanel();
-	frame = new JFrame("GPS Info");
-	frame.getContentPane().add(panel);
-	frame.pack();
-	frame.setVisible(true);
+        GPSInfoPanel panel = new GPSInfoPanel();
+        frame = new JFrame("GPS Info");
+        frame.getContentPane().add(panel);
+        frame.pack();
+        frame.setVisible(true);
       
-	gps_processor_.addGPSDataChangeListener(GPSDataProcessor.LOCATION,panel);
-	gps_processor_.addGPSDataChangeListener(GPSDataProcessor.HEADING,panel);
-	gps_processor_.addGPSDataChangeListener(GPSDataProcessor.ALTITUDE,panel);
-	gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SPEED,panel);
-	gps_processor_.addGPSDataChangeListener(GPSDataProcessor.NUMBER_SATELLITES,panel);
-	gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SATELLITE_INFO,panel);
+        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.LOCATION,panel);
+        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.HEADING,panel);
+        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.ALTITUDE,panel);
+        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SPEED,panel);
+        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.NUMBER_SATELLITES,panel);
+        gps_processor_.addGPSDataChangeListener(GPSDataProcessor.SATELLITE_INFO,panel);
       }
       gps_processor_.addGPSDataChangeListener(GPSDataProcessor.LOCATION,this);
       gps_processor_.addGPSDataChangeListener(GPSDataProcessor.HEADING,this);
@@ -96,8 +99,8 @@ public class GPSTool implements PropertyChangeListener
       System.in.read();
       if(gui_)
       {
-	frame.setVisible(false);
-	frame.dispose();
+        frame.setVisible(false);
+        frame.dispose();
       }
 //        try
 //        {
@@ -124,9 +127,9 @@ public class GPSTool implements PropertyChangeListener
       SatelliteInfo info;
       for(int count=0; count < infos.length; count++)
       {
-	info = infos[count];
-	System.out.println("sat "+info.getPRN()+": elev="+info.getElevation()
-			   + " azim="+info.getAzimuth()+" dB="+info.getSNR());
+        info = infos[count];
+        System.out.println("sat "+info.getPRN()+": elev="+info.getElevation()
+                           + " azim="+info.getAzimuth()+" dB="+info.getSNR());
       }
     }
     else
@@ -148,16 +151,16 @@ public class GPSTool implements PropertyChangeListener
 
   public static void printHelp()
   {
-    System.out.println("GPSTool");
-    System.out.println("Usage:");
-    System.out.println("java org.dinopolis.gpstool.GPSTool [options]");
-    System.out.println("options:");
-    System.out.println("--device, -d <device>, e.g. --device /dev/ttyS1 or COM1 (both default depending on OS)");
-    System.out.println("--speed, -s <speed>, e.g. --speed 4800 (default for nmea, 9600 for garmin)");
-    System.out.println("--file, -f <filename>, the gps data is read from the given file.");
-    System.out.println("--nmea, -n, the gps data is interpreted as NMEA data (default).");
+    System.out.println("GPSTool 0.7.0 - Communication between GPS-Devices and Computers via serial port");
+    System.out.println("(c) 2000-2003 Sandra Brueckler, Christof Dallermassl, Stefan Feitl\n");
+    System.out.println("Usage: java org.dinopolis.gpstool.GPSTool [options]\n");
+    System.out.println("Options:");
+    System.out.println("--device, -d <device>, e.g. -d /dev/ttyS0 or COM1 (defaults depending on OS).");
+    System.out.println("--speed,  -s <speed>, e.g. -s 4800 (default for nmea, 9600 for garmin).");
+    System.out.println("--file,   -f <filename>, the gps data is read from the given file.");
+    System.out.println("--nmea,   -n, the gps data is interpreted as NMEA data (default).");
     System.out.println("--garmin, -g, the gps data is interpreted as garmin data.");
-    System.out.println("--nogui, no frame is opened.");
+    System.out.println("--nogui, no frame is opened.\n");
     System.out.println("--printtrack, print tracks.");
     System.out.println("--printwaypoint, print waypoints.");
     System.out.println("--printroute, print route.");
@@ -173,11 +176,16 @@ public class GPSTool implements PropertyChangeListener
   
   public static void main (String[] arguments) 
   {
+        // If no arguments are specified, help page is displayed by default
+    if (Array.getLength(arguments) == 0) {arguments = new String[] {"-h"};}
+
     String[] valid_args =
       new String[] {"device*","d*","help","h","speed#","s#","file*","f*",
-		    "nmea","n","test","nogui","printtrack","printwaypoint",
-		    "printroute","garmin","printdeviceinfo","printpvt"};
+                    "nmea","n","garmin","g","test","nogui","printtrack",
+                    "printwaypoint","printroute","printdeviceinfo","printpvt"};
 
+        // Check command arguments
+        // Throw exception if arguments are invalid
     CommandArguments args = null;
     try
     {
@@ -189,12 +197,13 @@ public class GPSTool implements PropertyChangeListener
       return;
     }
 
+        // Set default values
     String filename = null;
     String serial_port_name = null;
     int serial_port_speed = -1;
     GPSDataProcessor gps_data_processor;
 
-
+        // Handle given command arguments
     if (args.isSet("help") || (args.isSet("h")))
     {
       printHelp();
@@ -243,14 +252,15 @@ public class GPSTool implements PropertyChangeListener
       serial_port_speed = 9600;
     }
     else
-//      if (args.isSet("nmea") || args.isSet("n"))
     {
       gps_data_processor = new GPSNmeaDataProcessor();
       serial_port_speed = 4800;
     }
     
+        // Define device to read data from
     GPSDevice gps_device;
     Hashtable environment = new Hashtable();
+
     if (filename != null)
     {
       environment.put(GPSFileDevice.PATH_NAME_KEY,filename);
@@ -264,6 +274,8 @@ public class GPSTool implements PropertyChangeListener
         environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(serial_port_speed));
       gps_device = new GPSSerialDevice();
     }
+
+        // Initialize GPS-Device and GPS-Processor
     try
     {
       gps_device.init(environment);
@@ -275,41 +287,41 @@ public class GPSTool implements PropertyChangeListener
       boolean work_done = false;
       if(args.isSet("printwaypoint"))
       {
-	((GPSGarminDataProcessor)gps_data_processor).printWaypointData();
-	work_done = true;
+        ((GPSGarminDataProcessor)gps_data_processor).printWaypointData();
+        work_done = true;
       }
       else
-      if(args.isSet("printtrack"))
-      {
-	((GPSGarminDataProcessor)gps_data_processor).printTrackData();
-	work_done = true;
-      }
-      else
-      if(args.isSet("printroute"))
-      {
-	((GPSGarminDataProcessor)gps_data_processor).printRouteData();
-	work_done = true;
-      }
-      else
-      if(args.isSet("printpvt"))
-      {
-	((GPSGarminDataProcessor)gps_data_processor).printPVTData();
-	work_done = true;
-      }
-      else
-      if(args.isSet("printdeviceinfo"))
-      {
-	System.out.println("product id:"+GPSGarminDataProcessor.PROD_ID);
-	System.out.println("product sw:"+GPSGarminDataProcessor.PROD_SW);
-	System.out.println("product name:"+GPSGarminDataProcessor.PROD_NAME);
-	String[] capabilities = GPSGarminDataProcessor.PROD_CAP;
-	for(int count = 0; count < capabilities.length; count++)
-	  System.out.println("product cap:"+capabilities[count]);
-	work_done = true;
-      }
+        if(args.isSet("printtrack"))
+        {
+          ((GPSGarminDataProcessor)gps_data_processor).printTrackData();
+          work_done = true;
+        }
+        else
+          if(args.isSet("printroute"))
+          {
+            ((GPSGarminDataProcessor)gps_data_processor).printRouteData();
+            work_done = true;
+          }
+          else
+            if(args.isSet("printpvt"))
+            {
+              ((GPSGarminDataProcessor)gps_data_processor).printPVTData();
+              work_done = true;
+            }
+            else
+              if(args.isSet("printdeviceinfo"))
+              {
+                System.out.println("product id:"+((GPSGarminDataProcessor)gps_data_processor).getProductId());
+                System.out.println("product sw:"+((GPSGarminDataProcessor)gps_data_processor).getProductSoftware());
+                System.out.println("product name:"+((GPSGarminDataProcessor)gps_data_processor).getProductName());
+                String[] capabilities = ((GPSGarminDataProcessor)gps_data_processor).getProductCapabilities();
+                for(int count = 0; count < capabilities.length; count++)
+                  System.out.println("product cap:"+capabilities[count]);
+                work_done = true;
+              }
       
       if(!work_done)
-	gps_tool.registerEvents();
+        gps_tool.registerEvents();
       gps_tool.close();
     }
     catch(GPSException e)
@@ -317,11 +329,4 @@ public class GPSTool implements PropertyChangeListener
       e.printStackTrace();
     }
   } // end of main ()
-
 }
-
-
-
-
-
-

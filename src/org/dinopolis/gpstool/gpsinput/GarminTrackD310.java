@@ -23,17 +23,19 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
+
 //----------------------------------------------------------------------
 /**
  * @author Christof Dallermassl
  * @version $Revision$
  */
 
-public class GarminRouteD201 extends GarminRoute  
+public class GarminTrackD310 extends GarminTrack
 {
-  public GarminRouteD201(char[] buffer)
+  public GarminTrackD310(char[] buffer)
   {
-    setIdentification(Short.toString(GarminDataConverter.getGarminByte(buffer,2)));
-    setComment(GarminDataConverter.getGarminString(buffer,3,20));
+    display_ = GarminDataConverter.getGarminBoolean(buffer,2);
+    color_ = GarminDataConverter.getGarminByte(buffer,3);
+    setIdentification(GarminDataConverter.getGarminString(buffer,4));
   }
 }

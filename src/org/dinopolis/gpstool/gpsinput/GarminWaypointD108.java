@@ -27,22 +27,23 @@ public class GarminWaypointD108 implements GarminWaypoint
   protected final static byte WAYPOINT_TYPE = 108;
   
   protected final static Color[] COLORS =
-  new Color[] {Color.BLACK,
-               new Color(0x80,0,0),  // dark red
-               new Color(0,0x80,0),  // dark green
+  new Color[] {Color.black,            // black
+	       new Color(0x80,0,0),    // dark red
+               new Color(0,0x80,0),    // dark green
                new Color(0x80,0x80,0), // dark yellow
-               new Color(0,0,0x80), // dark blue
+               new Color(0,0,0x80),    // dark blue
                new Color(0x80,0x80,0), // dark magenta
                new Color(0,0x80,0x80), // dark cyan
-               Color.LIGHT_GRAY, // light gray
-               Color.DARK_GRAY, // dark gray
-               Color.RED, // red
-               Color.GREEN, // green
-               Color.BLUE, // blue
-               Color.MAGENTA, // magenta
-               Color.CYAN, // cyan
-               Color.WHITE}; // white
-  protected final static int DEFAULT_COLOR_INDEX = 0;
+               Color.lightGray,        // light gray
+               Color.darkGray,         // dark gray
+               Color.red,              // red
+               Color.green,            // green
+	       Color.yellow,           // yellow
+               Color.blue,             // blue
+               Color.magenta,          // magenta
+               Color.cyan,             // cyan
+               Color.white};           // white
+  protected final static int DEFAULT_COLOR_INDEX = 15;
 
   protected final static String[] DISPLAY_OPTIONS =
     new String[] {"symbol+name","symbol","symbol+comment"};
@@ -76,8 +77,8 @@ public class GarminWaypointD108 implements GarminWaypoint
     attributes_ = GarminDataConverter.getGarminByte(buffer,5);
     symbol_type_ = GarminDataConverter.getGarminWord(buffer,6);
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-    latitude_ = GarminDataConverter.getGarminDegrees(buffer,26);
-    longitude_ = GarminDataConverter.getGarminDegrees(buffer,30);
+    latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,26);
+    longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,30);
     altitude_ = GarminDataConverter.getGarminFloat(buffer,34);
     depth_ = GarminDataConverter.getGarminFloat(buffer,38);
     distance_ = GarminDataConverter.getGarminFloat(buffer,42);

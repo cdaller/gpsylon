@@ -8,6 +8,8 @@ ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
             TrackLayer plugin now works quite ok and performs so-la-la.
 
+            Added GPSTool plugin: download tracks, screenshot, ...
+
 2003/06/13: fixed problem in GSV sentences of NMEA (satellite info)
 
             Resources: allow to attach other resources so they can be

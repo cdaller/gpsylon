@@ -135,12 +135,12 @@ public class GeoMath
  * @param longitude2 the longitude of the second point given in radians.
  * @return the course in radians (-pi,pi).
  */
-  public static double courseRadians(double lat1, double lon1,
-                                     double lat2, double lon2)
+  public static double courseRadians(double latitude1, double longitude1,
+                                     double latitude2, double longitude2)
   {
-    if(Math.abs(Math.cos(lat1)) < EPSILON)   // EPS a small number ~ machine precision
+    if(Math.abs(Math.cos(latitude1)) < EPSILON)   // EPS a small number ~ machine precision
     {
-      if(lat1 > 0)
+      if(latitude1 > 0)
         return(Math.PI);        //  starting from N pole
       else
         return(0.0);         //  starting from S pole
@@ -152,12 +152,12 @@ public class GeoMath
 //         // (http://www.galileocomputing.de/openbook/javainsel2/java_050001.htm)
 //     return(Math.IEEEremainder(deg,2*Math.PI));
 
-    double ldiff = lon2 - lon1;
-    double cosphi = Math.cos(lat2);
+    double ldiff = longitude2 - longitude1;
+    double cosphi = Math.cos(latitude2);
     
     return Math.atan2(cosphi*Math.sin(ldiff),
-                      (Math.cos(lat1)*Math.sin(lat2) -
-                       Math.sin(lat1)*cosphi*
+                      (Math.cos(latitude1)*Math.sin(latitude2) -
+                       Math.sin(latitude1)*cosphi*
                        Math.cos(ldiff)));
     
   }

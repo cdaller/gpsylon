@@ -91,7 +91,7 @@ public class GeonetDataConverter
 /**
  * Creates and initializes a DataConverter from the given filename
  *
- * @param the file to read.
+ * @param filename the name of the file to read.
  * @exception FileNotFoundException if the file cannot be found.
  * @exception UnsupportedEncodingException if UTF-8 is not supported
  */

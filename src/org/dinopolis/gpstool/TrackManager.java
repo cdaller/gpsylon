@@ -28,6 +28,7 @@ import java.util.List;
 import org.dinopolis.gpstool.event.TrackChangedListener;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
+import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 import org.dinopolis.gpstool.track.Track;
 
 //----------------------------------------------------------------------
@@ -50,7 +51,7 @@ public interface TrackManager
 
 //----------------------------------------------------------------------
 /**
- * Set the tracks.
+ * Set the tracks. All previously stored tracks are removed. 
  *
  * @param tracks a list of tracks.
  */
@@ -58,8 +59,9 @@ public interface TrackManager
 
 //----------------------------------------------------------------------
 /**
- * Add a track. 
- * TODO: what happens, when the track has the same id as an already existing track?
+ * Add a track. If a track with the same identifier already exists,
+ * the old track is overwritten.
+ *
  * @param track the track to add.
  */
   public void addTrack(GPSTrack track);
@@ -90,6 +92,53 @@ public interface TrackManager
  * @param identifier the identifier of the track to remove.
  */
   public void removeTrack(String identifier);
+
+//----------------------------------------------------------------------
+/**
+ * Defines the track with the given identifier as the active track
+ * (the track used by the {@link
+ * #addToActiveTrack(org.dinopolis.gpstool.gpsinput.GPSTrackpoint} method).
+ *
+ * @param identifier the identifier of the track to use as active track.
+ * @throws IllegalArgumentException if not track exists with the given
+ * name or the identifier is null
+ */
+  public void setActiveTrackIdentifier(String identifier)
+    throws IllegalArgumentException;
+
+
+//----------------------------------------------------------------------
+/**
+ * Returns the name of the active track
+ * (the track used by the {@link
+ * #addToActiveTrack(org.dinopolis.gpstool.gpsinput.GPSTrackpoint} method).
+ *
+ * @return the identifier of the track to use as active track.
+ */
+  public String getActiveTrackIdentifier();
+
+//----------------------------------------------------------------------
+/**
+ * Adds the given trackpoint to the track with the given identifier.
+ *
+ * @param identifier the identifier of the track.
+ * @param trackpoint the trackpoint to add to the track.
+ * @throws IllegalArgumentException if the track does not exist or any
+ * of the arguments are null.
+ */
+  public void addToTrack(String identifier, GPSTrackpoint trackpoint)
+    throws IllegalArgumentException;
+
+//----------------------------------------------------------------------
+/**
+ * Adds the given trackpoint to the active track.
+ *
+ * @param trackpoint the trackpoint to add to the active track.
+ * @throws IllegalArgumentException if the track does not exist or is
+ * null.
+ */
+  public void addToActiveTrack(GPSTrackpoint trackpoint)
+    throws IllegalArgumentException;
 
 //----------------------------------------------------------------------
 /**

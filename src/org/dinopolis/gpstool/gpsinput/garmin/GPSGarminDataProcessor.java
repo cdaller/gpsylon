@@ -67,7 +67,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
   protected WatchDogThread watch_dog_;
   protected ReaderThread read_thread_;
-  protected SimpleDateFormat track_date_format = new SimpleDateFormat("yyyyMMdd HHmmss");
+  protected SimpleDateFormat track_date_format = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
 
       /** lock used to synchronize ACK/NAK of packages from device with
        * reader thread */

@@ -1,6 +1,6 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
-*
+ *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 
@@ -29,6 +29,7 @@ import java.beans.PropertyChangeSupport;
 import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.StatusHook;
+import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.util.Resources;
 
@@ -109,6 +110,14 @@ public interface PluginSupport
 
 //----------------------------------------------------------------------
 /**
+ * Get the track manager (may be used to set/get tracks).
+ *
+ * @return the track manager
+ */
+  public TrackManager getTrackManager();
+
+//----------------------------------------------------------------------
+/**
  * Get the gps data processor that handles the input/output of the gps
  * data. This class may be used to get/set routes, tracks, waypoints,
  * etc. directly to the gps device. For position, heading, speed,
@@ -118,7 +127,7 @@ public interface PluginSupport
  *
  * @return the gps data processor
  */
-  public GPSDataProcessor getGPSDataProcessor();
+//  public GPSDataProcessor getGPSDataProcessor();
 }
 
 

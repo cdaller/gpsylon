@@ -106,9 +106,9 @@ public class MultiMapLayer extends Layer
 
 //----------------------------------------------------------------------
 /**
- * Initializes this layer with the given resources.
+ * Initializes this layer with the given plugin support.
  *
- * @param resources the resources to use.
+ * @param support the plugin support to use.
  */
   public void initializePlugin(PluginSupport support)
   {

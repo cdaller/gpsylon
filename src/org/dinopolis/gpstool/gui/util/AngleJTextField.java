@@ -247,7 +247,7 @@ public class AngleJTextField extends JTextField
  * Sets the value as angle. The print formatter is used to format the
  * angle.
  *
- * @param the angle to set.
+ * @param angle the angle to set.
  */
   public void setAngle(double angle)
   {
@@ -259,7 +259,7 @@ public class AngleJTextField extends JTextField
  * Sets the value as latitude. The print formatter is used to format the
  * angle.
  *
- * @param the angle to set.
+ * @param latitutde the latitude to set.
  */
   public void setAngleAsLatitude(double latitude)
   {
@@ -271,7 +271,7 @@ public class AngleJTextField extends JTextField
  * Sets the value as longitude. The print formatter is used to format the
  * angle.
  *
- * @param the angle to set.
+ * @param longitude the longitude to set.
  */
   public void setAngleAsLongitude(double longitude)
   {

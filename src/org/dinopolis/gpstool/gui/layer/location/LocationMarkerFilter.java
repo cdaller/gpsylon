@@ -360,11 +360,12 @@ public class LocationMarkerFilter
 
 //----------------------------------------------------------------------
 /**
- * Returns a string buffer that may be used as an sql query expression
- * (in the where clause). The keys are used as column names. 
+ * Add a filter to the prepared statement part and returns the newly created
+ * part.
  *
- * @param buffer the stringbuffer to append the query (must not be null!). 
- * @return a string buffer holding the sql expression.
+ * @param part the part to add the filter to.
+ * @param filter the filter to add
+ * @return a statement part with the added filter.
  */
   public static JDBCPreparedStatementPart addToPreparedStatementPart(JDBCPreparedStatementPart part,
                                                                      LocationMarkerFilter filter)

@@ -246,7 +246,7 @@ public class VisibleImage
  * to the largest.
  * @param result the vector used to add the resulting images that are
  * visible
- * @param empty_rec a vector holding Rectangle objects for the areas
+ * @param empty_rect a vector holding Rectangle objects for the areas
  * of the viewport that are not covered by an image.
  * @return a Vector with images that are visible (using the clipping
  * rectangles).

@@ -47,7 +47,6 @@ public class ResourceManager
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
-   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
  
   public static Resources getResources(String base_name)
@@ -59,14 +58,12 @@ public class ResourceManager
   //----------------------------------------------------------------------
   /**
    * Get the appropriate ResourceBundle for the given base_name and searches the
-   * system bundle in the callers package name. See also {@link #getResources
-   * (java. lang.Class,java.lang.String,java.lang.String,java.util.Locale)}
+   * system bundle in the callers package name. 
    *
    * @param caller the caller, to search the system bundle for.
    * @param base_name the base name of the resource bundle.
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
-   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
  
   public static Resources getResources(Class caller, String base_name)
@@ -85,7 +82,6 @@ public class ResourceManager
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
-   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
 
   public static Resources getResources(String base_name,
@@ -98,9 +94,7 @@ public class ResourceManager
   //----------------------------------------------------------------------
   /**
    * Get the appropriate ResourceBundle for the given base_name and locale and
-   * searches the system bundle in the callers package name. See also {@link
-   * #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.
-   * Locale)}
+   * searches the system bundle in the callers package name. 
    *
    * @param caller the caller, to search the system bundle for.
    * @param base_name the base name of the resource bundle.
@@ -252,7 +246,6 @@ public class ResourceManager
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
-   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
   public static Resources getResources(Class caller, String base_name,
                                        String dir_name,

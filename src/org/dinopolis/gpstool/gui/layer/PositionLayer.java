@@ -641,8 +641,7 @@ public class PositionLayer extends Layer
 /**
  * Sets the new center of the map.
  *
- * @param latitude The latitude of the new center of the map
- * @param longitude The longitude of the new center of the map
+ * @param center the new center of the map.
  */
 
   public void setMapCenter(LatLonPoint center)

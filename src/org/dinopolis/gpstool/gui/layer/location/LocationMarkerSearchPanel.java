@@ -71,15 +71,7 @@ public class LocationMarkerSearchPanel extends JPanel
 
 //----------------------------------------------------------------------
 /**
- * Constructor.
- *
- * @param resources the resources to user for titles, button titles,
- * etc.
- * @param action_listener the action listener to inform on a button
- * press. The commands used for the buttons are COMMAND_OK or
- * COMMAND_CLOSE. All button presses must be handled from outside. No
- * default behaviour is implemented (closing the frame, etc.).
- * @param owner the owner of the frame.
+ * Default Constructor.
  */
 
   public LocationMarkerSearchPanel()
@@ -264,10 +256,9 @@ public class LocationMarkerSearchPanel extends JPanel
 
 //----------------------------------------------------------------------
 /**
- * Removes a mouse listener from the result list.
+ * Returns the mouse listeners for the list.
  * 
- * @param listener the listener to remove.
- * @since JDK1.4
+ * @return the mouse listeners for the list.
  */
   public MouseListener[] getMouseListenersForList()
   {

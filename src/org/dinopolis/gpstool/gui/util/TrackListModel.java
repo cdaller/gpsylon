@@ -88,7 +88,7 @@ public class TrackListModel implements ListModel, TrackChangedListener
 /**
  * Add a ListDataListener to be informd about changes in the list.
  *
- * @param listener the listener to be added 
+ * @param list_data_listener the listener to be added 
  */
   public void addListDataListener(ListDataListener list_data_listener)
   {

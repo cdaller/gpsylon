@@ -217,7 +217,7 @@ public class JDBCPreparedStatementPart
  * Add a value to the already given values;
  *
  * @param value the new value.
- * @param type the target sql type as defined in java.sql.Types
+ * @param target_SQL_type the target sql type as defined in java.sql.Types
  */
   public void addValue(Object value, int target_SQL_type) 
   {
@@ -230,7 +230,7 @@ public class JDBCPreparedStatementPart
  *
  * @param index index at which the specified element is to be inserted.
  * @param value the new value.
- * @param type the target sql type as defined in java.sql.Types
+ * @param target_SQL_type the target sql type as defined in java.sql.Types
  */
   public void addValue(int index, Object value, int target_SQL_type)
   {

@@ -66,7 +66,7 @@ public class TrackListComboBoxModel extends TrackListModel implements ComboBoxMo
 /**
  * Set the selected item
  *
- * @param the selected item
+ * @param item the selected item
  */
   public void setSelectedItem(Object item)
   {

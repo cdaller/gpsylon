@@ -31,16 +31,16 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 public class GarminUnlockCodes
 {
-  GarminPackage data_;
+  GarminPacket data_;
   
   public GarminUnlockCodes()
   {
-//    data_ = new GarminPackage(0x6c);
+//    data_ = new GarminPacket(0x6c);
   }
 
   public void addCode(String code)
   {
-//     GarminPackage code = new GarminPackage(code.length()+1);
+//     GarminPacket code = new GarminPacket(code.length()+1);
 //     code.setNextAsString(code);
 //     data_.appendData(code);
   }
@@ -49,7 +49,7 @@ public class GarminUnlockCodes
   public String toString()
   {
     StringBuffer buffer = new StringBuffer();
-    if(data_.getPackageSize() > 1024)
+    if(data_.getPacketSize() > 1024)
       buffer.append("data (limited to 1024 bytes)=").append(data_.toString().substring(0,1024));
     else
       buffer.append("data=").append(data_);

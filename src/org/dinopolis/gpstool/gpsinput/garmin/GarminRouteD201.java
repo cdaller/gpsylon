@@ -27,7 +27,7 @@ import org.dinopolis.gpstool.gpsinput.GPSRoute;
 
 //----------------------------------------------------------------------
 /**
- * This class represents packages in Garmin data format D201.
+ * This class represents packets in Garmin data format D201.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -43,7 +43,7 @@ public class GarminRouteD201 extends GarminRoute
     setComment(GarminDataConverter.getGarminString(buffer,3,20));
   }
 
-    public GarminRouteD201(GarminPackage pack)
+    public GarminRouteD201(GarminPacket pack)
   {
     setIdentification(Integer.toString(pack.getNextAsByte()));
     setComment(pack.getNextAsString(20));
@@ -61,14 +61,14 @@ public class GarminRouteD201 extends GarminRoute
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
- * @return GarminPackage representing content of data type.
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
+ * @return GarminPacket representing content of data type.
  */
-  public GarminPackage toGarminPackage(int package_id)
+  public GarminPacket toGarminPacket(int packet_id)
   {
     byte id;
     int data_length = 1 + 20;
-    GarminPackage pack = new GarminPackage(package_id,data_length);
+    GarminPacket pack = new GarminPacket(packet_id,data_length);
 
     // Try to parse route identification and get valid route id
     // If parse fails, a default value is generated to avoid errors

@@ -26,7 +26,7 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 //----------------------------------------------------------------------
 /**
- * This class represents packages in Garmin data format D210.
+ * This class represents packets in Garmin data format D210.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -53,7 +53,7 @@ public class GarminRouteLinkD210
     identification_ = GarminDataConverter.getGarminString(buffer,22,(int)buffer[1]-21);
   }
 
-  public GarminRouteLinkD210(GarminPackage pack)
+  public GarminRouteLinkD210(GarminPacket pack)
   {
     class_ = pack.getNextAsWord();
     subclass_ = pack.getNextAsByteArray(18);
@@ -142,13 +142,13 @@ public class GarminRouteLinkD210
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
- * @return GarminPackage representing content of data type.
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
+ * @return GarminPacket representing content of data type.
  */
-  public GarminPackage toGarminPackage(int package_id)
+  public GarminPacket toGarminPacket(int packet_id)
   {
     int data_length = 2 + 18 + Math.min(identification_.length()+1,51);
-    GarminPackage pack = new GarminPackage(package_id,data_length);
+    GarminPacket pack = new GarminPacket(packet_id,data_length);
     pack.setNextAsWord(class_);
     pack.setNextAsByteArray(subclass_);
     pack.setNextAsString(identification_,51,true);

@@ -27,7 +27,7 @@ import org.dinopolis.gpstool.gpsinput.GPSTrack;
 
 //----------------------------------------------------------------------
 /**
- * This class represents packages in Garmin data format D310.
+ * This class represents packets in Garmin data format D310.
  *
  * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
@@ -54,18 +54,18 @@ public class GarminTrackD310 extends GarminTrack
 
 //----------------------------------------------------------------------
 /*
- * Constructor using an garmin package.
+ * Constructor using an garmin packet.
  *
- * @param pack the package to read the data from.
+ * @param pack the packet to read the data from.
  */
-  public GarminTrackD310(GarminPackage pack)
+  public GarminTrackD310(GarminPacket pack)
   {
     setDisplayed(pack.getNextAsBoolean());
     int color_index = pack.getNextAsByte();
       if(color_index == 0xff)
       color_index = GarminWaypointD108.DEFAULT_COLOR_INDEX;
     setColor(GarminWaypointD108.COLORS[color_index]);
-    setIdentification(pack.getNextAsString(pack.getPackageSize()-2));
+    setIdentification(pack.getNextAsString(pack.getPacketSize()-2));
   }
 
 //----------------------------------------------------------------------
@@ -83,18 +83,18 @@ public class GarminTrackD310 extends GarminTrack
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}.
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}.
  *
- * @param package_id the id to put in the garmin package.
- * @return GarminPackage representing content of data type.
+ * @param packet_id the id to put in the garmin packet.
+ * @return GarminPacket representing content of data type.
  */
-  public GarminPackage toGarminPackage(int package_id)
+  public GarminPacket toGarminPacket(int packet_id)
   {
         // display (boolean)
         // color (byte)
         // identification + NULL (max 51 char incl. NULL)
     int data_length = 1 + 1 + Math.min(getIdentification().length()+1,51);
-    GarminPackage pack = new GarminPackage(package_id,data_length);
+    GarminPacket pack = new GarminPacket(packet_id,data_length);
 
     pack.setNextAsBoolean(isDisplayed());
 //    pack.setNextAsByte(getColor());

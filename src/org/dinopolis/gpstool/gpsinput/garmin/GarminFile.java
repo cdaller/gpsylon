@@ -31,26 +31,26 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 public class GarminFile
 {
-  int num_data_packages_;
-  GarminPackage data_;
+  int num_data_packets_;
+  GarminPacket data_;
   
-  public GarminFile(GarminPackage garmin_package)
+  public GarminFile(GarminPacket garmin_packet)
   {
-    if(garmin_package.getPackageSize() != 4)
+    if(garmin_packet.getPacketSize() != 4)
       throw new IllegalArgumentException("File Header has size != 4");
-    num_data_packages_ = (int)garmin_package.getNextAsLongWord();
-    data_ = new GarminPackage(0,0);
+    num_data_packets_ = (int)garmin_packet.getNextAsLongWord();
+    data_ = new GarminPacket(0,0);
   }
 
-  public int getDataPackageCount()
+  public int getDataPacketCount()
   {
-    return(num_data_packages_);
+    return(num_data_packets_);
   }
 
-  public void addDataPackage(GarminPackage garmin_package)
+  public void addDataPacket(GarminPacket garmin_packet)
   {
-    int package_num = garmin_package.get();
-    data_.appendData(garmin_package,1); // append all except first byte
+    int packet_num = garmin_packet.get();
+    data_.appendData(garmin_packet,1); // append all except first byte
   }
 
   //----------------------------------------------------------------------
@@ -165,8 +165,8 @@ public class GarminFile
   {
     StringBuffer buffer = new StringBuffer();
     buffer.append("GarminFile[");
-    buffer.append("num_packages=").append(num_data_packages_).append(",");
-    if(data_.getPackageSize() > 1024)
+    buffer.append("num_packets=").append(num_data_packets_).append(",");
+    if(data_.getPacketSize() > 1024)
       buffer.append("data (limited to 1024 bytes)=").append(data_.toString().substring(0,1024));
     else
       buffer.append("data=").append(data_);

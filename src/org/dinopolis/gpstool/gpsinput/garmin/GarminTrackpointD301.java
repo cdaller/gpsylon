@@ -28,7 +28,7 @@ import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 
 //----------------------------------------------------------------------
 /**
- * This class represents packages in Garmin data format D301.
+ * This class represents packets in Garmin data format D301.
  *
  * @author Sandra Brueckler, Stefan Feitl
  * @version $Revision$
@@ -60,7 +60,7 @@ public class GarminTrackpointD301 implements GarminTrackpoint
     new_track_ = GarminDataConverter.getGarminBoolean(buffer,22);
   }
 
-  public GarminTrackpointD301(GarminPackage pack)
+  public GarminTrackpointD301(GarminPacket pack)
   {
     latitude_ = pack.getNextAsSemicircleDegrees();
     longitude_ = pack.getNextAsSemicircleDegrees();
@@ -87,15 +87,15 @@ public class GarminTrackpointD301 implements GarminTrackpoint
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
- * @return GarminPackage representing content of data type.
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
+ * @return GarminPacket representing content of data type.
  */
-  public GarminPackage toGarminPackage(int package_id)
+  public GarminPacket toGarminPacket(int packet_id)
   {
 // 		System.out.println(this);
 //  		System.out.println(GarminDataConverter.convertGarminTimeToDate(time_));
     int data_length = 4 + 4 + 4 + 4 + 4 + 1;
-    GarminPackage pack = new GarminPackage(package_id,data_length);
+    GarminPacket pack = new GarminPacket(packet_id,data_length);
     pack.setNextAsSemicircleDegrees(latitude_);
     pack.setNextAsSemicircleDegrees(longitude_);
     pack.setNextAsLongWord(time_);

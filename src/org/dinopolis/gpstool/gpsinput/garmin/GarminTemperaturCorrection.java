@@ -1,3 +1,25 @@
+/***********************************************************************
+ * @(#)$RCSfile$   $Revision$$Date$
+ *
+ * Copyright (c) 2001-2003 Sandra Brueckler, Stefan Feitl
+ * Written during an XPG-Project at the IICM of the TU-Graz, Austria
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License (LGPL)
+ * as published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 
+ * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ ***********************************************************************/
+
 package org.dinopolis.gpstool.gpsinput.garmin;
 
 import java.awt.Color;
@@ -9,7 +31,7 @@ import org.dinopolis.util.Debug;
 /*
  * This class describes the correction of the quarz depending on the
  * temperature.
- * These garmin packages are sent as part of a record and have the package id
+ * These garmin packets are sent as part of a record and have the packet id
  * 39 (0x27). They hold the following data:
  * <ul>
  * <li>Temperatur: 2 byte (signed), from -34 to 85 degrees</li>
@@ -41,31 +63,31 @@ public class GarminTemperaturCorrection
 //----------------------------------------------------------------------
 /**
  * Create a new Garmin Temperatur Correction object by the use of the first
- * data package.
- * @param garmin_package the data package
+ * data packet.
+ * @param garmin_packet the data packet
  */
 
-  public GarminTemperaturCorrection(GarminPackage garmin_package)
+  public GarminTemperaturCorrection(GarminPacket garmin_packet)
   {
     if(Debug.DEBUG && Debug.isEnabled("garmin_temp_correction"))
-      Debug.println("garmin_temp_correction","temp correction: "+garmin_package);
-		addData(garmin_package);
+      Debug.println("garmin_temp_correction","temp correction: "+garmin_packet);
+		addData(garmin_packet);
   }
 
 //----------------------------------------------------------------------
 /**
- * Add a new temperatur value using the given garmin package.
- * @param garmin_package the data package holding the next temperatur
+ * Add a new temperatur value using the given garmin packet.
+ * @param garmin_packet the data packet holding the next temperatur
  *correction value.
  */
-  public void addData(GarminPackage garmin_package)
+  public void addData(GarminPacket garmin_packet)
   {
     if(Debug.DEBUG && Debug.isEnabled("garmin_temp_correction"))
-      Debug.println("garmin_temp_correction","next data package: "+garmin_package);
-		int temperatur = garmin_package.getNextAsSignedInt();
-		int unknown = garmin_package.getNextAsWord();
-		double freq1 = garmin_package.getNextAsDouble();
-		double freq2 = garmin_package.getNextAsDouble();
+      Debug.println("garmin_temp_correction","next data packet: "+garmin_packet);
+		int temperatur = garmin_packet.getNextAsSignedInt();
+		int unknown = garmin_packet.getNextAsWord();
+		double freq1 = garmin_packet.getNextAsDouble();
+		double freq2 = garmin_packet.getNextAsDouble();
 //		System.out.println("temp="+temperatur+", freq1:" + freq1+", freq2:"+freq2);
 		average_freq[temperatur+34] = freq1;
 		real_freq[temperatur+34] = freq2;
@@ -97,7 +119,7 @@ public class GarminTemperaturCorrection
 		{
 			if(args.length < 1)
 			{
-				System.out.println("need to give a filename to read package data from!");
+				System.out.println("need to give a filename to read packet data from!");
 				return;
 			}
 			
@@ -106,7 +128,7 @@ public class GarminTemperaturCorrection
 			tokenizer.setDelimiters(" ");
 			java.util.List tokens;
 			tokens = tokenizer.nextLine();
-			GarminPackage first = new GarminPackage(39,tokens.size());
+			GarminPacket first = new GarminPacket(39,tokens.size());
 			for(int index = 0; index < tokens.size(); index++)
 			{
 				first.put(Integer.parseInt((String)tokens.get(index)));
@@ -115,7 +137,7 @@ public class GarminTemperaturCorrection
 			while(tokenizer.hasNextLine())
 			{
 				tokens = tokenizer.nextLine();
-				GarminPackage data = new GarminPackage(39,tokens.size());
+				GarminPacket data = new GarminPacket(39,tokens.size());
 				for(int index = 0; index < tokens.size(); index++)
 				{
 					data.put(Integer.parseInt((String)tokens.get(index)));

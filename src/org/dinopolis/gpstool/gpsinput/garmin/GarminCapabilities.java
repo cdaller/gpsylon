@@ -60,12 +60,12 @@ public class GarminCapabilities
   }
   
 //----------------------------------------------------------------------
-  public GarminCapabilities(GarminPackage pack)
+  public GarminCapabilities(GarminPacket pack)
   {
     String full_name;
     String letter;
     int number;
-    for (int i=0; i < (pack.getPackageSize()/3); i++)
+    for (int i=0; i < (pack.getPacketSize()/3); i++)
     {
       // Add received capability to global capability variable
       letter = pack.getNextAsString(1);

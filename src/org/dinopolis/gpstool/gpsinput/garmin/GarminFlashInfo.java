@@ -33,13 +33,13 @@ public class GarminFlashInfo
 {
   int map_area_;
   
-  public GarminFlashInfo(GarminPackage garmin_package)
+  public GarminFlashInfo(GarminPacket garmin_packet)
   {
-    map_area_ = garmin_package.getNextAsWord();
+    map_area_ = garmin_packet.getNextAsWord();
   }
 
 
-  public void addData(GarminPackage garmin_package)
+  public void addData(GarminPacket garmin_packet)
   {
   }
 

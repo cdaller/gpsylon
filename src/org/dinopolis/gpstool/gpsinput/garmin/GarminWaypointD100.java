@@ -28,7 +28,7 @@ import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 //----------------------------------------------------------------------
 /**
- * This class represents packages in Garmin data format D100.
+ * This class represents packets in Garmin data format D100.
  *
  * @author Stefan Feitl
  * @version $Revision$
@@ -56,7 +56,7 @@ public class GarminWaypointD100 implements GarminWaypoint
     comment_ = GarminDataConverter.getGarminString(buffer,20,40).trim();
   }
 
-  public GarminWaypointD100(GarminPackage pack)
+  public GarminWaypointD100(GarminPacket pack)
   {
     identification_ = pack.getNextAsString(6).trim();
     latitude_ = pack.getNextAsSemicircleDegrees();
@@ -79,13 +79,13 @@ public class GarminWaypointD100 implements GarminWaypoint
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
- * @return GarminPackage representing content of data type.
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
+ * @return GarminPacket representing content of data type.
  */
-  public GarminPackage toGarminPackage(int package_id)
+  public GarminPacket toGarminPacket(int packet_id)
   {
     int data_length = 6 + 4 + 4 + 4 + 40;
-    GarminPackage pack = new GarminPackage(package_id,data_length);
+    GarminPacket pack = new GarminPacket(packet_id,data_length);
 
     pack.setNextAsString(identification_,6,false);
     pack.setNextAsSemicircleDegrees(latitude_);

@@ -87,7 +87,7 @@ public class GarminPVTD800 extends GarminPVT
     wn_days_ = GarminDataConverter.getGarminSignedLong(buffer,62);
   }
 
-  public GarminPVTD800(GarminPackage pack)
+  public GarminPVTD800(GarminPacket pack)
   {
     // Altitude above WGS84-Ellipsoid [meters]
     alt_ = pack.getNextAsFloat();
@@ -122,13 +122,13 @@ public class GarminPVTD800 extends GarminPVT
 
 // //----------------------------------------------------------------------
 // /**
-//  * Convert data type to {@link GarminPackage}
-//  * @return GarminPackage representing content of data type.
+//  * Convert data type to {@link GarminPacket}
+//  * @return GarminPacket representing content of data type.
 //  */
-//   public GarminPackage toGarminPackage(int package_id)
+//   public GarminPacket toGarminPacket(int packet_id)
 //   {
 //     int data_length = 4 + 4 + 4 + 4 + 2 + 8 + 8 + 8 + 4 + 4 + 4 + 4 + 2 + 4;
-//     GarminPackage pack = new GarminPackage(package_id,data_length);
+//     GarminPacket pack = new GarminPacket(packet_id,data_length);
 //     int[] data = new int[data_length];
 
 //     data = GarminDataConverter.setGarminFloat(alt_,data,0);

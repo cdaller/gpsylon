@@ -25,7 +25,7 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 //----------------------------------------------------------------------
 /**
- * Represents a Xfer_Complete package from a garmin device.
+ * Represents a Xfer_Complete packet from a garmin device.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -39,39 +39,39 @@ public class GarminXferComplete
 //   public static final int TRACKS_COMPLETE = 6;
 //   public static final int WAYPOINTS_COMPLETE = 7;
 
-  protected int num_packages_;
+  protected int num_packets_;
   
 //----------------------------------------------------------------------
 /**
  * Constructor using an int array of garmin data.
- * @param buffer the garmin package as int[].
- * @deprecated use the constructor with the GarminPackage instead
+ * @param buffer the garmin packet as int[].
+ * @deprecated use the constructor with the GarminPacket instead
  */
   public GarminXferComplete(int[] buffer)
   {
-    num_packages_ = buffer[3];
+    num_packets_ = buffer[3];
   }
 
 //----------------------------------------------------------------------
 /**
- * Constructor using an garmin package.
- * @param garmin_package the package from the gps device
+ * Constructor using an garmin packet.
+ * @param garmin_packet the packet from the gps device
  */
-  public GarminXferComplete(GarminPackage garmin_package)
+  public GarminXferComplete(GarminPacket garmin_packet)
   {
-    num_packages_ = garmin_package.get();
+    num_packets_ = garmin_packet.get();
   }
 
   
 
 //----------------------------------------------------------------------
 /**
- * Returns the number of packages transfered.
- * @return the number of packages transfered.
+ * Returns the number of packets transfered.
+ * @return the number of packets transfered.
  */
-  public int getNumberPackages()
+  public int getNumberPackets()
   {
-    return(num_packages_);
+    return(num_packets_);
   }
 
 // //----------------------------------------------------------------------

@@ -28,7 +28,7 @@ import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 //----------------------------------------------------------------------
 /**
- * This class represents packages in Garmin data format D109.
+ * This class represents packets in Garmin data format D109.
  *
  * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
@@ -125,7 +125,7 @@ public class GarminWaypointD109 extends GarminWaypointD108
     offset = offset + cross_road_.length() + 1;
   }
 
-  public GarminWaypointD109(GarminPackage pack)
+  public GarminWaypointD109(GarminPacket pack)
   {
     dtype_ = pack.getNextAsByte(); // 1b
     class_type_ = pack.getNextAsByte(); // 1 b
@@ -223,11 +223,11 @@ public class GarminWaypointD109 extends GarminWaypointD108
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
  *
- * @return GarminPackage representing content of data type.
+ * @return GarminPacket representing content of data type.
  */
-  public GarminPackage toGarminPackage(int package_id)
+  public GarminPacket toGarminPacket(int packet_id)
   {
     int data_length = 52 + Math.min(identification_.length()+1,51)
                       + Math.min(comment_.length()+1,51)
@@ -235,7 +235,7 @@ public class GarminWaypointD109 extends GarminWaypointD108
                       + Math.min(city_.length()+1,25)
                       + Math.min(address_.length()+1,51)
                       + Math.min(cross_road_.length()+1,51);
-    GarminPackage pack = new GarminPackage(package_id,data_length);
+    GarminPacket pack = new GarminPacket(packet_id,data_length);
 
     pack.setNextAsByte(dtype_);
     pack.setNextAsByte(class_type_);

@@ -31,7 +31,7 @@ import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
 
 //----------------------------------------------------------------------
 /**
- * Represents the undocumented package with id 0x1a (26decimal) that
+ * Represents the undocumented packet with id 0x1a (26decimal) that
  * holds information about satellites. Does not really work with
  * garmin etrex summit model. So the usage is at your own risk!!!
  *
@@ -47,8 +47,8 @@ public class GarminSatelliteInfo
 //----------------------------------------------------------------------
 /**
  * Constructor using an int array of garmin data.
- * @param buffer the garmin package as int[].
- * @deprecated use the constructor with the GarminPackage instead
+ * @param buffer the garmin packet as int[].
+ * @deprecated use the constructor with the GarminPacket instead
  */
   public GarminSatelliteInfo(int[] buffer)
   {
@@ -57,10 +57,10 @@ public class GarminSatelliteInfo
 
 //----------------------------------------------------------------------
 /**
- * Constructor using an garmin package.
- * @param garmin_package the package from the gps device
+ * Constructor using an garmin packet.
+ * @param garmin_packet the packet from the gps device
  */
-  public GarminSatelliteInfo(GarminPackage garmin_package)
+  public GarminSatelliteInfo(GarminPacket garmin_packet)
   {
     List infos = new Vector();
     int prn;
@@ -73,23 +73,23 @@ public class GarminSatelliteInfo
       SatelliteInfo info;
 
           // valid for GPS12:
-//       prn = garmin_package.getNextAsByte();
+//       prn = garmin_packet.getNextAsByte();
 //       if(prn != 255)   // 255 -> no satellite on this channel
 //       {
-//         elevation = (float)garmin_package.getNextAsByte();
-//         phase = garmin_package.getNextAsLongWord(); // fractional phase not used here
-//         snr = garmin_package.getNextAsLongWord();
+//         elevation = (float)garmin_packet.getNextAsByte();
+//         phase = garmin_packet.getNextAsLongWord(); // fractional phase not used here
+//         snr = garmin_packet.getNextAsLongWord();
 //         info = new SatelliteInfo(prn,elevation,0,snr);
 //         System.out.println("SatelliteInfo: "+info);
 //         infos.add(info);
 //       }
           // valid for etrex:
-      phase = (int)garmin_package.getNextAsLongWord(); // fractional phase not
+      phase = (int)garmin_packet.getNextAsLongWord(); // fractional phase not
 																											 // used here // 2 bytes
 																											 // or 4???
-      snr = (int)garmin_package.getNextAsLongWord(); // 2 bytes or 4???
-      elevation = (float)garmin_package.getNextAsByte();
-      prn = garmin_package.getNextAsByte();
+      snr = (int)garmin_packet.getNextAsLongWord(); // 2 bytes or 4???
+      elevation = (float)garmin_packet.getNextAsByte();
+      prn = garmin_packet.getNextAsByte();
 //       if(prn != 255)   // 255 -> no satellite on this channel
 //       {
         info = new SatelliteInfo(prn,elevation,phase,snr);

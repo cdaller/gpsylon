@@ -51,9 +51,9 @@ public class GarminProduct
 
 //----------------------------------------------------------------------
 /**
- * Constructor using a GarminPackage
+ * Constructor using a GarminPacket
  */
-  public GarminProduct(GarminPackage pack)
+  public GarminProduct(GarminPacket pack)
   {
     product_id_= pack.getNextAsWord();
     product_software_ = pack.getNextAsWord();

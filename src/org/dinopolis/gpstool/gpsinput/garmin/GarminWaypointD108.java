@@ -30,7 +30,7 @@ import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 //----------------------------------------------------------------------
 /**
- * This class represents packages in Garmin data format D108.
+ * This class represents packets in Garmin data format D108.
  *
  * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
@@ -170,12 +170,12 @@ public class GarminWaypointD108 implements GarminWaypoint
 
 //----------------------------------------------------------------------
 /**
- * Constructor using a GarminPackage.
- * @param pack the package to use the data from.
+ * Constructor using a GarminPacket.
+ * @param pack the packet to use the data from.
  */
-  public GarminWaypointD108(GarminPackage pack)
+  public GarminWaypointD108(GarminPacket pack)
   {
-      //      System.out.println("Receiving D108: "+pack.getPackageSize());
+      //      System.out.println("Receiving D108: "+pack.getPacketSize());
 
     class_type_ = pack.getNextAsByte(); // 1 b
     class_name_ = (String)class_name_map_.get(new Integer(class_type_));
@@ -268,12 +268,12 @@ public class GarminWaypointD108 implements GarminWaypoint
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
  *
- * @param package_id the id to use in the package.
- * @return GarminPackage representing content of data type.
+ * @param packet_id the id to use in the packet.
+ * @return GarminPacket representing content of data type.
  */
-  public GarminPackage toGarminPackage(int package_id)
+  public GarminPacket toGarminPacket(int packet_id)
   {
     int data_length = 48 + Math.min(identification_.length()+1,51)
                       + Math.min(comment_.length()+1,51)
@@ -281,7 +281,7 @@ public class GarminWaypointD108 implements GarminWaypoint
                       + Math.min(city_.length()+1,25)
                       + Math.min(address_.length()+1,51)
                       + Math.min(cross_road_.length()+1,51);
-    GarminPackage pack = new GarminPackage(package_id,data_length);
+    GarminPacket pack = new GarminPacket(packet_id,data_length);
 
     pack.setNextAsByte(class_type_);
     pack.setNextAsByte(color_index_);

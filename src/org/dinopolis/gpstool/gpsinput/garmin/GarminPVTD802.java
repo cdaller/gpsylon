@@ -39,20 +39,20 @@ public class GarminPVTD802 extends GarminPVTD800
 		super(buffer);
   }
 
-  public GarminPVTD802(GarminPackage pack)
+  public GarminPVTD802(GarminPacket pack)
   {
 		super(pack);
   }
 
 // //----------------------------------------------------------------------
 // /**
-//  * Convert data type to {@link GarminPackage}
-//  * @return GarminPackage representing content of data type.
+//  * Convert data type to {@link GarminPacket}
+//  * @return GarminPacket representing content of data type.
 //  */
-//   public GarminPackage toGarminPackage(int package_id)
+//   public GarminPacket toGarminPacket(int packet_id)
 //   {
 //     int data_length = 4 + 4 + 4 + 4 + 2 + 8 + 8 + 8 + 4 + 4 + 4 + 4 + 2 + 4;
-//     GarminPackage pack = new GarminPackage(package_id,data_length);
+//     GarminPacket pack = new GarminPacket(packet_id,data_length);
 //     int[] data = new int[data_length];
 
 //     data = GarminDataConverter.setGarminFloat(alt_,data,0);

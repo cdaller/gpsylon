@@ -722,17 +722,24 @@ public abstract class AbstractResources implements Resources
   public void unset(String key)
     throws UnsupportedOperationException
   {
+//    System.out.println("Unsetting resource key "+key +" in resources "+this);
     if (key == null)
       throw(new IllegalArgumentException("'key' must not be 'null'"));
     try
     {
-      String old_value = getValue(key);
-      unsetValueAllAttached(key);
-      property_change_support_.firePropertyChange(key, old_value, null);
+      Resources resources = findResourcesForKey(key);
+      if((resources == null) || (resources == this))
+      {
+        String old_value = getValue(key);
+        unsetValue(key);
+        property_change_support_.firePropertyChange(key, old_value, null);
+      }
+      else
+        resources.unset(key);
     }
     catch (MissingResourceException exc)
     {
-      // resource did  not exist, so do nothing!
+      // resource did not exist, so do nothing!
     }
   }
 

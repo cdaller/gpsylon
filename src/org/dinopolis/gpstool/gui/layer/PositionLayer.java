@@ -128,8 +128,15 @@ public class PositionLayer extends Layer
     resources_ = resources;
     current_position_ = new LatLonPoint(0,0);
     position_use_icon_ = resources_.getBoolean(KEY_POSITION_USE_ICON);
-    relative_border_distance_ = Math.min(0.5f,
-                               (float)resources_.getDouble(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER));
+    relative_border_distance_ =
+      (float)resources_.getDouble(KEY_POSITION_FOLLOW_ME_PITCH_VALUE_PREFIX
+                                  +"."+resources_.getString(KEY_POSITION_FOLLOW_ME_PITCH));
+//     relative_border_distance_ = Math.min(0.5f,
+//                                (float)resources_.getDouble(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER));
+    
+        // unset old key/value (used till 0.4.15pre5):
+    resources_.unset("position.follow_me.relative_border");
+    
     setupPositionSymbol();
 
         // actions:
@@ -211,14 +218,21 @@ public class PositionLayer extends Layer
       }
       return;
     }
-
-        // fixes part of bug #626309:
-    if(event.getPropertyName().equals(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER))
+    if(event.getPropertyName().equals(KEY_POSITION_FOLLOW_ME_PITCH))
     {
-      relative_border_distance_ = Math.min(0.5f,
-                                           (float)resources_.getDouble(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER));
+      relative_border_distance_ =
+        (float)resources_.getDouble(KEY_POSITION_FOLLOW_ME_PITCH_VALUE_PREFIX
+                                    +"."+resources_.getString(KEY_POSITION_FOLLOW_ME_PITCH));
       return;
     }
+
+//         // fixes part of bug #626309:
+//     if(event.getPropertyName().equals(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER))
+//     {
+//       relative_border_distance_ = Math.min(0.5f,
+//                                            (float)resources_.getDouble(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER));
+//       return;
+//     }
     if(event.getPropertyName().equals(KEY_POSITION_USE_ICON))
     {
       position_use_icon_ = resources_.getBoolean(KEY_POSITION_USE_ICON);

@@ -12,7 +12,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.4.15-pre6"/>
+    <property name="release_version" value="0.4.15-pre7"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib/java"/>

@@ -126,6 +126,9 @@ public class FileResources extends AbstractResources
   /** the mapping holding all requested FileResources */
   protected static WeakHashMap mapping_ = new WeakHashMap();
 
+  /** the classloader to use */
+  protected ClassLoader class_loader_;
+
   //----------------------------------------------------------------------
   /**
    * Creates a new FileResources class.
@@ -143,7 +146,8 @@ public class FileResources extends AbstractResources
                           Properties user_bundle, 
                           String user_resource_base_name,
                           ResourceBundle system_bundle,
-                          String system_resource_base_name)
+                          String system_resource_base_name,
+                          ClassLoader class_loader)
   {
     user_resource_file_ = user_resource_file;
     user_properties_ = user_bundle;
@@ -152,6 +156,7 @@ public class FileResources extends AbstractResources
     user_resource_base_name_ = user_resource_base_name;
     system_bundle_ = system_bundle;
     system_resource_base_name_ = system_resource_base_name;
+    class_loader_ = class_loader;
   }
 
   //----------------------------------------------------------------------
@@ -375,7 +380,7 @@ public class FileResources extends AbstractResources
    * @param dir_name the name of the directory within the users homedir
    * to look for a property file.
    * @param locale the locale.
-   * @param loader the class loader to use (if null, the class loader
+   * @param class_loader the class loader to use (if null, the class loader
    * of the caller is used (or of the FileResource class, if call is null)).
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
@@ -387,7 +392,7 @@ public class FileResources extends AbstractResources
                                             String base_name,
                                             String dir_name,
                                             Locale locale,
-                                            ClassLoader loader)
+                                            ClassLoader class_loader)
     throws MissingResourceException
   {
     String system_resource_base_name =
@@ -400,19 +405,20 @@ public class FileResources extends AbstractResources
     FileResources bound = (FileResources)mapping_.get(key);
     if (bound == null)
     {
-      if(loader == null)
+      if(class_loader == null)
       {
         if(caller == null)
-          loader = FileResources.class.getClassLoader();
+          class_loader = FileResources.class.getClassLoader();
         else
-          loader = caller.getClassLoader();
+          class_loader = caller.getClassLoader();
       }
       bound = new FileResources(user_resource_file,
                                 getUsersResourceBundle(user_resource_file),
                                 user_resource_base_name,
                                 getSystemResourceBundle(system_resource_base_name,
-                                                        base_name, locale, loader),
-                                system_resource_base_name);
+                                                        base_name, locale, class_loader),
+                                system_resource_base_name,
+                                class_loader);
       mapping_.put(key, bound);
     }
     return(bound);
@@ -448,7 +454,7 @@ public class FileResources extends AbstractResources
    * resource bundle.
    * @param base_name he base name of the resource file.
    * @param locale the locale (if null, the default locale is used.)
-   * @param loader the class loader to use.
+   * @param class_loader the class loader to use.
    * @return the system resource bundle if found.
    * @exception MissingResourceException if the system resource file
    * could not be located. 
@@ -457,7 +463,7 @@ public class FileResources extends AbstractResources
   protected static ResourceBundle getSystemResourceBundle(String system_resource_base_dir,
                                                           String base_name,
                                                           Locale locale,
-                                                          ClassLoader loader)
+                                                          ClassLoader class_loader)
     throws MissingResourceException
   {
     String resource = system_resource_base_dir;
@@ -465,8 +471,8 @@ public class FileResources extends AbstractResources
       resource += ".";
     resource += base_name;
     if (locale != null)
-      return(ResourceBundle.getBundle(resource, locale,loader));
-    return(ResourceBundle.getBundle(resource,Locale.getDefault(),loader));
+      return(ResourceBundle.getBundle(resource, locale,class_loader));
+    return(ResourceBundle.getBundle(resource,Locale.getDefault(),class_loader));
   }
 
   //----------------------------------------------------------------------
@@ -869,9 +875,10 @@ public class FileResources extends AbstractResources
       }
       
       // try it with class loader
-      URL ret = ClassLoader.getSystemResource(system_resource_base_name_+"/"+value);
+      URL ret = class_loader_.getResource(system_resource_base_name_+"/"+value);
+
       if (ret == null) // try it without base name
-        ret = ClassLoader.getSystemResource(value);
+        ret = class_loader_.getResource(value);
 
       if (ret != null)
         return(ret);

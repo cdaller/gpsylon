@@ -43,7 +43,7 @@ public interface ProgressListener
  * be used to display a message for the user.
  * @param min_value the minimum value of the progress counter.
  * @param max_value the maximum value of the progress counter. If the
- * max value is unknown, max_value is set to <code>Integer.NaN</code>.
+ * max value is unknown, max_value is set to <code>Integer.MIN_VALUE</code>.
  */
   public void actionStart(String action_id, int min_value, int max_value);
   

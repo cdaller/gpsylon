@@ -70,7 +70,7 @@ public class GarminWaypointD108 implements GarminWaypoint
     else
       class_name_ = "unknown";
     short color_index = GarminDataConverter.getGarminByte(buffer,3);
-    System.out.println("colorindex:"+color_index);
+//    System.out.println("colorindex:"+color_index);
     if(color_index == 0xff)
       color_index = DEFAULT_COLOR_INDEX;
     color_ = COLORS[color_index];

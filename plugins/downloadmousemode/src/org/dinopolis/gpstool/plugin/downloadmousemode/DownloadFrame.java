@@ -67,7 +67,7 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
   public JProgressBar progress_bar_images_;
   
 //  static final String DEFAULT_SCALE = "2000";
-  static final String DEFAULT_SCALE = "50000";
+  static final String DEFAULT_SCALE = "500000";
   static final int DEFAULT_IMAGE_WIDTH = 1280;
   static final int DEFAULT_IMAGE_HEIGHT = 1024;
 

@@ -185,6 +185,8 @@ public class MapInfo implements Comparable
  */
   public void setLatitude(double latitude) 
   {
+    if(center_ == null)
+      center_ = new LatLonPoint();
     center_.setLatitude((float)latitude);
   }
   
@@ -208,6 +210,8 @@ public class MapInfo implements Comparable
  */
   public void setLongitude(double longitude) 
   {
+    if(center_ == null)
+      center_ = new LatLonPoint();
     center_.setLongitude((float)longitude);
   }
   

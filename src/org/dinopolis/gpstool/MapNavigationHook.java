@@ -1,6 +1,6 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
-*
+ *
  * Copyright (c) 2002 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 

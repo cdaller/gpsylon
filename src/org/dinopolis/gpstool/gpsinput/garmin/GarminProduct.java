@@ -46,16 +46,16 @@ public class GarminProduct
     product_name_ = GarminDataConverter.getGarminString(buffer,6);
   }
 
-// //----------------------------------------------------------------------
-// /**
-//  * Constructor using a GarminPackage
-//  */
-//   public GarminProduct(GarminPackage garmin_package)
-//   {
-//     product_id_= garmin_package.getNextAsInteger();
-//     product_software_ = garmin_package.getNextAsInteger();
-//     product_name_ = garmin_package.getNextAsString();
-//   }
+//----------------------------------------------------------------------
+/**
+ * Constructor using a GarminPackage
+ */
+  public GarminProduct(GarminPackage pack)
+  {
+    product_id_= pack.getNextAsInt();
+    product_software_ = pack.getNextAsInt();
+    product_name_ = pack.getNextAsString();
+  }
 
 //----------------------------------------------------------------------
 /**

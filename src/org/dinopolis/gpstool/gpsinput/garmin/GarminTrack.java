@@ -23,6 +23,7 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+import java.awt.Color;
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
 
 //----------------------------------------------------------------------
@@ -33,9 +34,9 @@ import org.dinopolis.gpstool.gpsinput.GPSTrack;
 
 public class GarminTrack extends GarminRoute implements GPSTrack
 {
-  boolean display_;
+  protected boolean display_;
 
-  short color_;
+  protected Color color_;
   
 //--------------------------------------------------------------------------------
 /**
@@ -54,5 +55,48 @@ public class GarminTrack extends GarminRoute implements GPSTrack
     buf.append("GarminTrack[identification=").append(getIdentification()).append(",");
     buf.append("track points/links=").append(getWaypoints().toString()).append("]");
     return(buf.toString());
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Returns true if this track is displayed on the gps device, false otherwise.
+ *
+ * @return true if this track is displayed on the gps device, false otherwise.
+ */
+  public boolean isDisplayed()
+  {
+    return(display_);
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Define whether to display the current track or not.
+ *
+ * @param display if true, display current track.
+ */
+  public void setDisplayed(boolean display)
+  {
+    display_ = display;
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Get the color of the current track.
+ */
+  public Color getColor()
+  {
+    return(color_);
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Define the color of the current track. See {@link
+ * GarminDaypointD108} for colors.
+ *
+ * @param color Color of the current track.
+ */
+  public void setColor(Color color)
+  {
+    color_ = color;
   }
 }

@@ -23,6 +23,10 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+import org.dinopolis.gpstool.gpsinput.GPSRoute;
+
+
+
 //----------------------------------------------------------------------
 /**
  * @author Sandra Brueckler, Stefan Feitl
@@ -31,8 +35,47 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 public class GarminRouteD200 extends GarminRoute  
 {
+  protected static byte route_id_ = 1;
+
   public GarminRouteD200(int[] buffer)
   {
-    setIdentification(Short.toString(GarminDataConverter.getGarminByte(buffer,2)));
+    setIdentification(Integer.toString(GarminDataConverter.getGarminByte(buffer,2)));
+  }
+
+
+  public GarminRouteD200(GarminPackage pack)
+  {
+    setIdentification(Integer.toString(pack.getNextAsByte()));
+  }
+
+  public GarminRouteD200(GPSRoute route)
+  {
+    setIdentification(route.getIdentification());
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert data type to {@link GarminPackage}
+ * @return GarminPackage representing content of data type.
+ */
+  public GarminPackage toGarminPackage(int package_id)
+  {
+    byte id;
+    int data_length = 1;
+    GarminPackage pack = new GarminPackage(package_id,data_length);
+
+    // Try to parse route identification and get valid route id
+    // If parse fails, a default value is generated to avoid errors
+    try
+    {
+      id = java.lang.Byte.parseByte(getIdentification());
+    }
+    catch (NumberFormatException nfe)
+    {
+      id = route_id_++;
+    }
+
+    pack.setNextAsByte(id);
+    return (pack);
   }
 }

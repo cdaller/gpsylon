@@ -127,7 +127,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  */
   public void setLatitude(double latitude)
   {
-//    trackpoint_.setLatitude(latitude);
+    trackpoint_.setLatitude(latitude);
   }
 
 //----------------------------------------------------------------------
@@ -147,7 +147,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  */
   public void setLongitude(double longitude)
   {
-//    trackpoint_.setLongitude(longitude);
+    trackpoint_.setLongitude(longitude);
   }
 
 //----------------------------------------------------------------------
@@ -171,7 +171,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  */
   public void setAltitude(double altitude)
   {
-//    trackpoint_.setAltitude((float)altitude);
+    trackpoint_.setAltitude((float)altitude);
   }
 
 
@@ -210,7 +210,10 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  */
   public void setDate(Date date)
   {
-//    trackpoint_.setTime(getGarminTimeFromDate(date));
+    if(date != null)
+      trackpoint_.setTime(getGarminTimeFromDate(date));
+    else
+      trackpoint_.setTime(garmin_zero_date_seconds_);
   }
 
   
@@ -234,23 +237,22 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  *
  * @param new_segment beginning of new track segment
  */
-  public void  setNewTrack(boolean new_segment)
+  public void setNewTrack(boolean new_segment)
   {
-        //trackpoint_.setNewTrack(new_segment);
+    trackpoint_.setNewTrack(new_segment);
   }
-
 
 //----------------------------------------------------------------------
 /**
  * Returns null, as garmin trackpoints do not support symbols of
  * trackpoints.
+ *
  * @return null
  */
   public String getSymbolName()
   {
     return(null);
   }
-
 
 //----------------------------------------------------------------------
 /**
@@ -259,9 +261,12 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  * @param the date.
  * @return the seconds from 1.1.1990 from the given date.
  */
-  protected long getGarminTimeFromDate(Date date)
+  protected static long getGarminTimeFromDate(Date date)
   {
-    return(date.getTime()/1000 - garmin_zero_date_seconds_);
+    if(date == null)
+      return(garmin_zero_date_seconds_);
+    else
+      return(date.getTime()/1000 - garmin_zero_date_seconds_);
   }
   
 //----------------------------------------------------------------------
@@ -272,7 +277,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
  * @param the seconds.
  * @return the date from the seconds since 1.1.1990 or null.
  */
-  protected Date getDateFromGarminTime(long garmin_time)
+  protected static Date getDateFromGarminTime(long garmin_time)
   {
 //     Calendar new_cal = (Calendar)garmin_zero_.clone();
 //     new_cal.add(Calendar.SECOND,(int)garmin_time);
@@ -281,8 +286,7 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
       return(null);
     
     return(new Date((garmin_zero_date_seconds_ + garmin_time) * 1000));
-  }
-  
+  } 
 }
 
 

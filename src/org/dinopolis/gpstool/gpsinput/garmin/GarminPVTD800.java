@@ -84,9 +84,97 @@ public class GarminPVTD800 extends GarminPVT
     leap_seconds_ = GarminDataConverter.getGarminWord(buffer,60);
     
     // Week number days
-    wn_days_ = GarminDataConverter.getGarminInt(buffer,62);
+    wn_days_ = GarminDataConverter.getGarminLong(buffer,62);
+  }
 
-    // Calculate correct height (alt_ + msl_height_)
-//    alt_ += msl_height_;
+  public GarminPVTD800(GarminPackage pack)
+  {
+    // Altitude above WGS84-Ellipsoid [meters]
+    alt_ = pack.getNextAsFloat();
+
+    // Estimated position errors and position fix
+    epe_ = pack.getNextAsFloat();
+    eph_ = pack.getNextAsFloat();
+    epv_ = pack.getNextAsFloat();
+    fix_ = pack.getNextAsWord();
+    
+    // Time of week [seconds]
+    tow_ = pack.getNextAsDouble();
+    
+    // Latitude and longitude
+    lat_ = pack.getNextAsRadiantDegrees();
+    lon_ = pack.getNextAsRadiantDegrees();
+    
+    // Movement speeds in east, north, up direction
+    east_ = pack.getNextAsFloat();
+    north_ = pack.getNextAsFloat();
+    up_ = pack.getNextAsFloat();
+    
+    // Height of WGS84-Ellipsoid above MSL [meters]
+    msl_height_ = pack.getNextAsFloat();
+    
+    // Difference between GPS and UTS [seconds]
+    leap_seconds_ = pack.getNextAsWord();
+    
+    // Week number days
+    wn_days_ = pack.getNextAsLong();
+  }
+
+// //----------------------------------------------------------------------
+// /**
+//  * Convert data type to {@link GarminPackage}
+//  * @return GarminPackage representing content of data type.
+//  */
+//   public GarminPackage toGarminPackage(int package_id)
+//   {
+//     int data_length = 4 + 4 + 4 + 4 + 2 + 8 + 8 + 8 + 4 + 4 + 4 + 4 + 2 + 4;
+//     GarminPackage pack = new GarminPackage(package_id,data_length);
+//     int[] data = new int[data_length];
+
+//     data = GarminDataConverter.setGarminFloat(alt_,data,0);
+//     data = GarminDataConverter.setGarminFloat(epe_,data,4);
+//     data = GarminDataConverter.setGarminFloat(eph_,data,8);
+//     data = GarminDataConverter.setGarminFloat(epv_,data,12);
+//     data = GarminDataConverter.setGarminWord(fix_,data,16);
+//     data = GarminDataConverter.setGarminDouble(tow_,data,18);
+//     data = GarminDataConverter.setGarminRadiantDegrees(lat_,data,26);
+//     data = GarminDataConverter.setGarminRadiantDegrees(lon_,data,34);
+//     data = GarminDataConverter.setGarminFloat(east_,data,42);
+//     data = GarminDataConverter.setGarminFloat(north_,data,46);
+//     data = GarminDataConverter.setGarminFloat(up_,data,50);
+//     data = GarminDataConverter.setGarminFloat(msl_height_,data,54);
+//     data = GarminDataConverter.setGarminWord(leap_seconds_,data,58);
+//     data = GarminDataConverter.setGarminLong(wn_days_,data,60);
+//     pack.put(data);
+
+//     return (pack);
+//   }
+
+//----------------------------------------------------------------------
+/**
+ * Print PVT data in human readable form.
+ * @return string representation of this object.
+ */
+  public String toString()
+  {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("GarminPVT[");
+    buffer.append("alt=").append(alt_).append(", ");
+    buffer.append("epe=").append(epe_).append(", ");
+    buffer.append("eph=").append(eph_).append(", ");
+    buffer.append("epv=").append(epv_).append(", ");
+    buffer.append("fix=").append(fix_).append(", ");
+    buffer.append("tow=").append(tow_).append(", ");
+    buffer.append("lat=").append(lat_).append(", ");
+    buffer.append("lon=").append(lon_).append(", ");
+    buffer.append("east=").append(east_).append(", ");
+    buffer.append("north=").append(north_).append(", ");
+    buffer.append("up=").append(up_).append(", ");
+    buffer.append("msl_height=").append(msl_height_).append(", ");
+    buffer.append("leap_seconds=").append(leap_seconds_).append(", ");
+    buffer.append("wn_days=").append(wn_days_);
+    buffer.append("]");
+
+    return(buffer.toString());
   }
 }

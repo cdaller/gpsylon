@@ -60,7 +60,7 @@ public class GarminFile
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
  */
-  public byte getNextAsByte()
+  public short getNextAsByte()
     throws IllegalStateException
   {
     return(data_.getNextAsByte());

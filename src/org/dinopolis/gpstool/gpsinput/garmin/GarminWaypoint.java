@@ -40,10 +40,8 @@ public interface GarminWaypoint
  * @return Waypoint Type
  * @throws UnsupportedOperationException
  */
-	
-	public byte getType()
+  public byte getType()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
@@ -52,8 +50,7 @@ public interface GarminWaypoint
  * @return Waypoint Class Type
  * @throws UnsupportedOperationException
  */
-	
-	public int getClassType()
+  public int getClassType()
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
@@ -63,10 +60,8 @@ public interface GarminWaypoint
  * @return Waypoint Class Name
  * @throws UnsupportedOperationException
  */
-	
-	public String getClassName()
+  public String getClassName()
     throws UnsupportedOperationException;
-
   
 //----------------------------------------------------------------------
 /**
@@ -75,245 +70,262 @@ public interface GarminWaypoint
  * @return Waypoint Color
  * @throws UnsupportedOperationException
  */
-	
-	public Color getColor()
+  public Color getColor()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Display Options
  *
- * @return		Waypoint Display Options
+ * @return Waypoint Display Options
  * @throws UnsupportedOperationException
  */
-	
-	public String getDisplayOptions()
+  public String getDisplayOptions()
     throws UnsupportedOperationException;
 	
-
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Attributes
  *
- * @return		Waypoint Attributes
+ * @return Waypoint Attributes
  * @throws UnsupportedOperationException
  */
-
   public short getAttributes()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Symbol Type
  *
- * @return		Waypoint Symbol Type
+ * @return Waypoint Symbol Type
  * @throws UnsupportedOperationException
  */
-	
-	public int getSymbolType()
+  public int getSymbolType()
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Symbol Name
  *
- * @return		Waypoint Symbol Name or "unknown" if unknown.
+ * @return Waypoint Symbol Name or "unknown" if unknown.
  * @throws UnsupportedOperationException
  */
-	
-	public String getSymbolName()
+  public String getSymbolName()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Subclass
  *
- * @return		Waypoint Subclass
+ * @return Waypoint Subclass
  * @throws UnsupportedOperationException
  */
-	
-	public byte[] getSubclass()
+  public byte[] getSubclass()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
  * Get the Latitude (degrees)
  *
- * @return		Latitude (degrees)
+ * @return Latitude (degrees)
  * @throws UnsupportedOperationException
  */
-	
-	public double getLatitude()
+  public double getLatitude()
     throws UnsupportedOperationException;
-	
+
+//----------------------------------------------------------------------
+/**
+ * Set the Latitude (degrees)
+ *
+ * @param latitude the latitude in degrees.
+ * @throws UnsupportedOperationException
+ */
+  public void setLatitude(double latitude)
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Longitude (degrees)
  *
- * @return		Longitude (degrees)
+ * @return Longitude (degrees)
  * @throws UnsupportedOperationException
  */
-	
-	public double getLongitude()
+  public double getLongitude()
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
- * Get the Altitude (metres).  A value of 1.0e25 means the parameter is unsupported or unknown.
+ * Set the Longitude (degrees)
  *
- * @return		Altitude (metres)
+ * @param longitude the longitude in degrees.
  * @throws UnsupportedOperationException
  */
-	
-	public float getAltitude()
+  public void setLongitude(double longitude)
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
- * Get the Depth (metres). A value of 1.0e25 means the parameter is unsupported or unknown.
+ * Get the Altitude (metres).  A value of 1.0e25 means the parameter
+ * is unsupported or unknown.
  *
- * @return		Depth (metres)
+ * @return Altitude (metres)
  * @throws UnsupportedOperationException
  */
-	
-	public float getDepth()
+  public float getAltitude()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
- * Get the Distance (metres). A value of 1.0e25 means the parameter is unsupported or unknown.
+ * Set the Altitude (metres).  A value of 1.0e25 means the parameter
+ * is unsupported or unknown.
  *
- * @return		Distance (metres)
+ * @param altitude the altitude in meters. 
  * @throws UnsupportedOperationException
  */
-	
-	public float getDistance()
+  public void setAltitude(float altitude)
     throws UnsupportedOperationException;
-	
+
+//----------------------------------------------------------------------
+/**
+ * Get the Depth (metres). A value of 1.0e25 means the parameter is
+ * unsupported or unknown.
+ *
+ * @return Depth (metres)
+ * @throws UnsupportedOperationException
+ */
+  public float getDepth()
+    throws UnsupportedOperationException;
+
+//----------------------------------------------------------------------
+/**
+ * Get the Distance (metres). A value of 1.0e25 means the parameter is
+ * unsupported or unknown.
+ *
+ * @return Distance (metres)
+ * @throws UnsupportedOperationException
+ */
+  public float getDistance()
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the State Code
  *
- * @return		State Code
+ * @return State Code
  * @throws UnsupportedOperationException
  */
-	
-	public String getStateCode()
+  public String getStateCode()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
  * Get the Country Code
  *
- * @return		Country Code
+ * @return Country Code
  * @throws UnsupportedOperationException
  */
-	
-	public String getCountryCode()
+  public String getCountryCode()
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Estimated Time Enroute
  *
- * @return		ETE
+ * @return ETE
  * @throws UnsupportedOperationException
  */
-	
-	public long getEstimatedTimeEnroute()
+  public long getEstimatedTimeEnroute()
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Identification String
  *
- * @return		Identification String
+ * @return Identification String
  * @throws UnsupportedOperationException
  */
-	
-	public String getIdentification()
+  public String getIdentification()
     throws UnsupportedOperationException;
-	
+
+//----------------------------------------------------------------------
+/**
+ * Set the Identification String
+ *
+ * @param identification the idenfitication of the waypoint
+ * @throws UnsupportedOperationException
+ */
+  public void setIdentification(String identification)
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Comment String
  *
- * @return		Comment String
+ * @return Comment String
  * @throws UnsupportedOperationException
  */
-	
-	public String getComment()
+  public String getComment()
     throws UnsupportedOperationException;
-	
+
+//----------------------------------------------------------------------
+/**
+ * Set the Comment String
+ *
+ * @param comment the comment
+ * @throws UnsupportedOperationException
+ */
+  public void setComment(String comment)
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Facility String
  *
- * @return		Facility String
+ * @return Facility String
  * @throws UnsupportedOperationException
  */
-	
-	public String getFacility()
+  public String getFacility()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
  * Get the City String
  *
- * @return		City String
+ * @return City String
  * @throws UnsupportedOperationException
  */
-	
-	public String getCity()
+  public String getCity()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
  * Get the Address String
  *
- * @return		Address String
+ * @return Address String
  * @throws UnsupportedOperationException
  */
-	
-	public String getAddress()
+  public String getAddress()
     throws UnsupportedOperationException;
-	
 
 //----------------------------------------------------------------------
 /**
  * Get the Crossroad String
  *
- * @return		Crossroad String
+ * @return Crossroad String
  * @throws UnsupportedOperationException
  */
-	
-	public String getCrossroad()
+  public String getCrossroad()
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Link Identification String
  *
- * @return		Link Identification String
+ * @return Link Identification String
  * @throws UnsupportedOperationException
  */
-	
-	public String getLinkIdentification()
+  public String getLinkIdentification()
     throws UnsupportedOperationException;
-
 }
 
 

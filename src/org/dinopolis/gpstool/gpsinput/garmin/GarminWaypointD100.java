@@ -3,71 +3,40 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 import java.awt.Color;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
-public class GarminWaypointD103 implements GarminWaypoint
+public class GarminWaypointD100 implements GarminWaypoint
 {
-  protected int display_;
-  protected String display_options_;
-  protected int symbol_;
-  protected int symbol_type_;
-  protected String symbol_name_;
   protected double latitude_;
   protected double longitude_;
   protected String identification_ = "";
   protected String comment_ = "";
 
-  protected final static byte WAYPOINT_TYPE = 103;
-  
-  protected final static String[] DISPLAY_OPTIONS =
-    new String[] {"symbol+name","symbol","symbol+comment"};
+  protected final static byte WAYPOINT_TYPE = 100;
 
-//  protected final static String[] SYMBOL_NAMES =
-//  new String[] {"wpt_dot","house","gas","car","fish","boat","anchor","wreck","exit",
-//                "skull","flag","camp","circle","deer","first_aid","back_track"};
-
-  /** mapping from D103 symbol names to GarminWaypointSymbol constants */
-  protected final static int[] SYMBOL_TYPE =
-  new int[] {18,10,8220,170,7,150,0,19,177,14,178,151,171,156,8196};
-  
-  public GarminWaypointD103()
+  public GarminWaypointD100()
   {
   }
 
-  public GarminWaypointD103(int[] buffer)
+  public GarminWaypointD100(int[] buffer)
   {
-//     for(int index = 0; index < buffer.length; index++)
-//     {
-//       System.out.println(index+":"+buffer[index] + " / " + (char)buffer[index]);
-//     }
     identification_ = GarminDataConverter.getGarminString(buffer,2,6).trim();
     latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,8);
     longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,12);
-        // unused = GarminDataConverter.getGarminLong(buffer,16);
-    comment_ = GarminDataConverter.getGarminString(buffer,20,40).trim();  
-    symbol_ = GarminDataConverter.getGarminByte(buffer,60);
-    symbol_type_ = SYMBOL_TYPE[symbol_];
-    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-    display_ = GarminDataConverter.getGarminByte(buffer,61);
-    display_options_ = DISPLAY_OPTIONS[GarminDataConverter.getGarminByte(buffer,61)];
+//    unused_ = GarminDataConverter.getGarminLong(buffer,16);
+    comment_ = GarminDataConverter.getGarminString(buffer,20,40).trim();
   }
 
-  public GarminWaypointD103(GarminPackage pack)
+  public GarminWaypointD100(GarminPackage pack)
   {
     identification_ = pack.getNextAsString(6).trim();
     latitude_ = pack.getNextAsSemicircleDegrees();
     longitude_ = pack.getNextAsSemicircleDegrees();
-    long unused = pack.getNextAsLong();
+    pack.getNextAsLong();  // unused
     comment_ = pack.getNextAsString(40).trim();
-    symbol_ = pack.getNextAsByte();
-    symbol_type_ = SYMBOL_TYPE[symbol_];
-    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-    display_ = pack.getNextAsByte();
-    display_options_ = DISPLAY_OPTIONS[display_];
   }
 
-  public GarminWaypointD103(GPSWaypoint waypoint)
+  public GarminWaypointD100(GPSWaypoint waypoint)
   {
     String tmp;
-    int val = -1;
 
     tmp = waypoint.getIdentification();
     identification_ = tmp == null ? "" : tmp;
@@ -75,21 +44,6 @@ public class GarminWaypointD103 implements GarminWaypoint
     longitude_ = waypoint.getLongitude();
     tmp = waypoint.getComment();
     comment_ = tmp == null ? "" : tmp;
-    symbol_type_ = (short)GarminWaypointSymbols.getSymbolId(waypoint.getSymbolName());
-    if(symbol_type_ < 0)
-      symbol_type_ = 18; // default symbol (wpt_dot)
-
-    // Convert garmin standard symbol types to symbol type used by D103
-    for (int i=0;i<SYMBOL_TYPE.length;i++)
-      if (SYMBOL_TYPE[i]==symbol_type_)
-	val = i;
-    if (val == -1)
-      val = 0;
-    symbol_ = val;
-
-    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-    display_ = 0;
-    display_options_ = DISPLAY_OPTIONS[display_];
   }
 
 //----------------------------------------------------------------------
@@ -99,16 +53,14 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public GarminPackage toGarminPackage(int package_id)
   {
-    int data_length = 6 + 4 + 4 + 4 + 40 + 1 + 1;
-
+    int data_length = 6 + 4 + 4 + 4 + 40;
     GarminPackage pack = new GarminPackage(package_id,data_length);
+
     pack.setNextAsString(identification_,6,false);
     pack.setNextAsSemicircleDegrees(latitude_);
     pack.setNextAsSemicircleDegrees(longitude_);
-    pack.setNextAsLong(0); // unused
+    pack.setNextAsLong(0);  // unused
     pack.setNextAsString(comment_,40,false);
-    pack.setNextAsByte(symbol_);
-    pack.setNextAsByte(display_);
 
     return (pack);
   }
@@ -134,7 +86,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getDisplayOptions() throws UnsupportedOperationException
   {
-    return(display_options_);
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
   }
 
 //----------------------------------------------------------------------
@@ -146,7 +98,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getSymbolName() throws UnsupportedOperationException
   {
-    return(symbol_name_);
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 	
 //----------------------------------------------------------------------
@@ -158,7 +110,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public int getSymbolType() throws UnsupportedOperationException
   {
-    return(symbol_type_);
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -252,7 +204,7 @@ public class GarminWaypointD103 implements GarminWaypoint
   {
     comment_ = comment;
   }
-
+	
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Class Type
@@ -262,7 +214,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public int getClassType() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -274,9 +226,9 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getClassName() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
- 
+
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Color
@@ -286,7 +238,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public Color getColor() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -298,7 +250,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public short getAttributes() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -322,18 +274,19 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public float getAltitude() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 	
 //----------------------------------------------------------------------
 /**
  * Set the Altitude (metres).  A value of 1.0e25 means the parameter is unsupported or unknown.
  *
+ * @return Altitude (metres)
  * @throws UnsupportedOperationException
  */
   public void setAltitude(float altitude) throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -345,7 +298,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public float getDepth() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -357,7 +310,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public float getDistance() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -369,7 +322,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getStateCode() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -381,7 +334,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getCountryCode() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -393,7 +346,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public long getEstimatedTimeEnroute() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -405,7 +358,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getFacility() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -417,9 +370,9 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getCity() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
-
+	
 //----------------------------------------------------------------------
 /**
  * Get the Address String
@@ -429,7 +382,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getAddress() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -441,7 +394,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getCrossroad() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 
 //----------------------------------------------------------------------
@@ -453,17 +406,13 @@ public class GarminWaypointD103 implements GarminWaypoint
  */
   public String getLinkIdentification() throws UnsupportedOperationException
   {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D103");
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
  
   public String toString()
   {
     StringBuffer buffer = new StringBuffer();
     buffer.append("GarminWaypoint[");
-    buffer.append("type=").append(WAYPOINT_TYPE).append(", ");
-    buffer.append("display_options=").append(display_options_).append(", ");
-    buffer.append("symbol_type=").append(symbol_type_).append(", ");
-    buffer.append("symbol_name=").append(symbol_name_).append(", ");
     buffer.append("lat=").append(latitude_).append(", ");
     buffer.append("lon=").append(longitude_).append(", ");
     buffer.append("identification=").append(identification_).append(", ");

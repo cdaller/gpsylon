@@ -23,19 +23,93 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+import org.dinopolis.gpstool.gpsinput.GPSTrack;
 
 //----------------------------------------------------------------------
 /**
- * @author Christof Dallermassl
+ * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
  */
 
 public class GarminTrackD310 extends GarminTrack
 {
+
+//----------------------------------------------------------------------
+/*
+ * Constructor using an int[].
+ *
+ * @param buffer the buffer to read the data from.
+ */
   public GarminTrackD310(int[] buffer)
   {
-    display_ = GarminDataConverter.getGarminBoolean(buffer,2);
-    color_ = GarminDataConverter.getGarminByte(buffer,3);
+    setDisplayed(GarminDataConverter.getGarminBoolean(buffer,2));
+    int color_index = GarminDataConverter.getGarminByte(buffer,3);
+      if(color_index == 0xff)
+      color_index = GarminWaypointD108.DEFAULT_COLOR_INDEX;
+    setColor(GarminWaypointD108.COLORS[color_index]);
     setIdentification(GarminDataConverter.getGarminString(buffer,4));
+  }
+
+//----------------------------------------------------------------------
+/*
+ * Constructor using an garmin package.
+ *
+ * @param pack the package to read the data from.
+ */
+  public GarminTrackD310(GarminPackage pack)
+  {
+    setDisplayed(pack.getNextAsBoolean());
+    int color_index = pack.getNextAsByte();
+      if(color_index == 0xff)
+      color_index = GarminWaypointD108.DEFAULT_COLOR_INDEX;
+    setColor(GarminWaypointD108.COLORS[color_index]);
+    setIdentification(pack.getNextAsString(pack.getPackageSize()-2));
+  }
+
+//----------------------------------------------------------------------
+/*
+ * Copy constructor using another track.
+ *
+ * @param track the track to read the data from.
+ */
+  public GarminTrackD310(GPSTrack track)
+  {
+    setDisplayed(track.isDisplayed());
+    setColor(track.getColor());
+    setIdentification(track.getIdentification());
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert data type to {@link GarminPackage}.
+ *
+ * @param package_id the id to put in the garmin package.
+ * @return GarminPackage representing content of data type.
+ */
+  public GarminPackage toGarminPackage(int package_id)
+  {
+        // display (boolean)
+        // color (byte)
+        // identification + NULL (max 51 char incl. NULL)
+    int data_length = 1 + 1 + Math.min(getIdentification().length()+1,51);
+    GarminPackage pack = new GarminPackage(package_id,data_length);
+
+    pack.setNextAsBoolean(isDisplayed());
+//    pack.setNextAsByte(getColor());
+    boolean color_found = false;
+    int color_index = 0;
+    while((color_index < GarminWaypointD108.COLORS.length) && (!color_found))
+    {
+      if(GarminWaypointD108.COLORS[color_index].equals(color_))
+        color_found = true;
+      else
+        color_index++;
+    }
+    if((color_ == null) || (!color_found))
+      pack.setNextAsByte(GarminWaypointD108.DEFAULT_COLOR_INDEX);
+    else
+      pack.setNextAsByte(color_index);
+    pack.setNextAsString(getIdentification(),51,true);
+    return (pack);
   }
 }

@@ -51,12 +51,28 @@ public interface GarminTrackpoint
 	
 //----------------------------------------------------------------------
 /**
+ * Set the Latitude (degrees)
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+ public void setLatitude(double latitude) throws GarminUnsupportedMethodException;
+	
+//----------------------------------------------------------------------
+/**
  * Get the Longitude (degrees)
  *
  * @return Longitude (degrees)
  * @throws GarminUnsupportedMethodException
  */
  public double getLongitude() throws GarminUnsupportedMethodException;
+
+//----------------------------------------------------------------------
+/**
+ * Set the Longitude (degrees)
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+ public void setLongitude(double longitude) throws GarminUnsupportedMethodException;
 
 //----------------------------------------------------------------------
 /**
@@ -70,6 +86,15 @@ public interface GarminTrackpoint
 	
 //----------------------------------------------------------------------
 /**
+ * Set the time when the point was recorded. Is expressed as number of
+ * seconds since UTC Dec 31, 1989 - 12:00 AM.
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+ public void setTime(long time) throws GarminUnsupportedMethodException;
+	
+//----------------------------------------------------------------------
+/**
  * Get the Altitude (metres). A value of 1.0e25 means the parameter
  * is unsupported or unknown.
  *
@@ -77,6 +102,15 @@ public interface GarminTrackpoint
  * @throws GarminUnsupportedMethodException
  */
  public float getAltitude() throws GarminUnsupportedMethodException;
+	
+//----------------------------------------------------------------------
+/**
+ * Set the Altitude (metres). A value of 1.0e25 means the parameter
+ * is unsupported or unknown.
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+ public void setAltitude(float altitude) throws GarminUnsupportedMethodException;
 	
 //----------------------------------------------------------------------
 /**
@@ -90,6 +124,15 @@ public interface GarminTrackpoint
 	
 //----------------------------------------------------------------------
 /**
+ * Set the Depth (metres). A value of 1.0e25 means the parameter is
+ * unsupported or unknown.
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+ public void setDepth(float depth) throws GarminUnsupportedMethodException;
+	
+//----------------------------------------------------------------------
+/**
  * Is this the beginning of a new track segment? If true, this point
  * marks the beginning of a new track segment.
  *
@@ -97,4 +140,13 @@ public interface GarminTrackpoint
  * @throws GarminUnsupportedMethodException
  */
  public boolean isNewTrack() throws GarminUnsupportedMethodException;
+
+//----------------------------------------------------------------------
+/**
+ * Is this the beginning of a new track segment? If true, this point
+ * marks the beginning of a new track segment.
+ *
+  * @throws GarminUnsupportedMethodException
+ */
+ public void setNewTrack(boolean new_track) throws GarminUnsupportedMethodException;
 }

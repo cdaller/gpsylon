@@ -53,6 +53,34 @@ public class GarminRouteLinkD210
     identification_ = GarminDataConverter.getGarminString(buffer,22,(int)buffer[1]-21);
   }
 
+  public GarminRouteLinkD210(GarminPackage pack)
+  {
+    class_ = pack.getNextAsWord();
+    int class_index = class_;
+    if(class_ == -1)
+      class_index = CLASS_NAME.length;
+    if(class_index < CLASS_NAME.length)
+      class_name_ = CLASS_NAME[class_index];
+    else
+      class_name_ = "unknown";
+    subclass_ = pack.getNextAsByteArray(18);
+    identification_ = pack.getNextAsString(51);
+  }
+
+  //----------------------------------------------------------------------
+/**
+ * Convert data type to {@link GarminPackage}
+ * @return GarminPackage representing content of data type.
+ */
+  public GarminPackage toGarminPackage(int package_id)
+  {
+    int data_length = 2 + 18 + Math.min(identification_.length()+1,51);
+    GarminPackage pack = new GarminPackage(package_id,data_length);
+    pack.setNextAsWord(class_);
+    pack.setNextAsByteArray(subclass_);
+    pack.setNextAsString(identification_,51,true);
+    return (pack);
+  }
 
   public String toString()
   {

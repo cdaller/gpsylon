@@ -31,7 +31,7 @@ package org.dinopolis.gpstool.gpsinput.garmin;
  * read/write the data concurrently as unforeseen behaviour may (and
  * will!) result.
  *
- * @author Christof Dallermassl
+ * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
  */
 
@@ -51,21 +51,36 @@ class GarminPackage
 
   public GarminPackage()
   {
-    data_ = new int[GARMIN_MAX_PACKAGE_SIZE];
   }
 
 //----------------------------------------------------------------------
 /**
  * Constructor
+ *
+ * @param package_id the package id of the garmin package
+ * @param data_size the number of data bytes in this package
+ * (excluding package id).
  */
 
   public GarminPackage(int package_id, int data_size)
   {
-    data_ = new int[data_size];
-    package_id_ = package_id;
-    package_size_ = data_size;
+    setPackageId(package_id);
+    initializeData(data_size);
   }
 
+//----------------------------------------------------------------------
+/**
+ * Set the size of this garmin package (removes all data that was
+ * formerly in this package!).
+ *
+ * @param data_size the number of data bytes in this package
+ * (excluding package id).
+ */
+  public void initializeData(int data_size)
+  {
+    data_ = new int[data_size];
+    package_size_ = data_size;
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -159,17 +174,28 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
+ * Put an array of data-values to the package.
+ * @param value the bytes to add
+ */
+  public void put(int[] value)
+  {
+      for (int i=0; i < value.length; i++)
+	  data_[put_index_++] = value[i];
+  }
+
+//----------------------------------------------------------------------
+/**
  * Get the next data value as byte.
  * @return the next byte
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
  */
-  public int get()
+  public short get()
     throws IllegalStateException
   {
     if(get_index_ >= put_index_)
       throw new IllegalStateException("Not enough data available in package");
-    return(data_[get_index_++]);
+    return((short)data_[get_index_++]);
   }
 
 //----------------------------------------------------------------------
@@ -179,11 +205,23 @@ class GarminPackage
  * @param offset the position to return.
  * @return the byte at the given position
  */
-  public int get(int offset)
+  public short get(int offset)
   {
-    return(data_[offset]);
+    return((short)data_[offset]);
   }
 
+
+//----------------------------------------------------------------------
+/**
+ * Get the boolean on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the boolean at the given position
+ */
+  public boolean getBoolean(int offset)
+  {
+    return(GarminDataConverter.getGarminBoolean(data_,offset));
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -247,6 +285,30 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
+ * Get the double on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the double at the given position
+ */
+  public double getDouble(int offset)
+  {
+    return(GarminDataConverter.getGarminDouble(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the byte array on the given offset with the given length.
+ *
+ * @param offset the position to return.
+ * @return the byte array at the given position
+ */
+  public byte[] getNextAsByteArray(int offset, int length)
+  {
+    return(GarminDataConverter.getGarminByteArray(data_,offset,length));
+  }
+
+//----------------------------------------------------------------------
+/**
  * Get the string on the given offset.
  *
  * @param offset the position to return.
@@ -270,7 +332,57 @@ class GarminPackage
     return(GarminDataConverter.getGarminString(data_,offset,max_length));
   }
 
+//----------------------------------------------------------------------
+/**
+ * Get the semicircle degrees on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the semicircle degrees at the given position
+ */
+  public double getSemicircleDegrees(int offset)
+  {
+    return(GarminDataConverter.getGarminSemicircleDegrees(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the radiant degrees on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the radiant degrees at the given position
+ */
+  public double getRadiantDegrees(int offset)
+  {
+    return(GarminDataConverter.getGarminRadiantDegrees(data_,offset));
+  }
+
   
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as boolean.
+ * @return the next boolean
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public boolean getNextAsBoolean()
+    throws IllegalStateException
+  {
+    boolean value = GarminDataConverter.getGarminBoolean(data_,get_index_);
+    get_index_++;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as boolean.
+ * @param value the next value as boolean
+ */
+  public void setNextAsBoolean(boolean value)
+  {
+    data_ = GarminDataConverter.setGarminBoolean(value,data_,put_index_);
+    put_index_ += 1;
+  }
+
 //----------------------------------------------------------------------
 /**
  * Get the next data value as byte.
@@ -278,10 +390,12 @@ class GarminPackage
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
  */
-  public byte getNextAsByte()
+  public short getNextAsByte()
     throws IllegalStateException
   {
-    return((byte)get());
+    int value = GarminDataConverter.getGarminByte(data_,get_index_);
+    get_index_++;
+    return((short)value);
   }
 
 //----------------------------------------------------------------------
@@ -345,9 +459,6 @@ class GarminPackage
   public void setNextAsWord(int value)
   {
     data_ = GarminDataConverter.setGarminWord(value,data_,put_index_);
-    System.out.println("setnextasword");
-    System.out.println(data_[put_index_]);
-    System.out.println(data_[put_index_+1]);
     put_index_ += 2;
   }
 
@@ -405,6 +516,59 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
+ * Get the next data value as double.
+ * @return the next value as double.
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public double getNextAsDouble()
+    throws IllegalStateException
+  {
+    double value = GarminDataConverter.getGarminDouble(data_,get_index_);
+    get_index_ += 8;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as double.
+ * @param value the next value as double
+ */
+  public void setNextAsDouble(double value)
+  {
+    data_ = GarminDataConverter.setGarminDouble(value,data_,put_index_);
+    put_index_ += 8;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data values as byte array.
+ * @return the next values as byte array
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public byte[] getNextAsByteArray(int length)
+    throws IllegalStateException
+  {
+    byte[] value=new byte[length];
+    value = GarminDataConverter.getGarminByteArray(data_,get_index_,length);
+    get_index_ += length;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data values as byte array.
+ * @param value the next values as byte array
+ */
+  public void setNextAsByteArray(byte[] value)
+  {
+    data_ = GarminDataConverter.setGarminByteArray(value,data_,put_index_);
+    put_index_ += value.length;
+  }
+
+//----------------------------------------------------------------------
+/**
  * Get the next data value as String.
  * @return the next value as String
  * @throws IllegalStateException on a try to read more bytes than were
@@ -430,12 +594,13 @@ class GarminPackage
 						length, true);
     put_index_ += length;
   }
+
 //----------------------------------------------------------------------
 /**
  * Set the next data value as long.
  * @param value the next value as long
  * @param max_length the maximum length the string may have (if the
- * string should be zero terminated, this length includes the yero
+ * string should be zero terminated, this length includes the zero
  * termination).
  * @param zero_terminate zero terminate the string.
  */
@@ -443,9 +608,11 @@ class GarminPackage
   {
     data_ = GarminDataConverter.setGarminString(value,data_,put_index_,
 						max_length, zero_terminate);
-    put_index_ += Math.min(value.length(),max_length);
+    if(zero_terminate)
+      put_index_ += Math.min(value.length()+1,max_length);
+    else
+      put_index_ += max_length;
   }
-
 
 //----------------------------------------------------------------------
 /**
@@ -465,6 +632,58 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
+ * Get the next data value as semicircle degrees.
+ * @return the next value as semicircle degrees
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public double getNextAsSemicircleDegrees()
+    throws IllegalStateException
+  {
+    double value = GarminDataConverter.getGarminSemicircleDegrees(data_,get_index_);
+    get_index_ += 4;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as semicircle degrees.
+ * @param value the next value as semicircle degrees
+ */
+  public void setNextAsSemicircleDegrees(double value)
+  {
+    data_ = GarminDataConverter.setGarminSemicircleDegrees(value,data_,put_index_);
+    put_index_ += 4;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as radiant degrees.
+ * @return the next value as radiant degrees
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public double getNextAsRadiantDegrees()
+    throws IllegalStateException
+  {
+    double value = GarminDataConverter.getGarminRadiantDegrees(data_,get_index_);
+    get_index_ += 8;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as radiant degrees.
+ * @param value the next value as radiant degrees
+ */
+  public void setNextAsRadiantDegrees(double value)
+  {
+    data_ = GarminDataConverter.setGarminRadiantDegrees(value,data_,put_index_);
+    put_index_ += 8;
+  }
+
+//----------------------------------------------------------------------
+/**
  * Return the checksum of the package
  * @return the checksum byte
  */
@@ -475,7 +694,7 @@ class GarminPackage
       checksum += (data_[index] & 0xff);
     }
     checksum = -checksum;
-    return (byte) checksum;
+    return((byte)checksum);
   }
 
   public int[] getCompatibilityBuffer()
@@ -530,5 +749,3 @@ class GarminPackage
     System.out.println(gp);
   }
 }
-
-

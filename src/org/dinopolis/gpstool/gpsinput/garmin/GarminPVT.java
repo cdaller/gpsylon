@@ -44,7 +44,7 @@ public class GarminPVT
   protected float up_;
   protected float msl_height_;
   protected int leap_seconds_;
-  protected int wn_days_;
+  protected long wn_days_;
 
   public GarminPVT()
   {
@@ -215,7 +215,7 @@ public class GarminPVT
 	 * beginning of the current week.
 	 * @return int
 	 */
-	public int getWnDays()
+	public long getWnDays()
 	{
 		return wn_days_;
 	}

@@ -23,6 +23,9 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
+
+
 //----------------------------------------------------------------------
 /**
  * @author Sandra Brueckler, Stefan Feitl
@@ -31,6 +34,7 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 public class GarminTrackpointD301 implements GarminTrackpoint
 {
+  public int display_;
   public double latitude_;
   public double longitude_;
   public long time_;
@@ -54,6 +58,48 @@ public class GarminTrackpointD301 implements GarminTrackpoint
     new_track_ = GarminDataConverter.getGarminBoolean(buffer,22);
   }
 
+  public GarminTrackpointD301(GarminPackage pack)
+  {
+    latitude_ = pack.getNextAsSemicircleDegrees();
+    longitude_ = pack.getNextAsSemicircleDegrees();
+    time_ = pack.getNextAsLong();
+    altitude_ = pack.getNextAsFloat();
+    depth_ = pack.getNextAsFloat();
+    new_track_ = pack.getNextAsBoolean();
+  }
+
+  public GarminTrackpointD301(GPSTrackpoint trackpoint)
+  {
+    latitude_ = trackpoint.getLatitude();  
+    longitude_ = trackpoint.getLongitude();
+    time_ = GarminDataConverter.convertDateToGarminTime(trackpoint.getDate());
+
+    if (trackpoint.hasValidAltitude())
+      altitude_ = (float)trackpoint.getAltitude();
+    else
+      altitude_ = 1.0E25f;
+
+    depth_ = 1.0E25f;
+    new_track_ = trackpoint.isNewTrack();
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert data type to {@link GarminPackage}
+ * @return GarminPackage representing content of data type.
+ */
+  public GarminPackage toGarminPackage(int package_id)
+  {
+    int data_length = 4 + 4 + 4 + 4 + 4 + 1;
+    GarminPackage pack = new GarminPackage(package_id,data_length);
+    pack.setNextAsSemicircleDegrees(latitude_);
+    pack.setNextAsSemicircleDegrees(longitude_);
+    pack.setNextAsLong(time_);
+    pack.setNextAsFloat(altitude_);
+    pack.setNextAsFloat(depth_);
+    pack.setNextAsBoolean(new_track_);
+    return (pack);
+  }
 //----------------------------------------------------------------------
 /**
  * Get the Trackpoint Type
@@ -80,6 +126,17 @@ public class GarminTrackpointD301 implements GarminTrackpoint
 
 //----------------------------------------------------------------------
 /**
+ * Set the Latitude (degrees)
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+  public void setLatitude(double latitude) throws GarminUnsupportedMethodException
+  {
+    latitude_ = latitude;
+  }
+
+//----------------------------------------------------------------------
+/**
  * Get the Longitude (degrees)
  *
  * @return Longitude (degrees)
@@ -88,6 +145,17 @@ public class GarminTrackpointD301 implements GarminTrackpoint
   public double getLongitude() throws GarminUnsupportedMethodException
   {
     return(longitude_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the Longitude (degrees)
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+  public void setLongitude(double longitude) throws GarminUnsupportedMethodException
+  {
+    longitude_ = longitude;
   }
 
 //----------------------------------------------------------------------
@@ -102,7 +170,19 @@ public class GarminTrackpointD301 implements GarminTrackpoint
  {
    return(time_);
  }
-	
+
+//----------------------------------------------------------------------
+/**
+ * Set the time when the point was recorded. Is expressed as number of
+ * seconds since UTC Dec 31, 1989 - 12:00 AM.
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+ public void setTime(long time) throws GarminUnsupportedMethodException
+ {
+   time_ = time;
+ }
+
 //----------------------------------------------------------------------
 /**
  * Get the Altitude (meters).  A value of 1.0e25 means the parameter is
@@ -114,6 +194,18 @@ public class GarminTrackpointD301 implements GarminTrackpoint
   public float getAltitude() throws GarminUnsupportedMethodException
   {
     return(altitude_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the Altitude (meters).  A value of 1.0e25 means the parameter is
+ * unsupported or unknown.
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+  public void setAltitude(float altitude) throws GarminUnsupportedMethodException
+  {
+    altitude_ = altitude;
   }
 
 //----------------------------------------------------------------------
@@ -131,6 +223,18 @@ public class GarminTrackpointD301 implements GarminTrackpoint
   
 //----------------------------------------------------------------------
 /**
+ * Set the Depth (meters). A value of 1.0e25 means the parameter is
+ * unsupported or unknown.
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+  public void setDepth(float depth) throws GarminUnsupportedMethodException
+  {
+    depth_ = depth;
+  }
+  
+//----------------------------------------------------------------------
+/**
  * Is this the beginning of a new track segment? If true, this point
  * marks the beginning of a new track segment.
  *
@@ -140,6 +244,18 @@ public class GarminTrackpointD301 implements GarminTrackpoint
   public boolean isNewTrack() throws GarminUnsupportedMethodException
   {
     return(new_track_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Is this the beginning of a new track segment? If true, this point
+ * marks the beginning of a new track segment.
+ *
+ * @throws GarminUnsupportedMethodException
+ */
+  public void setNewTrack(boolean new_track) throws GarminUnsupportedMethodException
+  {
+    new_track_ = new_track;
   }
 
   public String toString()

@@ -23,6 +23,15 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+
+
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+
+
 //----------------------------------------------------------------------
 /**
  * Helper class for converting garmin data arrays to java datatypes
@@ -36,6 +45,26 @@ public class GarminDataConverter
 {
   /** Semicircle to Degrees conversion values */
   protected final static double SEMICIRCLE_FACTOR = (double)( 1L << 31 ) / 180.0d;
+
+  /** garmin zero date (1.1.1990, 00:00) */
+  public static long garmin_zero_date_seconds_;
+
+  static
+  {
+    TimeZone timezone = TimeZone.getTimeZone("UTC");
+    Calendar garmin_zero = Calendar.getInstance(timezone);
+    garmin_zero.set(Calendar.DAY_OF_MONTH,0);
+    garmin_zero.set(Calendar.MONTH,0);
+    garmin_zero.set(Calendar.YEAR,1990);
+    garmin_zero.set(Calendar.HOUR_OF_DAY,0);
+    garmin_zero.set(Calendar.MINUTE,0);
+    garmin_zero.set(Calendar.SECOND,0);
+    garmin_zero.set(Calendar.MILLISECOND,0);
+//     System.out.println("garmin garmin_zero_: "+garmin_zero.getTime()+" "+garmin_zero);
+    garmin_zero_date_seconds_ = garmin_zero.getTime().getTime() / 1000;
+        // alternative is to set the value directly (taken from gpspoint2):
+//    garmin_zero_date_seconds_ = 631065600L;
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -147,23 +176,26 @@ public class GarminDataConverter
   {
     if(zero_terminate)
       max_length--;
+    
     int index = 0;
     while((index < string.length()) && (index < max_length))
     {
       buffer[offset+index] = (int)string.charAt(index);
       index++;
     }
-        // pad the rest with spaces:
-    while(index < max_length)
+    if(!zero_terminate)
     {
-      buffer[offset+index] = ' ';  // pad with spaces
-      index++;
+        // pad the rest with spaces:
+      while(index < max_length)
+      {
+        buffer[offset+index] = ' ';  // pad with spaces
+        index++;
+      }
     }
-        // leave space for terminating zero, if neccessary:
-    if(index == max_length)
-       index--;
-    if(zero_terminate)
+    else
+    {
       buffer[offset+index] = 0;
+    }
 
     return(buffer);
   }
@@ -525,5 +557,40 @@ public class GarminDataConverter
   {
     return (int)(degrees * SEMICIRCLE_FACTOR);
   }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the seconds from 1.1.1990 from the given date.
+ *
+ * @param the date.
+ * @return the seconds from 1.1.1990 from the given date.
+ */
+  public static long convertDateToGarminTime(Date date)
+  {
+    if(date == null)
+      return(garmin_zero_date_seconds_);
+    else
+      return(date.getTime()/1000 - garmin_zero_date_seconds_);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Returns the date from the seconds since 1.1.1990 or null, if
+ * <code>garmin_time</code> is <0.
+ *
+ * @param the seconds.
+ * @return the date from the seconds since 1.1.1990 or null.
+ */
+  public static Date convertGarminTimeToDate(long garmin_time)
+  {
+//     Calendar new_cal = (Calendar)garmin_zero_.clone();
+//     new_cal.add(Calendar.SECOND,(int)garmin_time);
+//     return(new_cal.getTime());
+    if(garmin_time < 0)
+      return(null);
+    
+    return(new Date((garmin_zero_date_seconds_ + garmin_time) * 1000));
+  }
+
 }
 

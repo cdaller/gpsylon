@@ -37,7 +37,6 @@ import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 public class GarminWaypointAdapter implements GPSWaypoint
 {
-
   protected GarminWaypoint waypoint_;
   
   public GarminWaypointAdapter(GarminWaypoint waypoint)
@@ -62,7 +61,7 @@ public class GarminWaypointAdapter implements GPSWaypoint
  */
   public void setIdentification(String identification)
   {
-//    waypoint_.setIdentification(identification);
+    waypoint_.setIdentification(identification);
   }
 
 //----------------------------------------------------------------------
@@ -82,7 +81,7 @@ public class GarminWaypointAdapter implements GPSWaypoint
  */
   public void setComment(String comment)
   {
-//    waypoint_.setComment(comment);
+    waypoint_.setComment(comment);
   }
 
 //----------------------------------------------------------------------
@@ -102,7 +101,7 @@ public class GarminWaypointAdapter implements GPSWaypoint
  */
   public void setLatitude(double latitude)
   {
-//    waypoint_.setLatitude(latitude);
+    waypoint_.setLatitude(latitude);
   }
 
 //----------------------------------------------------------------------
@@ -122,7 +121,7 @@ public class GarminWaypointAdapter implements GPSWaypoint
  */
   public void setLongitude(double longitude)
   {
-//    waypoint_.setLongitude(longitude);
+    waypoint_.setLongitude(longitude);
   }
 
 //----------------------------------------------------------------------
@@ -153,7 +152,7 @@ public class GarminWaypointAdapter implements GPSWaypoint
  */
   public void setAltitude(double altitude)
   {
-//    waypoint_.setAltitude((float)altitude);
+    waypoint_.setAltitude((float)altitude);
   }
 
 
@@ -179,7 +178,6 @@ public class GarminWaypointAdapter implements GPSWaypoint
   {
     return(waypoint_.getSymbolName());
   }
-
 
   public String toString()
   {

@@ -23,6 +23,10 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+import org.dinopolis.gpstool.gpsinput.GPSRoute;
+
+
+
 //----------------------------------------------------------------------
 /**
  * @author Christof Dallermassl
@@ -35,4 +39,28 @@ public class GarminRouteD202 extends GarminRoute
   {
     setIdentification(GarminDataConverter.getGarminString(buffer,2));
   }
+
+  public GarminRouteD202(GarminPackage pack)
+  {
+    setIdentification(pack.getNextAsString(Math.min(pack.getPackageSize(),51)));
+  }
+
+  public GarminRouteD202(GPSRoute route)
+  {
+    setIdentification(route.getIdentification());
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert data type to {@link GarminPackage}
+ * @return GarminPackage representing content of data type.
+ */
+  public GarminPackage toGarminPackage(int package_id)
+  {
+    int data_length = Math.min(getIdentification().length()+1,51);
+    GarminPackage pack = new GarminPackage(package_id,data_length);
+    pack.setNextAsString(getIdentification(),data_length,true);
+    return (pack);
+  }
+
 }

@@ -1,10 +1,13 @@
 package org.dinopolis.gpstool.gpsinput.garmin;
 
 import java.awt.Color;
+import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 public class GarminWaypointD107 extends GarminWaypointD103
 {
   protected Color color_;
+  protected short color_index_;
+  protected float distance_;
   
   protected final static byte WAYPOINT_TYPE = 107;
   
@@ -30,19 +33,94 @@ public class GarminWaypointD107 extends GarminWaypointD103
     identification_ = GarminDataConverter.getGarminString(buffer,2,6).trim();
     latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,8);
     longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,12);
-        // unused = GarminDataConverter.getGarminLong(buffer,16);
+        // GarminDataConverter.getGarminLong(buffer,16);  //unused
     comment_ = GarminDataConverter.getGarminString(buffer,20,40).trim();  
-    symbol_type_ = SYMBOL_TYPE[GarminDataConverter.getGarminByte(buffer,60)];
+    symbol_ = GarminDataConverter.getGarminByte(buffer,60);
+    symbol_type_ = SYMBOL_TYPE[symbol_];
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-    display_options_ = DISPLAY_OPTIONS[GarminDataConverter.getGarminByte(buffer,61)];
-        // distance = GarminDataConverter.getGarminFloat(buffer,62);
-    short color_index = GarminDataConverter.getGarminByte(buffer,63);
-    if(color_index == 0xff)
-      color_index = DEFAULT_COLOR_INDEX;
-    color_ = COLORS[color_index];
-    
+    display_ = GarminDataConverter.getGarminByte(buffer,61);
+    display_options_ = DISPLAY_OPTIONS[display_];
+    distance_ = GarminDataConverter.getGarminFloat(buffer,62);
+    color_index_ = GarminDataConverter.getGarminByte(buffer,63);
+    if(color_index_ == 0xff)
+      color_index_ = DEFAULT_COLOR_INDEX;
+    color_ = COLORS[color_index_];
   }
 
+  public GarminWaypointD107(GarminPackage pack)
+  {
+    identification_ = pack.getNextAsString(6).trim();
+    latitude_ = pack.getNextAsSemicircleDegrees();
+    longitude_ = pack.getNextAsSemicircleDegrees();
+    pack.getNextAsLong(); // unused
+    comment_ = pack.getNextAsString(40).trim();  
+    symbol_ = pack.getNextAsByte();
+    symbol_type_ = SYMBOL_TYPE[symbol_];
+    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
+    display_ = pack.getNextAsByte();
+    display_options_ = DISPLAY_OPTIONS[display_];
+    distance_ = pack.getNextAsFloat();
+    color_index_ = pack.getNextAsByte();
+    if(color_index_ == 0xff)
+      color_index_ = DEFAULT_COLOR_INDEX;
+    color_ = COLORS[color_index_];
+  }
+
+  public GarminWaypointD107(GPSWaypoint waypoint)
+  {
+    String tmp;
+    int val = -1;
+
+    tmp = waypoint.getIdentification();
+    identification_ = tmp == null ? "" : tmp;
+    latitude_ = waypoint.getLatitude();
+    longitude_ = waypoint.getLongitude();
+    tmp = waypoint.getComment();
+    comment_ = tmp == null ? "" : tmp;
+    symbol_type_ = (short)GarminWaypointSymbols.getSymbolId(waypoint.getSymbolName());
+    if(symbol_type_ < 0)
+      symbol_type_ = 18; // default symbol (wpt_dot)
+
+    // Convert garmin standard symbol types to symbol type used by D103
+    for (int i=0;i<SYMBOL_TYPE.length;i++)
+      if (SYMBOL_TYPE[i]==symbol_type_)
+	val = i;
+    if (val == -1)
+      val = 0;
+    symbol_ = val;
+
+    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
+    display_ = 0;
+    display_options_ = DISPLAY_OPTIONS[display_];
+    distance_ = 0f;
+    color_index_ = 0xff;
+    if(color_index_ == 0xff)
+      color_index_ = DEFAULT_COLOR_INDEX;
+    color_ = COLORS[color_index_];
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert data type to {@link GarminPackage}
+ * @return GarminPackage representing content of data type.
+ */
+  public GarminPackage toGarminPackage(int package_id)
+  {
+    int data_length = 6 + 4 + 4 + 4 + 40 + 1 + 1 + 4 + 1;
+    GarminPackage pack = new GarminPackage(package_id,data_length);
+
+    pack.setNextAsString(identification_,6,false);
+    pack.setNextAsSemicircleDegrees(latitude_);
+    pack.setNextAsSemicircleDegrees(longitude_);
+    pack.setNextAsLong(0); // unused
+    pack.setNextAsString(comment_,40,false);
+    pack.setNextAsByte(symbol_);
+    pack.setNextAsByte(display_);
+    pack.setNextAsFloat(distance_);
+    pack.setNextAsByte(color_index_);
+
+    return (pack);
+  }
   
 //----------------------------------------------------------------------
 /**
@@ -51,13 +129,10 @@ public class GarminWaypointD107 extends GarminWaypointD103
  * @return Waypoint Color
  * @throws UnsupportedOperationException
  */
-	
-	public Color getColor()
-    throws UnsupportedOperationException
+  public Color getColor() throws UnsupportedOperationException
   {
     return(color_);
   }
-	
  
   public String toString()
   {

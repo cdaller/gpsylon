@@ -44,7 +44,7 @@ public class GarminCapabilities
     int number;
     for (int i=0; i < (buffer[1]/3); i++)
     {
-          // Add received capability to global capability variable
+      // Add received capability to global capability variable
       letter = GarminDataConverter.getGarminString(buffer,2+3*i,1);
       number = GarminDataConverter.getGarminWord(buffer,3+3*i);
       full_name = letter + number;
@@ -54,6 +54,23 @@ public class GarminCapabilities
     }
   }
   
+  public GarminCapabilities(GarminPackage pack)
+  {
+    String full_name;
+    String letter;
+    int number;
+    for (int i=0; i < (pack.getPackageSize()/3); i++)
+    {
+      // Add received capability to global capability variable
+      letter = pack.getNextAsString(1);
+      number = pack.getNextAsWord();
+      full_name = letter + number;
+//      String cap = new String(buffer,2+3*i,1) +(int)(buffer[3+3*i]+256*buffer[4+3*i]);
+      capabilities_.add(full_name);
+      product_capabilities_.add(full_name);
+    }
+  }
+
   public String toString()
   {
     return(product_capabilities_.toString());

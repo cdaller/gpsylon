@@ -272,7 +272,6 @@ public interface GPSMapKeyConstants
 
   
       /** menu resources */
-  public static final String KEY_MENU_CONTROL_LABEL = "menu.control.label";
   public static final String KEY_MENU_MOUSE_MODE_LABEL = "menu.mouse_mode.label";
   public static final String KEY_MENU_PLUGIN_LABEL = "menu.plugin.label";
 

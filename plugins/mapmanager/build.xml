@@ -1,0 +1,179 @@
+
+<project name="org.dinopolis.gpstool.plugin.mapmanager" default="help">
+
+  <property name="release_version" value="1.0"/>
+  <property name="dist_name" value="gpstool_plugin_mapmanager"/>
+  <property name="dist_dir" value="dist"/>
+  <property name="lib_dir" value="lib/java"/>
+  <property name="dinopolis_classes" value="./../../classes"/>
+  <property name="dinopolis_lib_dir" value="./../../lib/java"/>
+  <property name="plugin_install_dir" value="./../"/>
+  <property name="plugin_install_home_dir" value="${user.home}/.gpsmap/plugins"/>
+
+<!-- patternset of gpstool files needed to compile the distribution (used by the common_compile_dist) -->
+  
+  <patternset id="compile.files">
+    <include name="org/dinopolis/gpstool/plugin/mapmanager/*.java"/>
+  </patternset>
+
+<!-- patternset including all required library jar files (other than dinopolis classes) -->
+  <patternset id="gpstool_plugin_mapmanager.lib.patternset">
+  </patternset>
+
+<!-- patternset including all required dinoplis library jar files -->
+  <patternset id="gpstool_plugin_mapmanager.dinopolis_lib.patternset">
+    <include name="openmap.jar"/>
+  </patternset>
+
+
+<!-- targets -->
+ 
+  <target name="help">
+    <echo>
+The following targets are available:
+ - help: shows all available targets of this build.xml file
+ - compile: compiles a distribution
+ - clean: deletes the ${target_class_dir} directory.
+ - clean_dist: deletes the ${dist_dir} directory.
+ - bin_dist: creates a tar.gz file in the dist directory that contains all
+      needed files (plugin jar and libraries).
+ - src_dist: creates a tar.gz file in the dist directory that contains all
+      needed source files (plugin jar and libraries).
+ - install_plugin: installs the plugins and all needed libraries into the
+      '${plugin_install_dir} directory.
+ - install_plugin_home: installs the plugins and all needed libraries into the
+      '${plugin_install_home_dir} directory.
+    </echo>
+  </target>
+
+
+<!-- make a binary distribution: includes documentation and jars.
+   In order to run the gpstool out of the binary distribution first unzip and
+   untar the distribution, switch to the gpstool directory and invoke the gpstool:
+   java -jar gpstool.jar 
+-->
+  <target name="bin_dist" depends="compile">
+    <tstamp/> <!-- needed for ${TODAY} -->
+
+    <mkdir dir="${dist_dir}"/>
+
+<!-- create a property holding the Class-Path for the manifest -->
+    <path id="gpstool_plugin_mapmanager.dist.classpath">
+<!-- no other libraries needed: 
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool_plugin_mapmanager.lib.patternset"/>
+      </fileset>
+-->
+    </path>
+<!-- no other libraries needed
+    <pathconvert pathsep=" " property="gpstool_plugin_mapmanager.dist.lib.classpath"
+                 refid="gpstool_plugin_mapmanager.dist.classpath">
+      <map from="${user.dir}/lib/java" to="lib/java"/>
+    </pathconvert>
+-->
+
+    <!-- build the jar file: Don't forget the MANIFEST.MF the -->
+    <!-- properties files and the images ! -->
+    <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
+      <!-- make the MANIFEST.MF file -->
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Class-Path" value="${gpstool_plugin_mapmanager.dist.lib.classpath}" />
+        <section name="common">
+          <attribute name="Specification-Title" value="Navigation Mouse Mode Plugin for GPSTool" />
+          <attribute name="Specification-Version" value="${release_version}" />
+          <attribute name="Specification-Vendor" value="Christof Dallermassl" />
+          <attribute name="Implementation-Title" value="Navigation Mouse Mode Plugin for GPSTool" />
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
+        </section>
+      </manifest>
+
+      <fileset dir="classes"/>
+      <fileset dir=".">
+        <include name="META-INF/services/org.dinopolis.gpstool.*"/>
+      </fileset>
+    </jar>
+
+<!-- no other libraries needed
+    <copy todir="${dist_dir}/${lib_dir}">
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool_plugin_mapmanager.lib.patternset"/>
+      </fileset>
+    </copy>
+-->
+    <tar longfile="gnu"
+      tarfile="${dist_dir}/${dist_name}_bin-${release_version}.tar"
+      basedir="${dist_dir}"           
+      includes="${dist_name}-${release_version}.jar,${lib_dir}/**"/>
+    <gzip zipfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz" 
+      src="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
+    <delete file="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
+  </target>
+
+
+<!-- src_dist target -->
+  <target name="src_dist" depends="clean,compile"> 
+    <mkdir dir="${dist_dir}"/>
+    <tar longfile="gnu"
+      basedir="${basedir}"
+      destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
+      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,META-INF/**"
+      excludes="*CVS*"
+      compression="gzip"/>
+  </target>
+  
+<!-- compile target -->
+  <target name="compile">
+    <mkdir dir="classes"/>
+    <javac srcdir="src"
+           destdir="classes"
+           classpathref="gpstool_plugin_mapmanager_class_path">
+       <classpath id="gpstool_plugin_mapmanager_class_path">
+<!-- no other libraries needed
+        <fileset dir="lib/java">
+          <patternset refid="gpstool_plugin_mapmanager.lib.patternset"/>
+        </fileset>
+-->
+<!-- dinopolis libraries: -->
+        <fileset dir="${dinopolis_lib_dir}">
+          <patternset refid="gpstool_plugin_mapmanager.dinopolis_lib.patternset"/>
+        </fileset>
+        <pathelement path="${dinopolis_classes}"/>
+      </classpath>
+      <patternset refid="compile.files"/>
+    </javac>         
+  </target>       
+  
+<!-- clean_all target -->
+  <target name="clean_all" depends="clean,clean_dist">
+  </target>
+
+<!-- clean target -->
+  <target name="clean" depends="">
+    <delete dir="${target_class_dir}"/>
+  </target>
+
+<!-- clean_dist target -->
+  <target name="clean_dist" depends="">
+    <delete dir="${dist_dir}"/>
+  </target>
+
+<!-- install plugin target -->
+  <target name="install_plugin" depends="bin_dist">
+    <copy todir="${plugin_install_dir}">
+      <fileset dir="${dist_dir}">
+        <exclude name="*.tar.gz"/>
+      </fileset>
+    </copy>
+  </target>
+
+<!-- install plugin home target -->
+  <target name="install_plugin_home" depends="bin_dist">
+    <copy todir="${plugin_install_home_dir}">
+      <fileset dir="${dist_dir}">
+        <exclude name="*.tar.gz"/>
+      </fileset>
+    </copy>
+  </target>
+</project>

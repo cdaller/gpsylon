@@ -490,7 +490,7 @@ public class MenuFactory
   /**
    * Initializes the given menu item with all its parameters.
    *
-   * @param menu_item the menu item to initialize.
+   * @param menu the menu to initialize.
    * @param prefix the prefix
    * @param menu_name the name(s) of the menu.
    * @param resources the resource file to read the required resources

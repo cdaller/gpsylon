@@ -109,7 +109,7 @@ public interface GPSWaypoint
 //----------------------------------------------------------------------
 /**
  * Returns true if the altitude of this waypoint is valid. This is
- * equal to the expression <code>getAltitude() == Double.NaN</code>.
+ * equal to the expression <code>Double.isNaN(getAltitude())</code>.
  * @param true if waypoint has valid altitude.
  */
   public boolean hasValidAltitude();

@@ -458,6 +458,12 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 			processHDT(sentence);
 			return;
 		}
+
+		if(id.equals("RME"))
+		{
+			processRME(sentence);
+			return;
+		}
   }
 
 //----------------------------------------------------------------------
@@ -518,7 +524,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
     catch(NumberFormatException nfe)
     {
-      nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
     }
   }
 
@@ -566,7 +573,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
     catch(NumberFormatException nfe)
     {
-      nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
     }
   }
 
@@ -609,7 +617,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
     catch(NumberFormatException nfe)
     {
-      nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
     }
   }
 
@@ -676,7 +685,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
     catch(NumberFormatException nfe)
     {
-      nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
     }
     catch(ArrayIndexOutOfBoundsException aiobe)
     {
@@ -707,7 +717,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
     catch(NumberFormatException nfe)
     {
-      nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
     }
   }
 
@@ -740,7 +751,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
     catch(NumberFormatException nfe)
     {
-      nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
     }
   }
 
@@ -773,7 +785,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 		}
 		catch(NumberFormatException nfe)
 		{
-			nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
 		}
 
 		try
@@ -784,7 +797,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 		}
 		catch(NumberFormatException nfe)
 		{
-			nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
 		}
 	}
 
@@ -811,7 +825,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 		}
 		catch(NumberFormatException nfe)
 		{
-			nfe.printStackTrace();
+      if(Debug.DEBUG && Debug.isEnabled("gpstool_nmea"))
+        nfe.printStackTrace();
 		}
 	}
 

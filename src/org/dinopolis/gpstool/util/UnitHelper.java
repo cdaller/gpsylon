@@ -136,7 +136,7 @@ public class UnitHelper
 /**
  * Set the format for heading to use.
  *
- * @param angle_format the heading format to use.
+ * @param heading_format the heading format to use.
  * @see org.dinopolis.gpstool.util.angle.AngleFormat
  */
   public void setHeadingFormat(String heading_format)
@@ -337,8 +337,8 @@ public class UnitHelper
  * Returns the unit for speed for the unit system previously set
  * ("kmh","mph","knots").
  *
- * @param  the unit for speed for the unit system previously set.
- * @return the converted value depending on the unit system.
+ * @return the the unit for speed for the unit system previously set
+ * ("kmh","mph","knots").
  */
   public String getSpeedUnit()
   {
@@ -359,8 +359,8 @@ public class UnitHelper
  * Returns the unit for altitude for the unit system previously set
  * ("m","ft","ft").
  *
- * @param  the unit for altitude for the unit system previously set.
- * @return the converted value depending on the unit system.
+ * @return  the unit for altitude for the unit system previously set
+ * ("m","ft","ft").
  */
   public String getAltitudeUnit()
   {
@@ -380,8 +380,8 @@ public class UnitHelper
  * Returns the unit for distance for the unit system previously set
  * ("km","mi","nmi").
  *
- * @param  the unit for distance for the unit system previously set.
- * @return the converted value depending on the unit system.
+ * @return the unit for distance for the unit system previously set
+ * ("km","mi","nmi").
  */
   public String getDistanceUnit()
   {

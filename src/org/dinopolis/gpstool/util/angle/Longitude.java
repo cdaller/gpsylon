@@ -100,7 +100,7 @@ public final class Longitude extends Angle {
      * (e.g. 45.5?) or degrees with minutes and seconds (e.g. 45?30').
      * The hemisphere (E or W) is optional (default to East).
      *
-     * @param  soruce A string to be converted to a <code>Longitude</code>.
+     * @param  source A string to be converted to a <code>Longitude</code>.
      * @throws NumberFormatException if the string does not contain a parsable longitude.
      */
     public Longitude(final String source) throws NumberFormatException {

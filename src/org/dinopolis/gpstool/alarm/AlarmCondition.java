@@ -60,7 +60,7 @@ public interface AlarmCondition extends PropertyChangeListener
 /**
  * Sets the alarm trigger to be informed about an alarm to occur..
  *
- * @param trigger the trigger to call, if the condition becomes true.
+ * @param listener the listener to call, if the condition becomes true.
  */
   public void setAlarmListener(AlarmListener listener);
 

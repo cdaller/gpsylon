@@ -281,7 +281,7 @@ public class FlatProjection extends Orthographic
       /**
        * Inverse project a Point.
        * 
-       * @param point x,y Point
+       * @param pt x,y Point
        * @param llp resulting LatLonPoint
        * @return LatLonPoint llp
        */

@@ -1,11 +1,34 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/02/07: fixed bug in algorithm that decided which parts of maps
+            are displayed.
+
+            bad bug in 0.4.14 pre4 found, that prevented the use of a
+            plugin that uses menu items.
+
+            new plugin: memory monitor: uses the MemoryMonitor of batik
+
+2003/02/06: fixed bug that prevented windows paths to be written
+            correctly into the properties file.
+
+            hide some internal properties in the property editor.
+
+            started a map manager plugin
+
+2003/02/05: changed GuiPlugin to hold a layer
+
+            added pan functionality to NavigationMouseMode (plugin)
+
+2003/01/29: the default mouse mode name is set in the properties
+            file. before, the last mode was chosen and this was not
+            always the best one :-)
+
 2003/01/24: plugin architecture is finished, downloadmousemode
             changed. Plugin things need further testing (GuiPlugin and
             LayerPlugin with menus are not tested at all (there are no
             GuiPlugins/LayerPlugins at the moment :-))
 
-	    added targets to build.xml file: src_dist, bin_dist,
+            added targets to build.xml file: src_dist, bin_dist,
             javadoc, .... build.xml should do most of the things it is
             supposed to.
 

@@ -105,10 +105,8 @@ import org.dinopolis.gpstool.gui.layer.MultiMapLayer;
 import org.dinopolis.gpstool.gui.layer.PositionLayer;
 import org.dinopolis.gpstool.gui.layer.ScaleLayer;
 import org.dinopolis.gpstool.gui.layer.ShapeLayer;
-import org.dinopolis.gpstool.gui.layer.TestLayer;
 import org.dinopolis.gpstool.gui.layer.TrackLayer;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
-import org.dinopolis.gpstool.plugin.LayerPlugin;
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.Plugin;
 import org.dinopolis.gpstool.plugin.WriteImagePlugin;
@@ -143,11 +141,10 @@ import org.dinopolis.util.gui.SelectedButtonActionSynchronizer;
 
 public class GPSMap
   implements PropertyChangeListener, GPSMapKeyConstants, 
-	MapNavigationHook, StatusHook, MapManagerHook,
-	Positionable
+	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.14-pre4";
+  public final static String GPSMAP_VERSION = "0.4.14-pre5";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -161,7 +158,6 @@ public class GPSMap
   protected TrackLayer track_layer_;
   protected ShapeLayer shape_layer_;
   protected LocationLayer location_layer_;
-  protected TestLayer test_layer_;
   protected ScaleLayer scale_layer_;
   protected GraticuleLayer graticule_layer_;
     
@@ -172,6 +168,7 @@ public class GPSMap
   protected JFrame main_frame_;
 
   protected MapKeyHandler map_key_handler_;
+  protected MapManager map_manager_;
   
   protected StatusBar status_bar_;
   protected Tachometer tacho_meter_;
@@ -180,7 +177,6 @@ public class GPSMap
   protected MouseModeManager mouse_mode_manager_;
 
   protected Vector gui_plugins_ = new Vector();
-  protected Vector layer_plugins_ = new Vector();
 
       /** the default center point */
   protected LatLonPoint current_gps_position_ = new LatLonPoint(47.06005f,15.47314f);
@@ -190,9 +186,6 @@ public class GPSMap
       /** destination for gps track */
   protected LatLonPoint destination_position_;
 
-      /** a Vector containing the map infos for the used maps */
-  protected Vector map_infos_;
-  protected HashSet used_map_filenames_ = new HashSet();
 
       /** static variables for distance formatting */
   protected static DecimalFormat distance_formatter_;
@@ -404,9 +397,6 @@ public class GPSMap
         /** the Actions */
     Action[] actions_ = { new QuitAction(),
                           new EditResourcesAction(),
-//                            new MouseDistanceModeAction(),
-//                            new MouseNavigationModeAction(),
-//                            new MousePositionModeAction(),
                           new ZoomInAction(),
                           new ZoomOutAction(),
                           new PanAction(ACTION_PAN_WEST,-0.2f,0f),
@@ -484,9 +474,12 @@ public class GPSMap
     map_bean_.setBackgroundColor(new Color(0,0,0));
     map_bean_.setDoubleBuffered(true);
 
+    map_manager_ = new MapManager();
+    map_manager_.initialize(resources_,main_frame_);
+    
         // initialize data for plugins (PluginSupport):
     hook_manager_ = new HookManager();
-    hook_manager_.setMapManagerHook(this);
+    hook_manager_.setMapManagerHook(map_manager_);
     hook_manager_.setMapNavigationHook(this);
     hook_manager_.setStatusHook(this); 
     hook_manager_.setMainFrame(main_frame_);
@@ -519,16 +512,13 @@ public class GPSMap
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
     
     
-        // instantiate, initialize and add plugins (layers, gui and mousemdoes)
+        // instantiate, initialize and add plugins (gui and mousemodes)
     initializePlugins();
     
     graticule_layer_ = new GraticuleLayer();
     graticule_layer_.initialize(resources_);
     map_bean_.add(graticule_layer_);
     
-    test_layer_ = new TestLayer(resources_);
-    map_bean_.add(test_layer_);
-
     scale_layer_ = new ScaleLayer(resources_);
     map_bean_.add(scale_layer_);
 
@@ -562,7 +552,7 @@ public class GPSMap
     map_bean_.addMouseListener(location_layer_);
 
     map_layer_ = new MultiMapLayer();
-    map_layer_.initialize(resources_);
+    map_layer_.initializePlugin(hook_manager_);
     map_bean_.add(map_layer_);
 
 
@@ -614,9 +604,7 @@ public class GPSMap
     graticule_layer_.addLayerStatusListener(status_bar_);
     location_layer_.addLayerStatusListener(status_bar_);
 
-        // load maps:
-    map_infos_ = loadMapInfo();
-    map_layer_.addMaps(map_infos_);
+//    map_layer_.addMaps(map_manager_.getMapInfos());
 
         // create popup menu
 //    map_popup_menu_ = createPopupMenu();
@@ -625,6 +613,8 @@ public class GPSMap
     menu_bar_ = MenuFactory.createMenuBar(resources_, action_store_);
     
     addMouseModesToMenu();
+    addGuiPluginsToMenu();
+    
     // disable the menus "mouse modes" and "plugins" if they are not used:
     disableMenuIfEmpty(resources_.getString(KEY_MENU_PLUGIN_LABEL));
     disableMenuIfEmpty(resources_.getString(KEY_MENU_MOUSE_MODE_LABEL));
@@ -641,6 +631,24 @@ public class GPSMap
 //      map_bean_.add(destination_layer_);
 //  //      map_bean_.add(position_layer_);
 //  //    map_bean_.add(map_layer_);
+
+        // start all plugins:
+    Iterator iterator = gui_plugins_.iterator();
+    GuiPlugin plugin;
+    while(iterator.hasNext())
+    {
+      plugin = (GuiPlugin)iterator.next();
+      try
+        {
+          plugin.startPlugin();
+        }
+      catch(Exception e)
+      {
+        System.err.println("ERROR: plugin '"+plugin.getPluginName()+" threw an exception on startup: ");
+        e.printStackTrace();
+      }
+    }
+    
 
     main_frame_.setVisible(true);
 //     main_frame_.getContentPane().requestFocus();
@@ -721,116 +729,6 @@ public class GPSMap
   }
   
   
-//----------------------------------------------------------------------
-/**
- * Loads the mapinfo data from the map description file and sends it
- * to the map layer.
- *
- * @return a Vector containing MapInfo objects.
- */
-
-  protected Vector loadMapInfo()
-  {
-    String main_dir = resources_.getString(KEY_FILE_MAINDIR);
-
-    String description_filename = resources_.getString(KEY_FILE_MAP_DESCRIPTION_FILE);
-
-    
-    String full_name = FileUtil.getAbsolutePath(main_dir,description_filename);
-
-    Vector map_infos = new Vector();
-
-    BufferedReader map_reader;
-    try
-    {
-      map_reader= new BufferedReader(new FileReader(full_name));
-    }
-    catch(FileNotFoundException fnfe)
-    {
-      System.err.println("ERROR: Could not open map description file '"+full_name+"'");
-      JOptionPane.showMessageDialog(main_frame_,
-                                    resources_.getString(KEY_LOCALIZE_MESSAGE_FILE_NOT_FOUND_MESSAGE)
-                                    +": '"+full_name+"'",
-                                    resources_.getString(KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
-                                    JOptionPane.ERROR_MESSAGE);
-      return(map_infos);
-    }
-
-    try
-    {
-      int linenumber = 0;
-      String line;
-      String latitude_string;
-      String longitude_string;
-      String map_filename;
-      String scale_string;
-      String image_height_string;
-      String image_width_string;
-      MapInfo map_info;
-      StringTokenizer tokenizer;
-      
-      while ((line = map_reader.readLine()) != null)
-      {
-        linenumber++;
-        if ((!line.startsWith("#")) && (line.length() > 0))
-        {
-          try
-          {
-            tokenizer = new StringTokenizer(line);
-            map_filename = tokenizer.nextToken();
-            latitude_string = tokenizer.nextToken();
-            longitude_string = tokenizer.nextToken();
-            scale_string = tokenizer.nextToken();
-            image_width_string = tokenizer.nextToken();
-            image_height_string = tokenizer.nextToken();
-
-                // check for absolute or relative pathnames:
-            File map_file = new File(map_filename);
-            if(!map_file.isAbsolute())
-              map_filename = new File(main_dir,map_filename).getCanonicalPath();
-
-            used_map_filenames_.add(map_filename);
-            
-            try
-            {
-              map_info = new MapInfo(map_filename,
-                                     Double.parseDouble(latitude_string),
-                                     Double.parseDouble(longitude_string),
-                                     Float.parseFloat(scale_string),
-                                     Integer.parseInt(image_width_string),
-                                     Integer.parseInt(image_height_string));
-//              System.out.println("MapInfo loaded: "+map_info);
-              map_infos.add(map_info);
-            }
-            catch(NumberFormatException nfe)
-            {
-              System.err.println("ERROR: Wrong format in line : "
-                               +linenumber+" in file '"+full_name+"':"
-                                 +nfe.getMessage());
-              System.err.println("Ignoring line '"+line+"'");
-            }
-          }
-          catch(NoSuchElementException nsee)
-          {
-            System.err.println("ERROR: reading map description in line "
-                               +linenumber+" in file '"+full_name+"'");
-            System.err.println("The correct format of the map description file is:");
-            System.err.println("<mapfilename> <latitude of center> <longitude of center> <scale> <width> <height>");
-            System.err.println("Ignoring line '"+line+"'");
-          }
-        }
-      }      
-      map_reader.close();
-    }
-    catch(IOException ioe)
-    {
-      ioe.printStackTrace();
-    }
-    finally
-    {
-      return(map_infos);
-    }
-  }
 
 
 //----------------------------------------------------------------------
@@ -928,22 +826,19 @@ public class GPSMap
 
 //----------------------------------------------------------------------
 /**
- * Adds the sub menus of plugins to the  menu bar (Menu Plugin).
+ * Adds the sub menu of plugins to the  menu bar (Menu Plugin).
+ *
+ * @param the sub menu of the plugin to add to the Plugin Menu.
  */
   protected void addToPluginsMenu(JMenuItem plugin_sub_menu)
   {
-        // find the menu that should contain the mouse modes (control/mouse mode):
+        // find the menu that should contain the plugin:
 
     JMenu plugin_menu = (JMenu)findMenuItem(menu_bar_,
                                             resources_.getString(KEY_MENU_PLUGIN_LABEL));
     if(plugin_menu != null)
     {
-      JMenuItem[] mouse_mode_items = mouse_mode_manager_.getMenuItems();
-      for(int item_count = 0; item_count < mouse_mode_items.length; item_count++)
-      {
-//          System.out.println("Adding Mouse Mode "+mouse_mode_items[item_count] +" to menu.");
-        plugin_menu.add(mouse_mode_items[item_count]);
-      }
+      plugin_menu.add(plugin_sub_menu);
     }
     else
     {
@@ -964,8 +859,9 @@ public class GPSMap
       JCheckBoxMenuItem menu_item = new JCheckBoxMenuItem(action);
       // keep the state of the menu and the action in sync
       SelectedButtonActionSynchronizer syncer =
-	new SelectedButtonActionSynchronizer(menu_item,action);
+        new SelectedButtonActionSynchronizer(menu_item,action);
       layer_menu.add(menu_item);
+      menu_item.setSelected(false);
     }
     else
       System.err.println("WARNING: could not find 'layers' menu, do not add on/off action");
@@ -1379,39 +1275,29 @@ public class GPSMap
         // GuiPlugins
     Object[] plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.GuiPlugin.class);
     GuiPlugin gui_plugin;
+    Layer layer;
     JMenuItem plugin_menu;
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       gui_plugin = (GuiPlugin)plugins[plugins_index];
-      gui_plugins_.add(gui_plugin);
       System.out.println("Adding Gui Plugin: " + gui_plugin.getPluginName());
-      gui_plugin.initializePlugin(hook_manager_);
-      addMouseModes(gui_plugin.getMouseModes());
-          // add sub menus of plugin:
-      plugin_menu = gui_plugin.getSubMenu();
-      if(plugin_menu != null)
-        addToPluginsMenu(plugin_menu);
-
-          // add main menu of plugin:
-      plugin_menu = gui_plugin.getMainMenu();
-      menu_bar_.add(plugin_menu);
+      addGuiPlugin(gui_plugin);
     }
 
-        // LayerPlugins
-    plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.LayerPlugin.class);
-    LayerPlugin layer_plugin;
-    for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
-    {
-      layer_plugin = (LayerPlugin)plugins[plugins_index];
-      System.out.println("Adding Layer Plugin: " + layer_plugin.getPluginName());
-      addLayerPlugin(layer_plugin);
-    }
+//          // LayerPlugins
+//      plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.LayerPlugin.class);
+//      LayerPlugin layer_plugin;
+//      for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
+//      {
+//        layer_plugin = (LayerPlugin)plugins[plugins_index];
+//        System.out.println("Adding Layer Plugin: " + layer_plugin.getPluginName());
+//        addLayerPlugin(layer_plugin);
+//      }
 
         // MouseMode Plugins:
     plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.MouseModePlugin.class);
         // initialize all mouse modes and add them as mouselisteners:
     MouseModePlugin mouse_mode_plugin;
-    Layer layer;
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       mouse_mode_plugin = (MouseModePlugin)plugins[plugins_index];
@@ -1451,33 +1337,55 @@ public class GPSMap
  */
   protected void addMouseModes(MouseMode[] mouse_modes)
   {
+    if(mouse_modes == null)
+      return;
     for(int index = 0; index < mouse_modes.length; index++)
       addMouseMode(mouse_modes[index]);
   }
 
 //----------------------------------------------------------------------
 /**
- * Adds the given layer plugin to the layers menu and creates an
- * action to switch the layer on/off.
+ * Adds the given gui plugin to the map bean, the menus, the mouse
+ * modes, and creates an action to switch the plugin on/off.
  *
  * @param layer_plugin the plugin to add
  */
-  protected void addLayerPlugin(LayerPlugin layer_plugin)
+  protected void addGuiPlugin(GuiPlugin plugin)
   {
-    layer_plugins_.add(layer_plugin);
-    layer_plugin.initializePlugin(hook_manager_);
-    addMouseModes(layer_plugin.getMouseModes());
-    map_bean_.add(layer_plugin);
-    // add sub menus of plugin:
-    JMenuItem plugin_menu = layer_plugin.getSubMenu();
-    if(plugin_menu != null)
-      addToPluginsMenu(plugin_menu);
-    
-    // add main menu of plugin:
-    plugin_menu = layer_plugin.getMainMenu();
-    menu_bar_.add(plugin_menu);
+    gui_plugins_.add(plugin);
+    plugin.initializePlugin(hook_manager_);
+    addMouseModes(plugin.getMouseModes());
+        // add layer of plugin:
+    Layer layer = plugin.getLayer();
+    if(layer != null)
+      map_bean_.add(layer);
 
-    addOnOffActionToLayersMenu(new LayerPluginOnOffAction(layer_plugin));
+        // add mouse modes of plugin:
+    addMouseModes(plugin.getMouseModes());
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Adds the menu entries of the plugins.
+ */
+  protected void addGuiPluginsToMenu()
+  {
+    Iterator iterator = gui_plugins_.iterator();
+    GuiPlugin plugin;
+    while(iterator.hasNext())
+    {
+      plugin = (GuiPlugin)iterator.next();
+      addOnOffActionToLayersMenu(new GuiPluginOnOffAction(plugin));
+          // add sub menus of plugin:
+      JMenuItem plugin_menu = plugin.getSubMenu();
+      if(plugin_menu != null)
+        addToPluginsMenu(plugin_menu);
+      
+          // add main menu of plugin:
+      plugin_menu = plugin.getMainMenu();
+      if(plugin_menu != null)
+        menu_bar_.add(plugin_menu);
+    }
   }
 
 
@@ -2120,74 +2028,6 @@ public class GPSMap
 //   {
 //   }
 
-//----------------------------------------------------------------------
-/**
- * Adds a new map to the system. This method is responsible to make
- * this information permantent and to add this map to the running
- * system. If the filename in map_info is already used, the map is not
- * added.
- *
- * @param map_info the new map
- */
-
-  public synchronized void addNewMap(MapInfo map_info)
-  {
-    String new_map_filename = map_info.getFilename(); // full filename
-    if(used_map_filenames_.contains(new_map_filename))
-    {
-      System.err.println("Filename '"+new_map_filename+"' already used, map ignored!");
-      return;
-    }
-    
-    String main_dir = resources_.getString(KEY_FILE_MAINDIR);
-    String description_filename = resources_.getString(KEY_FILE_MAP_DESCRIPTION_FILE);
-    
-    String maps_filename = main_dir + File.separator + description_filename;
-
-    BufferedWriter map_writer;
-
-    if(new_map_filename.startsWith(main_dir))
-      new_map_filename = new_map_filename.substring(main_dir.length()+1);
-    try
-    {
-      map_writer= new BufferedWriter(new FileWriter(maps_filename,true)); // append mode
-
-      StringBuffer new_line = new StringBuffer();
-
-          // Locale.US is used to get the decimal point as a point!
-      NumberFormat latlon_formatter = NumberFormat.getInstance(Locale.US);
-      if(latlon_formatter instanceof DecimalFormat)
-        ((DecimalFormat)latlon_formatter).applyPattern("#.#####");
-      
-      NumberFormat scale_formatter = NumberFormat.getInstance(Locale.US);
-      if(scale_formatter instanceof DecimalFormat)
-        ((DecimalFormat)scale_formatter).applyPattern("#.#");
-      
-      new_line.append(new_map_filename);
-      new_line.append(" ");
-      new_line.append(latlon_formatter.format(map_info.getLatitude()));
-      new_line.append(" ");
-      new_line.append(latlon_formatter.format(map_info.getLongitude()));
-      new_line.append(" ");
-      new_line.append(scale_formatter.format(map_info.getScale()));
-      new_line.append(" ");
-      new_line.append(map_info.getWidth()); 
-      new_line.append(" ");
-      new_line.append(map_info.getHeight()); 
-      map_writer.write(new_line.toString());
-      map_writer.newLine();
-    
-      map_writer.close();
-    }
-    catch(IOException ioe)
-    {
-      System.err.println("ERROR: On writing to map description file '"+maps_filename+"': "+ioe.getMessage());
-      return;
-    }
-    
-        // add the map to the running map layer:
-    map_layer_.addMap(map_info);
-  }
 
 //----------------------------------------------------------------------
 /**
@@ -2467,6 +2307,25 @@ public class GPSMap
 
     public void actionPerformed(ActionEvent event)
     {
+          // inform all plugins to shutdown:
+      Iterator iterator = gui_plugins_.iterator();
+      GuiPlugin plugin;
+      while(iterator.hasNext())
+      {
+        plugin = (GuiPlugin)iterator.next();
+        try
+        {
+          plugin.stopPlugin();
+        }
+        catch(Exception e)
+        {
+          System.err.println("ERROR: plugin '"+plugin.getPluginName()+" threw an exception on shutdown:");
+          e.printStackTrace();
+        }
+      }
+      
+      
+          // save window locaton and dimensions:
       Point location;
       Dimension dimension;
       if (resources_.getBoolean(KEY_REMEMBER_FRAME_SETTINGS))
@@ -2497,6 +2356,7 @@ public class GPSMap
         resources_.setDouble(KEY_MAP_SCALE, map_bean_.getScale());
       }
 
+          // save the resources:
       try
       {
         resources_.store();
@@ -2506,6 +2366,7 @@ public class GPSMap
         System.err.println("ERROR: could not save resources: "+exc.getMessage());
       }
 
+          // close connection to gps device
       try
       {
         if(gps_data_processor_ != null)
@@ -2521,131 +2382,8 @@ public class GPSMap
     }
   }
 
-      //----------------------------------------------------------------------
-      /**
-       * The Action that triggers a change for the mousemode events.
-       */
 
-  class MousePositionModeAction extends AbstractAction 
-  {
-
-        //----------------------------------------------------------------------
-        /**
-         * The Default Constructor.
-         */
-
-    public MousePositionModeAction()
-    {
-      super(ACTION_MOUSE_POSITION_MODE);
-      putValue(MenuFactory.SELECTED, new Boolean(false));
-    }
-
-        //----------------------------------------------------------------------
-        /**
-         * Stores bounds and locations if this option was enabled and
-         * exits.
-         * 
-         * @param event the action event
-         */
-
-    public void actionPerformed(ActionEvent event)
-    {
-          // unselect the other mouse modes:
-// TODO FIXXME Does only work once!
-      Action action = action_store_.getAction(ACTION_MOUSE_NAVIGATION_MODE);
-      if(action != null)
-        action.putValue(MenuFactory.SELECTED, new Boolean(false));
-      action = action_store_.getAction(ACTION_MOUSE_DISTANCE_MODE);
-      if(action != null)
-        action.putValue(MenuFactory.SELECTED, new Boolean(false));
-
-//      mouse_delegator_.setActiveMouseModeWithID(SelectMouseMode.modeID);
-    }
-  }
-
-      //----------------------------------------------------------------------
-      /**
-       * The Action that triggers a change for the mousemode events.
-       */
-
-  class MouseDistanceModeAction extends AbstractAction 
-  {
-
-        //----------------------------------------------------------------------
-        /**
-         * The Default Constructor.
-         */
-
-    public MouseDistanceModeAction()
-    {
-      super(ACTION_MOUSE_DISTANCE_MODE);
-      putValue(MenuFactory.SELECTED, new Boolean(false));
-    }
-
-        //----------------------------------------------------------------------
-        /**
-         * Stores bounds and locations if this option was enabled and
-         * exits.
-         * 
-         * @param event the action event
-         */
-
-    public void actionPerformed(ActionEvent event)
-    {
-          // unselect the other mouse modes:
-      Action action = action_store_.getAction(ACTION_MOUSE_NAVIGATION_MODE);
-      if(action != null)
-        action.putValue(MenuFactory.SELECTED, new Boolean(false));
-      action = action_store_.getAction(ACTION_MOUSE_POSITION_MODE);
-      if(action != null)
-        action.putValue(MenuFactory.SELECTED, new Boolean(false));
-
-//      mouse_delegator_.setActiveMouseModeWithID(DistanceMouseMode.modeID);
-    }
-  }
-
-      //----------------------------------------------------------------------
-      /**
-       * The Action that triggers a change for the mousemode events.
-       */
-
-  class MouseNavigationModeAction extends AbstractAction 
-  {
-
-        //----------------------------------------------------------------------
-        /**
-         * The Default Constructor.
-         */
-
-    public MouseNavigationModeAction()
-    {
-      super(ACTION_MOUSE_NAVIGATION_MODE);
-      putValue(MenuFactory.SELECTED, new Boolean(true)); // default mode
-    }
-
-        //----------------------------------------------------------------------
-        /**
-         * Stores bounds and locations if this option was enabled and
-         * exits.
-         * 
-         * @param event the action event
-         */
-
-    public void actionPerformed(ActionEvent event)
-    {
-          // unselect the other mouse modes:
-      Action action = action_store_.getAction(ACTION_MOUSE_DISTANCE_MODE);
-      if(action != null)
-        action.putValue(MenuFactory.SELECTED, new Boolean(false));
-      action = action_store_.getAction(ACTION_MOUSE_POSITION_MODE);
-      if(action != null)
-        action.putValue(MenuFactory.SELECTED, new Boolean(false));
-       
-//      mouse_delegator_.setActiveMouseModeWithID(NavMouseMode.modeID);
-    }
-  }
-
-      //----------------------------------------------------------------------
+//----------------------------------------------------------------------
       /**
        * The Action that triggers zoom in event.
        */
@@ -2929,7 +2667,7 @@ public class GPSMap
                        new Double(longitude_string).doubleValue(),
                        new Float(scale_string).floatValue(),
                        1280,1024);
-                addNewMap(info);
+	      map_manager_.addNewMap(info);
             }
             catch(NoSuchElementException nsee)
             {
@@ -3210,20 +2948,24 @@ public class GPSMap
       * The Action for switching a layer on or off
       */
 
- class LayerPluginOnOffAction extends AbstractAction 
+ class GuiPluginOnOffAction extends AbstractAction implements PropertyChangeListener
  {
 
-   LayerPlugin layer_plugin_;
+   GuiPlugin plugin_;
 
        //----------------------------------------------------------------------
        /**
         * The Default Constructor.
         */
 
-   public LayerPluginOnOffAction(LayerPlugin layer_plugin)
+   public GuiPluginOnOffAction(GuiPlugin plugin)
    {
-     super(layer_plugin.getName());
-     layer_plugin_ = layer_plugin;
+     super(plugin.getPluginName());
+     plugin_ = plugin;
+
+         // inform me as well about any changes! (could also be implemented
+         // by overriding the firePropertyChanged method)
+     addPropertyChangeListener(this);
    }
 
        //----------------------------------------------------------------------
@@ -3246,7 +2988,7 @@ public class GPSMap
         Object selected = event.getNewValue();
 //        System.out.println("changed "+event.getPropertyName()+" to " +selected);
         if((selected != null) && (selected instanceof Boolean))
-          layer_plugin_.setActive(((Boolean)selected).booleanValue());
+          plugin_.setActive(((Boolean)selected).booleanValue());
      }
    }
  }

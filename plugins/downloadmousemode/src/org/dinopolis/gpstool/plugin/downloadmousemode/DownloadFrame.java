@@ -73,8 +73,9 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
 
 
   public static final String COMMAND_DOWNLOAD_SCALE = "scale";
-  public static final String COMMAND_DOWNLOAD_PREVIEW = "preview";
+//  public static final String COMMAND_DOWNLOAD_PREVIEW = "preview";
   public static final String COMMAND_DOWNLOAD_DOWNLOAD = "download";
+  public static final String COMMAND_DOWNLOAD_MAPSERVER = "mapserver";
   public static final String COMMAND_DOWNLOAD_CLOSE = "close";
 
   public static final String MAP_PREFIX = "map_";
@@ -157,6 +158,9 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
     
     scale_box_.setActionCommand(COMMAND_DOWNLOAD_SCALE);
     scale_box_.addActionListener(action_listener);
+
+    mapserver_box_.setActionCommand(COMMAND_DOWNLOAD_MAPSERVER);
+    mapserver_box_.addActionListener(action_listener);
 
     setDownloadCoordinates(resources.getDouble(GPSMapKeyConstants.KEY_CURRENT_MAP_POSITION_LATITUDE),
                            resources.getDouble(GPSMapKeyConstants.KEY_CURRENT_MAP_POSITION_LONGITUDE));

@@ -177,6 +177,16 @@ public class DownloadMouseModeLayer extends BasicLayer
         // attach my resources to the main resources, so the property
         // editor sees them:
     application_resources_.attachResources(resources_);
+
+    try
+    {
+          // prevent any "old" values in the gpsmap resources to confuse
+          // this plugin:
+      application_resources_.unset("download.map.url.choice");
+    }
+    catch(MissingResourceException ignored) {}
+
+
     download_calculator_ = new DownloadMapCalculator();
         // find all available map retrieval plugins:
         // (do not use a string here, so the compiler checks for typos)

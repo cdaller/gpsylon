@@ -302,11 +302,11 @@ public class SatelliteActivity extends JComponent
 
         if(satellite_infos_ != null)
         {
-	  // copy satellite info, so changes during painting do not disturb:
+              // copy satellite info, so changes during painting do not disturb:
           SatelliteInfo[] sat_infos;
           synchronized(satellite_infos_lock_)
           {
-	    sat_infos = new SatelliteInfo[satellite_infos_.length];
+            sat_infos = new SatelliteInfo[satellite_infos_.length];
             System.arraycopy(satellite_infos_,0,sat_infos,0,satellite_infos_.length);
           }
           g.setColor(active_color_);

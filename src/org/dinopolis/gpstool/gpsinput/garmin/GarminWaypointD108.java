@@ -60,12 +60,17 @@ public class GarminWaypointD108 implements GarminWaypoint
 
   public GarminWaypointD108(int[] buffer)
   {
+//     for(int index = 0; index < buffer.length; index++)
+//     {
+//       System.out.println(index+":"+buffer[index] + " / " + (char)buffer[index]);
+//     }
     class_type_ = GarminDataConverter.getGarminByte(buffer,2);
     if(class_type_ < CLASS_NAMES.length)
       class_name_ = CLASS_NAMES[class_type_];
     else
       class_name_ = "unknown";
     short color_index = GarminDataConverter.getGarminByte(buffer,3);
+    System.out.println("colorindex:"+color_index);
     if(color_index == 0xff)
       color_index = DEFAULT_COLOR_INDEX;
     color_ = COLORS[color_index];
@@ -85,17 +90,17 @@ public class GarminWaypointD108 implements GarminWaypoint
     state_code_ = GarminDataConverter.getGarminString(buffer,46,2).trim();
     country_code_ = GarminDataConverter.getGarminString(buffer,48,2).trim();
         // read strings:
-    identification_ = GarminDataConverter.getGarminString(buffer,50,51);
+    identification_ = GarminDataConverter.getGarminString(buffer,50,51).trim();
     int offset = 50 + identification_.length() + 1;
-    comment_ = GarminDataConverter.getGarminString(buffer,offset,51);
+    comment_ = GarminDataConverter.getGarminString(buffer,offset,51).trim();
     offset = offset + comment_.length() + 1;
-    facility_ = GarminDataConverter.getGarminString(buffer,offset,31);
+    facility_ = GarminDataConverter.getGarminString(buffer,offset,31).trim();
     offset = offset + facility_.length() + 1;
-    city_ = GarminDataConverter.getGarminString(buffer,offset,25);
+    city_ = GarminDataConverter.getGarminString(buffer,offset,25).trim();
     offset = offset + city_.length() + 1;
-    address_ = GarminDataConverter.getGarminString(buffer,offset,51);
+    address_ = GarminDataConverter.getGarminString(buffer,offset,51).trim();
     offset = offset + address_.length() + 1;
-    cross_road_ = GarminDataConverter.getGarminString(buffer,offset,51);
+    cross_road_ = GarminDataConverter.getGarminString(buffer,offset,51).trim();
     offset = offset + cross_road_.length() + 1;
   }
 

@@ -216,7 +216,7 @@ public class Tokenizer
  * comma as delimiter, does not respect escape characters but respects
  * quoted words.
  *
- * @param string the string to read from.
+ * @param in_stream the stream to read from.
  */
   public Tokenizer(InputStream in_stream)
   {
@@ -265,7 +265,7 @@ public class Tokenizer
  * Set the delimiter characters. All characters in the delimiters are
  * used as delimiter.
  *
- * @param delimiter the delimiter characters.
+ * @param delimiters the delimiter characters.
  */
   public void setDelimiters(String delimiters)
   {
@@ -289,9 +289,9 @@ public class Tokenizer
  *
  * @param escape_char the escape character.
  */
-  public void setEscapeChar(int c)
+  public void setEscapeChar(int escape_char)
   {
-    escape_char_ = c;
+    escape_char_ = escape_char;
   }
 
 //----------------------------------------------------------------------
@@ -313,9 +313,9 @@ public class Tokenizer
  * @param respect_escaped If escape characters should be respected,
  * set the param to <code>true</code>.
  */
-  public void respectEscapedCharacters(boolean respect_escape)
+  public void respectEscapedCharacters(boolean respect_escaped)
   {
-    respect_escaped_chars_ = respect_escape;
+    respect_escaped_chars_ = respect_escaped;
   }
 
 //----------------------------------------------------------------------

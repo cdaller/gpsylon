@@ -60,7 +60,7 @@ public class GarminWaypointD107 extends GarminWaypointD103
     identification_ = GarminDataConverter.getGarminString(buffer,2,6).trim();
     latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,8);
     longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,12);
-    // GarminDataConverter.getGarminLong(buffer,16);  //unused
+    // GarminDataConverter.getGarminLongWord(buffer,16);  //unused
     comment_ = GarminDataConverter.getGarminString(buffer,20,40).trim();  
     symbol_ = GarminDataConverter.getGarminByte(buffer,60);
     symbol_type_ = SYMBOL_TYPE[symbol_];
@@ -79,7 +79,7 @@ public class GarminWaypointD107 extends GarminWaypointD103
     identification_ = pack.getNextAsString(6).trim();
     latitude_ = pack.getNextAsSemicircleDegrees();
     longitude_ = pack.getNextAsSemicircleDegrees();
-    pack.getNextAsLong(); // unused
+    pack.getNextAsLongWord(); // unused
     comment_ = pack.getNextAsString(40).trim();  
     symbol_ = pack.getNextAsByte();
     symbol_type_ = SYMBOL_TYPE[symbol_];
@@ -139,7 +139,7 @@ public class GarminWaypointD107 extends GarminWaypointD103
     pack.setNextAsString(identification_,6,false);
     pack.setNextAsSemicircleDegrees(latitude_);
     pack.setNextAsSemicircleDegrees(longitude_);
-    pack.setNextAsLong(0); // unused
+    pack.setNextAsLongWord(0); // unused
     pack.setNextAsString(comment_,40,false);
     pack.setNextAsByte(symbol_);
     pack.setNextAsByte(display_);

@@ -36,7 +36,7 @@ import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 public class GarminWaypointD102 implements GarminWaypoint
 {
-  protected int symbol_;
+  protected long symbol_;
   protected String symbol_name_;
   protected double latitude_;
   protected double longitude_;
@@ -58,7 +58,7 @@ public class GarminWaypointD102 implements GarminWaypoint
 //    unused_ = GarminDataConverter.getGarminLong(buffer,16);
     comment_ = GarminDataConverter.getGarminString(buffer,20,40).trim();
     distance_ = GarminDataConverter.getGarminFloat(buffer,60);
-    symbol_ = GarminDataConverter.getGarminInt(buffer,64);
+    symbol_ = GarminDataConverter.getGarminLongWord(buffer,64);
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
   }
 
@@ -67,10 +67,10 @@ public class GarminWaypointD102 implements GarminWaypoint
     identification_ = pack.getNextAsString(6).trim();
     latitude_ = pack.getNextAsSemicircleDegrees();
     longitude_ = pack.getNextAsSemicircleDegrees();
-    pack.getNextAsLong();  // unused
+    pack.getNextAsLongWord();  // unused
     comment_ = pack.getNextAsString(40).trim();
     distance_ = pack.getNextAsFloat();
-    symbol_ = pack.getNextAsInt();
+    symbol_ = pack.getNextAsLongWord();
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
   }
 
@@ -100,10 +100,10 @@ public class GarminWaypointD102 implements GarminWaypoint
     pack.setNextAsString(identification_,6,false);
     pack.setNextAsSemicircleDegrees(latitude_);
     pack.setNextAsSemicircleDegrees(longitude_);
-    pack.setNextAsLong(0);  // unused
+    pack.setNextAsLongWord(0);  // unused
     pack.setNextAsString(comment_,40,false);
     pack.setNextAsFloat(distance_);
-    pack.setNextAsInt(symbol_);
+    pack.setNextAsLongWord(symbol_);
     return (pack);
   }
 
@@ -149,7 +149,7 @@ public class GarminWaypointD102 implements GarminWaypoint
  */
   public int getSymbolType()
   {
-    return(symbol_);
+    return((int)symbol_); // should be long!
   }
 
 //----------------------------------------------------------------------

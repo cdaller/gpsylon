@@ -135,10 +135,10 @@ public class GarminDisplayData
   {
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_header"))
       Debug.println("garmin_display_header","first display data package: "+garmin_package);
-		bytes_per_line_ = (int)garmin_package.getLong(8);
+		bytes_per_line_ = (int)garmin_package.getLongWord(8);
 		bit_per_pixel_ = garmin_package.getByte(12);
-    width_ = (int)garmin_package.getLong(16);
-    height_ = (int)garmin_package.getLong(20);
+    width_ = (int)garmin_package.getLongWord(16);
+    height_ = (int)garmin_package.getLongWord(20);
 
 		rotate_image_degrees_ = guessOrientation(garmin_package);
 
@@ -189,11 +189,11 @@ public class GarminDisplayData
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_data"))
       Debug.println("garmin_display_data","next display data package: "+garmin_package);
 
-    long data_type = garmin_package.getNextAsLong(); 
+    long data_type = garmin_package.getNextAsLongWord(); 
 
 		if(data_type == 1) // image data
 		{
-			long byte_offset = garmin_package.getNextAsLong();
+			long byte_offset = garmin_package.getNextAsLongWord();
 
 					// determine start x/y:			
 			int	x = (int) (byte_offset % bytes_per_line_) * pixel_per_byte_;
@@ -218,7 +218,7 @@ public class GarminDisplayData
 		}
 		else if(data_type == 2) // color info
 		{
-			long color_index = garmin_package.getNextAsLong()/3;
+			long color_index = garmin_package.getNextAsLongWord()/3;
 			int blue = garmin_package.getNextAsByte();
 			int green = garmin_package.getNextAsByte();
 			int red = garmin_package.getNextAsByte();

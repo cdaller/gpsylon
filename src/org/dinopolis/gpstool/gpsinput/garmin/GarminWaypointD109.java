@@ -155,7 +155,7 @@ public class GarminWaypointD109 extends GarminWaypointD108
     distance_ = pack.getNextAsFloat(); // 4b
     state_code_ = pack.getNextAsString(2).trim(); // 2b
     country_code_ = pack.getNextAsString(2).trim(); // 2b
-    ete_ = pack.getNextAsLong(); // 4b
+    ete_ = pack.getNextAsLongWord(); // 4b
 
     // read strings
     identification_ = pack.getNextAsString(51);
@@ -250,7 +250,7 @@ public class GarminWaypointD109 extends GarminWaypointD108
     pack.setNextAsFloat(distance_);
     pack.setNextAsString(state_code_,2,false);
     pack.setNextAsString(country_code_,2,false);
-    pack.setNextAsLong(ete_);
+    pack.setNextAsLongWord(ete_);
     pack.setNextAsString(identification_,51,true);
     pack.setNextAsString(comment_,51,true);
     pack.setNextAsString(facility_,31,true);

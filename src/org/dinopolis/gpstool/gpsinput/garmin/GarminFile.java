@@ -106,17 +106,30 @@ public class GarminFile
     return(data_.getNextAsFloat());
   }
 
-  //----------------------------------------------------------------------
+//----------------------------------------------------------------------
 /**
- * Get the next data value as long.
+ * Get the next data value as long (32 bit, unsigned).
  * @return the next value as long.
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
  */
-  public long getNextAsLong()
+  public long getNextAsLongWord()
     throws IllegalStateException
   {
-    return(data_.getNextAsLong());
+    return(data_.getNextAsLongWord());
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as long (32bit, signed).
+ * @return the next value as long.
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public long getNextAsSignedLong()
+    throws IllegalStateException
+  {
+    return(data_.getNextAsSignedLong());
   }
 
 

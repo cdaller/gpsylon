@@ -77,8 +77,8 @@ public class GarminSatelliteInfo
 //       if(prn != 255)   // 255 -> no satellite on this channel
 //       {
 //         elevation = (float)garmin_package.getNextAsByte();
-//         phase = garmin_package.getNextAsInt(); // fractional phase not used here
-//         snr = garmin_package.getNextAsInt();
+//         phase = garmin_package.getNextAsLongWord(); // fractional phase not used here
+//         snr = garmin_package.getNextAsLongWord();
 //         info = new SatelliteInfo(prn,elevation,0,snr);
 //         System.out.println("SatelliteInfo: "+info);
 //         infos.add(info);

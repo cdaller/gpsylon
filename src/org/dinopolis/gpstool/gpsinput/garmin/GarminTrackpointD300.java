@@ -51,7 +51,7 @@ public class GarminTrackpointD300 implements GarminTrackpoint
   {
     latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,2);
     longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,6);
-    time_ = GarminDataConverter.getGarminLong(buffer,10);
+    time_ = GarminDataConverter.getGarminLongWord(buffer,10);
     new_track_ = GarminDataConverter.getGarminBoolean(buffer,14);
   }
 
@@ -84,7 +84,7 @@ public class GarminTrackpointD300 implements GarminTrackpoint
 
     data = GarminDataConverter.setGarminSemicircleDegrees(latitude_,data,0);
     data = GarminDataConverter.setGarminSemicircleDegrees(longitude_,data,4);
-    data = GarminDataConverter.setGarminLong(time_,data,8);
+    data = GarminDataConverter.setGarminLongWord(time_,data,8);
     data = GarminDataConverter.setGarminBoolean(new_track_,data,12);
     pack.put(data);
 

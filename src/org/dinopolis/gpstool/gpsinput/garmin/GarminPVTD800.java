@@ -84,7 +84,7 @@ public class GarminPVTD800 extends GarminPVT
     leap_seconds_ = GarminDataConverter.getGarminWord(buffer,60);
     
     // Week number days
-    wn_days_ = GarminDataConverter.getGarminLong(buffer,62);
+    wn_days_ = GarminDataConverter.getGarminSignedLong(buffer,62);
   }
 
   public GarminPVTD800(GarminPackage pack)
@@ -117,7 +117,7 @@ public class GarminPVTD800 extends GarminPVT
     leap_seconds_ = pack.getNextAsWord();
     
     // Week number days
-    wn_days_ = pack.getNextAsLong();
+    wn_days_ = pack.getNextAsSignedLong();
   }
 
 // //----------------------------------------------------------------------
@@ -144,7 +144,7 @@ public class GarminPVTD800 extends GarminPVT
 //     data = GarminDataConverter.setGarminFloat(up_,data,50);
 //     data = GarminDataConverter.setGarminFloat(msl_height_,data,54);
 //     data = GarminDataConverter.setGarminWord(leap_seconds_,data,58);
-//     data = GarminDataConverter.setGarminLong(wn_days_,data,60);
+//     data = GarminDataConverter.setGarminSignedLong(wn_days_,data,60);
 //     pack.put(data);
 
 //     return (pack);

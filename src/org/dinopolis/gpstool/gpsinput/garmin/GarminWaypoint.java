@@ -229,7 +229,7 @@ public interface GarminWaypoint
  * @throws UnsupportedOperationException
  */
 	
-	public int getEstimatedTimeEnroute()
+	public long getEstimatedTimeEnroute()
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------

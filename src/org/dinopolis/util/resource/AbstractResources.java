@@ -23,27 +23,26 @@
 
 package org.dinopolis.util.resource;
 
+import gnu.regexp.RE;
+import gnu.regexp.REException;
+
 import java.awt.Color;
-import java.awt.Image;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.StringTokenizer;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Vector;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-
-import gnu.regexp.RE;
-import gnu.regexp.REException;
 
 import org.dinopolis.util.Resources;
 

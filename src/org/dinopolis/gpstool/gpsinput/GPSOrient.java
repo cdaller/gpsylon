@@ -26,20 +26,14 @@ package org.dinopolis.gpstool.gpsinput;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.commandarguments.CommandArguments;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
-import org.dinopolis.util.commandarguments.InvalidCommandArgumentException;
-
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
-
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.BufferedReader;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 

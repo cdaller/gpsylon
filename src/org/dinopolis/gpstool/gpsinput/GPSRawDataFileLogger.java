@@ -27,9 +27,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.io.FileWriter;
 
-import org.dinopolis.util.Debug;
-
-
 //----------------------------------------------------------------------
 /**
  * This class logs gps raw data to a file.

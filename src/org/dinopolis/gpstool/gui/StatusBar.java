@@ -22,38 +22,25 @@
 
 package org.dinopolis.gpstool.gui;
 
-import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.JLabel;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-
-import java.awt.BorderLayout;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.text.DecimalFormat;
-
 import java.beans.PropertyChangeListener; 
 import java.beans.PropertyChangeEvent; 
-
 import com.bbn.openmap.LatLonPoint;
-
 import org.dinopolis.util.Resources;
-
 import org.dinopolis.gpstool.util.angle.AngleFormat;
 import org.dinopolis.gpstool.util.angle.Latitude;
 import org.dinopolis.gpstool.util.angle.Longitude;
 import org.dinopolis.gpstool.util.angle.Angle;
-
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.MapNavigationHook;
-import org.dinopolis.gpstool.MapInfo;
 import javax.swing.JProgressBar;
 import com.bbn.openmap.event.LayerStatusListener;
 import com.bbn.openmap.event.LayerStatusEvent;

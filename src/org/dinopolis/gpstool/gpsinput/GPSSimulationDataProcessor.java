@@ -23,11 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import java.io.InputStream;
-import java.io.IOException;
-
-import java.util.Vector;
-
 import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------

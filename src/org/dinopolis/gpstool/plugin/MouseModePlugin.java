@@ -23,8 +23,8 @@
 
 package org.dinopolis.gpstool.plugin;
 
-import javax.swing.Action;
 import org.dinopolis.gpstool.gui.MouseMode;
+
 import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------

@@ -29,12 +29,8 @@ import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyEditor;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 import javax.swing.JCheckBox;
-
 import javax.swing.JPanel;
 
 public class StringSelector extends JPanel 

@@ -23,7 +23,6 @@
 package org.dinopolis.gpstool;
 
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.MediaTracker;
 import javax.swing.ImageIcon;
 

@@ -22,45 +22,36 @@
 
 package org.dinopolis.gpstool.gui.layer;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Layer;
-
-import com.bbn.openmap.event.LayerStatusEvent;
-import com.bbn.openmap.event.ProjectionEvent;
-
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMPoly;
-import com.bbn.openmap.omGraphics.OMText;
-
-import com.bbn.openmap.proj.Projection;
-
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
-
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
-import java.awt.geom.GeneralPath;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
-
 import org.dinopolis.gpstool.util.GeoExtent;
-
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
-
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
 import org.dinopolis.util.gui.SwingWorker;
-import java.awt.RenderingHints;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.Projection;
 
 
 //----------------------------------------------------------------------

@@ -23,15 +23,10 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import org.dinopolis.util.Debug;
 import org.dinopolis.util.commandarguments.CommandArguments;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
-import org.dinopolis.util.commandarguments.InvalidCommandArgumentException;
-
 import java.util.Hashtable;
-
 import javax.swing.JFrame;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
@@ -304,10 +299,10 @@ public class GPSTool implements PropertyChangeListener
       else
       if(args.isSet("printdeviceinfo"))
       {
-	System.out.println("product id:"+((GPSGarminDataProcessor)gps_data_processor).PROD_ID);
-	System.out.println("product sw:"+((GPSGarminDataProcessor)gps_data_processor).PROD_SW);
-	System.out.println("product name:"+((GPSGarminDataProcessor)gps_data_processor).PROD_NAME);
-	String[] capabilities = ((GPSGarminDataProcessor)gps_data_processor).PROD_CAP;
+	System.out.println("product id:"+GPSGarminDataProcessor.PROD_ID);
+	System.out.println("product sw:"+GPSGarminDataProcessor.PROD_SW);
+	System.out.println("product name:"+GPSGarminDataProcessor.PROD_NAME);
+	String[] capabilities = GPSGarminDataProcessor.PROD_CAP;
 	for(int count = 0; count < capabilities.length; count++)
 	  System.out.println("product cap:"+capabilities[count]);
 	work_done = true;

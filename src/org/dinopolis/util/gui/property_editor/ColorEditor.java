@@ -23,18 +23,17 @@
 
 package org.dinopolis.util.gui.property_editor;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.StringTokenizer;
 import java.beans.PropertyEditorSupport;
-import javax.swing.Icon;
+import java.util.StringTokenizer;
+
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JColorChooser;
+import javax.swing.JPanel;
 
 import org.dinopolis.util.gui.ResourceEditorPanel;
 

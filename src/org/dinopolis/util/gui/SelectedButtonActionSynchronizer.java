@@ -22,15 +22,14 @@
 
 
 package org.dinopolis.util.gui;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
-import java.beans.PropertyChangeEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 
 //----------------------------------------------------------------------
 /**

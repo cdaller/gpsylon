@@ -23,31 +23,26 @@
 
 package org.dinopolis.gpstool.gui.layer.location;
 
-import javax.swing.JDialog;
-import org.dinopolis.util.Resources;
-import java.awt.event.ActionListener;
-import java.awt.Frame;
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.WindowEvent;
-import javax.swing.JPanel;
-import javax.swing.JButton;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Arrays;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import java.awt.BorderLayout;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 import org.dinopolis.gpstool.GPSMapKeyConstants;
-import javax.swing.table.TableModel;
-import javax.swing.JFrame;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Arrays;
-import java.awt.event.ActionEvent;
+import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
 /**

@@ -23,7 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import java.io.*;
 import java.util.*;
 import javax.comm.*;
 

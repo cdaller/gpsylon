@@ -23,10 +23,6 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import java.util.List;
-import java.util.Vector;
-
-
 
 //----------------------------------------------------------------------
 /**

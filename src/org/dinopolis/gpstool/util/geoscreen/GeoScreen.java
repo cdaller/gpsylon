@@ -23,8 +23,6 @@
 
 package org.dinopolis.gpstool.util.geoscreen;
 
-import java.awt.Point;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Projection;
 
 //----------------------------------------------------------------------

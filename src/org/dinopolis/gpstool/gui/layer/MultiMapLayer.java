@@ -22,50 +22,39 @@
 
 package org.dinopolis.gpstool.gui.layer;
 
-import java.util.Vector;
-import java.util.Iterator;
-import java.util.TreeSet;
-import java.util.Collections;
-import java.util.Set;
-
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Color;
-import java.awt.Point;
-import java.awt.Image;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Vector;
 
-import javax.swing.ImageIcon;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.event.LayerStatusEvent;
-import com.bbn.openmap.LatLonPoint;
-
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.Resources;
-
-import org.dinopolis.util.gui.SwingWorker;
-
-import org.dinopolis.gpstool.MapInfo;
+import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.util.MapInfoScaleComparator;
-
+import org.dinopolis.gpstool.MapManagerHook;
+import org.dinopolis.gpstool.event.MapsChangedEvent;
+import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.gui.util.ImageInfo;
 import org.dinopolis.gpstool.gui.util.VisibleImage;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.util.MapInfoScaleComparator;
+import org.dinopolis.util.Debug;
+import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import java.awt.event.ActionEvent;
 import org.dinopolis.util.gui.MenuFactory;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.event.MapsChangedListener;
-import org.dinopolis.gpstool.event.MapsChangedEvent;
-import org.dinopolis.gpstool.MapManagerHook;
-import java.util.Collection;
+import org.dinopolis.util.gui.SwingWorker;
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.proj.Projection;
 
 
 //----------------------------------------------------------------------

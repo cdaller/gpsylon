@@ -23,14 +23,13 @@
 
 package org.dinopolis.gpstool.gui.util;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Vector;
-import javax.swing.JOptionPane;
+
 import javax.swing.JTextField;
+
 import org.dinopolis.gpstool.util.angle.Angle;
 import org.dinopolis.gpstool.util.angle.AngleFormat;
 import org.dinopolis.gpstool.util.angle.Latitude;

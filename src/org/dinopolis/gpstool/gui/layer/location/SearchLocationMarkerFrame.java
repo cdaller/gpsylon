@@ -25,21 +25,16 @@ package org.dinopolis.gpstool.gui.layer.location;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Frame;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.MouseListener;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarker;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerCategory;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerFilter;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerFrame;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerSource;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerSourceException;
 import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------

@@ -26,6 +26,7 @@ package org.dinopolis.util.gui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.StringTokenizer;
+
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -36,8 +37,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 import org.dinopolis.util.Resources;
@@ -450,8 +451,8 @@ public class MenuFactory
     if (action != null) 
     {
       action.putValue(Action.SMALL_ICON, menu_item_icon);
-      action.putValue(action.NAME, menu_item_label);
-      action.putValue(action.ACTION_COMMAND_KEY, action_name);
+      action.putValue(Action.NAME, menu_item_label);
+      action.putValue(Action.ACTION_COMMAND_KEY, action_name);
 
 //       if (action.getValue(SELECTED) != null)
 //         action.putValue(SELECTED, new Boolean(resources.getBoolean(prefix+menu_name+
@@ -463,7 +464,7 @@ public class MenuFactory
         resources.getString(prefix+menu_name+KEY_RESOURCE_MNEMONIC_SUFFIX, null);
       if ((mnemonic != null) && (mnemonic.length() > 0))
       {
-        action.putValue(action.MNEMONIC_KEY, new Integer(mnemonic.charAt(0)));
+        action.putValue(Action.MNEMONIC_KEY, new Integer(mnemonic.charAt(0)));
 //        menu_item.setMnemonic(mnemonic.charAt(0));
       }
       // Accelerator
@@ -473,7 +474,7 @@ public class MenuFactory
 
       if (accelerator != null)
       {
-        action.putValue(action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(accelerator));
+        action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(accelerator));
 //        menu_item.setAccelerator(KeyStroke.getKeyStroke(accelerator));
       }
       menu_item.setAction(action);

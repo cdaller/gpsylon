@@ -30,13 +30,9 @@ import java.io.OutputStream;
 import java.io.BufferedOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
 import java.util.Hashtable;
-import java.util.Enumeration;
-
 import java.net.Socket;
 import java.net.UnknownHostException;
-
 import org.dinopolis.util.Debug;
 
 

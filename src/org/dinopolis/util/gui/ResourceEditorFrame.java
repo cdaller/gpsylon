@@ -25,40 +25,26 @@ package org.dinopolis.util.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Insets;
-import java.awt.Point;
 import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.TreeSet;
-import javax.swing.BorderFactory;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.dinopolis.util.Resources;
 import org.dinopolis.util.ResourceManager;
-import org.dinopolis.util.resource.ResourceGroup;
-import org.dinopolis.util.gui.property_editor.StringChooser;
+import org.dinopolis.util.Resources;
 
 
 //----------------------------------------------------------------------
@@ -173,7 +159,7 @@ implements ActionListener, PropertyChangeListener
     super();
     editor_panel_ = new ResourceEditorPanel(resources, resource_dir,
                                             false);
-    editor_panel_.getResources().addPropertyChangeListener(this);
+	ResourceEditorPanel.getResources().addPropertyChangeListener(this);
 
     title_ = title;
     if (title_ != null)
@@ -246,8 +232,8 @@ implements ActionListener, PropertyChangeListener
   {
     try
     {
-      setSize(editor_panel_.getResources().getInt(KEY_WINDOW_DIMENSION_WIDTH),
-              editor_panel_.getResources().getInt(KEY_WINDOW_DIMENSION_HEIGHT));
+      setSize(ResourceEditorPanel.getResources().getInt(KEY_WINDOW_DIMENSION_WIDTH),
+	  ResourceEditorPanel.getResources().getInt(KEY_WINDOW_DIMENSION_HEIGHT));
     }
     catch (MissingResourceException exc)
     {
@@ -269,8 +255,8 @@ implements ActionListener, PropertyChangeListener
   {
     try
     {
-      setLocation(editor_panel_.getResources().getInt(KEY_WINDOW_LOCATION_X),
-                  editor_panel_.getResources().getInt(KEY_WINDOW_LOCATION_Y));
+      setLocation(ResourceEditorPanel.getResources().getInt(KEY_WINDOW_LOCATION_X),
+	  ResourceEditorPanel.getResources().getInt(KEY_WINDOW_LOCATION_Y));
     }
     catch (MissingResourceException exc)
     {
@@ -287,16 +273,16 @@ implements ActionListener, PropertyChangeListener
   public void updateResources()
   {
     if (title_ == null)
-      setTitle(editor_panel_.getResources().getString(KEY_TITLE));
+      setTitle(ResourceEditorPanel.getResources().getString(KEY_TITLE));
 
     if (ok_button_ != null)
     {
-      ok_button_.setText(editor_panel_.getResources().getString(KEY_OK_BUTTON));
+      ok_button_.setText(ResourceEditorPanel.getResources().getString(KEY_OK_BUTTON));
       ok_button_.setMargin(editor_panel_.getButtonInsets());
     }
     if (cancel_button_ != null)
     {
-      cancel_button_.setText(editor_panel_.getResources().getString(KEY_CANCEL_BUTTON));
+      cancel_button_.setText(ResourceEditorPanel.getResources().getString(KEY_CANCEL_BUTTON));
       cancel_button_.setMargin(editor_panel_.getButtonInsets());
     }
   }
@@ -313,14 +299,14 @@ implements ActionListener, PropertyChangeListener
     button_panel.add(Box.createGlue());
 
     // add the ok button
-    ok_button_ = new JButton(editor_panel_.getResources().getString(KEY_OK_BUTTON));
+    ok_button_ = new JButton(ResourceEditorPanel.getResources().getString(KEY_OK_BUTTON));
     ok_button_.setMargin(editor_panel_.getButtonInsets());
     ok_button_.setActionCommand(OK_COMMAND);
     ok_button_.addActionListener(this);
     button_panel.add(ok_button_);
 
         // add the cancel button
-    cancel_button_ = new JButton(editor_panel_.getResources().getString(KEY_CANCEL_BUTTON));
+    cancel_button_ = new JButton(ResourceEditorPanel.getResources().getString(KEY_CANCEL_BUTTON));
     cancel_button_.setMargin(editor_panel_.getButtonInsets());
     cancel_button_.setActionCommand(CANCEL_COMMAND);
     cancel_button_.addActionListener(this);
@@ -416,7 +402,7 @@ implements ActionListener, PropertyChangeListener
   public void storeEditorResources()
     throws IOException, UnsupportedOperationException
   {
-    Resources resources = editor_panel_.getResources();
+    Resources resources = ResourceEditorPanel.getResources();
 //    resources.setString(KEY_TITLE,getTitle()); // useless
     Point location = getLocation();
     Dimension dimension = getSize();
@@ -424,7 +410,7 @@ implements ActionListener, PropertyChangeListener
     resources.setInt(KEY_WINDOW_LOCATION_Y,location.y);
     resources.setInt(KEY_WINDOW_DIMENSION_WIDTH,dimension.width);
     resources.setInt(KEY_WINDOW_DIMENSION_HEIGHT,dimension.height);
-    editor_panel_.getResources().store();
+    ResourceEditorPanel.getResources().store();
   }
 
 
@@ -435,7 +421,7 @@ implements ActionListener, PropertyChangeListener
 
   public void propertyChange(PropertyChangeEvent event)
   {
-    if (event.getSource() == editor_panel_.getResources())
+    if (event.getSource() == ResourceEditorPanel.getResources())
     {
       updateResources();
       invalidate();

@@ -23,11 +23,10 @@
 
 package org.dinopolis.gpstool.gui.util;
 
-import java.util.List;
-import java.util.Iterator;
 import java.awt.Rectangle;
-import java.util.Vector;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Vector;
 
 
 //----------------------------------------------------------------------

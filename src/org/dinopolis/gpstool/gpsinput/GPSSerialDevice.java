@@ -26,16 +26,10 @@ package org.dinopolis.gpstool.gpsinput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.util.Hashtable;
-import java.util.Enumeration;
-
-import javax.comm.SerialPortEventListener;
 import javax.comm.CommPortIdentifier;
 import javax.comm.SerialPort;
 import javax.comm.PortInUseException;
-import javax.comm.SerialPortEventListener;
-import javax.comm.SerialPortEvent;
 import javax.comm.UnsupportedCommOperationException;
 import javax.comm.NoSuchPortException;
 

@@ -23,22 +23,14 @@
 
 package org.dinopolis.gpstool.gui.layer.location;
 
-import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StreamTokenizer;
-
-import java.util.Iterator;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.dinopolis.gpstool.gui.layer.location.LocationMarker;
-
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenList;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.FileWriter;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.io.Tokenizer;
 

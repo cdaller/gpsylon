@@ -23,7 +23,6 @@
 package org.dinopolis.gpstool;
 
 import org.dinopolis.gpstool.event.MapsChangedListener;
-import org.dinopolis.gpstool.event.MapsChangedEvent;
 import com.bbn.openmap.proj.Projection;
 import java.util.Collection;
 

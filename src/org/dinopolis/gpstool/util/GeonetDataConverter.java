@@ -25,7 +25,6 @@ package org.dinopolis.gpstool.util;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import org.dinopolis.gpstool.gui.layer.location.LocationMarker;
 import org.dinopolis.gpstool.gui.layer.location.LocationMarkerCategory;
 import org.dinopolis.gpstool.gui.layer.location.LocationMarkerSource;

@@ -25,11 +25,10 @@ package org.dinopolis.gpstool.gui.layer;
 import java.awt.Color;
 
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.event.ProjectionEvent;
 
 /**
  * A Layer to display hypothetical transportation routes (left over from openmap tutorial) - USELESS!

@@ -22,61 +22,41 @@
 
 package org.dinopolis.gpstool.gui.layer;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.LayerStatusEvent;
-import com.bbn.openmap.event.MapMouseAdapter;
-import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.event.SelectMouseMode;
-import com.bbn.openmap.proj.Projection;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
-import java.beans.PropertyChangeEvent; 
-import java.beans.PropertyChangeListener; 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
 import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import java.util.Vector;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.gui.layer.track.ReadGPSMapTrackPlugin;
 import org.dinopolis.gpstool.gui.layer.track.Track;
 import org.dinopolis.gpstool.gui.layer.track.TrackPoint;
-import org.dinopolis.gpstool.gui.layer.track.ReadGPSMapTrackPlugin;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
 import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.util.Debug;
@@ -84,8 +64,12 @@ import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
 import org.dinopolis.util.gui.SwingWorker;
-import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
-import org.dinopolis.gpstool.plugin.PluginSupport;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.proj.Projection;
 
 //----------------------------------------------------------------------
 /**

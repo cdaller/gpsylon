@@ -23,30 +23,22 @@
 
 package org.dinopolis.gpstool.util;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import org.dinopolis.gpstool.gui.layer.location.LocationMarker;
-
-import org.dinopolis.gpstool.util.geoscreen.GeoScreenList;
-
-import java.io.FileNotFoundException;
-
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-import java.util.Vector;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.StreamTokenizer;
-import java.sql.DatabaseMetaData;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StreamTokenizer;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Iterator;
+import java.util.Vector;
 
 //----------------------------------------------------------------------
 /**

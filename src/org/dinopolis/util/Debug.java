@@ -680,7 +680,7 @@ public class Debug
  */
   public static String objectToString (Object obj)
   {
-    return(debug_instance_.objectToString(obj));
+    return(org.dinopolis.util.debug.Debug.objectToString(obj));
   }
 
 //----------------------------------------------------------------------
@@ -692,7 +692,7 @@ public class Debug
  */
   public static void waitEnterPressed()
   {
-    debug_instance_.waitEnterPressed();
+	org.dinopolis.util.debug.Debug.waitEnterPressed();
   }
 
 //----------------------------------------------------------------------

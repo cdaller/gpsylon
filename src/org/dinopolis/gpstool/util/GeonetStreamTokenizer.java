@@ -22,17 +22,15 @@
 
 package org.dinopolis.gpstool.util;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.io.Reader;
-import java.io.FileNotFoundException;
-import java.util.Iterator;
-import org.dinopolis.util.io.Tokenizer;
-import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
+import java.util.List;
+
+import org.dinopolis.util.io.Tokenizer;
 
 //----------------------------------------------------------------------
 /**

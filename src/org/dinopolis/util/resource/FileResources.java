@@ -23,34 +23,21 @@
 
 package org.dinopolis.util.resource;
 
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.Date;
+import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.WeakHashMap;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
-import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**

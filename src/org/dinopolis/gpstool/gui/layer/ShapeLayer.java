@@ -22,37 +22,21 @@
 
 package org.dinopolis.gpstool.gui.layer;
 
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
-
-import java.beans.PropertyChangeListener; 
-import java.beans.PropertyChangeEvent; 
-import java.beans.PropertyChangeSupport;
-
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.LatLonPoint;
-
 import java.awt.Graphics;
-
 import java.awt.event.ActionEvent;
-
 import java.io.File;
-
 import java.util.Properties;
 
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.Resources;
-import org.dinopolis.util.gui.ActionStore;
-import org.dinopolis.util.gui.MenuFactory;
-
-import org.dinopolis.gpstool.util.FileUtil;
-import org.dinopolis.gpstool.util.ExtensionFileFilter;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JFileChooser;
 
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.util.ExtensionFileFilter;
+import org.dinopolis.util.Resources;
+import org.dinopolis.util.gui.ActionStore;
+import org.dinopolis.util.gui.MenuFactory;
 
 
 //----------------------------------------------------------------------

@@ -22,32 +22,25 @@
 
 package org.dinopolis.gpstool.gui.layer;
 
-import java.awt.Point;
-import java.awt.Color;
+import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.BasicStroke;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
-import java.awt.geom.Line2D;
-import java.awt.geom.AffineTransform;
 
-import javax.swing.Action;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.LatLonPoint;
-
+import org.dinopolis.gpstool.GPSMap;
+import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.gui.layer.MultiMapLayer;
-import java.awt.RenderingHints;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.proj.Projection;
 
 
 //----------------------------------------------------------------------

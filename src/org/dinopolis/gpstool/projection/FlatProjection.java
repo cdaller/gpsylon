@@ -23,20 +23,14 @@
 
 package org.dinopolis.gpstool.projection;
 
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.util.*;
+
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.util.Debug;
-//import com.bbn.openmap.proj.Cylindrical;
+import com.bbn.openmap.proj.Orthographic;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.Azimuth;
-import com.bbn.openmap.proj.Orthographic;
-import java.awt.Graphics;
-
-
 
 //----------------------------------------------------------------------
 /**

@@ -22,9 +22,7 @@
 
 package org.dinopolis.gpstool.alarm;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
-
 import org.dinopolis.gpstool.util.GeoMath;
 import org.dinopolis.gpstool.gpsinput.GPSPosition;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;

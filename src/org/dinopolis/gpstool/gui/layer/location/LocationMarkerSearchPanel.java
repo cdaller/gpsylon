@@ -26,30 +26,22 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Vector;
+
 import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerSource;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarker;
-import org.dinopolis.gpstool.util.geoscreen.GeoScreenList;
-import org.dinopolis.util.Resources;
-import org.dinopolis.util.ResourceManager;
-import org.dinopolis.util.gui.SwingWorker;
 import javax.swing.ListSelectionModel;
-import javax.swing.JProgressBar;
+
+import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.util.geoscreen.GeoScreenList;
 import org.dinopolis.util.Debug;
+import org.dinopolis.util.gui.SwingWorker;
 
 
 //----------------------------------------------------------------------

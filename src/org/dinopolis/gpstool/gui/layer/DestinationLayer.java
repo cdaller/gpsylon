@@ -24,45 +24,22 @@ package org.dinopolis.gpstool.gui.layer;
 
 import java.awt.event.MouseEvent;
 import java.awt.Point;
-import java.awt.Image;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
-import java.awt.event.ActionEvent;
 import java.awt.geom.Line2D;
-
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import java.awt.geom.AffineTransform;
-
-import javax.swing.ImageIcon;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-
 import java.beans.PropertyChangeListener; 
 import java.beans.PropertyChangeEvent; 
 import java.beans.PropertyChangeSupport;
-
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.event.MapMouseAdapter;
-import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.LatLonPoint;
-
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
-import org.dinopolis.util.gui.ActionStore;
-import org.dinopolis.util.gui.MenuFactory;
-
 import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.MapInfo;
-import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
-import javax.swing.Icon;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 

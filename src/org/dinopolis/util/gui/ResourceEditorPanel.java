@@ -25,16 +25,14 @@ package org.dinopolis.util.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -44,6 +42,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.TreeSet;
 import java.util.Vector;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -54,18 +53,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
 
-import org.dinopolis.util.Resources;
 import org.dinopolis.util.ResourceManager;
-import org.dinopolis.util.resource.ResourceGroup;
+import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.property_editor.ArrayEditor;
 import org.dinopolis.util.gui.property_editor.BooleanEditor;
-import org.dinopolis.util.gui.property_editor.IntEditor;
 import org.dinopolis.util.gui.property_editor.DoubleEditor;
+import org.dinopolis.util.gui.property_editor.IntEditor;
 import org.dinopolis.util.gui.property_editor.StringChooser;
-import org.dinopolis.util.gui.property_editor.StringEditor;
 import org.dinopolis.util.gui.property_editor.StringSelector;
+import org.dinopolis.util.resource.ResourceGroup;
 
 //----------------------------------------------------------------------
 /**
@@ -195,12 +192,12 @@ implements ActionListener, PropertyChangeListener
 
     property_editor_manager_ = new PropertyEditorManager();
     // set our primitive editors here
-    property_editor_manager_.registerEditor(Integer.TYPE, IntEditor.class);
-    property_editor_manager_.registerEditor(Double.TYPE, DoubleEditor.class);
-    property_editor_manager_.registerEditor(Boolean.TYPE, BooleanEditor.class);
+    PropertyEditorManager.registerEditor(Integer.TYPE, IntEditor.class);
+	PropertyEditorManager.registerEditor(Double.TYPE, DoubleEditor.class);
+	PropertyEditorManager.registerEditor(Boolean.TYPE, BooleanEditor.class);
 
     property_editor_manager_default_search_path_ =
-      property_editor_manager_.getEditorSearchPath();
+	PropertyEditorManager.getEditorSearchPath();
 
     hide_key_set_ = new HashSet();
     key_editor_map_ = new HashMap();
@@ -245,7 +242,7 @@ implements ActionListener, PropertyChangeListener
       System.arraycopy(property_editor_manager_default_search_path_,
                        0, addeed_path, 
                        property_editor_manager_default_search_path_.length, property_editor_manager_default_search_path_.length);
-      property_editor_manager_.setEditorSearchPath(addeed_path);
+		PropertyEditorManager.setEditorSearchPath(addeed_path);
     }
     if (apply_button_ != null)
     {
@@ -277,7 +274,7 @@ implements ActionListener, PropertyChangeListener
 
   public void registerEditor(Class type, Class editor) 
   {
-    property_editor_manager_.registerEditor(type, editor);
+	PropertyEditorManager.registerEditor(type, editor);
   }
 
 //----------------------------------------------------------------------
@@ -323,7 +320,7 @@ implements ActionListener, PropertyChangeListener
     if (type == null)
       return(null);
 
-    PropertyEditor editor = property_editor_manager_.findEditor(type);
+    PropertyEditor editor = PropertyEditorManager.findEditor(type);
 
     if (editor != null)
       return(editor);
@@ -331,7 +328,7 @@ implements ActionListener, PropertyChangeListener
     if (type.isArray())
     {
       type = type.getComponentType();
-      editor = property_editor_manager_.findEditor(type);
+      editor = PropertyEditorManager.findEditor(type);
       if (editor != null)
         return (new ArrayEditor(type, editor));
     }
@@ -346,7 +343,7 @@ implements ActionListener, PropertyChangeListener
 
   protected PropertyEditor createStringEditor(String key)
   {
-    return(property_editor_manager_.findEditor(String.class));
+    return(PropertyEditorManager.findEditor(String.class));
   }
   
 //----------------------------------------------------------------------
@@ -498,7 +495,7 @@ implements ActionListener, PropertyChangeListener
       keys.add((String)enum.nextElement());
 
     // extract groups
-    String[] groups = getChildren(edit_resources_.GROUPS);
+    String[] groups = getChildren(Resources.GROUPS);
     
     String group_or_element;
     String sub_group_or_element;

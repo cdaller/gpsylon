@@ -23,6 +23,7 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
+import java.awt.Color;
 import java.util.List;
 
 //----------------------------------------------------------------------
@@ -65,6 +66,36 @@ public interface GPSRoute
  * @param comment The comment.
  */
   public void setComment(String comment);
+
+//--------------------------------------------------------------------------------
+/**
+ * Returns true if this track is displayed on the gps device, false otherwise.
+ *
+ * @return true if this track is displayed on the gps device, false otherwise.
+ */
+  public boolean isDisplayed();
+
+//--------------------------------------------------------------------------------
+/**
+ * Define whether to display the current track or not.
+ *
+ * @param display if true, display current track.
+ */
+  public void setDisplayed(boolean display);
+
+//--------------------------------------------------------------------------------
+/**
+ * Get the color of the current track.
+ */
+  public Color getColor();
+
+//--------------------------------------------------------------------------------
+/**
+ * Define the color of the current track. 
+ *
+ * @param color Color of the current track.
+ */
+  public void setColor(Color color);
 
 //----------------------------------------------------------------------
 /**

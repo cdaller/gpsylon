@@ -1,7 +1,36 @@
+/***********************************************************************
+ * @(#)$RCSfile$   $Revision$$Date$
+ *
+ * Copyright (c) 2003 IICM, Graz University of Technology
+ * Inffeldgasse 16c, A-8010 Graz, Austria.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License (LGPL)
+ * as published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 
+ * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ ***********************************************************************/
+
+
 package org.dinopolis.gpstool.gpsinput.garmin;
 
 import java.awt.Color;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
+
+//----------------------------------------------------------------------
+/**
+ * @author Stefan Feitl
+ * @version $Revision$
+ */
 
 public class GarminWaypointD102 implements GarminWaypoint
 {
@@ -81,9 +110,8 @@ public class GarminWaypointD102 implements GarminWaypoint
  * Get the Waypoint Type
  *
  * @return Waypoint Type
- * @throws UnsupportedOperationException
  */
-  public byte getType() throws UnsupportedOperationException
+  public byte getType()
   {
     return(WAYPOINT_TYPE);
   }
@@ -105,9 +133,8 @@ public class GarminWaypointD102 implements GarminWaypoint
  * Get the Waypoint Symbol Name
  *
  * @return Waypoint Symbol Name
- * @throws UnsupportedOperationException
  */
-  public String getSymbolName() throws UnsupportedOperationException
+  public String getSymbolName()
   {
     return(symbol_name_);
   }
@@ -117,9 +144,8 @@ public class GarminWaypointD102 implements GarminWaypoint
  * Get the Waypoint Symbol Type
  *
  * @return Waypoint Symbol Type
- * @throws UnsupportedOperationException
  */
-  public int getSymbolType() throws UnsupportedOperationException
+  public int getSymbolType()
   {
     return(symbol_);
   }
@@ -129,9 +155,8 @@ public class GarminWaypointD102 implements GarminWaypoint
  * Get the Longitude (degrees)
  *
  * @return Longitude (degrees)
- * @throws UnsupportedOperationException
  */
-  public double getLongitude() throws UnsupportedOperationException
+  public double getLongitude()
   {
     return(longitude_);
   }
@@ -139,10 +164,8 @@ public class GarminWaypointD102 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Set the Longitude (degrees)
- *
- * @throws UnsupportedOperationException
  */
-  public void setLongitude(double longitude) throws UnsupportedOperationException
+  public void setLongitude(double longitude)
   {
     longitude_ = longitude;
   }
@@ -152,9 +175,8 @@ public class GarminWaypointD102 implements GarminWaypoint
  * Get the Latitude (degrees)
  *
  * @return Latitude (degrees)
- * @throws UnsupportedOperationException
  */
-  public double getLatitude() throws UnsupportedOperationException
+  public double getLatitude()
   {
     return(latitude_);
   }
@@ -162,10 +184,8 @@ public class GarminWaypointD102 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Set the Latitude (degrees)
- *
- * @throws UnsupportedOperationException
  */
-  public void setLatitude(double latitude) throws UnsupportedOperationException
+  public void setLatitude(double latitude)
   {
     latitude_ = latitude;
   }
@@ -175,9 +195,8 @@ public class GarminWaypointD102 implements GarminWaypoint
  * Get the Identification String
  *
  * @return Identification String
- * @throws UnsupportedOperationException
  */
-  public String getIdentification() throws UnsupportedOperationException
+  public String getIdentification()
   {
     return(identification_);
   }
@@ -185,10 +204,8 @@ public class GarminWaypointD102 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Set the Identification String
- *
- * @throws UnsupportedOperationException
  */
-  public void setIdentification(String identification) throws UnsupportedOperationException
+  public void setIdentification(String identification)
   {
     identification_ = identification;
   }
@@ -198,9 +215,8 @@ public class GarminWaypointD102 implements GarminWaypoint
  * Get the Comment String
  *
  * @return Comment String
- * @throws UnsupportedOperationException
  */
-  public String getComment() throws UnsupportedOperationException
+  public String getComment()
   {
     return(comment_);
   }
@@ -208,10 +224,8 @@ public class GarminWaypointD102 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Set the Comment String
- *
- * @throws UnsupportedOperationException
  */
-  public void setComment(String comment) throws UnsupportedOperationException
+  public void setComment(String comment)
   {
     comment_ = comment;
   }
@@ -423,12 +437,12 @@ public class GarminWaypointD102 implements GarminWaypoint
   {
     StringBuffer buffer = new StringBuffer();
     buffer.append("GarminWaypoint[");
+    buffer.append("identification=").append(identification_).append(", ");
     buffer.append("type=").append(WAYPOINT_TYPE).append(", ");
     buffer.append("symbol_type=").append(symbol_).append(", ");
     buffer.append("symbol_name=").append(symbol_name_).append(", ");
     buffer.append("lat=").append(latitude_).append(", ");
     buffer.append("lon=").append(longitude_).append(", ");
-    buffer.append("identification=").append(identification_).append(", ");
     buffer.append("comment=").append(comment_);
     buffer.append("]");
     return(buffer.toString());

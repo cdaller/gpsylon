@@ -1,7 +1,36 @@
+/***********************************************************************
+ * @(#)$RCSfile$   $Revision$$Date$
+ *
+ * Copyright (c) 2003 IICM, Graz University of Technology
+ * Inffeldgasse 16c, A-8010 Graz, Austria.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License (LGPL)
+ * as published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 
+ * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ ***********************************************************************/
+
+
 package org.dinopolis.gpstool.gpsinput.garmin;
 
 import java.awt.Color;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
+
+//----------------------------------------------------------------------
+/**
+ * @author Christof Dallermassl,  Stefan Feitl
+ * @version $Revision$
+ */
 
 public class GarminWaypointD107 extends GarminWaypointD103
 {
@@ -26,14 +55,10 @@ public class GarminWaypointD107 extends GarminWaypointD103
 
   public GarminWaypointD107(int[] buffer)
   {
-//     for(int index = 0; index < buffer.length; index++)
-//     {
-//       System.out.println(index+":"+buffer[index] + " / " + (char)buffer[index]);
-//     }
     identification_ = GarminDataConverter.getGarminString(buffer,2,6).trim();
     latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,8);
     longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,12);
-        // GarminDataConverter.getGarminLong(buffer,16);  //unused
+    // GarminDataConverter.getGarminLong(buffer,16);  //unused
     comment_ = GarminDataConverter.getGarminString(buffer,20,40).trim();  
     symbol_ = GarminDataConverter.getGarminByte(buffer,60);
     symbol_type_ = SYMBOL_TYPE[symbol_];
@@ -127,9 +152,8 @@ public class GarminWaypointD107 extends GarminWaypointD103
  * Get the Waypoint Color
  *
  * @return Waypoint Color
- * @throws UnsupportedOperationException
  */
-  public Color getColor() throws UnsupportedOperationException
+  public Color getColor()
   {
     return(color_);
   }
@@ -138,13 +162,13 @@ public class GarminWaypointD107 extends GarminWaypointD103
   {
     StringBuffer buffer = new StringBuffer();
     buffer.append("GarminWaypoint[");
+    buffer.append("identification=").append(identification_).append(", ");
     buffer.append("type=").append(WAYPOINT_TYPE).append(", ");
     buffer.append("display_options=").append(display_options_).append(", ");
     buffer.append("symbol_type=").append(symbol_type_).append(", ");
     buffer.append("symbol_name=").append(symbol_name_).append(", ");
     buffer.append("lat=").append(latitude_).append(", ");
     buffer.append("lon=").append(longitude_).append(", ");
-    buffer.append("identification=").append(identification_).append(", ");
     buffer.append("comment=").append(comment_).append(", ");
     buffer.append("color=").append(color_);
     buffer.append("]");

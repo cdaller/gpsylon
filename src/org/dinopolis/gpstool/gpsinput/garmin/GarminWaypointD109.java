@@ -1,7 +1,36 @@
+/***********************************************************************
+ * @(#)$RCSfile$   $Revision$$Date$
+ *
+ * Copyright (c) 2003 IICM, Graz University of Technology
+ * Inffeldgasse 16c, A-8010 Graz, Austria.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License (LGPL)
+ * as published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 
+ * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ ***********************************************************************/
+
+
 package org.dinopolis.gpstool.gpsinput.garmin;
 
 import java.awt.Color;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
+
+//----------------------------------------------------------------------
+/**
+ * @author Christof Dallermassl, Stefan Feitl
+ * @version $Revision$
+ */
 
 public class GarminWaypointD109 extends GarminWaypointD108
 {
@@ -234,9 +263,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Waypoint Type
  *
  * @return Waypoint Type
- * @throws UnsupportedOperationException
  */
-  public byte getType() throws UnsupportedOperationException
+  public byte getType()
   {
     return(WAYPOINT_TYPE);
   }
@@ -246,9 +274,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Waypoint Class Name
  *
  * @return Waypoint Class Name
- * @throws UnsupportedOperationException
  */
-  public String getClassName() throws UnsupportedOperationException
+  public String getClassName()
   {
     return(class_name_);
   }
@@ -258,9 +285,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Waypoint Class Type
  *
  * @return Waypoint Class Type
- * @throws UnsupportedOperationException
  */
-  public int getClassType() throws UnsupportedOperationException
+  public int getClassType()
   {
     return(class_type_);
   }
@@ -270,9 +296,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Waypoint Color
  *
  * @return Waypoint Color
- * @throws UnsupportedOperationException
  */
-  public Color getColor() throws UnsupportedOperationException
+  public Color getColor()
   {
     return(color_);
   }
@@ -282,9 +307,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Waypoint Display Options
  *
  * @return Waypoint Display Options
- * @throws UnsupportedOperationException
  */
-  public String getDisplayOptions() throws UnsupportedOperationException
+  public String getDisplayOptions()
   {
     return(display_options_);
   }
@@ -294,9 +318,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Waypoint Attributes
  *
  * @return Waypoint Attributes
- * @throws UnsupportedOperationException
  */
-  public short getAttributes() throws UnsupportedOperationException
+  public short getAttributes()
   {
     return(attributes_);
   }
@@ -306,9 +329,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Waypoint Symbol Type
  *
  * @return Waypoint Symbol Type
- * @throws UnsupportedOperationException
  */
-  public String getSymbolName() throws UnsupportedOperationException
+  public String getSymbolName()
   {
     return(symbol_name_);
   }
@@ -318,9 +340,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Waypoint Symbol Type
  *
  * @return Waypoint Symbol Type
- * @throws UnsupportedOperationException
  */
-  public int getSymbolType() throws UnsupportedOperationException
+  public int getSymbolType()
   {
     return(symbol_type_);
   }
@@ -342,9 +363,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Latitude (degrees)
  *
  * @return Latitude (degrees)
- * @throws UnsupportedOperationException
  */
-  public double getLatitude() throws UnsupportedOperationException
+  public double getLatitude()
   {
     return(latitude_);
   }
@@ -352,10 +372,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
 //----------------------------------------------------------------------
 /**
  * Set the Latitude (degrees)
- *
- * @throws UnsupportedOperationException
  */
-  public void setLatitude(double latitude) throws UnsupportedOperationException
+  public void setLatitude(double latitude)
   {
     latitude_ = latitude;
   }
@@ -365,9 +383,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Longitude (degrees)
  *
  * @return Longitude (degrees)
- * @throws UnsupportedOperationException
  */
-  public double getLongitude() throws UnsupportedOperationException
+  public double getLongitude()
   {
     return(longitude_);
   }
@@ -375,10 +392,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
 //----------------------------------------------------------------------
 /**
  * Set the Longitude (degrees)
- *
- * @throws UnsupportedOperationException
  */
-  public void setLongitude(double longitude) throws UnsupportedOperationException
+  public void setLongitude(double longitude)
   {
     longitude_ = longitude;
   }
@@ -388,32 +403,30 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Altitude (metres).  A value of 1.0e25 means the parameter is unsupported or unknown.
  *
  * @return Altitude (metres)
- * @throws UnsupportedOperationException
  */
-  public float getAltitude() throws UnsupportedOperationException
+  public float getAltitude()
   {
     return(altitude_);
   }
 	
 //----------------------------------------------------------------------
 /**
- * Set the Altitude (metres).  A value of 1.0e25 means the parameter is unsupported or unknown.
- *
- * @throws UnsupportedOperationException
+ * Set the Altitude (metres).  A value of 1.0e25 means the parameter is
+ * unsupported or unknown.
  */
-  public void setAltitude(float altitude) throws UnsupportedOperationException
+  public void setAltitude(float altitude)
   {
     altitude_ = altitude;
   }
 
 //----------------------------------------------------------------------
 /**
- * Get the Depth (metres). A value of 1.0e25 means the parameter is unsupported or unknown.
+ * Get the Depth (metres). A value of 1.0e25 means the parameter is
+ * unsupported or unknown.
  *
  * @return Depth (metres)
- * @throws UnsupportedOperationException
  */
-  public float getDepth() throws UnsupportedOperationException
+  public float getDepth()
   {
     return(depth_);
   }
@@ -424,9 +437,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * unsupported or unknown.
  *
  * @return Distance (metres)
- * @throws UnsupportedOperationException
  */
-  public float getDistance() throws UnsupportedOperationException
+  public float getDistance()
   {
     return(distance_);
   }
@@ -436,9 +448,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the State Code
  *
  * @return State Code
- * @throws UnsupportedOperationException
  */
-  public String getStateCode() throws UnsupportedOperationException
+  public String getStateCode()
   {
     return(state_code_);
   }
@@ -448,9 +459,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Country Code
  *
  * @return Country Code
- * @throws UnsupportedOperationException
  */
-  public String getCountryCode() throws UnsupportedOperationException
+  public String getCountryCode()
   {
     return(country_code_);
   }
@@ -460,9 +470,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Estimated Time Enroute in seconds.
  *
  * @return ETE
- * @throws UnsupportedOperationException
  */
-  public long getEstimatedTimeEnroute() throws UnsupportedOperationException
+  public long getEstimatedTimeEnroute()
   {
     return(ete_);
   }
@@ -472,9 +481,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Identification String
  *
  * @return Identification String
- * @throws UnsupportedOperationException
  */
-  public String getIdentification() throws UnsupportedOperationException
+  public String getIdentification()
   {
     return(identification_);
   }
@@ -482,10 +490,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
 //----------------------------------------------------------------------
 /**
  * Set the Identification String
- *
- * @throws UnsupportedOperationException
  */
-  public void setIdentification(String identification) throws UnsupportedOperationException
+  public void setIdentification(String identification)
   {
     identification_ = identification;
   }
@@ -495,9 +501,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Comment String
  *
  * @return Comment String
- * @throws UnsupportedOperationException
  */
-  public String getComment() throws UnsupportedOperationException
+  public String getComment()
   {
     return(comment_);
   }
@@ -505,10 +510,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
 //----------------------------------------------------------------------
 /**
  * Set the Comment String
- *
- * @throws UnsupportedOperationException
  */
-  public void setComment(String comment) throws UnsupportedOperationException
+  public void setComment(String comment)
   {
     comment_ = comment;
   }
@@ -518,9 +521,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Facility String
  *
  * @return Facility String
- * @throws UnsupportedOperationException
  */
-  public String getFacility() throws UnsupportedOperationException
+  public String getFacility()
   {
     return(facility_);
   }
@@ -530,9 +532,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the City String
  *
  * @return City String
- * @throws UnsupportedOperationException
  */
-  public String getCity() throws UnsupportedOperationException
+  public String getCity()
   {
     return(city_);
   }
@@ -542,9 +543,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Address String
  *
  * @return Address String
- * @throws UnsupportedOperationException
  */
-  public String getAddress() throws UnsupportedOperationException
+  public String getAddress()
   {
     return(address_);
   }
@@ -554,9 +554,8 @@ public class GarminWaypointD109 extends GarminWaypointD108
  * Get the Crossroad String
  *
  * @return Crossroad String
- * @throws UnsupportedOperationException
  */
-  public String getCrossroad() throws UnsupportedOperationException
+  public String getCrossroad()
   {
     return(cross_road_);
   }
@@ -577,6 +576,7 @@ public class GarminWaypointD109 extends GarminWaypointD108
   {
     StringBuffer buffer = new StringBuffer();
     buffer.append("GarminWaypoint[");
+    buffer.append("identification=").append(identification_).append(", ");
     buffer.append("type=").append(WAYPOINT_TYPE).append(", ");
     buffer.append("class_name=").append(class_name_).append(", ");
     buffer.append("color=").append(color_).append(", ");
@@ -591,7 +591,6 @@ public class GarminWaypointD109 extends GarminWaypointD108
     buffer.append("distance=").append(distance_).append(", ");
     buffer.append("state_code=").append(state_code_).append(", ");
     buffer.append("country_code=").append(country_code_).append(", ");
-    buffer.append("identification=").append(identification_).append(", ");
     buffer.append("facility=").append(facility_).append(", ");
     buffer.append("city=").append(city_).append(", ");
     buffer.append("address=").append(address_).append(", ");

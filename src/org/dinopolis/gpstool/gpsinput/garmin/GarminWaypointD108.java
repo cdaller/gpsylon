@@ -233,7 +233,6 @@ public class GarminWaypointD108 implements GarminWaypoint
  */
   public GarminPackage toGarminPackage(int package_id)
   {
-//    System.out.println("D108: "+toString());
     int data_length = 48 + Math.min(identification_.length()+1,51)
                       + Math.min(comment_.length()+1,51)
                       + Math.min(facility_.length()+1,31)

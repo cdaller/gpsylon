@@ -69,6 +69,23 @@ public interface MapRetrievalPlugin extends Plugin
                         ProgressListener progress_listener)
     throws IOException;
 
+//----------------------------------------------------------------------
+/**
+ * Returns the scale the plugin would use for the given parameters.
+ *
+ * @param latitude the latitude of the center of the map to retrieve.
+ * @param longitude the longitude of the center of the map to retrieve.
+ * @param wanted_mapblast_scale the scale to download. The base for
+ * this value is the scale used by the mapblast server. The plugin has
+ * to calculate this value to match the scale used by its map source!
+ * @param image_width the width of the map to download.
+ * @param image_height the height of the map to download.
+ * @return the scale the plugin uses for the given parameters.
+ */
+  public double getMapScale(double latitude, double longitude,
+                             double wanted_mapblast_scale, int image_height,
+                             int image_width);
+
 }
 
 

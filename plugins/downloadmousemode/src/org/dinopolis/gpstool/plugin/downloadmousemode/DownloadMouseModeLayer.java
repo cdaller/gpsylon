@@ -144,13 +144,15 @@ public class DownloadMouseModeLayer extends BasicLayer
  */
   protected void doCalculation()
   {
+    System.out.println("DownloadMouseModeLayer: active="+mouse_mode_active_);
+    System.out.println("DownloadMouseModeLayer: isActive="+isActive());
     if(!mouse_mode_active_)
       return;
     Projection projection = getProjection();
 
         // calculate preview rectangles:
     map_rectangles_ = download_calculator_.calculateMapRectangles();
-//    System.out.println("Map Rectangles to calculate: "+Debug.objectToString(map_rectangles_));
+    System.out.println("Map Rectangles to calculate: "+Debug.objectToString(map_rectangles_));
     Rectangle[] preview_rectangles = new Rectangle[map_rectangles_.length];
     Rectangle rectangle;
     MapRectangle map;
@@ -198,7 +200,11 @@ public class DownloadMouseModeLayer extends BasicLayer
     Rectangle[] rectangles;
     synchronized(preview_rectangles_lock_)
     {
-      rectangles = new Rectangle[map_rectangles_.length];
+          // if not preview rectangles were set, just return:
+      if(preview_rectangles_ == null)
+        return;
+      
+      rectangles = new Rectangle[preview_rectangles_.length];
       System.arraycopy(preview_rectangles_,0,rectangles,0,preview_rectangles_.length);
     }
     
@@ -226,7 +232,7 @@ public class DownloadMouseModeLayer extends BasicLayer
 //----------------------------------------------------------------------
 /**
  * Activate/Deactivate the layer (called from
- * {@DownloadMouseMode}). If activated, the download dialog box is
+ * {@link DownloadMouseMode}). If activated, the download dialog box is
  * opened.
  *
  * @param active if <code>true</code> the layer is switched on.
@@ -235,6 +241,7 @@ public class DownloadMouseModeLayer extends BasicLayer
 
   public void setMouseModeActive(boolean active)
   {
+    setActive(active);
         // display downloadframe on activation
     if((download_frame_ == null) && active)
     {
@@ -285,6 +292,12 @@ public class DownloadMouseModeLayer extends BasicLayer
   }
 
 
+//----------------------------------------------------------------------
+/**
+ * Download the maps described in the parameter.
+ * 
+ * @param map_rectangles the map information needed to download the maps.
+ */
   public void downloadMaps(MapRectangle[] map_rectangles)
   {
     download_frame_.progress_bar_images_.setMaximum(map_rectangles.length);
@@ -295,6 +308,12 @@ public class DownloadMouseModeLayer extends BasicLayer
   }
 
 
+//----------------------------------------------------------------------
+/**
+ * Download the map described in the parameter.
+ * 
+ * @param map_rectangle the map information needed to download the map.
+ */
   public void downloadMap(MapRectangle map_rectangle)
   {
     if(Debug.DEBUG)

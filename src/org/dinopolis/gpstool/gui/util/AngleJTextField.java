@@ -1,6 +1,6 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
-*
+ *
  * Copyright (c) 2002 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 
@@ -33,6 +33,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import org.dinopolis.gpstool.util.angle.Angle;
 import org.dinopolis.gpstool.util.angle.AngleFormat;
+import org.dinopolis.gpstool.util.angle.Latitude;
+import org.dinopolis.gpstool.util.angle.Longitude;
 
 //----------------------------------------------------------------------
 /**
@@ -50,10 +52,9 @@ import org.dinopolis.gpstool.util.angle.AngleFormat;
 
 public class AngleJTextField extends JTextField
 {
-  double angle_;
-  AngleFormat format_;
   Vector angle_formatters_ = new Vector();
   Vector valid_formats_ = new Vector();
+  AngleFormat print_format_ = new AngleFormat("DD°MM'SS\"");
 
   protected String[] default_angle_formats_ = {"DD°MM'SS\"","DD°MM'SS\"","DD.ddddd°","DD°MM.mmmm'"};
 
@@ -88,6 +89,17 @@ public class AngleJTextField extends JTextField
     }
   }
 
+//----------------------------------------------------------------------
+/**
+ * Sets the format to print angles.
+ *
+ * @param format the angle format to use to print the angles.
+ * @throws IllegalArgumentException if the format is not correct.
+ */
+  public void setPrintFormat(String format)
+  {
+    print_format_ = new AngleFormat(format);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -228,7 +240,44 @@ public class AngleJTextField extends JTextField
       }
     }
     return(null);
-  }  
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Sets the value as angle. The print formatter is used to format the
+ * angle.
+ *
+ * @param the angle to set.
+ */
+  public void setAngle(double angle)
+  {
+    setText(print_format_.format(new Angle(angle)));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Sets the value as latitude. The print formatter is used to format the
+ * angle.
+ *
+ * @param the angle to set.
+ */
+  public void setAngleAsLatitude(double latitude)
+  {
+    setText(print_format_.format(new Latitude(latitude)));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Sets the value as longitude. The print formatter is used to format the
+ * angle.
+ *
+ * @param the angle to set.
+ */
+  public void setAngleAsLongitude(double longitude)
+  {
+    setText(print_format_.format(new Longitude(longitude)));
+  }
 }
 
 

@@ -87,6 +87,6 @@ public class GarminPVTD800 extends GarminPVT
     wn_days_ = GarminDataConverter.getGarminInt(buffer,62);
 
     // Calculate correct height (alt_ + msl_height_)
-    alt_ += msl_height_;
+//    alt_ += msl_height_;
   }
 }

@@ -271,13 +271,17 @@ public interface GPSMapKeyConstants
   public static final String KEY_DEVELOPMENT_DOWNLOAD_SIMULATE_ONLY = "development.download.simulate_only";
 
   
-      /** menu resources */
+  // menu resources
   public static final String KEY_MENU_MOUSE_MODE_LABEL = "menu.mouse_mode.label";
   public static final String KEY_MENU_PLUGIN_LABEL = "menu.plugin.label";
+  public static final String KEY_MENU_LAYERS_LABEL = "menu.layers.label";
 
-      /** cursor resources */
+  // cursor resources 
   public static final String KEY_CURSOR_ZOOM_IN_ICON = "cursor.zoom_in.icon";
   public static final String KEY_CURSOR_ZOOM_OUT_ICON = "cursor.zoom_out.icon";
+
+  // Mouse Mode resources
+  public static final String KEY_MOUSE_MODE_DEFAULT_MODE = "mouse_mode.default_mode";
 }
 
 

@@ -1950,6 +1950,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       {
         firePVTDataReceived(new GarminPVTD800(garmin_package));
       }
+      if(capabilities_.hasCapability("D802"))
+      {
+        firePVTDataReceived(new GarminPVTD802(garmin_package));
+      }
       break;
 	  
     case Pid_Display_Data_L001:

@@ -729,27 +729,33 @@ class GarminPackage
 
   public static void main(String[] args)
   {
-    String teststring = "hallo";
-    GarminPackage gp = new GarminPackage(1,4+2+teststring.length()+1);
-    gp.setNextAsInt(123456);
-    gp.setNextAsWord(1245);
-    gp.setNextAsString(teststring);
+//     String teststring = "hallo";
+//     GarminPackage gp = new GarminPackage(1,4+2+teststring.length()+1);
+//     gp.setNextAsInt(123456);
+//     gp.setNextAsWord(1245);
+//     gp.setNextAsString(teststring);
 
-    int word = 1234;
-    System.out.println("1234 as byte:");
-    System.out.println(word & 0xff); 
-    System.out.println((word & 0xff00) >> 8);
+//     int word = 1234;
+//     System.out.println("1234 as byte:");
+//     System.out.println(word & 0xff); 
+//     System.out.println((word & 0xff00) >> 8);
     
-    System.out.println(gp.getNextAsInt());
-    System.out.println(gp.getNextAsWord());
-    System.out.println(gp.getNextAsString());
+//     System.out.println(gp.getNextAsInt());
+//     System.out.println(gp.getNextAsWord());
+//     System.out.println(gp.getNextAsString());
 
-//     int value;
-//     for(int index = 0; index < gp.getPackageSize(); index++)
-//     {
-//       value = gp.get();
-//       System.out.println("byte: "+index+":"+value+":"+(char)value);
-//     }
+		GarminPackage gp = new GarminPackage(69,84);
+    int value;
+    for(int index = 0; index < gp.getPackageSize(); index++)
+    {
+      gp.put(index);
+    }
+
+    for(int index = 0; index < gp.getPackageSize(); index++)
+    {
+      System.out.println("index: "+index +" value: "+gp.getNextAsByte());
+    }
+
     System.out.println(gp);
   }
 }

@@ -117,8 +117,8 @@ public class ImportExportPlugin implements GuiPlugin
     service_discovery_ = support.getServiceDiscovery();
 		// load plugin resources:
 		loadResources();
+    application_resources_.attachResources(resources_);
 
-    
 		// prepare the actionstore for the menu:
 		action_store_ = ActionStore.getStore(TRACK_ACTION_STORE_ID);
 		action_store_.addActions(new Action[] { new ImportTrackAction()});

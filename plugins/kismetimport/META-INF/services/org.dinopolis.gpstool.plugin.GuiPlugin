@@ -1,0 +1,4 @@
+# add KismetImportPlugin
+org.dinopolis.gpstool.plugin.kismetimport.KismetImportPlugin
+# comment at end of file to ensure that the last line is terminated by
+# CR/LF

@@ -48,33 +48,33 @@ public class GarminDataConverter
 
   static
   {
-    TimeZone timezone = TimeZone.getTimeZone("UTC");
-    Calendar garmin_zero = Calendar.getInstance(timezone);
-    garmin_zero.set(Calendar.DAY_OF_MONTH,0);
-    garmin_zero.set(Calendar.MONTH,0);
-    garmin_zero.set(Calendar.YEAR,1990);
-    garmin_zero.set(Calendar.HOUR_OF_DAY,0);
-    garmin_zero.set(Calendar.MINUTE,0);
-    garmin_zero.set(Calendar.SECOND,0);
-    garmin_zero.set(Calendar.MILLISECOND,0);
-//     System.out.println("garmin garmin_zero_: "+garmin_zero.getTime()+" "+garmin_zero);
-    garmin_zero_date_seconds_ = garmin_zero.getTime().getTime() / 1000;
-        // alternative is to set the value directly (taken from gpspoint2):
-//    garmin_zero_date_seconds_ = 631065600L;
-  }
+		 TimeZone timezone = TimeZone.getTimeZone("UTC");
+		 Calendar garmin_zero = Calendar.getInstance(timezone);
+		 garmin_zero.set(Calendar.DAY_OF_MONTH,0);
+		 garmin_zero.set(Calendar.MONTH,0);
+		 garmin_zero.set(Calendar.YEAR,1990);
+		 garmin_zero.set(Calendar.HOUR_OF_DAY,0);
+		 garmin_zero.set(Calendar.MINUTE,0);
+		 garmin_zero.set(Calendar.SECOND,0);
+		 garmin_zero.set(Calendar.MILLISECOND,0);
+ //     System.out.println("garmin garmin_zero_: "+garmin_zero.getTime()+" "+garmin_zero);
+		 garmin_zero_date_seconds_ = garmin_zero.getTime().getTime() / 1000;
+				 // alternative is to set the value directly (taken from gpspoint2):
+ //    garmin_zero_date_seconds_ = 631065600L;
+	 }
 
-//----------------------------------------------------------------------
-/**
- * Extracts a byte array from the given character buffer and returns
- * it.
- *
- * @param buffer the character buffer to extract the string from.
- * @param offset the offset to start reading the buffer.
- * @param length the length of the array.
- * @return the value extracted from the buffer.
- */
-  public static byte[] getGarminByteArray(int[] buffer, int offset, int length)
-  {
+ //----------------------------------------------------------------------
+ /**
+	* Extracts a byte array from the given character buffer and returns
+	* it.
+	*
+	* @param buffer the character buffer to extract the string from.
+	* @param offset the offset to start reading the buffer.
+	* @param length the length of the array.
+	* @return the value extracted from the buffer.
+	*/
+	 public static byte[] getGarminByteArray(int[] buffer, int offset, int length)
+	   {
     byte[] value = new byte[length];
     int index = length - 1;
     while(index >= 0)
@@ -391,6 +391,8 @@ public class GarminDataConverter
  * @param buffer the character buffer to extract the integer from.
  * @param offset the offset to start reading the buffer.
  * @return the value extracted from the buffer.
+ * @deprecated better use getGarminSignedInt, getGarminUnsignedInt (equals
+ * to getGarminWord)
  */
   public static int getGarminInt(int[] buffer, int offset)
   {
@@ -408,10 +410,12 @@ public class GarminDataConverter
  * (the rest is unchanged).
  * @throws ArrayIndexOutOfBoundsException if the buffer size is too
  * small to hold the given data.
+ * @deprecated better use getGarminSignedInt, getGarminUnsignedInt (equals
+ * to getGarminWord)
  */
   public static int[] setGarminInt(int integer, int[] buffer, int offset)
   {
-		return(setGarminInt(integer,buffer,offset));
+		return(setGarminSignedInt(integer,buffer,offset));
   }
 
 
@@ -574,7 +578,7 @@ public class GarminDataConverter
   public static int[] setGarminFloat(float flo,int[] buffer, int offset)
   {
     int integer = Float.floatToRawIntBits(flo);
-    return(setGarminInt(integer,buffer,offset));
+    return(setGarminLongWord(integer,buffer,offset));
   }
   
 //----------------------------------------------------------------------
@@ -640,7 +644,7 @@ public class GarminDataConverter
  */
   public static double getGarminSemicircleDegrees(int[] buffer, int offset)
   {
-      return(convertSemicirclesToDegrees(getGarminInt(buffer,offset)));
+      return(convertSemicirclesToDegrees(getGarminSignedLong(buffer,offset)));
   }
 
 //----------------------------------------------------------------------
@@ -657,7 +661,7 @@ public class GarminDataConverter
  */
   public static int[] setGarminSemicircleDegrees(double degrees,int[] buffer, int offset)
   {
-      return setGarminInt(convertDegreesToSemicircles(degrees),buffer,offset);
+      return setGarminSignedLong(convertDegreesToSemicircles(degrees),buffer,offset);
   }
 
 //----------------------------------------------------------------------
@@ -699,7 +703,7 @@ public class GarminDataConverter
  * @param semicircle
  * @return degrees
  */
-  public static double convertSemicirclesToDegrees(int semicircle)
+  public static double convertSemicirclesToDegrees(long semicircle)
   {
     return((double)semicircle / SEMICIRCLE_FACTOR);
   }
@@ -711,9 +715,9 @@ public class GarminDataConverter
  * @param degrees
  * @return semicircles
  */
-  public static int convertDegreesToSemicircles(double degrees)
+  public static long convertDegreesToSemicircles(double degrees)
   {
-    return (int)(degrees * SEMICIRCLE_FACTOR);
+    return (long)(degrees * SEMICIRCLE_FACTOR);
   }
 
 //----------------------------------------------------------------------

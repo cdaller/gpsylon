@@ -130,7 +130,7 @@ public interface GPSMapKeyConstants
   public static final String KEY_LOCALIZE_PREVIEW_BUTTON = "localize.preview_button";
   public static final String KEY_LOCALIZE_FILENAME = "localize.filename";
   public static final String KEY_LOCALIZE_MESSAGE_LATITUDE_WRONG_FORMAT = "localize.message.latitude_wrong_format";
-  public static final String KEY_LOCALIZ_MESSAGE_LONGITUDE_WRONG_FORMAT = "localize.message.longitude_wrong_format";
+  public static final String KEY_LOCALIZE_MESSAGE_LONGITUDE_WRONG_FORMAT = "localize.message.longitude_wrong_format";
   public static final String KEY_LOCALIZE_MESSAGE_ERROR_TITLE = "localize.message.error_title";
   public static final String KEY_LOCALIZE_MESSAGE_INFO_TITLE = "localize.message.info_title";
   public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE = "localize.message.download_error_message";

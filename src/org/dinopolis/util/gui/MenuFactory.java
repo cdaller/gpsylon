@@ -160,6 +160,15 @@ public class MenuFactory
                                     Resources resources,
                                     ActionGenerator action_gen)
   {
+        // check for empty menu:
+    String type = resources.getString(prefix+menu_name+KEY_RESOURCE_TYPE_SUFFIX, "");
+    if(TYPE_EMPTY_MENU.equalsIgnoreCase(type))
+    {
+      JMenu menu = new JMenu();
+      initializeMenu(menu,prefix,menu_name,resources);
+      return(menu);
+    }
+    
     String[] item_keys = resources.getStringArray(prefix+menu_name, " ,");
     if (item_keys.length<1)
       return (null);

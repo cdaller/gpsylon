@@ -833,47 +833,31 @@ public class GPSMap
   protected void addMouseModesToMenu()
   {
         // find the menu that should contain the mouse modes (control/mouse mode):
-    JMenu control_menu = null;
     JMenu mouse_mode_menu = null;
     JMenu menu;
     int menu_index = 0;
-    while((menu_index < menu_bar_.getMenuCount()) && (control_menu == null))
+    while((menu_index < menu_bar_.getMenuCount()) && (mouse_mode_menu == null))
     {
       menu = menu_bar_.getMenu(menu_index);
-      if(menu.getText().equals(resources_.getString(KEY_MENU_CONTROL_LABEL)))
+      if(menu.getText().equals(resources_.getString(KEY_MENU_MOUSE_MODE_LABEL)))
       {
-        control_menu = menu;
+        mouse_mode_menu = menu;
       }
       menu_index++;
     }
-    if(control_menu != null)
-    {
-      JMenuItem item;
-      menu_index = 0;
-      while((menu_index < control_menu.getItemCount()) && (mouse_mode_menu == null))
-      {
-        item = control_menu.getItem(menu_index);
-        if(item.getText().equals(resources_.getString(KEY_MENU_MOUSE_MODE_LABEL)))
-        {
-          mouse_mode_menu = (JMenu)item;
-        }
-      menu_index++;
-      }
 
-      if(mouse_mode_menu != null)
+    if(mouse_mode_menu != null)
+    {
+      JMenuItem[] mouse_mode_items = mouse_mode_manager_.getMenuItems();
+      for(int item_count = 0; item_count < mouse_mode_items.length; item_count++)
       {
-        JMenuItem[] mouse_mode_items = mouse_mode_manager_.getMenuItems();
-        for(int item_count = 0; item_count < mouse_mode_items.length; item_count++)
-        {
 //          System.out.println("Adding Mouse Mode "+mouse_mode_items[item_count] +" to menu.");
-          mouse_mode_menu.add(mouse_mode_items[item_count]);
-        }
+        mouse_mode_menu.add(mouse_mode_items[item_count]);
       }
     }
-    
-    if((control_menu == null) || (mouse_mode_menu == null))
+    else
     {
-      System.err.println("ERROR: Could not find 'Control/Mouse Mode' menu, no mouse modes added!");
+      System.err.println("ERROR: Could not find '/Mouse Mode' menu, no mouse modes added to menu!");
     }
     
   }

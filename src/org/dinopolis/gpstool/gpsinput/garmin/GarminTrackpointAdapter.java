@@ -254,16 +254,20 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
   
 //----------------------------------------------------------------------
 /**
- * Returns the date from the seconds since 1.1.1990.
+ * Returns the date from the seconds since 1.1.1990 or null, if
+ * <code>garmin_time</code> is <0.
  *
  * @param the seconds.
- * @return the date from the seconds since 1.1.1990.
+ * @return the date from the seconds since 1.1.1990 or null.
  */
   protected Date getDateFromGarminTime(long garmin_time)
   {
 //     Calendar new_cal = (Calendar)garmin_zero_.clone();
 //     new_cal.add(Calendar.SECOND,(int)garmin_time);
 //     return(new_cal.getTime());
+    if(garmin_time < 0)
+      return(null);
+    
     return(new Date((garmin_zero_date_seconds_ + garmin_time) * 1000));
   }
   

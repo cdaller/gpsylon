@@ -95,17 +95,6 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
     
     setTitle(resources_.getString(KEY_LOCALIZE_DOWNLOADFRAME_TITLE));
 
-    try
-    {
-      latitude_text_.setPrintFormat(resources_.getString(KEY_ANGLE_FORMAT_LATLON));
-      longitude_text_.setPrintFormat(resources_.getString(KEY_ANGLE_FORMAT_LATLON));
-    }
-    catch(IllegalArgumentException e)
-    {
-      System.err.println("Illegal format for latitude/longitude: "+e.getMessage());
-    }
-
-    
     Container content_pane = getContentPane();
 
     JPanel center_panel = new JPanel();
@@ -139,6 +128,17 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
     latitude_text_.addValidAngleFormats(resources_.getStringArray(KEY_ANGLE_FORMAT_VALID_FORMATS));
     longitude_text_.clearValidAngleFormats();
     longitude_text_.addValidAngleFormats(resources_.getStringArray(KEY_ANGLE_FORMAT_VALID_FORMATS));
+        // set angle format for textfields:
+    try
+    {
+      latitude_text_.setPrintFormat(resources_.getString(KEY_ANGLE_FORMAT_LATLON));
+      longitude_text_.setPrintFormat(resources_.getString(KEY_ANGLE_FORMAT_LATLON));
+    }
+    catch(IllegalArgumentException e)
+    {
+      System.err.println("Illegal format for latitude/longitude: "+e.getMessage());
+    }
+
 
         // add focus listener to the lat/lon fields:
     latitude_text_.addFocusListener(focus_listener);

@@ -263,7 +263,14 @@ public interface GPSMapKeyConstants
 
       /** other resources */
   public static final String KEY_RESOURCE_EDITOR_TITLE = "resource.editor_title";
-  
+
+      /** menu resources */
+  public static final String KEY_MENU_CONTROL_LABEL = "menu.control.label";
+  public static final String KEY_MENU_MOUSE_MODE_LABEL = "menu.mouse_mode.label";
+
+      /** cursor resources */
+  public static final String KEY_CURSOR_ZOOM_IN_ICON = "cursor.zoom_in.icon";
+  public static final String KEY_CURSOR_ZOOM_OUT_ICON = "cursor.zoom_out.icon";
 }
 
 

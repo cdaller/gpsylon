@@ -100,8 +100,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public GarminProduct product_info_;
 
       /** timeout in milliseconds to wait for ACK/NAK from device (0 waits forever) */
-  protected final static long ACK_TIMEOUT = 0L;
+  protected final static long ACK_TIMEOUT = 2000L;
 
+  protected final static int MAX_TRIES = 5;
+  
       /* constants to indicate which type of packages were received */
   protected final static int RECEIVED_WAYPOINTS = 1;
   protected final static int RECEIVED_TRACKS = 2;
@@ -246,7 +248,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       read_thread_.setDaemon(true);
       read_thread_.start();
 
-      getGarminProductInfo(0L); // needed to know the capabilities of the device
+      GarminProduct info = getGarminProductInfo(5000L); // needed to know the capabilities of the device
+      if(info == null)
+        throw new GPSException("Garmin device does not respond!");
 	
 //       write_thread_ = new WriterThread(out_stream_);
 //       write_thread_.setName("Garmin Writer");
@@ -275,6 +279,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       throw new GPSException("no GPSDevice set!");
     if(read_thread_ != null)
       read_thread_.stopThread();
+    if(watch_dog_ != null)
+      watch_dog_.stopWatching();
     gps_device_.close();
   }
 
@@ -515,7 +521,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     GarminPackage garmin_package = new GarminPackage(request,2);
     garmin_package.put(cmd);
     garmin_package.put(0);
-    putPackage(garmin_package);
+    putPackage(garmin_package,timeout);
     return(send_success_);
   }
 
@@ -533,7 +539,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     if(Debug.DEBUG)
       Debug.println("gps_garmin_package","Sending request "+request);
     GarminPackage garmin_package = new GarminPackage(request,0);
-    putPackage(garmin_package);
+    putPackage(garmin_package,timeout);
     return(send_success_);
   }
 
@@ -837,7 +843,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
 //----------------------------------------------------------------------
 /**
- * Returns information about the garmin product.
+ * Returns information about the garmin product or null, if the
+ * timeout was exceeded.
  *
  * @return information about the garmin product.
  */
@@ -1039,16 +1046,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //----------------------------------------------------------------------
 /**
  * Request the routes from the gps device. This method is non blocking
- * and returns immediately. The information may be obtained by registering
- * as observer for it.
+ * and returns immediately after the acknowledge was received or the
+ * number of tries was exceeded.
+ * @return true if the acknowledge was sent, false otherwise (the
+ * device did not receive the package then).
  */
-  protected void requestRoutes()
+  protected boolean requestRoutes()
     throws IOException
   {
     waitTillReady();
       
     boolean success = false;
-    while(!success)
+    int num_tries = 0;
+    while(!success && (num_tries < MAX_TRIES))
     {
           // Does device support route transfer protocol
       if(capabilities_.hasCapability("A200") || capabilities_.hasCapability("A201"))
@@ -1076,22 +1086,27 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
           }
         }
       }
+      num_tries++;
     }
+    return(success);
   }
 
 //----------------------------------------------------------------------
 /**
  * Request the waypoints from the gps device. This method is non blocking
- * and returns immediately. The information may be obtained by registering
- * as observer for it.
+ * and returns immediately after the acknowledge was received or the
+ * number of tries was exceeded.
+ * @return true if the acknowledge was sent, false otherwise (the
+ * device did not receive the package then).
  */
-  protected void requestWaypoints()
+  protected boolean requestWaypoints()
     throws IOException
   {
     waitTillReady();
       
     boolean success = false;
-    while(!success)
+    int num_tries = 0;
+    while(!success && (num_tries < MAX_TRIES))
     {
           // Does device support route transfer protocol
       if(capabilities_.hasCapability("A100"))
@@ -1119,22 +1134,27 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
           }
         }
       }
+      num_tries++;
     }
+    return(success);
   }
 
 //----------------------------------------------------------------------
 /**
  * Request the tracks from the gps device. This method is non blocking
- * and returns immediately. The information may be obtained by registering
- * as observer for it.
+ * and returns immediately after the acknowledge was received or the
+ * number of tries was exceeded.
+ * @return true if the acknowledge was sent, false otherwise (the
+ * device did not receive the package then).
  */
-  protected void requestTracks()
+  protected boolean requestTracks()
     throws IOException
   {
     waitTillReady();
       
     boolean success = false;
-    while(!success)
+    int num_tries = 0;
+    while(!success && (num_tries < MAX_TRIES))
     {
           // Does device support route transfer protocol
       if(capabilities_.hasCapability("A300") || capabilities_.hasCapability("A301"))
@@ -1147,34 +1167,42 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
           }
         }
       }
+      num_tries++;
     }
+    return(success);
   }
 
 //----------------------------------------------------------------------
 /**
- * Request the product info from the gps device. This method is non
- * blocking and returns immediately. The information may be obtained
- * by registering as observer for it.
+ * Request the product info from the gps device. This method is non blocking
+ * and returns immediately after the acknowledge was received or the
+ * number of tries was exceeded.
+ * @return true if the acknowledge was sent, false otherwise (the
+ * device did not receive the package then).
  */
-  protected void requestProductInfo()
+  protected boolean requestProductInfo()
     throws IOException
   {
     boolean success = false;
-    while(!success)
+    int num_tries = 0;
+    while(!success && (num_tries < MAX_TRIES))
     {
       success = sendCommand(Pid_Product_Rqst,ACK_TIMEOUT);
-      if(!success)
-        System.err.println("WARNING GPSGarminDataProcessor: NAK");
+      num_tries++;
     }
+    return(success);
   }
 
 //----------------------------------------------------------------------
 /**
  * Request the pvt info (position, velocity, ...)  from the gps
- * device. This method is non blocking and returns immediately. The
- * information may be obtained by registering as observer for it.
+ * device. This method is non blocking
+ * and returns immediately after the acknowledge was received or the
+ * number of tries was exceeded.
+ * @return true if the acknowledge was sent, false otherwise (the
+ * device did not receive the package then).
  */
-  protected void requestPVT()
+  protected boolean requestPVT()
     throws IOException
   {
     waitTillReady();
@@ -1184,11 +1212,15 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
        capabilities_.hasCapability("A10"))
     {
       boolean success = false;
-      while(!success)
+      int num_tries = 0;
+      while(!success && (num_tries < MAX_TRIES))
       {
         success = sendCommand(Pid_Command_Data_L001, Cmnd_Start_Pvt_Data_A010,ACK_TIMEOUT);
+        num_tries++;
       }
+      return(success);
     }
+    return(false);
   }
 
 //----------------------------------------------------------------------
@@ -1294,7 +1326,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       {
         changeGPSData(LOCATION,new GPSPosition(pvt.getLat(),pvt.getLon()));
         changeGPSData(SPEED,new Float(calcSpeed(pvt.getNorth(),pvt.getEast())));
-        changeGPSData(ALTITUDE,new Float(pvt.getAlt() + pvt.getMslHeight()));
+        double altitude = pvt.getAlt() + pvt.getMslHeight();
+        changeGPSData(ALTITUDE,new Float(altitude));
         changeGPSData(HEADING,new Float(calcHeading(pvt.getNorth(),pvt.getEast())));
       }
       pvt_sync_request_lock_.notify();
@@ -1347,7 +1380,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         // create int[] buffer (intermediate solution, as the
         // Garmin** classes do not work with the GarminPackage class
         // yet:
-    char [] buffer = garmin_package.getCompatibilityBuffer();
+    int[] buffer = garmin_package.getCompatibilityBuffer();
       
     switch((int)buffer[0])
     {

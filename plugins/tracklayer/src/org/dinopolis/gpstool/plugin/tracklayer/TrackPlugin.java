@@ -39,7 +39,6 @@ import javax.swing.JMenuItem;
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gui.MouseMode;
-import org.dinopolis.gpstool.gui.layer.track.ReadGPSMapTrackPlugin;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
@@ -134,11 +133,22 @@ public class TrackPlugin implements GuiPlugin
     plugin_support_ = support;
 		track_manager_ = support.getTrackManager();
 		application_resources_ = support.getResources();
+
+        // prevent any "old" values to confuse this plugin!
+    try
+    {
+      application_resources_.unset(TrackLayer.KEY_TRACK_LAYER_ACTIVE);
+    }
+    catch(MissingResourceException ignored) {}
+    
 		// load map manager resources:
 		if (Debug.DEBUG)
 			Debug.println("trackplugin_init", "loading resources");
 		loadResources();
-
+        // attach the plugin resources to the global application
+        // resources:
+    application_resources_.attachResources(resources_);
+    
     track_logger_ = new ActiveTrackLogger();
     track_logger_.initialize(track_manager_);
     support.getPropertyChangeSupport().addPropertyChangeListener(track_logger_);
@@ -177,25 +187,7 @@ public class TrackPlugin implements GuiPlugin
 	public void stopPlugin() throws Exception
 	{
     track_logger_.enable(false);
-// 		boolean store_resources = false;
-// 		// save window locaton and dimensions:
-// 		if (resources_.getBoolean(KEY_MAPMANAGER_WINDOW_REMEMBER_SETTINGS)
-// 			&& (main_frame_ != null))
-// 		{
-// 			Point location = main_frame_.getLocationOnScreen();
-// 			Dimension dimension = main_frame_.getSize();
-// 			resources_.setInt(KEY_MAPMANAGER_WINDOW_LOCATION_X, location.x);
-// 			resources_.setInt(KEY_MAPMANAGER_WINDOW_LOCATION_Y, location.y);
-// 			resources_.setInt(KEY_MAPMANAGER_WINDOW_DIMENSION_WIDTH, dimension.width);
-// 			resources_.setInt(
-// 				KEY_MAPMANAGER_WINDOW_DIMENSION_HEIGHT,
-// 				dimension.height);
-// 			store_resources = true;
-// 		}
-
-// 		if (store_resources)
-// 			resources_.store();
-
+    resources_.setBoolean(TrackLayer.KEY_TRACK_LAYER_ACTIVE,layer_.isActive());
 	}
 
 	//----------------------------------------------------------------------

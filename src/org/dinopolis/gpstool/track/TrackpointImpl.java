@@ -25,9 +25,6 @@ package org.dinopolis.gpstool.track;
 
 import java.util.Date;
 import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
-import org.dinopolis.gpstool.util.geoscreen.GeoScreen;
-
-
 
 //----------------------------------------------------------------------
 /**

@@ -32,6 +32,7 @@ import org.dinopolis.gpstool.StatusHook;
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.util.Resources;
+import org.dinopolis.util.servicediscovery.ServiceDiscovery;
 
 //----------------------------------------------------------------------
 /**
@@ -128,6 +129,14 @@ public interface PluginSupport
  * @return the gps data processor
  */
   public GPSDataProcessor getGPSDataProcessor();
+
+//----------------------------------------------------------------------
+/**
+ * Get the service discovery that allows to find all kind of plugins.
+ *
+ * @return the service discovery.
+ */
+  public ServiceDiscovery getServiceDiscovery();
 }
 
 

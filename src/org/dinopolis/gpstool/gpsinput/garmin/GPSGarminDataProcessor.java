@@ -617,6 +617,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       out_stream_.write(DLE);
       out_stream_.write(ETX);
       out_stream_.flush();
+      
+          // inform listeners:
+      String buffer_string = "sent: "+garmin_package.toString();
+      fireRawDataReceived(buffer_string.toCharArray(),0,buffer_string.length());
     }
     catch(IOException ioe)
     {
@@ -1416,6 +1420,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         // Garmin** classes do not work with the GarminPackage class
         // yet:
     int[] buffer = garmin_package.getCompatibilityBuffer();
+    String buffer_string = "received: "+garmin_package.toString();
+    fireRawDataReceived(buffer_string.toCharArray(),0,buffer_string.length());
       
     switch((int)buffer[0])
     {

@@ -123,6 +123,9 @@ public interface GPSMapKeyConstants
       /** other number formats */
   public static final String KEY_NUMBER_FORMAT_DISTANCE = "number.format.distance";
   public static final String KEY_UNIT_DISTANCE = "unit.distance";
+
+      /** tachometer settings */
+  public static final String KEY_TACHOMETER_REFRESH_TIME = "tachometer.refresh_time";
   
       /** localization of GUI */
   public static final String KEY_LOCALIZE_LATITUDE = "localize.latitude";

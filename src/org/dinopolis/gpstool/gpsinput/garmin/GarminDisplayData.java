@@ -68,15 +68,36 @@ public class GarminDisplayData
     int x = 0;
     int value;
 
+//         // every byte (8 bit) contains 4 pixels (2bit each)
+//     for(int index_bytes = 0; index_bytes < width_/4; index_bytes++)
+//     {
+//       value = garmin_package.getNextAsByte();
+//       drawPixel(x,y,value & 0x03);
+//       drawPixel(x+1,y,(value >> 2) & 0x03);
+//       drawPixel(x+2,y,(value >> 4) & 0x03);
+//       drawPixel(x+3,y,(value >> 6) & 0x03);
+//       x += 4;
+//     }
+
+    // first long is ignored, second is pixel number
+		int bytes_available = garmin_package.getPackageSize()-8; 
+		int desired_bytes_available = width_/4;
+		if(bytes_available < desired_bytes_available)
+		{
+			System.err.println("WARNING: not enough package data available for image line\n"
+												 +"some details may be missing:");
+			System.err.println("  bytes available = "+bytes_available);
+			System.err.println("  desired bytes = "+desired_bytes_available);
+		}
         // every byte (8 bit) contains 4 pixels (2bit each)
-    for(int index_bytes = 0; index_bytes < width_/4; index_bytes++)
+    for(int index_bytes = 0; index_bytes < bytes_available; index_bytes++)
     {
+//			System.out.print(" reading byte num:" + index_bytes);
       value = garmin_package.getNextAsByte();
-      drawPixel(x,y,value & 0x03);
-      drawPixel(x+1,y,(value >> 2) & 0x03);
-      drawPixel(x+2,y,(value >> 4) & 0x03);
-      drawPixel(x+3,y,(value >> 6) & 0x03);
-      x += 4;
+      drawPixel(x++,y,value & 0x03);
+      drawPixel(x++,y,(value >> 2) & 0x03);
+      drawPixel(x++,y,(value >> 4) & 0x03);
+      drawPixel(x++,y,(value >> 6) & 0x03);
     }
     line_++;
   }

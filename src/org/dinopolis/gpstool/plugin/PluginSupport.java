@@ -31,6 +31,7 @@ import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.StatusHook;
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
+import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
 

@@ -116,6 +116,9 @@ public interface GPSMapKeyConstants
   public static final String KEY_ANGLE_FORMAT_HEADING = "angle.format.heading";
   public static final String KEY_ANGLE_FORMAT_VALID_FORMATS = "angle.format.valid_formats";
 
+      /** splash screen */
+  public static final String KEY_SPLASH_IMAGE = "splash.image";
+  public static final String KEY_SPLASH_MAX_PROGRESS = "splash.max_progress";
   
       /** other number formats */
   public static final String KEY_NUMBER_FORMAT_DISTANCE = "number.format.distance";
@@ -124,11 +127,18 @@ public interface GPSMapKeyConstants
       /** localization of GUI */
   public static final String KEY_LOCALIZE_LATITUDE = "localize.latitude";
   public static final String KEY_LOCALIZE_LONGITUDE = "localize.longitude";
+  public static final String KEY_LOCALIZE_ALTITUDE = "localize.altitude";
   public static final String KEY_LOCALIZE_RAWGPSDATAFRAME_TITLE ="localize.raw_gps_data_frame_title";
   public static final String KEY_LOCALIZE_SCALE = "localize.scale";
   public static final String KEY_LOCALIZE_HEIGHT = "localize.height";
   public static final String KEY_LOCALIZE_WIDTH = "localize.width";
   public static final String KEY_LOCALIZE_INFO = "localize.info";
+  public static final String KEY_LOCALIZE_TRACK = "localize.track";
+  public static final String KEY_LOCALIZE_TRACKPOINT = "localize.trackpoint";
+  public static final String KEY_LOCALIZE_ROUTE = "localize.route";
+  public static final String KEY_LOCALIZE_ROUTEPOINT = "localize.routepoint";
+  public static final String KEY_LOCALIZE_WAYPOINT = "localize.waypoint";
+  public static final String KEY_LOCALIZE_DISTANCE = "localize.distance";
   public static final String KEY_LOCALIZE_CANCEL_BUTTON = "localize.cancel_button";
   public static final String KEY_LOCALIZE_CLOSE_BUTTON = "localize.close_button";
   public static final String KEY_LOCALIZE_CLEAR_BUTTON = "localize.clear_button";

@@ -1,5 +1,9 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+
+2003/11/05: fixed getValueString method in unithelper, so values <
+            100.0 are displayed with one digit behind the comma.
+
 2003/10/15: Added a quick'n'dirty import plugin for top40 overlay
             tracks (ascii format). 
 

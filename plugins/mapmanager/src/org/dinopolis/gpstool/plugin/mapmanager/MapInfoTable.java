@@ -23,11 +23,12 @@
 
 package org.dinopolis.gpstool.plugin.mapmanager;
 
-import javax.swing.JTable;
-import org.dinopolis.gpstool.MapManagerHook;
 import java.util.Collection;
+
+import javax.swing.JTable;
+
+import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.gui.util.AngleCellRenderer;
-import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.util.angle.Latitude;
 import org.dinopolis.gpstool.util.angle.Longitude;
 
@@ -61,11 +62,15 @@ public class MapInfoTable extends JTable
   {
     map_manager_ = map_manager;
     Collection map_infos = map_manager.getMapInfos();
-    MapInfo[] infos = new MapInfo[map_infos.size()];
-    infos = (MapInfo[])map_infos.toArray(infos);
         // set table model for MapInfo objects
-    MapInfoTableModel model = new MapInfoTableModel(column_names,infos);
-    setModel(model);
+    MapInfoTableModel model = new MapInfoTableModel(column_names,map_infos);
+    // add table sorter, so click on header resorts the table
+    MapInfoTableSorter table_sorter = new MapInfoTableSorter(model);
+    setModel(table_sorter);
+    table_sorter.addMouseListenerToHeaderInTable(this);
+    
+    // add the model as a change listener (for added or removed maps):
+    map_manager_.addMapsChangedListener(model);
 
         // set renderer for latitude/longitude
     setDefaultRenderer(Latitude.class, new AngleCellRenderer(angle_format));

@@ -121,7 +121,7 @@ public class TrackChartPlugin implements GuiPlugin
 		action_store_ = ActionStore.getStore(TRACKCHART_ACTION_STORE_ID);
 		action_store_.addActions(new Action[] { new ShowTrackChartAction()});
     
-    loadTestTrack();
+//    loadTestTrack();
 	}
 
 	//----------------------------------------------------------------------
@@ -349,1261 +349,1261 @@ public class TrackChartPlugin implements GuiPlugin
 
 
 
-  private void loadTestTrack()
-  {
-    if(Debug.DEBUG)
-      Debug.println("trackplugin","loading test track");
-    Track track = new TrackImpl();
-    track.setIdentification("test track");
-    Trackpoint point;
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.05489);
-    point.setLongitude(15.4736);
-    point.setAltitude(369);
-    point.setNewTrack(true);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.05378);
-    point.setLongitude(15.47469);
-    point.setAltitude(370);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.05015);
-    point.setLongitude(15.47997);
-    point.setAltitude(372);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04831);
-    point.setLongitude(15.48298);
-    point.setAltitude(365);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04537);
-    point.setLongitude(15.48615);
-    point.setAltitude(365);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04324);
-    point.setLongitude(15.48787);
-    point.setAltitude(363);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04303);
-    point.setLongitude(15.48759);
-    point.setAltitude(362);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04039);
-    point.setLongitude(15.48826);
-    point.setAltitude(364);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03846);
-    point.setLongitude(15.48692);
-    point.setAltitude(362);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03597);
-    point.setLongitude(15.48272);
-    point.setAltitude(355);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03423);
-    point.setLongitude(15.47929);
-    point.setAltitude(342);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03275);
-    point.setLongitude(15.47639);
-    point.setAltitude(341);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03138);
-    point.setLongitude(15.47909);
-    point.setAltitude(351);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.02835);
-    point.setLongitude(15.48162);
-    point.setAltitude(362);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.02292);
-    point.setLongitude(15.48514);
-    point.setAltitude(359);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.02136);
-    point.setLongitude(15.48536);
-    point.setAltitude(355);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.019);
-    point.setLongitude(15.48411);
-    point.setAltitude(356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01766);
-    point.setLongitude(15.48068);
-    point.setAltitude(358);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01653);
-    point.setLongitude(15.47594);
-    point.setAltitude(359);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01533);
-    point.setLongitude(15.46972);
-    point.setAltitude(356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01492);
-    point.setLongitude(15.46017);
-    point.setAltitude(355);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01434);
-    point.setLongitude(15.45658);
-    point.setAltitude(356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.00453);
-    point.setLongitude(15.42465);
-    point.setAltitude(353);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.00005);
-    point.setLongitude(15.413);
-    point.setAltitude(356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99973);
-    point.setLongitude(15.41238);
-    point.setAltitude(357);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99501);
-    point.setLongitude(15.405);
-    point.setAltitude(358);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99389);
-    point.setLongitude(15.40367);
-    point.setAltitude(352);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99003);
-    point.setLongitude(15.39991);
-    point.setAltitude(359);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9822);
-    point.setLongitude(15.39491);
-    point.setAltitude(365);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98003);
-    point.setLongitude(15.39376);
-    point.setAltitude(370);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97254);
-    point.setLongitude(15.38957);
-    point.setAltitude(374);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96522);
-    point.setLongitude(15.38476);
-    point.setAltitude(364);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96265);
-    point.setLongitude(15.38279);
-    point.setAltitude(366);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.959);
-    point.setLongitude(15.37968);
-    point.setAltitude(363);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95617);
-    point.setLongitude(15.37635);
-    point.setAltitude(358);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95467);
-    point.setLongitude(15.37354);
-    point.setAltitude(356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95321);
-    point.setLongitude(15.36732);
-    point.setAltitude(351);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95325);
-    point.setLongitude(15.36425);
-    point.setAltitude(349);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95475);
-    point.setLongitude(15.35811);
-    point.setAltitude(345);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9664);
-    point.setLongitude(15.33966);
-    point.setAltitude(352);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97007);
-    point.setLongitude(15.33286);
-    point.setAltitude(361);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97486);
-    point.setLongitude(15.32258);
-    point.setAltitude(351);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97951);
-    point.setLongitude(15.31022);
-    point.setAltitude(356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98129);
-    point.setLongitude(15.30226);
-    point.setAltitude(360);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98177);
-    point.setLongitude(15.29698);
-    point.setAltitude(361);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98168);
-    point.setLongitude(15.29069);
-    point.setAltitude(357);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98029);
-    point.setLongitude(15.27928);
-    point.setAltitude(362);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97878);
-    point.setLongitude(15.27091);
-    point.setAltitude(372);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97741);
-    point.setLongitude(15.26563);
-    point.setAltitude(388);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97632);
-    point.setLongitude(15.26346);
-    point.setAltitude(391);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97194);
-    point.setLongitude(15.25761);
-    point.setAltitude(415);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9711);
-    point.setLongitude(15.25583);
-    point.setAltitude(417);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97074);
-    point.setLongitude(15.2502);
-    point.setAltitude(423);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96996);
-    point.setLongitude(15.24714);
-    point.setAltitude(426);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96853);
-    point.setLongitude(15.24514);
-    point.setAltitude(429);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96741);
-    point.setLongitude(15.24428);
-    point.setAltitude(431);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96406);
-    point.setLongitude(15.24295);
-    point.setAltitude(439);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95999);
-    point.setLongitude(15.23971);
-    point.setAltitude(459);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95711);
-    point.setLongitude(15.23945);
-    point.setAltitude(469);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95413);
-    point.setLongitude(15.23855);
-    point.setAltitude(483);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95293);
-    point.setLongitude(15.23748);
-    point.setAltitude(488);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9514);
-    point.setLongitude(15.23484);
-    point.setAltitude(497);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95063);
-    point.setLongitude(15.23203);
-    point.setAltitude(503);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95009);
-    point.setLongitude(15.22975);
-    point.setAltitude(512);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95117);
-    point.setLongitude(15.22772);
-    point.setAltitude(516);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95308);
-    point.setLongitude(15.22154);
-    point.setAltitude(537);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95482);
-    point.setLongitude(15.2196);
-    point.setAltitude(544);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95756);
-    point.setLongitude(15.21898);
-    point.setAltitude(555);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96327);
-    point.setLongitude(15.21864);
-    point.setAltitude(565);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96831);
-    point.setLongitude(15.21649);
-    point.setAltitude(573);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96975);
-    point.setLongitude(15.21259);
-    point.setAltitude(579);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9682);
-    point.setLongitude(15.20643);
-    point.setAltitude(594);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96836);
-    point.setLongitude(15.20553);
-    point.setAltitude(599);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97138);
-    point.setLongitude(15.19937);
-    point.setAltitude(620);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97436);
-    point.setLongitude(15.19712);
-    point.setAltitude(637);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97524);
-    point.setLongitude(15.19435);
-    point.setAltitude(644);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97464);
-    point.setLongitude(15.18916);
-    point.setAltitude(657);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97554);
-    point.setLongitude(15.18559);
-    point.setAltitude(667);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9764);
-    point.setLongitude(15.18296);
-    point.setAltitude(672);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97683);
-    point.setLongitude(15.17877);
-    point.setAltitude(677);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97707);
-    point.setLongitude(15.17514);
-    point.setAltitude(678);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9787);
-    point.setLongitude(15.16959);
-    point.setAltitude(687);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97863);
-    point.setLongitude(15.16497);
-    point.setAltitude(690);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97988);
-    point.setLongitude(15.16279);
-    point.setAltitude(693);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98286);
-    point.setLongitude(15.15974);
-    point.setAltitude(708);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98516);
-    point.setLongitude(15.15577);
-    point.setAltitude(725);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98773);
-    point.setLongitude(15.15111);
-    point.setAltitude(738);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99013);
-    point.setLongitude(15.14841);
-    point.setAltitude(751);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99314);
-    point.setLongitude(15.14094);
-    point.setAltitude(778);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99378);
-    point.setLongitude(15.13819);
-    point.setAltitude(786);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99372);
-    point.setLongitude(15.13628);
-    point.setAltitude(791);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99282);
-    point.setLongitude(15.13332);
-    point.setAltitude(795);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99164);
-    point.setLongitude(15.13135);
-    point.setAltitude(798);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99086);
-    point.setLongitude(15.13019);
-    point.setAltitude(803);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98938);
-    point.setLongitude(15.12729);
-    point.setAltitude(802);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98801);
-    point.setLongitude(15.12388);
-    point.setAltitude(811);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98685);
-    point.setLongitude(15.1224);
-    point.setAltitude(816);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98295);
-    point.setLongitude(15.11927);
-    point.setAltitude(831);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98071);
-    point.setLongitude(15.11699);
-    point.setAltitude(837);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97659);
-    point.setLongitude(15.11554);
-    point.setAltitude(857);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97453);
-    point.setLongitude(15.1126);
-    point.setAltitude(872);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97318);
-    point.setLongitude(15.11144);
-    point.setAltitude(876);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96975);
-    point.setLongitude(15.11187);
-    point.setAltitude(884);
-    track.addWaypoint(point);
-
-    track_manager_.addTrack(track);
-
-
-    track = new TrackImpl();
-    track.setIdentification("higher test track");
+//   private void loadTestTrack()
+//   {
+//     if(Debug.DEBUG)
+//       Debug.println("trackplugin","loading test track");
+//     Track track = new TrackImpl();
+//     track.setIdentification("test track");
+//     Trackpoint point;
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.05489);
+//     point.setLongitude(15.4736);
+//     point.setAltitude(369);
+//     point.setNewTrack(true);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.05378);
+//     point.setLongitude(15.47469);
+//     point.setAltitude(370);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.05015);
+//     point.setLongitude(15.47997);
+//     point.setAltitude(372);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04831);
+//     point.setLongitude(15.48298);
+//     point.setAltitude(365);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04537);
+//     point.setLongitude(15.48615);
+//     point.setAltitude(365);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04324);
+//     point.setLongitude(15.48787);
+//     point.setAltitude(363);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04303);
+//     point.setLongitude(15.48759);
+//     point.setAltitude(362);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04039);
+//     point.setLongitude(15.48826);
+//     point.setAltitude(364);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03846);
+//     point.setLongitude(15.48692);
+//     point.setAltitude(362);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03597);
+//     point.setLongitude(15.48272);
+//     point.setAltitude(355);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03423);
+//     point.setLongitude(15.47929);
+//     point.setAltitude(342);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03275);
+//     point.setLongitude(15.47639);
+//     point.setAltitude(341);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03138);
+//     point.setLongitude(15.47909);
+//     point.setAltitude(351);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.02835);
+//     point.setLongitude(15.48162);
+//     point.setAltitude(362);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.02292);
+//     point.setLongitude(15.48514);
+//     point.setAltitude(359);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.02136);
+//     point.setLongitude(15.48536);
+//     point.setAltitude(355);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.019);
+//     point.setLongitude(15.48411);
+//     point.setAltitude(356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01766);
+//     point.setLongitude(15.48068);
+//     point.setAltitude(358);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01653);
+//     point.setLongitude(15.47594);
+//     point.setAltitude(359);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01533);
+//     point.setLongitude(15.46972);
+//     point.setAltitude(356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01492);
+//     point.setLongitude(15.46017);
+//     point.setAltitude(355);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01434);
+//     point.setLongitude(15.45658);
+//     point.setAltitude(356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.00453);
+//     point.setLongitude(15.42465);
+//     point.setAltitude(353);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.00005);
+//     point.setLongitude(15.413);
+//     point.setAltitude(356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99973);
+//     point.setLongitude(15.41238);
+//     point.setAltitude(357);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99501);
+//     point.setLongitude(15.405);
+//     point.setAltitude(358);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99389);
+//     point.setLongitude(15.40367);
+//     point.setAltitude(352);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99003);
+//     point.setLongitude(15.39991);
+//     point.setAltitude(359);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9822);
+//     point.setLongitude(15.39491);
+//     point.setAltitude(365);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98003);
+//     point.setLongitude(15.39376);
+//     point.setAltitude(370);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97254);
+//     point.setLongitude(15.38957);
+//     point.setAltitude(374);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96522);
+//     point.setLongitude(15.38476);
+//     point.setAltitude(364);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96265);
+//     point.setLongitude(15.38279);
+//     point.setAltitude(366);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.959);
+//     point.setLongitude(15.37968);
+//     point.setAltitude(363);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95617);
+//     point.setLongitude(15.37635);
+//     point.setAltitude(358);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95467);
+//     point.setLongitude(15.37354);
+//     point.setAltitude(356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95321);
+//     point.setLongitude(15.36732);
+//     point.setAltitude(351);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95325);
+//     point.setLongitude(15.36425);
+//     point.setAltitude(349);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95475);
+//     point.setLongitude(15.35811);
+//     point.setAltitude(345);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9664);
+//     point.setLongitude(15.33966);
+//     point.setAltitude(352);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97007);
+//     point.setLongitude(15.33286);
+//     point.setAltitude(361);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97486);
+//     point.setLongitude(15.32258);
+//     point.setAltitude(351);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97951);
+//     point.setLongitude(15.31022);
+//     point.setAltitude(356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98129);
+//     point.setLongitude(15.30226);
+//     point.setAltitude(360);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98177);
+//     point.setLongitude(15.29698);
+//     point.setAltitude(361);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98168);
+//     point.setLongitude(15.29069);
+//     point.setAltitude(357);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98029);
+//     point.setLongitude(15.27928);
+//     point.setAltitude(362);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97878);
+//     point.setLongitude(15.27091);
+//     point.setAltitude(372);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97741);
+//     point.setLongitude(15.26563);
+//     point.setAltitude(388);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97632);
+//     point.setLongitude(15.26346);
+//     point.setAltitude(391);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97194);
+//     point.setLongitude(15.25761);
+//     point.setAltitude(415);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9711);
+//     point.setLongitude(15.25583);
+//     point.setAltitude(417);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97074);
+//     point.setLongitude(15.2502);
+//     point.setAltitude(423);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96996);
+//     point.setLongitude(15.24714);
+//     point.setAltitude(426);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96853);
+//     point.setLongitude(15.24514);
+//     point.setAltitude(429);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96741);
+//     point.setLongitude(15.24428);
+//     point.setAltitude(431);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96406);
+//     point.setLongitude(15.24295);
+//     point.setAltitude(439);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95999);
+//     point.setLongitude(15.23971);
+//     point.setAltitude(459);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95711);
+//     point.setLongitude(15.23945);
+//     point.setAltitude(469);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95413);
+//     point.setLongitude(15.23855);
+//     point.setAltitude(483);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95293);
+//     point.setLongitude(15.23748);
+//     point.setAltitude(488);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9514);
+//     point.setLongitude(15.23484);
+//     point.setAltitude(497);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95063);
+//     point.setLongitude(15.23203);
+//     point.setAltitude(503);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95009);
+//     point.setLongitude(15.22975);
+//     point.setAltitude(512);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95117);
+//     point.setLongitude(15.22772);
+//     point.setAltitude(516);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95308);
+//     point.setLongitude(15.22154);
+//     point.setAltitude(537);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95482);
+//     point.setLongitude(15.2196);
+//     point.setAltitude(544);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95756);
+//     point.setLongitude(15.21898);
+//     point.setAltitude(555);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96327);
+//     point.setLongitude(15.21864);
+//     point.setAltitude(565);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96831);
+//     point.setLongitude(15.21649);
+//     point.setAltitude(573);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96975);
+//     point.setLongitude(15.21259);
+//     point.setAltitude(579);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9682);
+//     point.setLongitude(15.20643);
+//     point.setAltitude(594);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96836);
+//     point.setLongitude(15.20553);
+//     point.setAltitude(599);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97138);
+//     point.setLongitude(15.19937);
+//     point.setAltitude(620);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97436);
+//     point.setLongitude(15.19712);
+//     point.setAltitude(637);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97524);
+//     point.setLongitude(15.19435);
+//     point.setAltitude(644);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97464);
+//     point.setLongitude(15.18916);
+//     point.setAltitude(657);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97554);
+//     point.setLongitude(15.18559);
+//     point.setAltitude(667);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9764);
+//     point.setLongitude(15.18296);
+//     point.setAltitude(672);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97683);
+//     point.setLongitude(15.17877);
+//     point.setAltitude(677);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97707);
+//     point.setLongitude(15.17514);
+//     point.setAltitude(678);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9787);
+//     point.setLongitude(15.16959);
+//     point.setAltitude(687);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97863);
+//     point.setLongitude(15.16497);
+//     point.setAltitude(690);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97988);
+//     point.setLongitude(15.16279);
+//     point.setAltitude(693);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98286);
+//     point.setLongitude(15.15974);
+//     point.setAltitude(708);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98516);
+//     point.setLongitude(15.15577);
+//     point.setAltitude(725);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98773);
+//     point.setLongitude(15.15111);
+//     point.setAltitude(738);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99013);
+//     point.setLongitude(15.14841);
+//     point.setAltitude(751);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99314);
+//     point.setLongitude(15.14094);
+//     point.setAltitude(778);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99378);
+//     point.setLongitude(15.13819);
+//     point.setAltitude(786);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99372);
+//     point.setLongitude(15.13628);
+//     point.setAltitude(791);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99282);
+//     point.setLongitude(15.13332);
+//     point.setAltitude(795);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99164);
+//     point.setLongitude(15.13135);
+//     point.setAltitude(798);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99086);
+//     point.setLongitude(15.13019);
+//     point.setAltitude(803);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98938);
+//     point.setLongitude(15.12729);
+//     point.setAltitude(802);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98801);
+//     point.setLongitude(15.12388);
+//     point.setAltitude(811);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98685);
+//     point.setLongitude(15.1224);
+//     point.setAltitude(816);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98295);
+//     point.setLongitude(15.11927);
+//     point.setAltitude(831);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98071);
+//     point.setLongitude(15.11699);
+//     point.setAltitude(837);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97659);
+//     point.setLongitude(15.11554);
+//     point.setAltitude(857);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97453);
+//     point.setLongitude(15.1126);
+//     point.setAltitude(872);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97318);
+//     point.setLongitude(15.11144);
+//     point.setAltitude(876);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96975);
+//     point.setLongitude(15.11187);
+//     point.setAltitude(884);
+//     track.addWaypoint(point);
+
+//     track_manager_.addTrack(track);
+
+
+//     track = new TrackImpl();
+//     track.setIdentification("higher test track");
     
-    point = new TrackpointImpl();
-    point.setLatitude(47.05489);
-    point.setLongitude(15.4736);
-    point.setAltitude(1369);
-    point.setNewTrack(true);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.05378);
-    point.setLongitude(15.47469);
-    point.setAltitude(1370);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.05015);
-    point.setLongitude(15.47997);
-    point.setAltitude(1372);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04831);
-    point.setLongitude(15.48298);
-    point.setAltitude(1365);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04537);
-    point.setLongitude(15.48615);
-    point.setAltitude(1365);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04324);
-    point.setLongitude(15.48787);
-    point.setAltitude(1363);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04303);
-    point.setLongitude(15.48759);
-    point.setAltitude(1362);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.04039);
-    point.setLongitude(15.48826);
-    point.setAltitude(1364);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03846);
-    point.setLongitude(15.48692);
-    point.setAltitude(1362);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03597);
-    point.setLongitude(15.48272);
-    point.setAltitude(1355);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03423);
-    point.setLongitude(15.47929);
-    point.setAltitude(1342);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03275);
-    point.setLongitude(15.47639);
-    point.setAltitude(1341);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.03138);
-    point.setLongitude(15.47909);
-    point.setAltitude(1351);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.02835);
-    point.setLongitude(15.48162);
-    point.setAltitude(1362);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.02292);
-    point.setLongitude(15.48514);
-    point.setAltitude(1359);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.02136);
-    point.setLongitude(15.48536);
-    point.setAltitude(1355);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.019);
-    point.setLongitude(15.48411);
-    point.setAltitude(1356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01766);
-    point.setLongitude(15.48068);
-    point.setAltitude(1358);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01653);
-    point.setLongitude(15.47594);
-    point.setAltitude(1359);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01533);
-    point.setLongitude(15.46972);
-    point.setAltitude(1356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01492);
-    point.setLongitude(15.46017);
-    point.setAltitude(1355);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.01434);
-    point.setLongitude(15.45658);
-    point.setAltitude(1356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.00453);
-    point.setLongitude(15.42465);
-    point.setAltitude(1353);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(47.00005);
-    point.setLongitude(15.413);
-    point.setAltitude(1356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99973);
-    point.setLongitude(15.41238);
-    point.setAltitude(1357);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99501);
-    point.setLongitude(15.405);
-    point.setAltitude(1358);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99389);
-    point.setLongitude(15.40367);
-    point.setAltitude(1352);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99003);
-    point.setLongitude(15.39991);
-    point.setAltitude(1359);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9822);
-    point.setLongitude(15.39491);
-    point.setAltitude(1365);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98003);
-    point.setLongitude(15.39376);
-    point.setAltitude(1370);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97254);
-    point.setLongitude(15.38957);
-    point.setAltitude(1374);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96522);
-    point.setLongitude(15.38476);
-    point.setAltitude(1364);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96265);
-    point.setLongitude(15.38279);
-    point.setAltitude(1366);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.959);
-    point.setLongitude(15.37968);
-    point.setAltitude(1363);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95617);
-    point.setLongitude(15.37635);
-    point.setAltitude(1358);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95467);
-    point.setLongitude(15.37354);
-    point.setAltitude(1356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95321);
-    point.setLongitude(15.36732);
-    point.setAltitude(1351);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95325);
-    point.setLongitude(15.36425);
-    point.setAltitude(1349);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95475);
-    point.setLongitude(15.35811);
-    point.setAltitude(1345);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9664);
-    point.setLongitude(15.33966);
-    point.setAltitude(1352);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97007);
-    point.setLongitude(15.33286);
-    point.setAltitude(1361);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97486);
-    point.setLongitude(15.32258);
-    point.setAltitude(1351);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97951);
-    point.setLongitude(15.31022);
-    point.setAltitude(1356);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98129);
-    point.setLongitude(15.30226);
-    point.setAltitude(1360);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98177);
-    point.setLongitude(15.29698);
-    point.setAltitude(1361);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98168);
-    point.setLongitude(15.29069);
-    point.setAltitude(1357);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98029);
-    point.setLongitude(15.27928);
-    point.setAltitude(1362);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97878);
-    point.setLongitude(15.27091);
-    point.setAltitude(1372);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97741);
-    point.setLongitude(15.26563);
-    point.setAltitude(1388);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97632);
-    point.setLongitude(15.26346);
-    point.setAltitude(1391);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97194);
-    point.setLongitude(15.25761);
-    point.setAltitude(1415);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9711);
-    point.setLongitude(15.25583);
-    point.setAltitude(1417);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97074);
-    point.setLongitude(15.2502);
-    point.setAltitude(1423);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96996);
-    point.setLongitude(15.24714);
-    point.setAltitude(1426);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96853);
-    point.setLongitude(15.24514);
-    point.setAltitude(1429);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96741);
-    point.setLongitude(15.24428);
-    point.setAltitude(1431);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96406);
-    point.setLongitude(15.24295);
-    point.setAltitude(1439);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95999);
-    point.setLongitude(15.23971);
-    point.setAltitude(1459);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95711);
-    point.setLongitude(15.23945);
-    point.setAltitude(1469);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95413);
-    point.setLongitude(15.23855);
-    point.setAltitude(1483);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95293);
-    point.setLongitude(15.23748);
-    point.setAltitude(1488);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9514);
-    point.setLongitude(15.23484);
-    point.setAltitude(1497);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95063);
-    point.setLongitude(15.23203);
-    point.setAltitude(1503);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95009);
-    point.setLongitude(15.22975);
-    point.setAltitude(1512);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95117);
-    point.setLongitude(15.22772);
-    point.setAltitude(1516);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95308);
-    point.setLongitude(15.22154);
-    point.setAltitude(1537);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95482);
-    point.setLongitude(15.2196);
-    point.setAltitude(1544);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.95756);
-    point.setLongitude(15.21898);
-    point.setAltitude(1555);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96327);
-    point.setLongitude(15.21864);
-    point.setAltitude(1565);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96831);
-    point.setLongitude(15.21649);
-    point.setAltitude(1573);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96975);
-    point.setLongitude(15.21259);
-    point.setAltitude(1579);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9682);
-    point.setLongitude(15.20643);
-    point.setAltitude(1594);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96836);
-    point.setLongitude(15.20553);
-    point.setAltitude(1599);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97138);
-    point.setLongitude(15.19937);
-    point.setAltitude(1620);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97436);
-    point.setLongitude(15.19712);
-    point.setAltitude(1637);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97524);
-    point.setLongitude(15.19435);
-    point.setAltitude(1644);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97464);
-    point.setLongitude(15.18916);
-    point.setAltitude(1657);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97554);
-    point.setLongitude(15.18559);
-    point.setAltitude(1667);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9764);
-    point.setLongitude(15.18296);
-    point.setAltitude(1672);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97683);
-    point.setLongitude(15.17877);
-    point.setAltitude(1677);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97707);
-    point.setLongitude(15.17514);
-    point.setAltitude(1678);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.9787);
-    point.setLongitude(15.16959);
-    point.setAltitude(1687);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97863);
-    point.setLongitude(15.16497);
-    point.setAltitude(1690);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97988);
-    point.setLongitude(15.16279);
-    point.setAltitude(1693);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98286);
-    point.setLongitude(15.15974);
-    point.setAltitude(1708);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98516);
-    point.setLongitude(15.15577);
-    point.setAltitude(1725);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98773);
-    point.setLongitude(15.15111);
-    point.setAltitude(1738);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99013);
-    point.setLongitude(15.14841);
-    point.setAltitude(1751);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99314);
-    point.setLongitude(15.14094);
-    point.setAltitude(1778);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99378);
-    point.setLongitude(15.13819);
-    point.setAltitude(1786);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99372);
-    point.setLongitude(15.13628);
-    point.setAltitude(1791);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99282);
-    point.setLongitude(15.13332);
-    point.setAltitude(1795);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99164);
-    point.setLongitude(15.13135);
-    point.setAltitude(1798);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.99086);
-    point.setLongitude(15.13019);
-    point.setAltitude(1803);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98938);
-    point.setLongitude(15.12729);
-    point.setAltitude(1802);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98801);
-    point.setLongitude(15.12388);
-    point.setAltitude(1811);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98685);
-    point.setLongitude(15.1224);
-    point.setAltitude(1816);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98295);
-    point.setLongitude(15.11927);
-    point.setAltitude(1831);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.98071);
-    point.setLongitude(15.11699);
-    point.setAltitude(1837);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97659);
-    point.setLongitude(15.11554);
-    point.setAltitude(1857);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97453);
-    point.setLongitude(15.1126);
-    point.setAltitude(1872);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.97318);
-    point.setLongitude(15.11144);
-    point.setAltitude(1876);
-    track.addWaypoint(point);
-
-    point = new TrackpointImpl();
-    point.setLatitude(46.96975);
-    point.setLongitude(15.11187);
-    point.setAltitude(1884);
-    track.addWaypoint(point);
-
-    track_manager_.addTrack(track);
-
-  }
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.05489);
+//     point.setLongitude(15.4736);
+//     point.setAltitude(1369);
+//     point.setNewTrack(true);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.05378);
+//     point.setLongitude(15.47469);
+//     point.setAltitude(1370);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.05015);
+//     point.setLongitude(15.47997);
+//     point.setAltitude(1372);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04831);
+//     point.setLongitude(15.48298);
+//     point.setAltitude(1365);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04537);
+//     point.setLongitude(15.48615);
+//     point.setAltitude(1365);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04324);
+//     point.setLongitude(15.48787);
+//     point.setAltitude(1363);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04303);
+//     point.setLongitude(15.48759);
+//     point.setAltitude(1362);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.04039);
+//     point.setLongitude(15.48826);
+//     point.setAltitude(1364);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03846);
+//     point.setLongitude(15.48692);
+//     point.setAltitude(1362);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03597);
+//     point.setLongitude(15.48272);
+//     point.setAltitude(1355);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03423);
+//     point.setLongitude(15.47929);
+//     point.setAltitude(1342);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03275);
+//     point.setLongitude(15.47639);
+//     point.setAltitude(1341);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.03138);
+//     point.setLongitude(15.47909);
+//     point.setAltitude(1351);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.02835);
+//     point.setLongitude(15.48162);
+//     point.setAltitude(1362);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.02292);
+//     point.setLongitude(15.48514);
+//     point.setAltitude(1359);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.02136);
+//     point.setLongitude(15.48536);
+//     point.setAltitude(1355);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.019);
+//     point.setLongitude(15.48411);
+//     point.setAltitude(1356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01766);
+//     point.setLongitude(15.48068);
+//     point.setAltitude(1358);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01653);
+//     point.setLongitude(15.47594);
+//     point.setAltitude(1359);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01533);
+//     point.setLongitude(15.46972);
+//     point.setAltitude(1356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01492);
+//     point.setLongitude(15.46017);
+//     point.setAltitude(1355);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.01434);
+//     point.setLongitude(15.45658);
+//     point.setAltitude(1356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.00453);
+//     point.setLongitude(15.42465);
+//     point.setAltitude(1353);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(47.00005);
+//     point.setLongitude(15.413);
+//     point.setAltitude(1356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99973);
+//     point.setLongitude(15.41238);
+//     point.setAltitude(1357);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99501);
+//     point.setLongitude(15.405);
+//     point.setAltitude(1358);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99389);
+//     point.setLongitude(15.40367);
+//     point.setAltitude(1352);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99003);
+//     point.setLongitude(15.39991);
+//     point.setAltitude(1359);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9822);
+//     point.setLongitude(15.39491);
+//     point.setAltitude(1365);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98003);
+//     point.setLongitude(15.39376);
+//     point.setAltitude(1370);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97254);
+//     point.setLongitude(15.38957);
+//     point.setAltitude(1374);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96522);
+//     point.setLongitude(15.38476);
+//     point.setAltitude(1364);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96265);
+//     point.setLongitude(15.38279);
+//     point.setAltitude(1366);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.959);
+//     point.setLongitude(15.37968);
+//     point.setAltitude(1363);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95617);
+//     point.setLongitude(15.37635);
+//     point.setAltitude(1358);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95467);
+//     point.setLongitude(15.37354);
+//     point.setAltitude(1356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95321);
+//     point.setLongitude(15.36732);
+//     point.setAltitude(1351);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95325);
+//     point.setLongitude(15.36425);
+//     point.setAltitude(1349);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95475);
+//     point.setLongitude(15.35811);
+//     point.setAltitude(1345);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9664);
+//     point.setLongitude(15.33966);
+//     point.setAltitude(1352);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97007);
+//     point.setLongitude(15.33286);
+//     point.setAltitude(1361);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97486);
+//     point.setLongitude(15.32258);
+//     point.setAltitude(1351);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97951);
+//     point.setLongitude(15.31022);
+//     point.setAltitude(1356);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98129);
+//     point.setLongitude(15.30226);
+//     point.setAltitude(1360);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98177);
+//     point.setLongitude(15.29698);
+//     point.setAltitude(1361);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98168);
+//     point.setLongitude(15.29069);
+//     point.setAltitude(1357);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98029);
+//     point.setLongitude(15.27928);
+//     point.setAltitude(1362);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97878);
+//     point.setLongitude(15.27091);
+//     point.setAltitude(1372);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97741);
+//     point.setLongitude(15.26563);
+//     point.setAltitude(1388);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97632);
+//     point.setLongitude(15.26346);
+//     point.setAltitude(1391);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97194);
+//     point.setLongitude(15.25761);
+//     point.setAltitude(1415);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9711);
+//     point.setLongitude(15.25583);
+//     point.setAltitude(1417);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97074);
+//     point.setLongitude(15.2502);
+//     point.setAltitude(1423);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96996);
+//     point.setLongitude(15.24714);
+//     point.setAltitude(1426);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96853);
+//     point.setLongitude(15.24514);
+//     point.setAltitude(1429);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96741);
+//     point.setLongitude(15.24428);
+//     point.setAltitude(1431);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96406);
+//     point.setLongitude(15.24295);
+//     point.setAltitude(1439);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95999);
+//     point.setLongitude(15.23971);
+//     point.setAltitude(1459);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95711);
+//     point.setLongitude(15.23945);
+//     point.setAltitude(1469);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95413);
+//     point.setLongitude(15.23855);
+//     point.setAltitude(1483);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95293);
+//     point.setLongitude(15.23748);
+//     point.setAltitude(1488);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9514);
+//     point.setLongitude(15.23484);
+//     point.setAltitude(1497);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95063);
+//     point.setLongitude(15.23203);
+//     point.setAltitude(1503);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95009);
+//     point.setLongitude(15.22975);
+//     point.setAltitude(1512);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95117);
+//     point.setLongitude(15.22772);
+//     point.setAltitude(1516);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95308);
+//     point.setLongitude(15.22154);
+//     point.setAltitude(1537);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95482);
+//     point.setLongitude(15.2196);
+//     point.setAltitude(1544);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.95756);
+//     point.setLongitude(15.21898);
+//     point.setAltitude(1555);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96327);
+//     point.setLongitude(15.21864);
+//     point.setAltitude(1565);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96831);
+//     point.setLongitude(15.21649);
+//     point.setAltitude(1573);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96975);
+//     point.setLongitude(15.21259);
+//     point.setAltitude(1579);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9682);
+//     point.setLongitude(15.20643);
+//     point.setAltitude(1594);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96836);
+//     point.setLongitude(15.20553);
+//     point.setAltitude(1599);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97138);
+//     point.setLongitude(15.19937);
+//     point.setAltitude(1620);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97436);
+//     point.setLongitude(15.19712);
+//     point.setAltitude(1637);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97524);
+//     point.setLongitude(15.19435);
+//     point.setAltitude(1644);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97464);
+//     point.setLongitude(15.18916);
+//     point.setAltitude(1657);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97554);
+//     point.setLongitude(15.18559);
+//     point.setAltitude(1667);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9764);
+//     point.setLongitude(15.18296);
+//     point.setAltitude(1672);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97683);
+//     point.setLongitude(15.17877);
+//     point.setAltitude(1677);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97707);
+//     point.setLongitude(15.17514);
+//     point.setAltitude(1678);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.9787);
+//     point.setLongitude(15.16959);
+//     point.setAltitude(1687);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97863);
+//     point.setLongitude(15.16497);
+//     point.setAltitude(1690);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97988);
+//     point.setLongitude(15.16279);
+//     point.setAltitude(1693);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98286);
+//     point.setLongitude(15.15974);
+//     point.setAltitude(1708);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98516);
+//     point.setLongitude(15.15577);
+//     point.setAltitude(1725);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98773);
+//     point.setLongitude(15.15111);
+//     point.setAltitude(1738);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99013);
+//     point.setLongitude(15.14841);
+//     point.setAltitude(1751);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99314);
+//     point.setLongitude(15.14094);
+//     point.setAltitude(1778);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99378);
+//     point.setLongitude(15.13819);
+//     point.setAltitude(1786);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99372);
+//     point.setLongitude(15.13628);
+//     point.setAltitude(1791);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99282);
+//     point.setLongitude(15.13332);
+//     point.setAltitude(1795);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99164);
+//     point.setLongitude(15.13135);
+//     point.setAltitude(1798);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.99086);
+//     point.setLongitude(15.13019);
+//     point.setAltitude(1803);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98938);
+//     point.setLongitude(15.12729);
+//     point.setAltitude(1802);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98801);
+//     point.setLongitude(15.12388);
+//     point.setAltitude(1811);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98685);
+//     point.setLongitude(15.1224);
+//     point.setAltitude(1816);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98295);
+//     point.setLongitude(15.11927);
+//     point.setAltitude(1831);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.98071);
+//     point.setLongitude(15.11699);
+//     point.setAltitude(1837);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97659);
+//     point.setLongitude(15.11554);
+//     point.setAltitude(1857);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97453);
+//     point.setLongitude(15.1126);
+//     point.setAltitude(1872);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.97318);
+//     point.setLongitude(15.11144);
+//     point.setAltitude(1876);
+//     track.addWaypoint(point);
+
+//     point = new TrackpointImpl();
+//     point.setLatitude(46.96975);
+//     point.setLongitude(15.11187);
+//     point.setAltitude(1884);
+//     track.addWaypoint(point);
+
+//     track_manager_.addTrack(track);
+
+//   }
 
 //----------------------------------------------------------------------
 /**

@@ -5,11 +5,110 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import org.dinopolis.util.Debug;
 
+//----------------------------------------------------------------------
+/*
+ * This class describes the display data and creates a BufferedImage that may be saved or
+ * displayed. There are (up to now) three different data packages:
+* <ul>
+* <li>Header</li>
+* <li>Color definitions (only on color devices)</li>
+* <li>Image data </li>
+* </ul>
+* The first package (the header) holds the following information:
+* <pre>
+* example eTrex Legend:
+* 
+* 0: ??? (long): 0 0 0 0
+* 4: ??? (long): 1 0 1 1
+* 8: bytes per line (long): 76 0 0 0
+* 12: color depth in bit (byte): 2
+* 13: ??? (byte): 0
+* 14: ??? (byte): 0
+* 15: ??? (byte): 0
+* 16: width (long): 48 1 0 0 = 304 (should be 288!)
+* 20: height (long): 160 0 0 0
+* 24: grayvalue color 1? (byte): 15
+* 25: grayvalue color 2? (byte): 7
+* 26: grayvalue color 3? (byte): 8
+* 27: grayvalue color 4? (byte): 0
+* 28: ??? (long): 0 1 0 0  // same as eMap
+* 32: ??? (long): 200 13 1 0
+* 36: ??? (long): 1 0 0 0  // same as eMap
+* </pre>
+* On color devices (e.g. Streetpilot III) 16 color information packages follow:
+* <pre>
+* id=69,size=11,data=[2 0 0 0 0 0 0 0 128 128 128]
+* id=69,size=11,data=[2 0 0 0 3 0 0 0 0 0 0]
+* id=69,size=11,data=[2 0 0 0 6 0 0 0 0 0 160]
+* id=69,size=11,data=[2 0 0 0 9 0 0 0 0 0 240]
+* id=69,size=11,data=[2 0 0 0 12 0 0 0 64 128 32]
+* id=69,size=11,data=[2 0 0 0 15 0 0 0 0 240 0]
+* id=69,size=11,data=[2 0 0 0 18 0 0 0 0 128 240]
+* id=69,size=11,data=[2 0 0 0 21 0 0 0 0 240 240]
+* id=69,size=11,data=[2 0 0 0 24 0 0 0 128 0 0]
+* id=69,size=11,data=[2 0 0 0 27 0 0 0 240 0 0]
+* id=69,size=11,data=[2 0 0 0 30 0 0 0 128 0 112]
+* id=69,size=11,data=[2 0 0 0 33 0 0 0 240 0 240]
+* id=69,size=11,data=[2 0 0 0 36 0 0 0 160 160 0]
+* id=69,size=11,data=[2 0 0 0 39 0 0 0 240 192 0]
+* id=69,size=11,data=[2 0 0 0 42 0 0 0 240 240 240]
+* id=69,size=11,data=[2 0 0 0 45 0 0 0 160 160 160]
+* 
+* those define the colormap:
+* 
+* 0: data type (long): 2 0 0 0 = color
+* 4: color index * 3 (long): x 0 0 0
+* 8: blue (byte): 128
+* 9: green (byte): 128
+* 10: red (byte): 128
+* </pre>
+*
+* Right after (the color packages or the header, depending on the device), the image data follows: 
+* <pre>
+* data from Streetpilot III:
+*
+* first line, first part:
+* id=69,size=136,data=[1 0 0 0 0 0 0 0 119 119 119 119 71 119 119 119
+* 119 119 119 119 23 23 119 119 119 81 119 119 119 119 68 119 119 119
+* 119 119 119 119 119 119 119 119 119 119 71 119 119 119 119 119 119 119
+* 119 119 119 71 119 119 119 119 116 119 119 119 119 119 119 119 119 119
+* 119 119 119 119 119 119 119 119 119 119 119 119 119 23 113 113 23 113
+* 119 119 119 119 119 119 119 119 23 119 119 119 119 119 116 119 119 119
+* 119 119 119 119 119 119 119 119 71 119 119 119 119 119 119 119 23 17
+* 17 119 113 119 119 21 17 85 119 119 119 119 ]
+* 
+* first line, second part (start at byte 128 which is x=256):
+* id=69,size=36,data=[1 0 0 0 128 0 0 0 119 119 119 119 119 119 119 119
+* 119 119 119 119 119 119 119 119 119 119 119 119 119 119 23 119 23 17
+* 17 17 ]
+* 
+* second line, first part:
+* id=69,size=136,data=[1 0 0 0 156 0 0 0 119 119 119 119 71 119 119 119
+* 119 119 119 119 23 119 17 23 17 119 116 119 119 68 119 119 119 119 119
+* 119 119 119 119 119 119 119 119 119 119 116 119 119 119 119 119 119
+* 119 119 119 116 119 119 119 119 71 119 119 119 119 119 119 119 119 119
+* 119 119 119 119 119 119 119 119 119 119 119 119 119 113 23 23 113 87
+* 21 119 119 119 119 119 119 119 119 113 119 119 119 119 116 119 119 119
+* 119 119 119 119 119 119 119 119 119 119 119 119 119 119 119 119 23 119
+* 119 119 17 17 17 117 81 87 119 119 119 119 ]
+* 
+* 0: data type (long): 1 0 0 0 = image data
+* 4: byte offset (long): 128 0 0 0
+* 8: image data (4 bit per pixel giving the index in the color table)
+* 
+* the third package has 156 as byte offset, the fourth 284.
+* to calculate the start coordinates of a package:
+* x = (byte_offset / bytes_per_line) * pixel_per_byte // / is an integer division!
+* y = (byte_offset % bytes_per_line)                  // % is modulo
+*	(pixel_per_byte_ = 8/bit_per_pixel_)
+* </pre>
+*/
+
 public class GarminDisplayData
 {
   int height_;
   int width_;
-  int line_;
+	int bytes_per_line_;
 	int bit_per_pixel_;
 	int pixel_per_byte_;
 	int bit_mask_;
@@ -17,7 +116,6 @@ public class GarminDisplayData
   Graphics graphics_;
   int rotate_image_degrees_;
   Color[] colors_;
-
   
 //----------------------------------------------------------------------
 /**
@@ -37,6 +135,8 @@ public class GarminDisplayData
   {
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_header"))
       Debug.println("garmin_display_header","first display data package: "+garmin_package);
+		bytes_per_line_ = (int)garmin_package.getLong(8);
+		bit_per_pixel_ = garmin_package.getByte(12);
     width_ = (int)garmin_package.getLong(16);
     height_ = (int)garmin_package.getLong(20);
 
@@ -48,35 +148,32 @@ public class GarminDisplayData
       image_ = new BufferedImage(width_,height_,BufferedImage.TYPE_INT_RGB);
 
         // colors: grey levels are byte 24,25,26,27 in display data:
-    colors_  = new Color[4];
+		int num_colors = (int)Math.pow(2,bit_per_pixel_);
+    colors_  = new Color[num_colors];
     int value;
     int grey_value;
-		int num_colors = 0;
-    for(int color_index = 0; color_index < 4; color_index++)
+    for(int color_index = 0; color_index < num_colors; color_index++)
     {
-      value = garmin_package.getByte(color_index + 24);
-
-					// garmin indicates "no color" by value 255 
-					// (e.g. black/white displays have 255 as
-					// 3rd and 4th color)
-			if (value < 255)
+			if(num_colors == 16)
 			{
-				grey_value = value * 16;
-				colors_[color_index] = new Color(grey_value,grey_value,grey_value);
-				num_colors++;
+						// color are defined in data packages (first long is 2)
 			}
 			else
-				colors_[color_index] = new Color(0,0,0);
+			{
+				value = garmin_package.getByte(color_index + 24);
+				grey_value = value * 16;
+				colors_[color_index] = new Color(grey_value,grey_value,grey_value);
+			}
     }
     
     graphics_ = image_.createGraphics();
-		bit_per_pixel_ = (int)(Math.log(num_colors)/Math.log(2));
+//		bit_per_pixel_ = (int)(Math.log(num_colors)/Math.log(2));
 		pixel_per_byte_ = 8/bit_per_pixel_;
 		bit_mask_ = (int)Math.pow(2,bit_per_pixel_) - 1;
 
-// 		System.out.println("bit mask"+bit_mask_);
-// 		System.out.println("bit per pixel"+bit_per_pixel_);
-// 		System.out.println("pixel per byte"+pixel_per_byte_);
+// 		System.out.println("bit mask: "+bit_mask_);
+// 		System.out.println("bit per pixel: "+bit_per_pixel_);
+// 		System.out.println("pixel per byte: "+pixel_per_byte_);
 
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_header"))
       Debug.println("garmin_display_header","first display data package: "+this);
@@ -87,47 +184,48 @@ public class GarminDisplayData
  * Add a line to the display data using the given garmin package.
  * @param garmin_package the data package holding the next line.
  */
-  public void addLine(GarminPackage garmin_package)
+  public void addData(GarminPackage garmin_package)
   {
     if(Debug.DEBUG && Debug.isEnabled("garmin_display_data"))
       Debug.println("garmin_display_data","next display data package: "+garmin_package);
-    garmin_package.getNextAsLong(); // ignore this one (always 1??)
-    long pixel_number = garmin_package.getNextAsLong();
 
-				// determine line (could use variable line_, but this seems safer!):
-    int y = ((int)pixel_number/(width_/pixel_per_byte_));  
-//		System.out.println("drawing in line: "+y);
-    int x = 0;
-    int value;
+    long data_type = garmin_package.getNextAsLong(); 
 
-    // first long is ignored, second is pixel number
-		int data_bytes_available = garmin_package.getPackageSize()-8; 
-		int max_byte_index = width_/pixel_per_byte_;
-		if(data_bytes_available < max_byte_index)
+		if(data_type == 1) // image data
 		{
-			System.err.println("WARNING: not enough package data available for image line\n"
-												 +"some details may be missing:");
-			System.err.println("  bytes available = "+data_bytes_available);
-			System.err.println("  desired bytes = "+max_byte_index);
-		}
+			long byte_offset = garmin_package.getNextAsLong();
 
-		int pixel_value;
-		for(int index_bytes = 0; index_bytes < max_byte_index; index_bytes++)
-		{
-      value = garmin_package.getNextAsByte();
-			for(int pixel_per_byte_count = 0; pixel_per_byte_count < pixel_per_byte_; pixel_per_byte_count++)
+					// determine start x/y:			
+			int	x = (int) (byte_offset % bytes_per_line_) * pixel_per_byte_;
+			int	y = (int) (byte_offset / bytes_per_line_);  
+//			System.out.println("starting drawing at x="+x+",y="+y);
+			int value;
+			
+					// first long is ignored, second is pixel number
+			int data_bytes_available = garmin_package.getPackageSize()-8; 
+			int pixel_value;
+			for(int index_bytes = 0; index_bytes < data_bytes_available; index_bytes++)
 			{
-				pixel_value = (value >> (pixel_per_byte_count * bit_per_pixel_)) & bit_mask_;
-				drawPixel(x,y,pixel_value);
-//				System.out.print(x+"/"+pixel_value+", ");
-				x++;
+				value = garmin_package.getNextAsByte();
+				for(int pixel_per_byte_count = 0; pixel_per_byte_count < pixel_per_byte_; pixel_per_byte_count++)
+				{
+					pixel_value = (value >> (pixel_per_byte_count * bit_per_pixel_)) & bit_mask_;
+					drawPixel(x,y,pixel_value);
+//					System.out.print(x+"/"+y+":"+pixel_value+", ");
+					x++;
+				}
 			}
-//       drawPixel(x++,y,value & 0x03);
-//       drawPixel(x++,y,(value >> 2) & 0x03);
-//       drawPixel(x++,y,(value >> 4) & 0x03);
-//       drawPixel(x++,y,(value >> 6) & 0x03);
 		}
-    line_++;
+		else if(data_type == 2) // color info
+		{
+			long color_index = garmin_package.getNextAsLong()/3;
+			int blue = garmin_package.getNextAsByte();
+			int green = garmin_package.getNextAsByte();
+			int red = garmin_package.getNextAsByte();
+			colors_[(int)color_index] = new Color(red,green,blue);
+//			System.out.println("color["+color_index+"]="+colors_[(int)color_index]);
+		}
+
   }
 
 
@@ -188,9 +286,8 @@ public class GarminDisplayData
 		}
 		else
 		{
-			rotate_image_degrees_ = -90;  // default (no reason why, just a feeling :-(
 			System.err.println("INFO: no idea which device, please contact the author to help to find out more about the garmin protocol!");
-			return(-90);
+			return(0);  // default (no reason why, just a feeling :-(
 		}
   }
 
@@ -267,7 +364,7 @@ public class GarminDisplayData
 				{
 					data.put(Integer.parseInt((String)tokens.get(index)));
 				}
-				display_data.addLine(data);
+				display_data.addData(data);
 			}
 			BufferedImage image = display_data.getImage();
 			java.io.FileOutputStream out = new java.io.FileOutputStream("image.png");

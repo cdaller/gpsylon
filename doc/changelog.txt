@@ -1,5 +1,19 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/03/10: Fixed problems with plugin building under windows.
+
+2003/02/24: Fixed some problems with plugins. Allowed a different 
+            classloader for resources (plugins are not loaded by the 
+            system classloader!)
+            
+            added methods to the map manager that return the maps for 
+            given coordinates. 
+            
+            added functionality to the mouse mode of the map manager 
+            (selection works quite well (control adds selections, 
+            shift selects all maps at the click coordinates, not only 
+            the map on top (visible)).
+
 2003/02/17: removed all unused import statements (thanks to eclipse) 
             and fixed all other warnings eclipse showed.
 

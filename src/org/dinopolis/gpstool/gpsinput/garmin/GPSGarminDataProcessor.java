@@ -431,7 +431,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       watch_dog_.setDaemon(true);
 	
       read_thread_ = new ReaderThread();
-      read_thread_.setName("Garmin Reader");
       read_thread_.setDaemon(true);
       read_thread_.start();
 
@@ -580,18 +579,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * @see GPSWaypoint
  */
   public List getWaypoints()
-    throws GPSException
+    throws GPSException, UnsupportedOperationException
   {
-    if(!capabilities_.hasCapability("A100"))
-      throw new UnsupportedOperationException("Garmin Device does not support waypoint transfer");
-    try
-    {
-      return(getWaypoints(0L));
-    }
-    catch(IOException ioe)
-    {
-      throw new GPSException(ioe);
-    }
+    return(getWaypoints(0L));
   }
 
 //--------------------------------------------------------------------------------
@@ -608,8 +598,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void setWaypoints(List waypoints) 
     throws GPSException, UnsupportedOperationException
   {
-//    waitTillReady();
-
     if(!capabilities_.hasCapability("A100"))
       throw new UnsupportedOperationException("Garmin Device does not support waypoint transfer");
 
@@ -716,23 +704,14 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public List getRoutes()
     throws UnsupportedOperationException, GPSException
   {
-    if(!capabilities_.hasCapability("A200") && !capabilities_.hasCapability("A201"))
-      throw new UnsupportedOperationException("Garmin Device does not support route transfer");
-    try
-    {
 //      System.out.println("GPSGarminDataProcessor.getRoutes");
-      return(getRoutes(0L));
-    }
-    catch(IOException ioe)
-    {
-      throw new GPSException(ioe);
-    }
+    return(getRoutes(0L));
   }
 
 //--------------------------------------------------------------------------------
 /**
- * Write a list of tracks to the gps device. This call blocks until
- * all tracks were sent!
+ * Write a list of routes to the gps device. This call blocks until
+ * all routes were sent!
  *
  * @param routes a list of route objects
  * @throws UnsupportedOperationException if the operation is not
@@ -744,8 +723,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void setRoutes(List routes)
     throws GPSException, UnsupportedOperationException
   {
-//    waitTillReady();
-
     if(!capabilities_.hasCapability("A200") && !capabilities_.hasCapability("A201"))
       throw new UnsupportedOperationException("Garmin Device does not support route transfer");
 
@@ -769,8 +746,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     GarminPacket records=new GarminPacket();
     if (capabilities_.hasCapability("L1"))
       records.setPacketId(Pid_Records_L001);
-    else
+    else if (capabilities_.hasCapability("L2")) // by MR
       records.setPacketId(Pid_Records_L002);
+    else // by MR
+      throw new UnsupportedOperationException("Garmin Device no link protocol found !");
     records.initializeData(2);
     records.setNextAsWord(num_packets);
 //    System.out.println("RECORDS " + records);
@@ -920,16 +899,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public List getTracks()
     throws GPSException, UnsupportedOperationException
   {
-    if(!capabilities_.hasCapability("A300") && !capabilities_.hasCapability("A301"))
-      throw new UnsupportedOperationException("Garmin Device does not support track transfer");
-    try
-    {
-      return(getTracks(0L));
-    }
-    catch(IOException ioe)
-    {
-      throw new GPSException(ioe);
-    }
+    return(getTracks(0L));
   }
 
 //--------------------------------------------------------------------------------
@@ -947,8 +917,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void setTracks(List tracks)
     throws GPSException, UnsupportedOperationException
   {
-//    waitTillReady();
-
     if(!capabilities_.hasCapability("A300") && !capabilities_.hasCapability("A301"))
       throw new UnsupportedOperationException("Garmin Device does not support track transfer");
 
@@ -1054,14 +1022,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public BufferedImage getScreenShot()
     throws UnsupportedOperationException, GPSException
   {
-    try
-    {
-      return(getScreenShot(0L));
-    }
-    catch(IOException ioe)
-    {
-      throw new GPSException(ioe);
-    }
+    return(getScreenShot(0L));
   }
 
 
@@ -1487,23 +1448,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
 //----------------------------------------------------------------------
 /**
- * Sleep until capabilities are available.
- */
-  protected void waitTillReady()
-  {
-    while(capabilities_ == null)
-    {
-      try
-      {
-        Thread.sleep(100);
-      }
-      catch(InterruptedException ignore) {}
-    }
-  }
-
-
-//----------------------------------------------------------------------
-/**
  * Returns information about the garmin product or null, if the
  * timeout was exceeded.
  *
@@ -1585,21 +1529,33 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  *
  * @param timeout in milliseconds or 0 to wait forever.
  * @return a list of route objects or null, if the timeout was reached. 
+ * @throws GPSException on an I/O Error
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
  */
   public List getRoutes(long timeout)
-    throws IOException
+    throws GPSException, UnsupportedOperationException
   {
-    synchronized(route_sync_request_lock_)
+    if(!capabilities_.hasCapability("A200") && !capabilities_.hasCapability("A201"))
+      throw new UnsupportedOperationException("Garmin Device does not support route transfer");
+    try
     {
-      result_routes_ = null;
-      requestRoutes();
-      try
+      synchronized(route_sync_request_lock_)
       {
-        route_sync_request_lock_.wait(timeout);
+        result_routes_ = null;
+        requestRoutes();
+        try
+        {
+          route_sync_request_lock_.wait(timeout);
+        }
+        catch(InterruptedException ignore){}
       }
-      catch(InterruptedException ignore){}
+      return(result_routes_);
     }
-    return(result_routes_);
+    catch (IOException e)
+    {
+      throw new GPSException(e);
+    }
   }
 
 //----------------------------------------------------------------------
@@ -1610,21 +1566,34 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  *
  * @param timeout in milliseconds or 0 to wait forever.
  * @return a list of track objects or null, if the timeout was reached. 
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if an I/O Error occurs.
  */
   public List getTracks(long timeout)
-    throws IOException
+    throws GPSException, UnsupportedOperationException
   {
-    synchronized(track_sync_request_lock_)
+    if(!capabilities_.hasCapability("A300") && !capabilities_.hasCapability("A301"))
+      throw new UnsupportedOperationException("Garmin Device does not support track transfer");
+    
+    try
     {
-      result_tracks_ = null;
-      requestTracks();
-      try
+      synchronized(track_sync_request_lock_)
       {
-        track_sync_request_lock_.wait(timeout);
+        result_tracks_ = null;
+        requestTracks();
+        try
+        {
+          track_sync_request_lock_.wait(timeout);
+        }
+        catch(InterruptedException ignore){}
       }
-      catch(InterruptedException ignore){}
+      return(result_tracks_);
     }
-    return(result_tracks_);
+    catch(IOException e)
+    {
+      throw new GPSException(e);
+    }
   }
 
 //----------------------------------------------------------------------
@@ -1635,21 +1604,29 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  *
  * @param timeout in milliseconds or 0 to wait forever.
  * @return the screenshot or null if the timeout was reached.
+ * @throws GPSException if an I/O Error occurs.
  */
   public BufferedImage getScreenShot(long timeout)
-    throws IOException
+    throws GPSException
   {
-    synchronized(screenshot_sync_request_lock_)
+    try
     {
-      result_screenshot_ = null;
-      requestScreenShot();
-      try
+      synchronized(screenshot_sync_request_lock_)
       {
-        screenshot_sync_request_lock_.wait(timeout);
+        result_screenshot_ = null;
+        requestScreenShot();
+        try
+        {
+          screenshot_sync_request_lock_.wait(timeout);
+        }
+        catch(InterruptedException ignore){}
       }
-      catch(InterruptedException ignore){}
+      return(result_screenshot_);
     }
-    return(result_screenshot_);
+    catch(IOException e)
+    {
+      throw new GPSException(e);
+    }
   }
 
 //----------------------------------------------------------------------
@@ -1683,25 +1660,41 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * blocks until the waipoints are read or the timeout (in milliseconds)
  * is reached.
  *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSWaypoint
  * @param timeout in milliseconds or 0 to wait forever.
- * @return a list of waypoint objects or null, if the timeout was reached. 
+ * @return a list of <code>GPSWaypoint</code> objects or null, if the timeout was reached. 
  */
   public List getWaypoints(long timeout)
-    throws IOException
+    throws GPSException, UnsupportedOperationException
   {
-    synchronized(waypoint_sync_request_lock_)
+    if(!capabilities_.hasCapability("A100"))
+      throw new UnsupportedOperationException("Garmin Device does not support waypoint transfer");
+    
+    try
     {
-      result_waypoints_ = null;
-      requestWaypoints();
-      try
+      synchronized(waypoint_sync_request_lock_)
       {
-        waypoint_sync_request_lock_.wait(timeout);
+        result_waypoints_ = null;
+        requestWaypoints();
+        try
+        {
+          waypoint_sync_request_lock_.wait(timeout);
+        }
+        catch(InterruptedException ignore){}
       }
-      catch(InterruptedException ignore){}
+      return(result_waypoints_);
     }
-    return(result_waypoints_);
+    catch(IOException e)
+    {
+      throw new GPSException(e);
+    }
   }
 
+//----------------------------------------------------------------------
   private void getMap(GarminMapDescription map_description, long timeout)
     throws IOException
   {
@@ -1731,6 +1724,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     return(map);
   }
   
+//----------------------------------------------------------------------
   private List getMaps(long timeout)
     throws IOException
   {
@@ -1765,6 +1759,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     return(maps_in_unit);
   }
 
+//----------------------------------------------------------------------
   private GarminFile getFile(String filename, long timeout)
     throws IOException, FileNotFoundException
   {
@@ -1807,6 +1802,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   }
 
 
+//----------------------------------------------------------------------
   private void setMaps()
   {
         // requestEraseFlash();
@@ -1822,7 +1818,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void requestPowerOff()
     throws IOException
   {
-//    waitTillReady();
         // Turn off power using link protocol L001 and command protocol A010
     if (capabilities_.hasCapability("L1") &&
         capabilities_.hasCapability("A10"))
@@ -1878,7 +1873,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	public void requestVoltage()
 		throws IOException
 	{
-//		waitTillReady();
 		sendCommandAsync(Pid_Command_Data_L001, Cmnd_Transfer_Voltage_A010);
 	}
 
@@ -1890,7 +1884,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	public void requestSerialNumber()
 		throws IOException
 	{
-//		waitTillReady();
 		if(capabilities_.hasCapability("L1"))
 			sendCommandAsync(Pid_Command_Data_L001,Cmnd_Transfer_SerialNr);
 		else
@@ -1904,7 +1897,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public void requestScreenShot()
     throws IOException
   {
-//    waitTillReady();
     sendCommandAsync(Pid_Command_Data_L001, Cmnd_Transfer_Screenbitmap_A010);
   }
 
@@ -1918,7 +1910,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         // experimental code (from http://playground.sun.com/pub/soley/garmin.txt):
         // more information about these packets can be found at:
         // http://artico.lma.fi.upm.es/numerico/miembros/antonio/async/report.txt
-//    waitTillReady();
     GarminPacket garmin_packet = new GarminPacket(Pid_Enable_Async_Events,2);
         // 00 00 = 0x0= disable all (no bits set)
         // 01 00 = 0x1= enables RecordType=00,01,02 // etrex summit: nothing sent
@@ -1952,7 +1943,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void requestMapFlashInfo()
     throws IOException
   {
-//    waitTillReady();
     if (capabilities_.hasCapability("L1") &&
         capabilities_.hasCapability("A10"))
     {
@@ -1967,7 +1957,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   private void requestEraseFlash(int map_area)
   {
-//    waitTillReady();
     GarminPacket garmin_packet = new GarminPacket(Pid_Flash_Erase_Request,2);
     garmin_packet.setNextAsWord(map_area);
     putPacketAsync(garmin_packet);
@@ -1981,7 +1970,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void requestStartPvtData()
     throws IOException
   {
-//    waitTillReady();
     if (capabilities_.hasCapability("L1") &&
         capabilities_.hasCapability("A10"))
     {
@@ -1998,7 +1986,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void requestStopPvtData()
     throws IOException
   {
-//    waitTillReady();
     if (capabilities_.hasCapability("L1") &&
         capabilities_.hasCapability("A10"))
     {
@@ -2019,8 +2006,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean requestRoutes()
     throws IOException
   {
-//    waitTillReady();
-      
     boolean success = false;
     int num_tries = 0;
     while(!success && (num_tries < MAX_TRIES))
@@ -2067,8 +2052,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean requestWaypoints()
     throws IOException
   {
-//    waitTillReady();
-      
     boolean success = false;
     int num_tries = 0;
     while(!success && (num_tries < MAX_TRIES))
@@ -2111,12 +2094,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * number of tries was exceeded.
  * @return true if the acknowledge was sent, false otherwise (the
  * device did not receive the packet then).
+ * @throws IOException if an I/O Error occurs.
  */
   protected boolean requestTracks()
     throws IOException
   {
-//    waitTillReady();
-      
     boolean success = false;
     int num_tries = 0;
     while(!success && (num_tries < MAX_TRIES))
@@ -2134,7 +2116,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       }
       num_tries++;
     }
-    return(success);
+      return(success);
   }
 
 //----------------------------------------------------------------------
@@ -2170,8 +2152,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean requestPVT()
     throws IOException
   {
-//    waitTillReady();
-
     if(capabilities_.hasCapability("A800") &&
        capabilities_.hasCapability("L1") &&
        capabilities_.hasCapability("A10"))
@@ -2433,6 +2413,88 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 );
   }
   
+  
+  /**
+   * Handle a display data packet.
+   * @param garmin_packet the packet to handle
+   */
+  private void displayDataReceived(GarminPacket garmin_packet)
+  {
+    GarminPacket next_garmin_packet;
+    try
+    {
+          // if any packets of the display data are corrupt (wrong checksum,
+          // etc.), the garmin device will not resend them, even if NAK is
+          // answered! So if this happens, we'll fetch a second image and put it
+          // in the same display data as before, so the two images are
+          // overlaid. It should happen very rarely that exactly the same
+          // lines of the two corrupt images are equal. So at the end, we
+          // will get one good image! This is kind of dirty, but it works! (cdaller)
+      int corrupt_images_retries = 1;
+      int num_corrupt_packets = 0;
+      GarminDisplayData display_data = new GarminDisplayData(garmin_packet);
+      int height = display_data.getHeight();
+      if(Debug.DEBUG)
+        Debug.println("garmin_display_header","Reading Display Data with "+height+" lines.");
+      do
+      {
+        num_corrupt_packets = 0;
+        fireProgressActionStart(GETSCREENSHOT,1,height);
+            // TODO: height != number of packets for color devices!!!!!
+        for(int linenum = 0; linenum < height-num_corrupt_packets; linenum++)
+        {
+          do
+          {
+            next_garmin_packet = getPacket();
+//        System.out.println("packet "+ (linenum+1) + " received");
+            if(next_garmin_packet == null)
+            {
+              num_corrupt_packets++;
+//          System.out.println("XXXXXXXXx packet was null");
+            }
+          }
+          while(next_garmin_packet == null);
+          if(next_garmin_packet.getPacketId() != Pid_Display_Data_L001)
+          {
+            System.err.println("WARNING: Expected Display Data, received: "+next_garmin_packet);
+//        fireDisplayDataReceived(display_data);
+//        return;
+          }
+          else // display data packet:
+          {
+            if(linenum % 10 == 0)
+              fireProgressActionProgress(GETSCREENSHOT,linenum);
+                // add line to display data:
+            display_data.addData(next_garmin_packet);
+          }
+        }
+//          System.out.println("finished one run");
+        if((num_corrupt_packets > 0) && (corrupt_images_retries > 0))
+        {
+          System.err.println("WARNING: "+num_corrupt_packets
+                             +" corrupt packets detected, retry reading display data");
+          requestScreenShot();
+
+          GarminPacket ignore;
+          do
+          {
+            ignore = getPacket(); // ignore the next header (assume the first header was not corrupt!)
+//        System.out.println("ignoring packet = "+ignore);
+          }
+          while((ignore != null) && (ignore.getPacketId() != Pid_Display_Data_L001));
+        }
+      }
+      while((num_corrupt_packets > 0) && (corrupt_images_retries-- > 0));
+      fireProgressActionProgress(GETSCREENSHOT,height);
+      fireProgressActionEnd(GETSCREENSHOT);
+      fireDisplayDataReceived(display_data);
+    }
+    catch(IOException ioe)
+    {
+      ioe.printStackTrace();
+    }
+  }
+
 //----------------------------------------------------------------------
 /**
  * Method called out of the thread that reads the information from the
@@ -2486,78 +2548,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     case Pid_Display_Data_L001:
       if(capabilities_ == null)
         return;
-      try
-      {
-            // if any packets of the display data are corrupt (wrong checksum,
-            // etc.), the garmin device will not resend them, even if NAK is
-            // answered! So if this happens, we'll fetch a second image and put it
-            // in the same display data as before, so the two images are
-            // overlaid. It should happen very rarely that exactly the same
-            // lines of the two corrupt images are equal. So at the end, we
-            // will get one good image! This is kind of dirty, but it works! (cdaller)
-        int corrupt_images_retries = 1;
-        int num_corrupt_packets = 0;
-        GarminDisplayData display_data = new GarminDisplayData(garmin_packet);
-        int height = display_data.getHeight();
-        if(Debug.DEBUG)
-          Debug.println("garmin_display_header","Reading Display Data with "+height+" lines.");
-        do
-        {
-          num_corrupt_packets = 0;
-          fireProgressActionStart(GETSCREENSHOT,1,height);
-							// TODO: height != number of packets for color devices!!!!!
-          for(int linenum = 0; linenum < height-num_corrupt_packets; linenum++)
-          {
-            do
-            {
-              next_garmin_packet = getPacket();
-//		  System.out.println("packet "+ (linenum+1) + " received");
-              if(next_garmin_packet == null)
-              {
-                num_corrupt_packets++;
-//		    System.out.println("XXXXXXXXx packet was null");
-              }
-            }
-            while(next_garmin_packet == null);
-            if(next_garmin_packet.getPacketId() != Pid_Display_Data_L001)
-            {
-              System.err.println("WARNING: Expected Display Data, received: "+next_garmin_packet);
-// 	    fireDisplayDataReceived(display_data);
-// 	    return;
-            }
-            else // display data packet:
-            {
-              if(linenum % 10 == 0)
-                fireProgressActionProgress(GETSCREENSHOT,linenum);
-                  // add line to display data:
-              display_data.addData(next_garmin_packet);
-            }
-          }
-//	      System.out.println("finished one run");
-          if((num_corrupt_packets > 0) && (corrupt_images_retries > 0))
-          {
-            System.err.println("WARNING: "+num_corrupt_packets
-                               +" corrupt packets detected, retry reading display data");
-            requestScreenShot();
-		
-            GarminPacket ignore;
-            do
-            {
-              ignore = getPacket(); // ignore the next header (assume the first header was not corrupt!)
-//		  System.out.println("ignoring packet = "+ignore);
-            }
-            while((ignore != null) && (ignore.getPacketId() != Pid_Display_Data_L001));
-          }
-        }
-        while((num_corrupt_packets > 0) && (corrupt_images_retries-- > 0));
-        fireProgressActionProgress(GETSCREENSHOT,height);
-        fireProgressActionEnd(GETSCREENSHOT);
-        fireDisplayDataReceived(display_data);
-      }
-      catch(IOException ioe)
-      {
-        ioe.printStackTrace();
-      }
+      displayDataReceived(garmin_packet);
       break;
           // larger amount of packets belong together:
     case Pid_Records_L001:
@@ -2874,6 +2865,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     }
   }
 
+
+
 //----------------------------------------------------------------------
 /**
  * Returns the last received position from the GPSDevice or
@@ -3069,7 +3062,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
     public ReaderThread()
     {
-      super();
+      super("Garmin Reader");
     }
 
     public void run()

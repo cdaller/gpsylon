@@ -29,6 +29,7 @@ import java.util.Vector;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSGeneralDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSPosition;
+import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
 import org.dinopolis.util.Debug;
 
@@ -703,6 +704,39 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     {
       heading = new Float(heading_str);
       changeGPSData(HEADING,heading);
+    }
+    catch(NumberFormatException nfe)
+    {
+      nfe.printStackTrace();
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Processes a RME nmea sentences (garmin specific) and fires the
+ * specific events about the information contained in this sentence
+ * (property name GPSDataProcessor.EPE).
+ *
+ * @param sentence a NMEA sentence.
+ */
+  protected void processRME(NMEA0183Sentence sentence)
+  {
+    if(Debug.DEBUG)
+      Debug.println("gpstool_nmea","RME detected: "+sentence);
+    String horizontal_str = (String)sentence.getDataFields().elementAt(0);
+    String vertical_str = (String)sentence.getDataFields().elementAt(2);
+    String spherical_str = (String)sentence.getDataFields().elementAt(2);
+    Double horizontal_error = null;
+    Double vertical_error = null;
+    Double spherical_error = null;
+    try
+    {
+      horizontal_error = new Double(horizontal_str);
+      vertical_error = new Double(vertical_str);
+      spherical_error = new Double(spherical_str);
+      changeGPSData(EPE,new GPSPositionError(spherical_error.doubleValue(),
+                                             horizontal_error.doubleValue(),
+                                             vertical_error.doubleValue()));
     }
     catch(NumberFormatException nfe)
     {

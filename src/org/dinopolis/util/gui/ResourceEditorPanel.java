@@ -91,6 +91,11 @@ implements ActionListener, PropertyChangeListener
   /** the key for the apply button resource */
   public final static String KEY_APPLY_BUTTON = "resource_editor.button.apply";
 
+      /** the key for the position of the info button */
+  public final static String KEY_INFO_BUTTON_ICON_POSITION = "resource_editor.info_icon_position";
+
+  public final static String KEY_INFO_BUTTON_ICON = "resource_editor.info_icon";
+
   /** the apply command name */
   public final static String APPLY_COMMAND = "apply";
 
@@ -114,6 +119,12 @@ implements ActionListener, PropertyChangeListener
 
   /** the apply button */
   private JButton apply_button_;
+
+  /** position of the info button */
+  private String position_info_button_;
+
+  /** the info icon */
+  private Icon info_icon_;
 
   /** a map holding all property keys and there corresponding
    * values that are to be displayed. */
@@ -188,21 +199,24 @@ implements ActionListener, PropertyChangeListener
                                                  Locale.getDefault());
     my_resources_.addPropertyChangeListener(this);
     edit_resources_ = resources;
+    edit_resources_.attachResources(my_resources_);
+//     System.out.println("XXXXX"+edit_resources_.getString("plugin.resource.group.resource_editor"));
+//     System.out.println("XXXXX"+edit_resources_.getString("resource.groups"));
     type_save_ = new Vector();
 
     property_editor_manager_ = new PropertyEditorManager();
     // set our primitive editors here
     PropertyEditorManager.registerEditor(Integer.TYPE, IntEditor.class);
-	PropertyEditorManager.registerEditor(Double.TYPE, DoubleEditor.class);
-	PropertyEditorManager.registerEditor(Boolean.TYPE, BooleanEditor.class);
-
+    PropertyEditorManager.registerEditor(Double.TYPE, DoubleEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.TYPE, BooleanEditor.class);
+    
     property_editor_manager_default_search_path_ =
-	PropertyEditorManager.getEditorSearchPath();
-
+      PropertyEditorManager.getEditorSearchPath();
+    
     hide_key_set_ = new HashSet();
     key_editor_map_ = new HashMap();
     updateResources();
-
+    
     setLayout(new BorderLayout());
 
     
@@ -228,7 +242,7 @@ implements ActionListener, PropertyChangeListener
   //----------------------------------------------------------------------
   /**
    */
-
+  
   public void updateResources()
   {
     String[] seach_path =
@@ -236,13 +250,13 @@ implements ActionListener, PropertyChangeListener
     if (seach_path != null)
     {
       String[] addeed_path = new
-        String[property_editor_manager_default_search_path_.length+seach_path.length]; 
+                             String[property_editor_manager_default_search_path_.length+seach_path.length]; 
       System.arraycopy(seach_path, 0, addeed_path,
                        0, seach_path.length);
       System.arraycopy(property_editor_manager_default_search_path_,
                        0, addeed_path, 
                        property_editor_manager_default_search_path_.length, property_editor_manager_default_search_path_.length);
-		PropertyEditorManager.setEditorSearchPath(addeed_path);
+      PropertyEditorManager.setEditorSearchPath(addeed_path);
     }
     if (apply_button_ != null)
     {
@@ -251,11 +265,21 @@ implements ActionListener, PropertyChangeListener
       apply_button_.setText(my_resources_.getString(KEY_APPLY_BUTTON));
       apply_button_.setMargin(button_insets_);
     }
+    if(my_resources_.getString(KEY_INFO_BUTTON_ICON_POSITION).equals("left"))
+      position_info_button_ = BorderLayout.WEST;
+    else
+      position_info_button_ = BorderLayout.EAST;
+    info_icon_ = my_resources_.getIcon(KEY_INFO_BUTTON_ICON);
+      
     hide_key_set_.clear();
     String[] to_hide =
       edit_resources_.getStringArray(KEY_HIDE_RESOURCES, new String[0]);
     for (int count = 0; count < to_hide.length; count++)
+    {
+//      System.out.println("ZZZZ hiding: "+to_hide[count]);
       hide_key_set_.add(to_hide[count]);
+    }
+                                                                        
   }
 
   //----------------------------------------------------------------------
@@ -514,16 +538,18 @@ implements ActionListener, PropertyChangeListener
         if (sub_groups.length > 0)
         {
           JPanel group = null;
-          for (int sub_count = 0; sub_count < sub_groups.length;
-               sub_count++)
+          for (int sub_count = 0; sub_count < sub_groups.length; sub_count++)
           {
             sub_group_or_element = sub_groups[sub_count];
             hide = hide && isToHide(sub_group_or_element); 
+//            System.out.println("YYYY  "+sub_group_or_element +" hide = "+isToHide(sub_group_or_element));
             if (isResourceGroup(sub_group_or_element))
             {
+//              System.out.println("YYYY isResourceGroup "+sub_group_or_element);
               sub_sub_groups = getChildren(sub_group_or_element);
               if (sub_sub_groups.length > 0)
               {
+//                System.out.println("YYYY subgroups "+org.dinopolis.util.Debug.objectToString(sub_sub_groups));
                 JPanel sub_group = null;
                 for (int sub_sub_count = 0; sub_sub_count < sub_sub_groups.length;
                      sub_sub_count++)
@@ -536,11 +562,13 @@ implements ActionListener, PropertyChangeListener
                     {
                       if (group == null)
                       {
+//                        System.out.println("YYYY create tab "+group_or_element);
                         group = createTab(group_or_element);
                         editor_panel_.addTab(getTitle(group_or_element), createTabWrapper(group));        
                       }
                       if (sub_group == null)
                       {
+//                        System.out.println("YYYY create subgroup "+sub_group_or_element);
                         sub_group = createGroup(sub_group_or_element);
                         group.add(sub_group);
                       }
@@ -557,9 +585,12 @@ implements ActionListener, PropertyChangeListener
               {
                 if (group == null)
                 {
+//                  System.out.println("YYYY create tab2 "+group_or_element);
                   group = createTab(group_or_element);
+//                  System.out.println("YYYY group for element "+group);
                   editor_panel_.addTab(getTitle(group_or_element), createTabWrapper(group));        
                 }
+//                System.out.println("YYYY adding element "+group_or_element+" to group");
                 addEditor(sub_group_or_element, group);
               }
               keys.remove(sub_group_or_element); // to not add editors twice
@@ -663,8 +694,8 @@ implements ActionListener, PropertyChangeListener
       container_panel.setBorder(BorderFactory.createTitledBorder(title));
       container_panel.add(comp, BorderLayout.CENTER);
       
-      Icon info_icon = my_resources_.getIcon("resource_editor.info_icon");
-      JButton info_button = new JButton(info_icon);
+//      Icon info_icon = my_resources_.getIcon(KEY_INFO_BUTTON_ICON);
+      JButton info_button = new JButton(info_icon_);
       info_button.setMargin(new Insets(0,0,0,0));
       info_button.addActionListener(new AbstractAction(description)
         {
@@ -685,7 +716,7 @@ implements ActionListener, PropertyChangeListener
         }
                                   );
       info_button.setEnabled(description != null);
-      container_panel.add(info_button, BorderLayout.EAST);
+      container_panel.add(info_button, position_info_button_);
       
 //        if (description != null)
 //          container_panel.setToolTipText(description);

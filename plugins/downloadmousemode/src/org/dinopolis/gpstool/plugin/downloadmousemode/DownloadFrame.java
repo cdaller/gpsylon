@@ -22,66 +22,25 @@
 
 package org.dinopolis.gpstool.plugin.downloadmousemode;
 
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.Resources;
-
-import org.dinopolis.gpstool.util.angle.Latitude;
-import org.dinopolis.gpstool.util.angle.Longitude;
-import org.dinopolis.gpstool.util.angle.AngleFormat;
-import org.dinopolis.gpstool.util.angle.Angle;
-
-import org.dinopolis.gpstool.util.FileUtil;
-
-import org.dinopolis.gpstool.gui.util.AngleJTextField;
-
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapManagerHook;
-import org.dinopolis.gpstool.PreviewHook;
-import org.dinopolis.gpstool.MapInfo;
-
-import org.dinopolis.gpstool.gui.layer.MultiMapLayer;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-
-import java.util.Date;
-
+import java.text.ParseException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.MissingResourceException;
-import java.util.Locale;
-import org.dinopolis.gpstool.GPSMap;
-import java.util.LinkedList;
 import javax.swing.JProgressBar;
-import java.awt.Dimension;
-import java.util.Vector;
-import java.util.Iterator;
-import java.text.ParseException;
-import javax.swing.SwingUtilities;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.gui.util.AngleJTextField;
+import org.dinopolis.gpstool.util.angle.Angle;
+import org.dinopolis.util.Resources;
 
 
 //----------------------------------------------------------------------

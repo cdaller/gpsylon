@@ -1,0 +1,4 @@
+# add MapManagerPlugin
+org.dinopolis.gpstool.plugin.simpledemo.SimpleDemoPlugin
+# comment at end of file to ensure that the last line is terminated by
+# CR/LF

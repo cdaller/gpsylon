@@ -1,2 +1,3 @@
-classes/*
-javadoc/*
+classes
+javadoc
+.settings

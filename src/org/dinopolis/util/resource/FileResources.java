@@ -140,6 +140,7 @@ public class FileResources extends AbstractResources
    * @param system_bundle the system resource bundle.
    * @param system_resource_base_name the file name of the
    * system_bundles directory.
+   * @param class_loader the class loader to use to load some resources.
    */
 
   protected FileResources(File user_resource_file,

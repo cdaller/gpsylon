@@ -355,8 +355,8 @@ public class GarminDataConverter
   {
     long value = (buffer[offset] & 0xff)
                 | ((buffer[offset+1] & 0xff) << 8)
-                | ((buffer[offset+2] & 0xff) << 16)
-                | ((buffer[offset+3] & 0xff) << 24);
+                | ((long)(buffer[offset+2] & 0xff) << 16)
+                | ((long)(buffer[offset+3] & 0xff) << 24);
     return(value);
   }
 
@@ -592,5 +592,16 @@ public class GarminDataConverter
     return(new Date((garmin_zero_date_seconds_ + garmin_time) * 1000));
   }
 
+
+
+	public static void main(String[] args)
+	{
+		int[] buffer = {90, 17, 52, 173};
+		long value = getGarminLong(buffer,0);
+		if(value != 2905870682L)
+			System.out.println("Wrong: "+value);
+		else
+			System.out.println("Right!");
+	}
 }
 

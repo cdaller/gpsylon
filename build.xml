@@ -22,7 +22,7 @@ Christof Dallermassl (cdaller@iicm.edu)
     <property name="doc_dir" value="doc"/>
     <property name="aux_dir" value="auxiliary"/>
     <property name="plugin_dir" value="plugins"/>
-    <property name="plugin_install_dir" value="${user.home}/.gpsmap/plugins"/>
+    <property name="plugin_install_dir" value="plugins"/>
     <property name="http_proxy_host" value="129.27.153.1"/>
     <property name="http_proxy_port" value="3128"/>
     <property name="use_http_proxy" value="no"/>

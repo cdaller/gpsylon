@@ -23,9 +23,10 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
+import org.dinopolis.gpstool.util.ProgressListener;
 import java.beans.PropertyChangeListener;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 //----------------------------------------------------------------------
 /**
@@ -47,6 +48,20 @@ import java.util.List;
  * <li><code>SATELLITE_INFO</code>: the value is a {@link org.dinopolis.gpstool.gpsinput.SatelliteInfo} object.</li>
  * <li><code>DEPTH</code>: the value is a Float and is in meters.</li>
  * <ul>
+ * <p>
+ 
+ * Other classes may register as {@link
+ * org.dinopolis.gpstool.util.ProgressListener} to be informed about
+ * progress in up/downloading routes/tracks/waypoints. The following
+ * actions are supported:
+ * <ul>
+ * <li>GETROUTES</li>
+ * <li>SETROUTES</li>
+ * <li>GETTRACKS</li>
+ * <li>SETTRACKS</li>
+ * <li>GETWAYPOINTS</li>
+ * <li>SETWAYPOINTS</li>
+ * </ul>
  *
  * @author Christof Dallermassl
  * @version $Revision$ */
@@ -61,6 +76,13 @@ public interface GPSDataProcessor
   public final static String ALTITUDE = "altitude";
   public final static String SATELLITE_INFO = "satellite_info";
   public final static String DEPTH = "depth";
+
+  public final static String GETROUTES = "getroutes";
+  public final static String SETROUTES = "setroutes";
+  public final static String GETTRACKS = "gettracks";
+  public final static String SETTRACKS = "settracks";
+  public final static String GETWAYPOINTS = "getwaypoints";
+  public final static String SETWAYPOINTS = "setwaypoints";
   
   public final static float KM2NAUTIC = 0.54f;
   
@@ -205,7 +227,7 @@ public interface GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Get a list of tracks from the gps device.
- * @return a list of <code>GPSRoute</code> objects.
+ * @return a list of <code>GPSTrack</code> objects.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.
@@ -230,6 +252,35 @@ public interface GPSDataProcessor
   public void setTracks(List tracks)
     throws UnsupportedOperationException, GPSException;
 
+
+//----------------------------------------------------------------------
+/**
+ * Requests the gps device to send the current
+ * position/heading/etc. periodically.
+ *
+ * @param period time in milliseconds between periodically sending
+ * position/heading/etc. This value may be changed by the gps device,
+ * so do not rely on the value given!
+ * @return the period chosen by the gps device or 0 if the gps device
+ * is unable to send periodically. Do not rely on this value as some
+ * drivers just do not know!
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public long startSendPositionPeriodically(long period)
+    throws GPSException;
+
+//----------------------------------------------------------------------
+/**
+ * Requests the gps device to stop to send the current
+ * position/heading/etc. periodically. Do not rely on this, as some
+ * gps devices may not stop it (e.g. NMEA).
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public void stopSendPositionPeriodically()
+    throws GPSException;
+  
 //----------------------------------------------------------------------
 /**
  * Adds a listener for GPS data change events.
@@ -298,6 +349,32 @@ public interface GPSDataProcessor
  * <code>null</code>.  
  */
   public void removeGPSDataChangeListener(PropertyChangeListener listener)
+    throws IllegalArgumentException;
+
+//----------------------------------------------------------------------
+/**
+ * Adds a listener for transfer progress (for transfer or
+ * route/track/waypoint data).
+ *
+ * @param listener the listener to be added.
+ * @exception IllegalArgumentException if <code>listener</code> is
+ * <code>null</code>.
+ * @see org.dinopolis.gpstool.util.ProgressListener
+ */
+  public void addProgressListener(ProgressListener listener)
+    throws IllegalArgumentException;
+
+//----------------------------------------------------------------------
+/**
+ * Removes a listener for transfer progress (for transfer or
+ * route/track/waypoint data).
+ *
+ * @param listener the listener to be added.
+ * @exception IllegalArgumentException if <code>listener</code> is
+ * <code>null</code>.
+ * @see org.dinopolis.gpstool.util.ProgressListener
+ */
+  public void removeProgressListener(ProgressListener listener)
     throws IllegalArgumentException;
 
 

@@ -23,14 +23,16 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.Iterator;
 
+
+import org.dinopolis.gpstool.util.ProgressListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
@@ -60,6 +62,8 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
   protected PropertyChangeSupport property_change_support_;
 /** the raw data listener */
   protected Vector raw_data_listener_;  
+/** the progress listener */
+  protected Vector progress_listener_;  
 
 //----------------------------------------------------------------------
 /**
@@ -160,6 +164,109 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
     {
       return((Map)((HashMap)gps_data_).clone());
     }
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a list of waypoints from the gps device.
+ * @return a list of <code>GPSWaypoint</code> objects.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSWaypoint
+ */
+  public List getWaypoints()
+    throws UnsupportedOperationException, GPSException
+  {
+    throw new UnsupportedOperationException("operation not supported by the device/protocol");
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Write the waypoints to the gps device.
+ * @param waypoints The new waypoints.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSWaypoint
+ */
+  public void setWaypoints(List waypoints)
+    throws UnsupportedOperationException, GPSException
+  {
+    throw new UnsupportedOperationException("operation not supported by the device/protocol");
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a list of routes from the gps device.
+ * @return a list of <code>GPSRoute</code> objects.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSRoute
+ */
+  public List getRoutes()
+    throws UnsupportedOperationException, GPSException
+  {
+    System.out.println("GeneralDataProcessor.getRoutes()");
+    throw new UnsupportedOperationException("operation not supported by the device/protocol");
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Write the routes to the gps device.
+ * @param waypoints The new waypoints.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSWaypoint
+ */
+  public void setRoutes(List routes)
+    throws UnsupportedOperationException, GPSException
+  {
+    throw new UnsupportedOperationException("operation not supported by the device/protocol");
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Get a list of tracks from the gps device.
+ * @return a list of <code>GPSRoute</code> objects.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSRoute
+ */
+  public List getTracks()
+    throws UnsupportedOperationException, GPSException
+  {
+    throw new UnsupportedOperationException("operation not supported by the device/protocol");
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Write the tracks to the gps device.
+ * @param waypoints The new waypoints.
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ * @see GPSRoute
+ */
+  public void setTracks(List tracks)
+    throws UnsupportedOperationException, GPSException
+  {
+    throw new UnsupportedOperationException("operation not supported by the device/protocol");
   }
 
 //----------------------------------------------------------------------
@@ -345,16 +452,127 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
     {
       raw_data_listener_.remove(listener);
     }
-
-//        Iterator listeners = raw_data_listener_.iterator();
-//        while(listeners.hasNext())
-//        {
-//  	  if(listeners.next() == listener)
-//  	  {
-//  	      listeners.remove();
-//  	      return;
-//  	  }
-//        }
   }
 
+//----------------------------------------------------------------------
+/**
+ * Adds a listener for transfer progress (for transfer or
+ * route/track/waypoint data).
+ *
+ * @param listener the listener to be added.
+ * @exception IllegalArgumentException if <code>listener</code> is
+ * <code>null</code>.
+ * @see org.dinopolis.gpstool.util.ProgressListener
+ */
+  public void addProgressListener(ProgressListener listener)
+    throws IllegalArgumentException
+  {
+    if (listener == null)
+      throw new IllegalArgumentException("The listener must not be <null>.");
+    if (progress_listener_ == null)
+      progress_listener_ = new Vector();
+    synchronized(progress_listener_)
+    {
+      progress_listener_.addElement(listener);
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Removes a listener for transfer progress (for transfer or
+ * route/track/waypoint data).
+ *
+ * @param listener the listener to be added.
+ * @exception IllegalArgumentException if <code>listener</code> is
+ * <code>null</code>.
+ * @see org.dinopolis.gpstool.util.ProgressListener
+ */
+  public void removeProgressListener(ProgressListener listener)
+    throws IllegalArgumentException
+  {
+    if (listener == null)
+      throw new IllegalArgumentException("The listener must not be <null>.");
+    if (progress_listener_ == null)
+      return;
+
+    synchronized(progress_listener_)
+    {
+      progress_listener_.remove(listener);
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Fire the ProgressListener actionStart
+ *
+ * @param action_id the id of the action that is started. This id may
+ * be used to display a message for the user.
+ * @param min_value the minimum value of the progress counter.
+ * @param max_value the maximum value of the progress counter. If the
+ * max value is unknown, max_value is set to <code>Integer.NaN</code>.
+ */
+
+  protected void fireProgressActionStart(String action_id, int min_value, int max_value)
+  {
+    if (progress_listener_ == null)
+      return;
+    Iterator listeners;
+    synchronized(progress_listener_)
+    {
+      listeners = ((Vector)progress_listener_.clone()).iterator();
+    }
+    while(listeners.hasNext())
+    {
+      ((ProgressListener)listeners.next()).actionStart(action_id,min_value,max_value);
+    }
+  }
+
+ //----------------------------------------------------------------------
+/**
+ * Fire the progressListener actionStart
+ *
+ * @param action_id the id of the action that is started. This id may
+ * be used to display a message for the user.
+ * @param current_value the current value
+ */
+
+  protected void fireProgressActionProgress(String action_id, int current_value)
+  {
+    if (progress_listener_ == null)
+      return;
+    Iterator listeners;
+    synchronized(progress_listener_)
+    {
+      listeners = ((Vector)progress_listener_.clone()).iterator();
+    }
+    while(listeners.hasNext())
+    {
+      ((ProgressListener)listeners.next()).actionProgress(action_id,current_value);
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Fire the ProgressListener actionEnd
+ *
+ * @param action_id the id of the action that is ended. This id may
+ * be used to display a message for the user.
+ */
+
+  protected void fireProgressActionEnd(String action_id)
+  {
+    if (progress_listener_ == null)
+      return;
+    Iterator listeners;
+    synchronized(progress_listener_)
+    {
+      listeners = ((Vector)progress_listener_.clone()).iterator();
+    }
+    while(listeners.hasNext())
+    {
+      ((ProgressListener)listeners.next()).actionEnd(action_id);
+    }
+  }
+
+  
 }

@@ -80,6 +80,7 @@ class GarminPackage
   {
     data_ = new int[data_size];
     package_size_ = data_size;
+		reset();
   }
 
 //----------------------------------------------------------------------
@@ -906,6 +907,19 @@ class GarminPackage
     }
     return(buffer);
   }
+
+
+//----------------------------------------------------------------------
+/**
+ * Reset the get index, so the next call to getNextAsXXX method will start
+ * from the beginning of the buffer.
+ */
+  public void reset()
+  {
+		get_index_ = 0;
+  }
+
+
 
   public String toString()
   {

@@ -48,7 +48,9 @@ public interface MouseModePlugin extends Plugin, MouseMode
 //----------------------------------------------------------------------
 /**
  * If the mouse mode plugin wants to draw anything on the map it may
- * return a layer here or <code>null</code> if not.
+ * return a layer here or <code>null</code> if not. If this method is
+ * called more than once, the plugin should return always the same
+ * layer!
  *
  * @return the layer the plugin wants to paint into.
  * @see com.bbn.openmap.Layer

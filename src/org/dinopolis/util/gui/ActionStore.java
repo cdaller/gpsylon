@@ -149,11 +149,11 @@ public class ActionStore implements ActionGenerator
   {
     StringBuffer ret = new StringBuffer(); 
     ret.append("[");
-    Enumeration enum = actions_.keys();
-    while (enum.hasMoreElements())
+    Enumeration enum_keys = actions_.keys();
+    while (enum_keys.hasMoreElements())
     {
-      ret.append(enum.nextElement());
-      if (enum.hasMoreElements())
+      ret.append(enum_keys.nextElement());
+      if (enum_keys.hasMoreElements())
         ret.append(", ");
     }
     ret.append("]");

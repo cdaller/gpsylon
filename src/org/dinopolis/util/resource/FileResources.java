@@ -899,7 +899,7 @@ public class FileResources extends AbstractResources
 
   class FileResourcesEnumeration implements Enumeration
   {
-    protected Enumeration enum_;
+    protected Enumeration enumeration_;
 
     //----------------------------------------------------------------------
     /**
@@ -909,11 +909,11 @@ public class FileResources extends AbstractResources
     {
       HashSet added = new HashSet();
       Vector keys = new Vector();
-      Enumeration enum = system_bundle_.getKeys();
+      Enumeration enumeration = system_bundle_.getKeys();
       String key;
-      while (enum.hasMoreElements())
+      while (enumeration.hasMoreElements())
       {
-        key = (String)enum.nextElement();
+        key = (String)enumeration.nextElement();
         if ((!added.contains(key)) &&
             (!isSpecial(key)))
         {
@@ -921,10 +921,10 @@ public class FileResources extends AbstractResources
           added.add(key);
         }
       }
-      enum = user_properties_.propertyNames();
-      while (enum.hasMoreElements())
+      enumeration = user_properties_.propertyNames();
+      while (enumeration.hasMoreElements())
       {
-        key = (String)enum.nextElement();
+        key = (String)enumeration.nextElement();
         if ((!added.contains(key)) &&
             (!isSpecial(key)))
         {
@@ -932,7 +932,7 @@ public class FileResources extends AbstractResources
           added.add(key);
         }
       }
-      enum_ = keys.elements();
+      enumeration_ = keys.elements();
     }
 
     //----------------------------------------------------------------------
@@ -966,7 +966,7 @@ public class FileResources extends AbstractResources
 
     public boolean hasMoreElements()
     {
-      return(enum_.hasMoreElements());
+      return(enumeration_.hasMoreElements());
     }
 
     //----------------------------------------------------------------------
@@ -979,7 +979,7 @@ public class FileResources extends AbstractResources
      */
     public Object nextElement()
     {
-      return(enum_.nextElement());
+      return(enumeration_.nextElement());
     }
   }
 }

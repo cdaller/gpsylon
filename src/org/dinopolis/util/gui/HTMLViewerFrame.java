@@ -178,14 +178,13 @@ public class HTMLViewerFrame extends JFrame implements HyperlinkListener
       System.out.println("Usage:");
       System.out.println(HTMLViewerFrame.class.getName()+" [<proxyhost> <proxyport>] <url>");
     }
-    String url;
-    String proxy_host;
-    String proxy_port;
+    String proxy_host = args[0];
+    String proxy_port = args[1];
     HTMLViewerFrame viewer = new HTMLViewerFrame();
     if(args.length == 3)
     {
-      viewer.setProxyHost(args[0]);
-      viewer.setProxyPort(Integer.parseInt(args[1]));
+      viewer.setProxyHost(proxy_host);
+      viewer.setProxyPort(Integer.parseInt(proxy_port));
     }
     try
     {

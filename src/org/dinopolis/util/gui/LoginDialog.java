@@ -127,8 +127,6 @@ public class LoginDialog
     messages.add(password_title_);
     messages.add(password_textfield_ = new JPasswordField(20));
 
-    Object[] options = {new Integer(OK_OPTION), new Integer(CANCEL_OPTION)};
-
     option_pane_ = new JOptionPane(messages.toArray(),
                                    JOptionPane.QUESTION_MESSAGE,
                                    JOptionPane.OK_CANCEL_OPTION);

@@ -129,22 +129,22 @@ public class ServiceDiscovery
     {
       ClassLoader loader=(ClassLoader)class_loaders_.elementAt(loader_count);
 
-      Enumeration enum=null;
+      Enumeration enumeration=null;
       try
       {
-        enum=loader.getResources( service_file );
+        enumeration=loader.getResources( service_file );
       }
       catch( IOException ex )
       {
         ex.printStackTrace();
       }
-      if( enum==null ) continue;
+      if( enumeration==null ) continue;
 
-      while( enum.hasMoreElements() )
+      while( enumeration.hasMoreElements() )
       {
         try
         {
-          URL url=(URL)enum.nextElement();
+          URL url=(URL)enumeration.nextElement();
 
 //           URL base_url=new URL( url, "../../.." );
 //           System.out.println("XXX BaseURL " + base_url + " url: " + url );

@@ -511,9 +511,9 @@ implements ActionListener, PropertyChangeListener
     key_editor_map_.clear();
 
     TreeSet keys = new TreeSet();
-    Enumeration enum = edit_resources_.getKeys();
-    while (enum.hasMoreElements())
-      keys.add((String)enum.nextElement());
+    Enumeration enum_resources = edit_resources_.getKeys();
+    while (enum_resources.hasMoreElements())
+      keys.add(enum_resources.nextElement());
 
     // extract groups
     String[] groups = getChildren(Resources.GROUPS);

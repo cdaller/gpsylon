@@ -210,12 +210,12 @@ public abstract class AbstractResources implements Resources
     Vector all_keys = new Vector();
     HashSet added = new HashSet();
     String key;
-    Enumeration enum;
+    Enumeration enumeration;
         // collect my keys:
-    enum = doGetKeys();
-    while(enum.hasMoreElements())
+    enumeration = doGetKeys();
+    while(enumeration.hasMoreElements())
     {
-      key = (String)enum.nextElement();
+      key = (String)enumeration.nextElement();
       if(!added.contains(key))
       {
         added.add(key);
@@ -230,10 +230,10 @@ public abstract class AbstractResources implements Resources
         Iterator resources_iterator = attached_resources_.iterator();
         while(resources_iterator.hasNext())
         {
-          enum = ((Resources)resources_iterator.next()).getKeys();
-          while(enum.hasMoreElements())
+          enumeration = ((Resources)resources_iterator.next()).getKeys();
+          while(enumeration.hasMoreElements())
           {
-            key = (String)enum.nextElement();
+            key = (String)enumeration.nextElement();
             if(!added.contains(key))
             {
               added.add(key);
@@ -994,11 +994,11 @@ public abstract class AbstractResources implements Resources
 
       Vector hits = new Vector();
 
-      Enumeration enum = getKeys();
+      Enumeration enumeration = getKeys();
       Object hit;
-      while (enum.hasMoreElements())
+      while (enumeration.hasMoreElements())
       {
-        hit = enum.nextElement();
+        hit = enumeration.nextElement();
         if (regular_expression.isMatch(hit))
           hits.add(hit);
       }

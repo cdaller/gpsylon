@@ -114,6 +114,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   +"## print all tracks that are available:\n"
   +"#if($printtracks)\n"
   +"#foreach( $track in $tracks )\n"
+  +"#set($close_segment = false)\n"
   +"  <trk>\n"
   +"    <name>$!track.Identification</name>\n"
   +"    <desc>![CDATA[$!track.Comment]]</desc>\n"

@@ -24,13 +24,14 @@
 package org.dinopolis.gpstool.plugin.mapmanager;
 
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
+import java.awt.Container;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
+import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.util.Resources;
-import java.awt.Container;
-import javax.swing.JScrollPane;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import javax.swing.JFrame;
 
 
 

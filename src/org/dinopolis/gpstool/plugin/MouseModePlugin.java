@@ -1,6 +1,6 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
-*
+ *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 
@@ -25,18 +25,18 @@ package org.dinopolis.gpstool.plugin;
 
 import javax.swing.Action;
 import org.dinopolis.gpstool.gui.MouseMode;
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**
  * This interface is used for all plugins that want to provide any
- * kind of gui-interface for the application. The plugins may provide
- * menu items that are placed into a sub menu (in the "plugins" menu)
- * or if they provide a larger quantity of actions, the plugin may
- * provide actions for a main menu item.
+ * mouse handling for the application. If the mouse mode wants to draw
+ * anything on the map, it may return a layer in the {@getLayer()}
+ * method.
  * <p>
- * The plugins are informed
- * about start and stop, so they may initialize and free their
- * resources on startup and on closing of the application.
+ * The plugins are informed about start and stop, so they may
+ * initialize and free their resources on startup and on closing of
+ * the application.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -44,6 +44,17 @@ import org.dinopolis.gpstool.gui.MouseMode;
 
 public interface MouseModePlugin extends Plugin, MouseMode
 {
+
+//----------------------------------------------------------------------
+/**
+ * If the mouse mode plugin wants to draw anything on the map it may
+ * return a layer here or <code>null</code> if not.
+ *
+ * @return the layer the plugin wants to paint into.
+ * @see com.bbn.openmap.Layer
+ */
+
+  public Layer getLayer();
 
  
 }

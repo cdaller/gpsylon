@@ -33,8 +33,10 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
@@ -43,6 +45,7 @@ import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.gpstool.track.Trackpoint;
 import org.dinopolis.gpstool.track.TrackpointImpl;
 import org.dinopolis.util.Debug;
+import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
@@ -60,6 +63,23 @@ import org.dinopolis.util.Resources;
 public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConstants
 {
 
+  Resources resources_;
+
+  	/** the name of the resource file */
+	private final static String RESOURCE_BUNDLE_NAME = "ReadGpsDriveTrackPlugin";
+
+	/** the name of the directory containing the resources */
+	private final static String USER_RESOURCE_DIR_NAME = GPSMap.USER_RESOURCE_DIR_NAME;
+
+      // resource keys:
+  public static final String KEY_READGPSDRIVETRACK_PLUGIN_IDENTIFIER = "readgpsdrivetrack.plugin.identifier";
+  public static final String KEY_READGPSDRIVETRACK_PLUGIN_VERSION = "readgpsdrivetrack.plugin.version";
+  public static final String KEY_READGPSDRIVETRACK_PLUGIN_NAME = "readgpsdrivetrack.plugin.name";
+  public static final String KEY_READGPSDRIVETRACK_PLUGIN_DESCRIPTION = "readgpsdrivetrack.plugin.description";
+  public static final String KEY_READGPSDRIVETRACK_FILE_DATEFORMAT  = "readgpsdrivetrack.file.dateformat ";
+  public static final String KEY_READGPSDRIVETRACK_FILE_EXTENSION  = "readgpsdrivetrack.file.extension ";
+  public static final String KEY_READGPSDRIVETRACK_FILE_DESCRIPTIVE_NAME  = "readgpsdrivetrack.file.descriptive_name ";
+
   public ReadGpsDriveTrackPlugin()
   {
   }
@@ -74,6 +94,7 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
  */
   public void initializePlugin(PluginSupport support)
   {
+    loadResources();
   }
 
 //----------------------------------------------------------------------
@@ -115,7 +136,7 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
 
   public String getContentDescription()
   {
-    return("GPSDrive Tracks");
+    return(resources_.getString(KEY_READGPSDRIVETRACK_FILE_DESCRIPTIVE_NAME));
   }
   
 //----------------------------------------------------------------------
@@ -128,7 +149,7 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
 
   public String[] getContentFileExtensions()
   {
-    return(new String[] {"sav"});
+    return(new String[] {resources_.getString(KEY_READGPSDRIVETRACK_FILE_EXTENSION)});
   }
   
 
@@ -151,7 +172,9 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
 
       Track track = new TrackImpl();
       StringTokenizer tokenizer;
-      SimpleDateFormat date_format = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy",Locale.US);
+      SimpleDateFormat date_format =
+        new SimpleDateFormat(resources_.getString(KEY_READGPSDRIVETRACK_FILE_DATEFORMAT),
+                             Locale.US);
       String line;
       boolean new_segment = true;
       while((line = track_in.readLine()) != null)
@@ -264,4 +287,36 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
   {
     return("This plugin reads track data that was saved by gpsdrive.");
   }
+
+  //----------------------------------------------------------------------
+	/**
+	 * Loads the resource file, or exits on a MissingResourceException.
+	 */
+
+	void loadResources()
+	{
+		try
+		{
+			resources_ =
+				ResourceManager.getResources(
+					ReadGpsDriveTrackPlugin.class,
+					RESOURCE_BUNDLE_NAME,
+					USER_RESOURCE_DIR_NAME,
+					Locale.getDefault());
+		}
+		catch (MissingResourceException mre)
+		{
+			if (Debug.DEBUG)
+				Debug.println(
+					"ReadGpsDriveTrackPlugin",
+					mre.toString() + '\n' + Debug.getStackTrace(mre));
+			System.err.println(
+				"ReadGpsDriveTrackPlugin: resource file '"
+					+ RESOURCE_BUNDLE_NAME
+					+ "' not found");
+			System.err.println(
+				"please make sure that this file is within the classpath !");
+			System.exit(1);
+		}
+	}
 }

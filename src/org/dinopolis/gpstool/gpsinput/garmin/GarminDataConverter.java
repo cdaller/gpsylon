@@ -23,76 +23,31 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+//----------------------------------------------------------------------
+/**
+ * Helper class for converting garmin data arrays to java datatypes
+ * and vice versa.
+ *
+ * @author Christof Dallermassl, Stefan Feitl
+ * @version $Revision$
+ */
+
 public class GarminDataConverter
 {
   /** Semicircle to Degrees conversion values */
   protected final static double SEMICIRCLE_FACTOR = (double)( 1L << 31 ) / 180.0d;
 
-  /** Radiant to Degrees conversion values */
-  protected final static double RADIANT_FACTOR    = (double)(Math.PI/180);
-
-
 //----------------------------------------------------------------------
-  /**
-   * Helper functions for converting received binary data into datatypes:
-   *
-   * IntLEtoBE - coverts int little-endian to int big-endian
-   * FloatLEtoBE - converts float little-endian to float big-endian
-   * DoubleLEtoBE - converts double little-endian to double big-endian
-   *
-   * @param read chars to be converted into big-endian number format
-   */
-  public static int IntLEtoBE(char a, char b, char c, char d)
-  {
-      int accum = 0;
-      char[] toConvert = new char[] {a,b,c,d};
-
-      for (int shiftBy=0; shiftBy<32; shiftBy+=8)
-      {
-        accum |= ((toConvert[(int)shiftBy/8] & 0xff)) << shiftBy;
-      }
-    
-      return accum;
-  }
-
-  public static float FloatLEtoBE(char a, char b, char c, char d)
-  {
-      int accum = 0;
-      char[] toConvert = new char[] {a,b,c,d};
-
-      for (int shiftBy=0; shiftBy<32; shiftBy+=8)
-      {
-        accum |= (toConvert[shiftBy/8] & 0xff) << shiftBy;
-      }
-
-      return Float.intBitsToFloat(accum);
-  }
-
-  public static double DoubleLEtoBE(char a, char b, char c, char d, char e, char f, char g, char h)
-  {
-      long accum = 0;
-      char[] toConvert = new char[] {a,b,c,d,e,f,g,h};
-
-      for (int shiftBy=0; shiftBy<64; shiftBy+=8)
-      {
-            // Cast to long or shift done modulo 32 required to work properly
-        accum |= ((long)(toConvert[(int)shiftBy/8] & 0xff)) << shiftBy;
-      }
-    
-      return Double.longBitsToDouble(accum);
-  }
-
-  //----------------------------------------------------------------------
-  /**
-   * Extracts a byte array from the given character buffer and returns
-   * it.
-   *
-   * @param buffer the character buffer to extract the string from.
-   * @param offset the offset to start reading the buffer.
-   * @param length the length of the array.
-   * @return the value extracted from the buffer.
-   */
-  public static byte[] getGarminByteArray(char[] buffer, int offset, int length)
+/**
+ * Extracts a byte array from the given character buffer and returns
+ * it.
+ *
+ * @param buffer the character buffer to extract the string from.
+ * @param offset the offset to start reading the buffer.
+ * @param length the length of the array.
+ * @return the value extracted from the buffer.
+ */
+  public static byte[] getGarminByteArray(int[] buffer, int offset, int length)
   {
     byte[] value = new byte[length];
     int index = length - 1;
@@ -106,41 +61,63 @@ public class GarminDataConverter
     return(value);
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Extracts a zero-terminated string from the given character buffer
-   * and returns it.
-   *
-   * @param buffer the character buffer to extract the string from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static String getGarminString(char[] buffer, int offset)
+//----------------------------------------------------------------------
+/**
+ * Generate a garmin data array from the given byte array.
+ *
+ * @param array the byte array to be converted to garmin data.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminByteArray(byte[] byteArray, int[] buffer, int offset)
+  {
+    for(int index = 0; index < byteArray.length; index++)
+    {
+      buffer = setGarminByte(byteArray[index],buffer,offset+index);
+    }
+    return(buffer);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Extracts a zero-terminated string from the given character buffer
+ * and returns it.
+ *
+ * @param buffer the character buffer to extract the string from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static String getGarminString(int[] buffer, int offset)
   {
     return(getGarminString(buffer,offset,buffer.length));
   }
   
   
-  //----------------------------------------------------------------------
-  /**
-   * Extracts a zero-terminated string from the given character buffer
-   * and returns it.
-   *
-   * @param buffer the character buffer to extract the string from.
-   * @param offset the offset to start reading the buffer.
-   * @param max_length max length of the string.
-   * @return the value extracted from the buffer.
-   */
-  public static String getGarminString(char[] buffer, int offset, int max_length)
+//----------------------------------------------------------------------
+/**
+ * Extracts a zero-terminated string from the given character buffer
+ * and returns it.
+ *
+ * @param buffer the character buffer to extract the string from.
+ * @param offset the offset to start reading the buffer.
+ * @param max_length max length of the string.
+ * @return the value extracted from the buffer.
+ */
+  public static String getGarminString(int[] buffer, int offset, int max_length)
   {
-    char ch;
+    int ch;
     StringBuffer result = new StringBuffer();
     int max_index = Math.min(offset + max_length,buffer.length);
+
     for(int index = offset; index < max_index; index++)
     {
       ch = buffer[index];
       if(ch != 0)
-        result.append(ch);
+        result.append((char)ch);
       else
       {
         return(result.toString());
@@ -149,60 +126,152 @@ public class GarminDataConverter
     return(result.toString());
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Extracts an boolean from the given character buffer and returns
-   * it.
-   *
-   * @param buffer the character buffer to extract the boolean from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static boolean getGarminBoolean(char[] buffer, int offset)
+//----------------------------------------------------------------------
+/**
+ * Convert a given string to garmin data array.
+ *
+ * @param string the string to write to the buffer
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @param max_length the maximum length the string may have (if the
+ * string should be zero terminated, this length includes the yero
+ * termination).
+ * @param zero_terminate zero terminate the string.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminString(String string, int [] buffer, int offset,
+                                      int max_length, boolean zero_terminate)
+  {
+    if(zero_terminate)
+      max_length--;
+    int index = 0;
+    while((index < string.length()) && (index < max_length))
+    {
+      buffer[offset+index] = (int)string.charAt(index);
+      index++;
+    }
+    if(zero_terminate)
+      buffer[index] = 0;
+
+    return(buffer);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Extracts an boolean from the given character buffer and returns
+ * it.
+ *
+ * @param buffer the character buffer to extract the boolean from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static boolean getGarminBoolean(int[] buffer, int offset)
   {
     return(buffer[offset] != 0);
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Extracts an byte (unsigned java short) from the given character buffer and
-   * returns it.
-   *
-   * @param buffer the character buffer to extract the byte from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static short getGarminByte(char[] buffer, int offset)
+//----------------------------------------------------------------------
+/**
+ * Convert a given boolean to garmin data array.
+ *
+ * @param bool the boolean to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminBoolean(boolean bool, int[] buffer, int offset)
+  {
+    if (bool)
+      buffer[offset] = 1;
+    else
+      buffer[offset] = 0;
+      
+    return(buffer);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Extracts an byte (unsigned java short) from the given character buffer and
+ * returns it.
+ *
+ * @param buffer the character buffer to extract the byte from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static short getGarminByte(int[] buffer, int offset)
   {
     return((short)(buffer[offset] & 0xff));
   }
+
+//----------------------------------------------------------------------
+/**
+ * Convert a given java short to garmin data array.
+ *
+ * @param byt the short to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[]  setGarminByte(short byt, int[] buffer, int offset)
+  {
+    buffer[offset] = (byt & 0xff);
+    return(buffer);
+  }
   
-  //----------------------------------------------------------------------
-  /**
-   * Extracts an word (unsigned, java int) from the given character
-   * buffer and returns it.
-   *
-   * @param buffer the character buffer to extract the integer from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static int getGarminWord(char[] buffer, int offset)
+//----------------------------------------------------------------------
+/**
+ * Extracts an word (unsigned, java int) from the given character
+ * buffer and returns it.
+ *
+ * @param buffer the character buffer to extract the integer from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static int getGarminWord(int[] buffer, int offset)
   {
     int value = (buffer[offset] & 0xff)
                 | ((buffer[offset+1] & 0xff) << 8);
     return(value);
   }
+
+//----------------------------------------------------------------------
+/**
+ * Convert a given word (16bit integer) to garmin data array.
+ *
+ * @param word the word to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminWord(int word, int[] buffer, int offset)
+  {
+    buffer[offset] =  word & 0xff; 
+    buffer[offset+1] = (word & 0xff00) >> 8;
+    return(buffer);
+  }
   
-  //----------------------------------------------------------------------
-  /**
-   * Extracts an integer from the given character buffer and returns
-   * it.
-   *
-   * @param buffer the character buffer to extract the integer from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static int getGarminInt(char[] buffer, int offset)
+//----------------------------------------------------------------------
+/**
+ * Extracts an integer from the given character buffer and returns
+ * it.
+ *
+ * @param buffer the character buffer to extract the integer from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static int getGarminInt(int[] buffer, int offset)
   {
     int value = (buffer[offset] & 0xff)
                 | ((buffer[offset+1] & 0xff) << 8)
@@ -211,16 +280,37 @@ public class GarminDataConverter
     return(value);
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Extracts an float from the given character buffer and returns
-   * it.
-   *
-   * @param buffer the character buffer to extract the float from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static float getGarminFloat(char[] buffer, int offset)
+//----------------------------------------------------------------------
+/**
+ * Convert a given integer to garmin data array.
+ *
+ * @param integer the integer to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminInt(int integer, int[] buffer, int offset)
+  {
+    buffer[offset] = integer & 0xff;
+    buffer[offset+1] = (integer & (int)(0xff << 8)) >> 8;   
+    buffer[offset+2] = (integer & (int)(0xff << 16)) >> 16; 
+    buffer[offset+3] = (integer & (int)(0xff << 24)) >> 24; 
+    return(buffer);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Extracts an float from the given character buffer and returns
+ * it.
+ *
+ * @param buffer the character buffer to extract the float from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static float getGarminFloat(int[] buffer, int offset)
   {
     int value = (buffer[offset] & 0xff)
                 | ((buffer[offset+1] & 0xff) << 8)
@@ -228,254 +318,162 @@ public class GarminDataConverter
                 | ((buffer[offset+3] & 0xff) << 24);
     return(Float.intBitsToFloat(value));
   }
-  
-  //----------------------------------------------------------------------
-  /**
-   * Extracts an double from the given character buffer and returns
-   * it.
-   *
-   * @param buffer the character buffer to extract the double from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static double getGarminDouble(char[] buffer, int offset)
+
+//----------------------------------------------------------------------
+/**
+ * Convert a given float to garmin data array.
+ *
+ * @param flo the float to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminFloat(float flo,int[] buffer, int offset)
   {
-      long accum = 0;
-
-      for (int shiftBy=0; shiftBy<64; shiftBy+=8)
-      {
-            // Cast to long or shift done modulo 32 required to work properly
-        accum |= ((long)(buffer[(int)offset+shiftBy/8] & 0xff)) << shiftBy;
-      }
-
-// FIXXME: does not seem to work properly???
-//     long value =  (long)(buffer[offset] & 0xff)
-//                 | (long)((buffer[offset+1] & 0xff) << 8)
-//                 | (long)((buffer[offset+2] & 0xff) << 16)
-//                 | (long)((buffer[offset+3] & 0xff) << 24)
-//                 | (long)((buffer[offset+4] & 0xff) << 32)
-//                 | (long)((buffer[offset+5] & 0xff) << 40)
-//                 | (long)((buffer[offset+6] & 0xff) << 48)
-//                 | (long)((buffer[offset+7] & 0xff) << 56);
-
-    return(Double.longBitsToDouble(accum));
+    int integer = Float.floatToRawIntBits(flo);
+    return(setGarminInt(integer,buffer,offset));
   }
   
-  //----------------------------------------------------------------------
-  /**
-   * Extracts a degree value from the given character buffer and
-   * returns it. It extracs a semicircle value and converts it to
-   * degrees afterwards.
-   *
-   * @param buffer the character buffer to extract the boolean from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static double getGarminSemicircleDegrees(char[] buffer, int offset)
+//----------------------------------------------------------------------
+/**
+ * Extracts an double from the given character buffer and returns
+ * it.
+ *
+ * @param buffer the character buffer to extract the double from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static double getGarminDouble(int[] buffer, int offset)
   {
-    return(convertSemicirclesToDegrees(getGarminInt(buffer,offset)));
+    long value =  ((long)(buffer[offset] & 0xff))
+                  | ((long)(buffer[offset+1] & 0xff)) << 8
+                  | ((long)(buffer[offset+2] & 0xff)) << 16
+                  | ((long)(buffer[offset+3] & 0xff)) << 24
+                  | ((long)(buffer[offset+4] & 0xff)) << 32
+                  | ((long)(buffer[offset+5] & 0xff)) << 40
+                  | ((long)(buffer[offset+6] & 0xff)) << 48
+                  | ((long)(buffer[offset+7] & 0xff)) << 56;
+    
+    return Double.longBitsToDouble(value);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Convert a given double to garmin data array.
+ *
+ * @param double the double to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminDouble(double doub, int[] buffer, int offset)
+  {
+    long value = Double.doubleToRawLongBits(doub);
+    
+    buffer[offset+0]=(int)((value & (0xff << 0)) >> 0);
+    buffer[offset+1]=(int)((value & (0xff << 8)) >> 8);
+    buffer[offset+2]=(int)((value & (0xff << 16)) >> 16);
+    buffer[offset+3]=(int)((value & (0xff << 24)) >> 24);
+    buffer[offset+4]=(int)(((value >> 32) & (0xff << 0)) >> 0);
+    buffer[offset+5]=(int)(((value >> 32) & (0xff << 8)) >> 8);
+    buffer[offset+6]=(int)(((value >> 32) & (0xff << 16)) >> 16);
+    buffer[offset+7]=(int)(((value >> 32) & (0xff << 24)) >> 24);
+    
+    return(buffer);
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Extracts a degree value from the given character buffer and
-   * returns it. It extracs a radiant value and converts it to
-   * degrees afterwards.
-   *
-   * @param buffer the character buffer to extract the boolean from.
-   * @param offset the offset to start reading the buffer.
-   * @return the value extracted from the buffer.
-   */
-  public static double getGarminRadiantDegrees(char[] buffer, int offset)
+//----------------------------------------------------------------------
+/**
+ * Extracts a degree value from the given character buffer and
+ * returns it. It extracs a semicircle value and converts it to
+ * degrees afterwards.
+ *
+ * @param buffer the character buffer to extract the boolean from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static double getGarminSemicircleDegrees(int[] buffer, int offset)
   {
-    return(convertRadiantToDegrees(getGarminDouble(buffer,offset)));
+      return(convertSemicirclesToDegrees(getGarminInt(buffer,offset)));
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Converts Semicircles to Degrees.
-   *
-   * @param semicircles
-   * @return degrees
-   */
+//----------------------------------------------------------------------
+/**
+ * Convert given degrees (java double) to garmin data array (semicircles).
+ *
+ * @param degrees the degree value to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminSemicircleDegrees(double degrees,int[] buffer, int offset)
+  {
+      return setGarminInt(convertDegreesToSemicircles(degrees),buffer,offset);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Extracts a degree value from the given character buffer and
+ * returns it. It extracs a radiant value and converts it to
+ * degrees afterwards.
+ *
+ * @param buffer the character buffer to extract the boolean from.
+ * @param offset the offset to start reading the buffer.
+ * @return the value extracted from the buffer.
+ */
+  public static double getGarminRadiantDegrees(int[] buffer, int offset)
+  {
+    return Math.toDegrees(getGarminDouble(buffer,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Convert given degrees (java double) to garmin data array (radiant).
+ *
+ * @param degrees the degree value to be converted to garmin data array.
+ * @param buffer the buffer to write the value(s) to.
+ * @param offset the offset to write the value(s) into the buffer.
+ * @return the buffer holding the given value at the given position
+ * (the rest is unchanged).
+ * @throws ArrayIndexOutOfBoundsException if the buffer size is too
+ * small to hold the given data.
+ */
+  public static int[] setGarminRadiantDegrees(double degrees,int[] buffer, int offset)
+  {
+    return setGarminDouble(Math.toRadians(degrees),buffer,offset);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Converts Semicircles to Degrees.
+ *
+ * @param semicircles
+ * @return degrees
+ */
   public static double convertSemicirclesToDegrees(int semicircle)
   {
     return((double)semicircle / SEMICIRCLE_FACTOR);
   }
 
-  //----------------------------------------------------------------------
-  /**
-   * Converts Degrees to Semicircles.
-   *
-   * @param degrees
-   * @return semicircles
-   */
-  public static double convertDegreesToSemicircles(double degrees)
+//----------------------------------------------------------------------
+/**
+ * Converts Degrees to Semicircles.
+ *
+ * @param degrees
+ * @return semicircles
+ */
+  public static int convertDegreesToSemicircles(double degrees)
   {
-    return((int)degrees * SEMICIRCLE_FACTOR);
-  }
-
-  //----------------------------------------------------------------------
-  /**
-   * Converts Radiant to Degrees.
-   *
-   * @param radiant
-   * @return degrees
-   */
-  public static double convertRadiantToDegrees(double radiant)
-  {
-    return((double)radiant / RADIANT_FACTOR);
-  }
-
-  //----------------------------------------------------------------------
-  /**
-   * Converts Degrees to Radiant.
-   *
-   * @param degrees
-   * @return radiant
-   */
-  public static double convertDegreesToRadiant(double degrees)
-  {
-    return((int)degrees * RADIANT_FACTOR);
-  }
-
-
-
-    // not necessary anymore
-  public static String[] D202toData(char[] buffer)
-  {
-      char[] rte_ident = new char[51];
-
-      for (int i=0;i<(int)buffer[1];i++)
-      {
-	  rte_ident[i] = buffer[i+2];
-      }
-
-      return new String[] {"Header",new String(rte_ident)};
-    }
-
-  public static String[] D210toData(char[] buffer)
-  {
-      char rte_class;
-      char[] rte_ident = new char[51];
-
-      rte_class = (char)(buffer[2]+256*buffer[3]);
-      for (int i=0;i<(int)buffer[1]-21;i++)
-      {
-	  rte_ident[i] = buffer[22+i];
-      }
-
-      return new String[] {""+rte_class,new String(rte_ident)};
-  }
-
-  public static String[] D300toData(char[] buffer)
-  {
-      double lat;
-      double lon;
-      float time;
-      char new_track;
-
-      lat = IntLEtoBE(buffer[2],buffer[3],buffer[4],buffer[5])*(180/Math.pow(2,31));
-      lon = IntLEtoBE(buffer[6],buffer[7],buffer[8],buffer[9])*(180/Math.pow(2,31));
-      time = FloatLEtoBE(buffer[10],buffer[11],buffer[12],buffer[13]);
-      new_track = buffer[22];
-
-      return new String[] {""+lat,""+lon,""+time,""+new_track};
-  }
-
-  public static String[] D301toData(char[] buffer)
-  {
-      double lat;
-      double lon;
-      float time;
-      float alt;
-      float depth;
-      char new_track;
-
-      lat = IntLEtoBE(buffer[2],buffer[3],buffer[4],buffer[5])*(180/Math.pow(2,31));
-      lon = IntLEtoBE(buffer[6],buffer[7],buffer[8],buffer[9])*(180/Math.pow(2,31));
-      time = FloatLEtoBE(buffer[10],buffer[11],buffer[12],buffer[13]);
-      alt = FloatLEtoBE(buffer[14],buffer[15],buffer[16],buffer[17]);
-      depth = FloatLEtoBE(buffer[18],buffer[19],buffer[20],buffer[21]);
-      new_track = buffer[22];
-
-      return new String[] {""+lat,""+lon,""+time,""+alt,""+depth,""+new_track};
-  }
-
-  public static String[] D310toData(char[] buffer)
-  {
-      char color;
-      char display;
-      char[] trk_ident = new char[] {};
-
-      display = buffer[2];
-      color = buffer[3];
-      for (int i=0;i<(int)buffer[1]-4;i++)
-      {
-	  trk_ident[i] = buffer[4+i];
-      }
-
-      return new String[] {"Header",""+display,""+color,new String(trk_ident)};
-  }
-
-  public static String[] D800toData(char[] buffer)
-  {
-      float alt = 0;
-      float epe = 0;
-      float eph = 0;
-      float epv = 0;
-      int fix = -1;
-      double tow = 0;
-      double lat = 0;
-      double lon = 0;
-      float east = 0;
-      float north = 0;
-      float up = 0;
-      float msl_height = 0;
-      int leap_seconds = 0;
-      int wn_days = 0;
-
-      // Altitude above WGS84-Ellipsoid [meters]
-      alt = FloatLEtoBE(buffer[2],buffer[3],buffer[4],buffer[5]);
-
-      // Estimated position error
-      // epe - 2sigma [meters]
-      // eph - horizontal only [meters]
-      // epv - vertical only [meters]
-      // fix - type of position fix
-      epe = FloatLEtoBE(buffer[6],buffer[7],buffer[8],buffer[9]);
-      eph = FloatLEtoBE(buffer[10],buffer[11],buffer[12],buffer[13]);
-      epv = FloatLEtoBE(buffer[14],buffer[15],buffer[16],buffer[17]);
-      fix = buffer[18]+256*buffer[19];
-
-      // Time of week [seconds]
-      tow = DoubleLEtoBE(buffer[20],buffer[21],buffer[22],buffer[23],
-			 buffer[24],buffer[25],buffer[26],buffer[27]);
-
-      // Latitude and longitude is reported in radiant, so it has
-      // to be converted into degree
-      lat = DoubleLEtoBE(buffer[28],buffer[29],buffer[30],buffer[31],
-			 buffer[32],buffer[33],buffer[34],buffer[35])*(180/Math.PI);
-      lon = DoubleLEtoBE(buffer[36],buffer[37],buffer[38],buffer[39],
-			 buffer[40],buffer[41],buffer[42],buffer[43])*(180/Math.PI);
-
-      // Movement speeds in east, north, up-direction. Opposite directions
-      // are reported by negative speeds [meters/second]
-      east = FloatLEtoBE(buffer[44],buffer[45],buffer[46],buffer[47]);
-      north = FloatLEtoBE(buffer[48],buffer[49],buffer[50],buffer[51]);
-      up = FloatLEtoBE(buffer[52],buffer[53],buffer[54],buffer[55]);
-
-      // Height of WGS84-Ellipsoid above MSL [meters]
-      msl_height = FloatLEtoBE(buffer[56],buffer[57],buffer[58],buffer[59]);
-
-      // Difference between GPS and UTS [seconds]
-      leap_seconds = buffer[60]+256*buffer[61];
-
-      // Week number days
-      wn_days = IntLEtoBE(buffer[62],buffer[63],buffer[64],buffer[65]);
-		
-      return new String[] {""+lat,""+lon,""+(alt+msl_height),""+fix,""+epe,""+eph,""+epv,
-			       ""+east,""+north,""+up,""+tow,""+leap_seconds,""+wn_days};
+    return (int)(degrees * SEMICIRCLE_FACTOR);
   }
 }
 

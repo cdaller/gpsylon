@@ -60,6 +60,39 @@ public class GPSSimulationDataProcessor extends GPSGeneralDataProcessor implemen
 
 //----------------------------------------------------------------------
 /**
+ * Requests the gps device to send the current
+ * position/heading/etc. periodically. This implementation ignores the
+ * period set and returns SLEEP_TIME * 1000.
+ *
+ * @param period time in milliseconds between periodically sending
+ * position/heading/etc. This value may be changed by the gps device,
+ * so do not rely on the value given!
+ * @return the period chosen by the gps device or 0 if the gps device
+ * is unable to send periodically. 
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public long startSendPositionPeriodically(long period)
+    throws GPSException
+  {
+    return(SLEEP_TIME*1000);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Requests the gps device to stop to send the current
+ * position/heading/etc. periodically. 
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public void stopSendPositionPeriodically()
+    throws GPSException
+  {
+    stopped_ = true;
+  }
+  
+//----------------------------------------------------------------------
+/**
  * Sets the starting position for the simulation.
  *
  * @param start the position to start with.

@@ -34,9 +34,9 @@ import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**
- * All classes is interpreting NMEA data from a GPSDevice (serial
+ * This class is interpreting NMEA data from a GPSDevice (serial
  * gps-receivier, file containing gps data, ...)  and provides this
- * information (heading and location for the moment).
+ * information (heading and location, etc.).
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -52,10 +52,10 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 {
 
 /** the inputstream from the GPSDevice */
-  InputStream in_stream_ = null;
+  protected InputStream in_stream_ = null;
 
 /** the reader thread */
-  Thread read_thread_;
+  protected Thread read_thread_;
 
   public final static int MAX_NMEA_MESSAGE_LENGTH = 90;
 
@@ -176,6 +176,42 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   public void run()
   {
     readMessages();
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Requests the gps device to send the current
+ * position/heading/etc. periodically. This implementation ignores the
+ * period set as all known NMEA devices send one sentence set every
+ * second.
+ *
+ * @param period time in milliseconds between periodically sending
+ * position/heading/etc. This value may be changed by the gps device,
+ * so do not rely on the value given!
+ * @return the period chosen by the gps device or 0 if the gps device
+ * is unable to send periodically. This implementation always return
+ * 1000.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public long startSendPositionPeriodically(long period)
+    throws GPSException
+  {
+    return(1000);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Requests the gps device to stop to send the current
+ * position/heading/etc. periodically. This implementation does
+ * nothing, as most NMEA devices cannot be stopped.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+  public void stopSendPositionPeriodically()
+    throws GPSException
+  {
+    // do nothing, cannot stop!
   }
 
 //----------------------------------------------------------------------

@@ -56,14 +56,27 @@ public class GPSException extends Exception
 
 //----------------------------------------------------------------------
 /**
- * Default constructor taking an exception to wrap.
+ * Constructs an Exception with the specified detail message.
  *
- * @param exception the exception to wrap.
+ * @param message the message for the exception.
+ * @param cause the cause of this exception.
  */
 
-  public GPSException(Exception exception)
+  public GPSException(String message, Throwable cause)
   {
-    this(exception.getMessage());
+    super(message,cause);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Default constructor taking an exception to wrap.
+ *
+ * @param cause the cause of this exception.
+ */
+
+  public GPSException(Throwable cause)
+  {
+    super(cause);
   }
 
 }

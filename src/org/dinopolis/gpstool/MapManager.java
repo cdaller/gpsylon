@@ -131,13 +131,21 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 	public void addNewMap(MapInfo map_info)
 	{
 		String new_map_filename = map_info.getFilename(); // full filename
+        // check, if file exists and has any content:
+    File image = new File(new_map_filename);
+    if(image.length() <= 0L)
+    {
+      System.err.println("ERROR: File '"+new_map_filename
+                         +"' does not exist or has zero length, ignoring it.");
+      return;
+    }
 
 		synchronized (map_info_lock_)
 		{
 			if (used_map_filenames_.contains(new_map_filename))
 			{
 				System.err.println(
-					"Filename '" + new_map_filename + "' already used, map ignored!");
+					"ERROR: Filename '" + new_map_filename + "' already used, map ignored!");
 				return;
 			}
 			used_map_filenames_.add(new_map_filename);
@@ -391,17 +399,20 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 
 	//----------------------------------------------------------------------
 	/**
-	 * Returns the a list that contains at maximum one MapInfo object with the
-	 * smalles scale that is located at the given position.
+	 * Returns a MapInfo object with the smalles scale that is located at the
+	 * given position or null, if no map was found.
 	 *
 	 * @param latitude the latitude
 	 * @param longitude the longitude
-	 * @return a list containing a map info object or nothing, if no map was
-	 * found.
+	 * @return a map info object or null, if no map was found.
 	 */
-	public List getBestMatchingMapInfo(double latitude, double longitude)
+	public MapInfo getBestMatchingMapInfo(double latitude, double longitude)
 	{
-		return(getMapInfos(map_infos_,latitude,longitude,true));		
+		List infos = getMapInfos(map_infos_,latitude,longitude,true);
+		if(infos.size() == 0)
+			return(null);
+		else
+			return((MapInfo)infos.get(0));		
 	}
 
 	//----------------------------------------------------------------------

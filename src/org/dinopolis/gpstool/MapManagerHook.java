@@ -106,15 +106,14 @@ public interface MapManagerHook
 
 	//----------------------------------------------------------------------
 	/**
-	 * Returns the a list that contains at maximum one MapInfo object with the
-	 * smalles scale that is located at the given position.
+	 * Returns the a MapInfo object with the smalles scale that is located at
+	 * the given position or null, if no map was found.
 	 *
 	 * @param latitude the latitude
 	 * @param longitude the longitude
-	 * @return a list containing a map info object or nothing, if no map was
-	 * found.
+	 * @return a map info object or null, if no map was found.
 	 */
-	public List getBestMatchingMapInfo(double latitude, double longitude);
+	public MapInfo getBestMatchingMapInfo(double latitude, double longitude);
 	
 	//----------------------------------------------------------------------
 	/**

@@ -123,6 +123,56 @@ public interface GPSRoute
  */
   public void clear();
 
+
+//----------------------------------------------------------------------
+/**
+ * Returns the minimum latitude (furthest south) covered by this route.
+ *
+ * @return the minimum latitude covered by this route.
+ */
+  public double getMinLatitude();
+
+//----------------------------------------------------------------------
+/**
+ * Returns the maximum latitude (furthest north) covered by this route.
+ *
+ * @return the maximum latitude covered by this route.
+ */
+  public double getMaxLatitude();
+
+//----------------------------------------------------------------------
+/**
+ * Returns the minimum longitude (furthest west) covered by this route.
+ *
+ * @return the minimum longitude covered by this route.
+ */
+  public double getMinLongitude();
+
+//----------------------------------------------------------------------
+/**
+ * Returns the maximum longitude (furthest east) covered by this route.
+ *
+ * @return the maximum longitude covered by this route.
+ */
+  public double getMaxLongitude();
+
+//----------------------------------------------------------------------
+/**
+ * Returns the minimum longitude (furthest west) covered by this route.
+ *
+ * @return the minimum longitude covered by this route.
+ */
+  public double getMinLongitude();
+
+//----------------------------------------------------------------------
+/**
+ * Returns the maximum longitude (furthest east) covered by this route.
+ *
+ * @return the maximum longitude covered by this route.
+ */
+  public double getMaxLongitude();
+
+
 }
 
 

@@ -134,9 +134,10 @@ public class TrackPlugin implements GuiPlugin
 		track_manager_ = support.getTrackManager();
 		application_resources_ = support.getResources();
 
-        // prevent any "old" values to confuse this plugin!
     try
     {
+          // prevent any "old" values in the gpsmap resources to confuse
+          // this plugin:
       application_resources_.unset(TrackLayer.KEY_TRACK_LAYER_ACTIVE);
     }
     catch(MissingResourceException ignored) {}
@@ -148,7 +149,7 @@ public class TrackPlugin implements GuiPlugin
         // attach the plugin resources to the global application
         // resources:
     application_resources_.attachResources(resources_);
-    
+ 
     track_logger_ = new ActiveTrackLogger();
     track_logger_.initialize(track_manager_);
     support.getPropertyChangeSupport().addPropertyChangeListener(track_logger_);

@@ -1,9 +1,14 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/02/11: fixed bug in download mouse mode: not exception is thrown
+            and its layer is switched on/off correctly
+
+            0.4.14-pre6 released
+
 2003/02/07: fixed bug in algorithm that decided which parts of maps
             are displayed.
 
-            bad bug in 0.4.14 pre4 found, that prevented the use of a
+            bad bug in 0.4.14-pre4 found, that prevented the use of a
             plugin that uses menu items.
 
             new plugin: memory monitor: uses the MemoryMonitor of batik

@@ -79,7 +79,7 @@ import org.dinopolis.gpstool.gpsinput.GPSSimulationDataProcessor;
 import org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor;
 import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.gpstool.gui.LatLongInputDialog;
-import org.dinopolis.gpstool.gui.MapKeyHandler;
+//import org.dinopolis.gpstool.gui.MapKeyHandler;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.gui.MouseModeManager;
 import org.dinopolis.gpstool.gui.StatusBar;
@@ -126,7 +126,7 @@ public class GPSMap
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.15-pre5";
+  public final static String GPSMAP_VERSION = "0.4.15-pre6";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -148,7 +148,7 @@ public class GPSMap
 
   protected JFrame main_frame_;
 
-  protected MapKeyHandler map_key_handler_;
+//  protected MapKeyHandler map_key_handler_;
   protected MapManager map_manager_;
   protected TrackManagerImpl track_manager_;
   
@@ -612,6 +612,7 @@ public class GPSMap
 
     addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, tacho_meter_);
     addPropertyChangeListener(PROPERTY_KEY_GPS_SPEED, tacho_meter_);
+    resources_.addPropertyChangeListener(KEY_TACHOMETER_REFRESH_TIME, tacho_meter_);
 
     resources_.addPropertyChangeListener(KEY_UNIT_DISTANCE, scale_layer_);
     resources_.addPropertyChangeListener(KEY_GRATICULE_DRAW_TEXT,graticule_layer_);
@@ -2137,8 +2138,8 @@ public class GPSMap
     protected long old_time_;
     protected long test_old_time_;
     
-        /** every TIME_DIFF milliseonds a new value is calculated */
-    protected int TIME_DIFF = 3000;  
+        /** every refresh_period_ milliseonds a new value is calculated */
+    protected int refresh_period_;
 
     /** if true, use the speed from the gps receiver, if false, calculate speed from
 	distance and time. */
@@ -2150,6 +2151,7 @@ public class GPSMap
     
     public Tachometer()
     {
+      refresh_period_ = resources_.getInt(KEY_TACHOMETER_REFRESH_TIME);
       reset();
     }
 
@@ -2193,8 +2195,8 @@ public class GPSMap
       }
       if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_SPEED))
       {
-	// alternative method to calculate distance, little less
-	// accurate than using the location!:
+            // alternative method to calculate distance, little less
+            // accurate than using the location!:
 //          long new_time = System.currentTimeMillis();
 //          long time_diff = new_time - test_old_time_;
 //          test_old_time_ = new_time;
@@ -2218,7 +2220,7 @@ public class GPSMap
         long new_time = System.currentTimeMillis();
         long time_diff = new_time - old_time_;
             // only react, if last measure was at last 5 secs ago:
-        if((time_diff) < TIME_DIFF)
+        if((time_diff) < refresh_period_)
           return;
 
         LatLonPoint new_point_ = (LatLonPoint)event.getNewValue();
@@ -2244,31 +2246,35 @@ public class GPSMap
                                                     null,
                                                     new Float(total_distance_));
         if(!use_gps_speed_)
-	{
-	  // speed in km/h:
-	  current_speed_ = distance_ * 3600000f/time_diff;
+        {
+              // speed in km/h:
+          current_speed_ = distance_ * 3600000f/time_diff;
           property_change_support_.firePropertyChange(PROPERTY_KEY_CURRENT_SPEED,
                                                       null,
                                                       new Float(current_speed_));
-	}
+        }
         if(!use_gps_heading_)
-	{
-	  current_heading_ = (float)GeoMath.courseDegrees(old_point_.getLatitude(),
-							  old_point_.getLongitude(),
-							  new_point_.getLatitude(),
-							  new_point_.getLongitude());
+        {
+          current_heading_ = (float)GeoMath.courseDegrees(old_point_.getLatitude(),
+                                                          old_point_.getLongitude(),
+                                                          new_point_.getLatitude(),
+                                                          new_point_.getLongitude());
 
           property_change_support_.firePropertyChange(PROPERTY_KEY_CURRENT_HEADING,
                                                       null,
                                                       new Float(current_heading_));
-	}
+        }
         old_point_ = new_point_;
         old_time_ = new_time;
 
         return;
       }
+      if(event.getPropertyName().equals(KEY_TACHOMETER_REFRESH_TIME))
+      {
+        refresh_period_ = resources_.getInt(KEY_TACHOMETER_REFRESH_TIME);
+        return;
+      }
     }
-    
   }
 
 

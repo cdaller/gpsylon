@@ -20,87 +20,112 @@
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
-
 package org.dinopolis.gpstool.plugin.mapmanager;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Vector;
+
 import javax.swing.table.AbstractTableModel;
+
 import org.dinopolis.gpstool.MapInfo;
+import org.dinopolis.gpstool.event.MapsChangedEvent;
+import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.util.angle.Latitude;
 import org.dinopolis.gpstool.util.angle.Longitude;
-
-
 
 //----------------------------------------------------------------------
 /**
  * A table model to show the map info.
  */
-public class MapInfoTableModel extends AbstractTableModel
+public class MapInfoTableModel
+	extends AbstractTableModel
+	implements MapsChangedListener, MapInfoHoldingTable
 {
-  String[] column_names_;
-  MapInfo[] map_infos_;
-    
-  public MapInfoTableModel(String[] column_names,
-                           MapInfo[] map_infos)
-  {
-    column_names_ = column_names;
-    map_infos_ = map_infos;
-  }
+	String[] column_names_;
+	List map_infos_;
 
-  public MapInfo getMapInfo(int row)
-  {
-    return(map_infos_[row]);
-  }
+	public MapInfoTableModel(String[] column_names, Collection map_infos)
+	{
+		column_names_ = column_names;
+		map_infos_ = new Vector(map_infos);
+	}
 
-  public String getColumnName(int column)
-  {
-    return(column_names_[column]);
-  }
+	public MapInfo getMapInfo(int row)
+	{
+		return ((MapInfo) map_infos_.get(row));
+	}
 
-  public int getRowCount()
-  {
-    return(map_infos_.length);
-  }
+	public String getColumnName(int column)
+	{
+		return (column_names_[column]);
+	}
 
-  public int getColumnCount()
-  {
-    return(column_names_.length);
-  }
+	public int getRowCount()
+	{
+		return (map_infos_.size());
+	}
 
-  public Object getValueAt(int row, int column)
-  {
-    switch(column)
-    {
-    case 0: // scale
-      return(new Float(map_infos_[row].getScale()));
-    case 1: // latitiude
-      return(new Latitude(map_infos_[row].getLatitude()));
-    case 2: // longitude
-      return(new Longitude(map_infos_[row].getLongitude()));
-    case 3: // filename
-      return(map_infos_[row].getFilename());
-    case 4: // image width
-      return(new Integer(map_infos_[row].getWidth()));
-    case 5: // image height
-      return(new Integer(map_infos_[row].getHeight()));
-    default:
-      return("unknown column: "+column);
-    }
-  }
+	public int getColumnCount()
+	{
+		return (column_names_.length);
+	}
 
-  public boolean isCellEditable(int row, int column)
-  {
-    return(false);
-  }
+	public Object getValueAt(int row, int column)
+	{
+		switch (column)
+		{
+			case 0 : // scale
+				return (new Float(((MapInfo) map_infos_.get(row)).getScale()));
+			case 1 : // latitiude
+				return (new Latitude(((MapInfo) map_infos_.get(row)).getLatitude()));
+			case 2 : // longitude
+				return (new Longitude(((MapInfo) map_infos_.get(row)).getLongitude()));
+			case 3 : // filename
+				return (((MapInfo) map_infos_.get(row)).getFilename());
+			case 4 : // image width
+				return (new Integer(((MapInfo) map_infos_.get(row)).getWidth()));
+			case 5 : // image height
+				return (new Integer(((MapInfo) map_infos_.get(row)).getHeight()));
+			default :
+				return ("unknown column: " + column);
+		}
+	}
 
-  public void setValueAt(Object value, int row, int column)
-  {
-  }
+	public boolean isCellEditable(int row, int column)
+	{
+		return (false);
+	}
 
-  public Class getColumnClass(int column)
-  {
-    return(getValueAt(0, column).getClass());
-  }
+	public void setValueAt(Object value, int row, int column)
+	{
+	}
+
+	public Class getColumnClass(int column)
+	{
+		return (getValueAt(0, column).getClass());
+	}
+
+	/**
+	 * Called from the map manager whenever maps are added or removed.
+	 * @see org.dinopolis.gpstool.event.MapsChangedListener#mapsChanged(org.dinopolis.gpstool.event.MapsChangedEvent)
+	 */
+	public void mapsChanged(MapsChangedEvent event)
+	{
+		if (event.getAction() == MapsChangedEvent.MAP_ADDED)
+		{
+			int pos = map_infos_.size();
+			map_infos_.add(event.getMapInfo());
+			fireTableRowsInserted(pos, pos);
+		}
+		else // map removed
+			{
+			int pos = map_infos_.indexOf(event.getMapInfo());
+			if (pos < 0)
+				return;
+			map_infos_.remove(event.getMapInfo());
+			fireTableRowsDeleted(pos, pos);
+		}
+	}
 
 }
-
-

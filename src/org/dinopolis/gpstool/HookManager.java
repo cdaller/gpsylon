@@ -1,6 +1,6 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
-*
+ *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 
@@ -238,7 +238,7 @@ public class HookManager implements PluginSupport
  *
  * @param the gps data processor
  */
-  public void getGPSDataProcessor(GPSDataProcessor processor)
+  public void setGPSDataProcessor(GPSDataProcessor processor)
   {
     gps_data_processor_ = processor;
   }

@@ -7,6 +7,10 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
             fixed bug in date/time conversion (trackpoints)
 
+            added patch from Marc Rechte that uses the product id of
+            the gps device to find the capabilities (old devices do
+            not report them by themselves) - thanks Marc!
+
 2003/11/25: fixed more bugs in dataconversion
 
             fixed bug in reading gpx files (wrong date in trackpoints)

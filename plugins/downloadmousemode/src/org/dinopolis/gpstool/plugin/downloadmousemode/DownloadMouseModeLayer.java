@@ -23,42 +23,42 @@
 
 package org.dinopolis.gpstool.plugin.downloadmousemode;
 
-import org.dinopolis.gpstool.plugin.BasicLayerPlugin;
-import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
-import org.dinopolis.gpstool.plugin.PluginSupport;
-import javax.swing.JMenuItem;
-import org.dinopolis.gpstool.gui.MouseMode;
-import java.awt.Graphics;
 import com.bbn.openmap.proj.Projection;
-import org.dinopolis.gpstool.MapManagerHook;
-import org.dinopolis.gpstool.MapNavigationHook;
-import javax.swing.JMenu;
-import org.dinopolis.util.Resources;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Color;
-import java.text.ParseException;
-import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
-import java.util.LinkedList;
-import org.dinopolis.gpstool.MapInfo;
-import java.net.URL;
-import org.dinopolis.gpstool.gui.util.AngleJTextField;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import javax.swing.JOptionPane;
-import java.io.FileOutputStream;
-import java.net.URLConnection;
+import java.awt.event.FocusListener;
 import java.io.BufferedInputStream;
-import java.io.IOException;
-import org.dinopolis.gpstool.util.FileUtil;
-import org.dinopolis.util.Debug;
 import java.io.File;
-import java.text.MessageFormat;
-import java.util.MissingResourceException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.util.LinkedList;
 import java.util.Locale;
+import java.util.MissingResourceException;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.MapInfo;
+import org.dinopolis.gpstool.MapManagerHook;
+import org.dinopolis.gpstool.MapNavigationHook;
+import org.dinopolis.gpstool.gui.MouseMode;
+import org.dinopolis.gpstool.gui.util.AngleJTextField;
+import org.dinopolis.gpstool.gui.util.BasicLayer;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.util.FileUtil;
+import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
+import org.dinopolis.util.Debug;
+import org.dinopolis.util.Resources;
 
 
 //----------------------------------------------------------------------
@@ -80,7 +80,7 @@ import java.util.Locale;
  * @version $Revision$
  */
 
-public class DownloadMouseModeLayer extends BasicLayerPlugin
+public class DownloadMouseModeLayer extends BasicLayer
   implements ActionListener, FocusListener, GPSMapKeyConstants
 {
 
@@ -116,11 +116,6 @@ public class DownloadMouseModeLayer extends BasicLayerPlugin
   {
   }
 
-
-//----------------------------------------------------------------------
-// Plugin Methods
-// ----------------------------------------------------------------------
-  
 //----------------------------------------------------------------------
 /**
  * Initialize the plugin and pass a PluginSupport that provides
@@ -136,144 +131,6 @@ public class DownloadMouseModeLayer extends BasicLayerPlugin
     download_calculator_ = new DownloadMapCalculator();
   }
 
-//----------------------------------------------------------------------
-/**
- * The application calls this method to indicate that the plugin is
- * activated and will be used from now on. The Plugin should
- * initialize any needed resources (files, etc.) in this method.
- *
- * @throws Exception if an error occurs. If this method throws an
- * exception, the plugin will not be used by the application.
- */
-
-  public void startPlugin()
-  {
-  }
-
-//----------------------------------------------------------------------
-/**
- * The application calls this method to indicate that the plugin is
- * deactivated and will not be used any more. The Plugin should
- * release all resources (close files, etc.) in this method.
- *
- * @throws Exception if an error occurs.
- */
-
-  public void stopPlugin()
-  {
-  }
-
-//----------------------------------------------------------------------
-/**
- * Returns the unique id of the plugin. The id is used to identify
- * the plugin and to distinguish it from other plugins.
- *
- * @return The id of the plugin.
- */
-
-  public String getPluginIdentifier()
-  {
-    return("DownloadMouseModeLayer");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Returns the version of the plugin. The version may be used to
- * choose between different version of the same plugin. 
- *
- * @return The version of the plugin.
- */
-
-  public float getPluginVersion()
-  {
-    return(1.0f);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Returns the name of the Plugin. The name should be a human
- * readable and understandable name like "Save Image as JPEG". It is
- * prefereable but not necessary that the name is localized. 
- *
- * @return The name of the plugin.
- */
-
-  public String getPluginName()
-  {
-    return("Download Maps");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Returns a description of the Plugin. The description should be
- * human readable and understandable like "This plugin saves the
- * content of the main window as an image in jpeg format". It is
- * prefereable but not necessary that the description is localized. 
- *
- * @return The description of the plugin.
- */
-
-  public String getPluginDescription()
-  {
-    return("Download maps from internet servers");
-  }
-
-
-//----------------------------------------------------------------------
-// GuiPlugin Methods
-// ----------------------------------------------------------------------
-
-//----------------------------------------------------------------------
-/**
- * The plugin may return a JMenu object to be used in the main menu of
- * the application and may (should) contain other menu items. The
- * menuitems returned should provide an icon, a mnemonic key, and a
- * localized name (and a accelerator key). This implementation does
- * not use any menus but is activated only through its mouse mode.
- *
- * @return A menu that is used in the main menu in the
- * application or <code>null</code>, if no main menu is needed.
- *
- */
-  public JMenu getMainMenu()
-  {
-    return(null);
-  }
-
-//----------------------------------------------------------------------
-/**
- * The application provides a sub menu for every plugin that may be
- * used. The JMenuItem (or JMenu) returned is added to a submenu in
- * the "plugins" menu item.  The menuitems returned should provide an
- * icon, a mnemonic key, and a localized name (and a accelerator
- * key). This implementation does not use any menus but is activated
- * only through its mouse mode.
- *
- * @return A menuitem (or a JMenu) that are used in a sub menu in the
- * application or <code>null</code>, if no submenus are needed.
- *
- */
-  public JMenuItem getSubMenu()
-  {
-    return(null);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Every plugin may provide one or more mouse modes. These mouse modes
- * may react on mouse clicks, drags, etc.
- *
- * @return mouse modes that are used by this plugin in the application or
- * <code>null</code>, if no mouse modes are used.
- *
- */
-  public MouseMode[] getMouseModes()
-  {
-    if(download_mouse_mode_ == null)
-      download_mouse_mode_ = new DownloadMouseMode(this);
-
-    return(new MouseMode[] {download_mouse_mode_});
-  }
 
 //----------------------------------------------------------------------
 // BasicLayer methods

@@ -178,7 +178,7 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
       int screen_width = getWidth();
       int screen_height = getHeight();
 
-      long start_time = System.currentTimeMillis();
+//      long start_time = System.currentTimeMillis();
           // goto first trackpoint:
       if(point_iterator.hasNext())
       {
@@ -200,21 +200,25 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
              || (Math.abs(end_y - start_y) > min_distance_between_trackpoints_))
           {
                 // finally draw the line:
-            g2.drawLine(start_x,start_y,end_x,end_y);
+            if(!trackpoint.isNewTrack())
+            {
+              g2.drawLine(start_x,start_y,end_x,end_y);
+            }
 //           g2.setColor(Color.green);
             if(draw_trackpoints_)
               g2.drawRect(end_x-1,end_y-1,3,3);
+            
             if(Debug.DEBUG)
               Debug.println("trackplugin_paint","painting line: from"+start_x+"/"
                             +start_y+" to "+end_x+"/"+end_y);
-          
+
                 // last end is new start
             start_x = end_x;
             start_y = end_y;
           }
         }
       }
-      long end_time = System.currentTimeMillis();
+//      long end_time = System.currentTimeMillis();
 //       System.out.println("painting track '"+track.getIdentification()
 //                          +"' ("+track.size()+"  points): "+(end_time-start_time));
     }

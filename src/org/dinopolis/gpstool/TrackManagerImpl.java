@@ -464,7 +464,7 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
     Track track = (Track)getTrack(identifier);
     if(track == null)
       return(null);
-    TrackImple projected_track = new TrackImpl(track);
+    TrackImpl projected_track = new TrackImpl(track);
     projected_track.forward(projection);
     return(projected_track);
   }

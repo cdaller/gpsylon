@@ -48,7 +48,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -888,7 +890,7 @@ public class GPSMap
 /**
  * Adds the sub menu of plugins to the  menu bar (Menu Plugin).
  *
- * @param the sub menu of the plugin to add to the Plugin Menu.
+ * @param plugin_sub_menu the sub menu of the plugin to add to the Plugin Menu.
  */
   protected void addToPluginsMenu(JMenuItem plugin_sub_menu)
   {
@@ -936,7 +938,7 @@ public class GPSMap
  * Processes the command line arguments and sets resource values if
  * needed.
  *
- * @param args The command line arguments
+ * @param arguments The command line arguments
  */
 
   protected void processCommandLineArguments(String[] arguments)
@@ -1328,9 +1330,15 @@ public class GPSMap
       int protocol_end = url_path.indexOf(':');
       String dir_name = url_path.substring(protocol_end+1,dir_name_end);
 
+			try
+			{
 					// fix escaped characters from url (e.g. spaces) in dirname:
-					// TODO FIXXME: fix other escaped chars as well, not only spaces!
-			dir_name = dir_name.replaceAll("%20"," ");
+				dir_name = URLDecoder.decode(dir_name,"UTF-8");
+			}
+			catch(UnsupportedEncodingException uee)
+			{
+				uee.printStackTrace();
+			}
 
       Logger.getLogger("org.dinopolis.gpstool.GPSMap.plugin")
         .debug("URL of my class :"+url+", dir of jar is "+dir_name);
@@ -1342,9 +1350,17 @@ public class GPSMap
     {
       String url_path = url.getPath();
       String dir_name = url_path.substring(0,url_path.length() - class_name_path.length());
+
+			try
+			{
 					// fix escaped characters from url (e.g. spaces) in dirname:
-					// TODO FIXXME: fix other escaped chars as well, not only spaces!
-			dir_name = dir_name.replaceAll("%20"," ");
+				dir_name = URLDecoder.decode(dir_name,"UTF-8");
+			}
+			catch(UnsupportedEncodingException uee)
+			{
+				uee.printStackTrace();
+			}
+
 
       dir_name = new File(dir_name).getParent(); // use parent of "classes" directory
       repository = FileUtil.getAbsolutePath(dir_name,STD_PLUGINS_DIR_NAME);
@@ -1448,7 +1464,7 @@ public class GPSMap
  * registers them as a mouse listener and as as a mouse motion
  * listener.
  *
- * @param mouse_mode the mouse mode
+ * @param mouse_modes the mouse modes
  */
   protected void addMouseModes(MouseMode[] mouse_modes)
   {
@@ -1463,7 +1479,7 @@ public class GPSMap
  * Adds the given gui plugin to the map bean, the menus, the mouse
  * modes, and creates an action to switch the plugin on/off.
  *
- * @param layer_plugin the plugin to add
+ * @param plugin the plugin to add
  */
   protected void addGuiPlugin(GuiPlugin plugin)
   {

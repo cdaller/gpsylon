@@ -96,8 +96,7 @@ public interface TrackManager
 //----------------------------------------------------------------------
 /**
  * Defines the track with the given identifier as the active track
- * (the track used by the {@link
- * #addToActiveTrack(org.dinopolis.gpstool.gpsinput.GPSTrackpoint} method).
+ * (the track used by the {@link #addToActiveTrack(GPSTrackpoint)} method).
  *
  * @param identifier the identifier of the track to use as active track.
  * @throws IllegalArgumentException if not track exists with the given
@@ -109,9 +108,9 @@ public interface TrackManager
 
 //----------------------------------------------------------------------
 /**
- * Returns the name of the active track
- * (the track used by the {@link
- * #addToActiveTrack(org.dinopolis.gpstool.gpsinput.GPSTrackpoint} method).
+ * Returns the name of the active track (the track used by the 
+ * {@link #addToActiveTrack(GPSTrackpoint)} 
+ * method).
  *
  * @return the identifier of the track to use as active track.
  */

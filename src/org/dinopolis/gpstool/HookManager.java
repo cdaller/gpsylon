@@ -102,7 +102,7 @@ public class HookManager implements PluginSupport
 /**
  * Set the map_navigation_hook_.
  *
- * @param map_navigation_hook_ the map_navigation_hook_.
+ * @param map_navigation_hook the map_navigation_hook_.
  */
   protected void setMapNavigationHook(MapNavigationHook map_navigation_hook) 
   {
@@ -265,7 +265,7 @@ public class HookManager implements PluginSupport
  * etc. directly to the gps device. For position, heading, speed,
  * etc. better use the {@link #getPropertyChangeSupport()} method.
  *
- * @param the gps data processor
+ * @param processor the gps data processor
  */
   protected void setGPSDataProcessor(GPSDataProcessor processor)
   {
@@ -298,7 +298,7 @@ public class HookManager implements PluginSupport
 /**
  * Set the unit helper.
  *
- * @param the unit helper
+ * @param unit_helper the unit helper
  */
   protected void setUnitHelper(UnitHelper unit_helper)
   {
@@ -322,7 +322,7 @@ public class HookManager implements PluginSupport
 /**
  * Set the mouse mode manager.
  *
- * @param the mouse mode manager
+ * @param mouse_mode_manager the mouse mode manager
  */
   protected void setMouseModeManager(MouseModeManager mouse_mode_manager)
   {

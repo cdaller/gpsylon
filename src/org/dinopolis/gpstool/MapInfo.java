@@ -112,7 +112,7 @@ public class MapInfo implements Comparable
 /**
  * Set the value of scale.
  *
- * @param the scale.
+ * @param scale the scale.
  */
   public void setScale(float scale)
   {

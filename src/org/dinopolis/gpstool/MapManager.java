@@ -271,7 +271,7 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants, FileChang
 	//----------------------------------------------------------------------
 	/**
 	 * Stores the map informations in a file. This is the counterpart method
-	 * to the {@link #loadMapInfos()} method.
+	 * to the {@link #loadMapInfos(String)} method.
 	 *
 	 * @throws IOException if an error occured.
 	 */

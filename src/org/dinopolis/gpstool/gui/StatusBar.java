@@ -43,10 +43,8 @@ import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
-import org.dinopolis.gpstool.util.angle.Angle;
-import org.dinopolis.gpstool.util.angle.AngleFormat;
-import org.dinopolis.gpstool.util.angle.Latitude;
-import org.dinopolis.gpstool.util.angle.Longitude;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
@@ -71,9 +69,7 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
   
   protected Resources resources_;
   protected MapNavigationHook map_navigation_hook_;
-  protected AngleFormat latlon_formatter_;
-  protected AngleFormat heading_formatter_;
-  protected DecimalFormat decimal_formatter_;
+  protected UnitHelper unit_helper_;
   double latitude_value_;
   double longitude_value_;
   float heading_value_;
@@ -89,12 +85,13 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
 //   static final String COMMAND_SCALE = "scale";
 
   
-  public StatusBar(Resources resources, MapNavigationHook map_navigation_hook)
+  public StatusBar(PluginSupport plugin_support)
   {
     super();
     
-    resources_ = resources;
-    map_navigation_hook_ = map_navigation_hook;
+    resources_ = plugin_support.getResources();
+    map_navigation_hook_ = plugin_support.getMapNavigationHook();
+    unit_helper_ = plugin_support.getUnitHelper();
     
     latitude_ = new JButton("latitude");
     longitude_ = new JButton("longitude");
@@ -128,50 +125,30 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
     add(status_);
 //     add(scale_box_);
     add(paint_progress_);
-    
-    try
-    {
-      latlon_formatter_ = new AngleFormat(resources_.getString(KEY_ANGLE_FORMAT_LATLON));
-    }
-    catch(IllegalArgumentException e)
-    {
-      System.err.println("Illegal format for latitude/longitude: "+e.getMessage());
-    }
-    try
-    {
-      heading_formatter_ = new AngleFormat(resources_.getString(KEY_ANGLE_FORMAT_HEADING));
-    }
-    catch(IllegalArgumentException e)
-    {
-      System.err.println("Illegal format for heading: "+e.getMessage());
-    }
-    decimal_formatter_ = new DecimalFormat(resources_.getString(KEY_NUMBER_FORMAT_DISTANCE));
-
   }
 
   public void setLatitude(double latitude)
   {
     latitude_value_ = latitude;
-    latitude_.setText("lat: "+latlon_formatter_.format(new Latitude(latitude)));
+    latitude_.setText("lat: "+unit_helper_.formatLatitude(latitude));
   }
     
   public void setLongitude(double longitude)
   {
     longitude_value_ = longitude;
-    longitude_.setText("lon: "+ latlon_formatter_.format(new Longitude(longitude)));
+    longitude_.setText("lon: "+ unit_helper_.formatLongitude(longitude));
   }
     
   public void setDistance(float distance)
   {
     distance_value_ = distance;
-    distance_.setText(GPSMap.getDistanceOrSpeedString(distance)+GPSMap.getDistanceUnit());
+    distance_.setText(unit_helper_.formatDistance(distance));
   }
     
   public void setSpeed(float speed)
   {
     speed_value_ = speed;
-    speed_.setText(GPSMap.getDistanceOrSpeedString((float)Math.rint(speed))
-		   + GPSMap.getSpeedUnit());
+    speed_.setText(unit_helper_.formatSpeed(speed));
   }
     
   public void setStatus(String status_message)
@@ -182,7 +159,7 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
   public void setHeading(float heading)
   {
     heading_value_ = heading;
-    heading_.setText("Dir: "+heading_formatter_.format(new Angle(heading)));
+    heading_.setText("Dir: "+unit_helper_.formatHeading(heading));
   }
   
 
@@ -261,28 +238,6 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
       return;
     }
 
-    if(event.getPropertyName().equals(KEY_ANGLE_FORMAT_LATLON))
-    {
-      String new_format = (String)event.getNewValue();
-      if(new_format != null)
-      {
-        latlon_formatter_.applyPattern(new_format);
-        setLatitude(latitude_value_);
-        setLongitude(longitude_value_);
-      }
-      return;
-    }
-
-    if(event.getPropertyName().equals(KEY_ANGLE_FORMAT_HEADING))
-    {
-      String new_format = (String)event.getNewValue();
-      if(new_format != null)
-      {
-        heading_formatter_.applyPattern(new_format);
-        setHeading(heading_value_);
-      }
-      return;
-    }
   }
 
 

@@ -11,7 +11,7 @@
 <!-- patternset of gpstool files needed to compile the distribution (used by the common_compile_dist) -->
   
   <patternset id="compile.files">
-    <include name="org/dinopolis/gpstool/plugin/writerasterimage/WriteRasterImagePlugin.java"/>
+    <include name="org/dinopolis/gpstool/plugin/writerasterimage/*.java"/>
   </patternset>
 
 <!-- patternset including all required library jar files (other than dinopolis classes) -->

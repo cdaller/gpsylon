@@ -115,6 +115,7 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
     paint_progress_.setPreferredSize(dim);
 
     satellite_activity_ = new SatelliteActivity(6,2);  // 6 columns, 2 rows
+    satellite_activity_.initialize(plugin_support);
 
     add(satellite_activity_);
     add(latitude_);

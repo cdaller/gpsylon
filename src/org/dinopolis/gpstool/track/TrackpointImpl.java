@@ -78,7 +78,6 @@ public class TrackpointImpl extends WaypointImpl implements Trackpoint
   public TrackpointImpl(Trackpoint trackpoint)
   {
     super(trackpoint);
-    System.out.println("copy constr. trackpointimpl");
     date_ = trackpoint.getDate();
     new_track_ = trackpoint.isNewTrack();
   }

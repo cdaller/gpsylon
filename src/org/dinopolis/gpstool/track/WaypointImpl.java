@@ -93,7 +93,6 @@ public class WaypointImpl implements Waypoint
   public WaypointImpl(Waypoint waypoint)
   {
     this((GPSWaypoint)waypoint);
-    System.out.println("copy constr. waypointimpl");
     x_ = waypoint.getX();
     y_ = waypoint.getY();
   }

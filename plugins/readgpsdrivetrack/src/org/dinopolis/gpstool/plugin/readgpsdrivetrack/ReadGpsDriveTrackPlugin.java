@@ -243,7 +243,7 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
 
   public String getPluginIdentifier()
   {
-    return("ReadTrackGpsDrive");
+    return(resources_.getString(KEY_READGPSDRIVETRACK_PLUGIN_IDENTIFIER));
   }
 
 //----------------------------------------------------------------------
@@ -256,7 +256,7 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
 
   public float getPluginVersion()
   {
-    return(1.0f);
+    return((float)resources_.getDouble(KEY_READGPSDRIVETRACK_PLUGIN_VERSION));
   }
 
 //----------------------------------------------------------------------
@@ -270,7 +270,7 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
 
   public String getPluginName()
   {
-    return("Read Track Data from gpsdrive");
+    return(resources_.getString(KEY_READGPSDRIVETRACK_PLUGIN_NAME));
   }
 
 //----------------------------------------------------------------------
@@ -285,7 +285,7 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
 
   public String getPluginDescription()
   {
-    return("This plugin reads track data that was saved by gpsdrive.");
+    return(resources_.getString(KEY_READGPSDRIVETRACK_PLUGIN_DESCRIPTION));
   }
 
   //----------------------------------------------------------------------

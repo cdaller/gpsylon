@@ -72,7 +72,7 @@ import org.dinopolis.gpstool.gpsinput.GPSDevice;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSFileDevice;
 import org.dinopolis.gpstool.gpsinput.GPSNetworkGpsdDevice;
-import org.dinopolis.gpstool.gpsinput.GPSNmeaDataProcessor;
+import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSPosition;
 import org.dinopolis.gpstool.gpsinput.GPSRawDataFileLogger;
 import org.dinopolis.gpstool.gpsinput.GPSSerialDevice;

@@ -173,6 +173,21 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   }
 
   
+//----------------------------------------------------------------------
+/**
+ * Returns information about the gps connected (name of device, type
+ * of connection, etc.) This information is for display to the user,
+ * not for further processing (may change without notice).
+ *
+ * @return information about the gps connected.
+ */
+  public String[] getGPSInfo()
+  {
+    String[] info = new String[] {"NMEA data"};
+    return(info);
+  }
+
+
   public void run()
   {
     readMessages();

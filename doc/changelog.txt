@@ -1,7 +1,14 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/05/12: 0.4.15-pre2 released
+
+2003/05/10: tested speed and heading for garmin devices. seems to
+            work.
+
 2003/05/09: Some bug fixes in the Garmin classes. Started to add
             garmin support to GPSMap. Works, but is not well tested.
+
+            Fixed url for downloading mapblast maps.
 
 2003/05/08: Rewrote GPSTool. Now able to download
             tracks/routes/waypoints. Writes per default a GPX

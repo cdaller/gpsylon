@@ -60,6 +60,12 @@ import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import org.dinopolis.util.gui.MenuFactory;
 import org.dinopolis.gpstool.GPSMap;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.event.MapsChangedListener;
+import org.dinopolis.gpstool.event.MapsChangedEvent;
+import org.dinopolis.gpstool.MapManagerHook;
+import java.util.Collection;
 
 
 //----------------------------------------------------------------------
@@ -70,15 +76,17 @@ import org.dinopolis.gpstool.GPSMap;
  * @version $Revision$
  */
 
-public class MultiMapLayer extends Layer implements GPSMapKeyConstants
+public class MultiMapLayer extends Layer
+  implements GPSMapKeyConstants, MapsChangedListener
 {
-
   protected Set map_infos_;
-
+    
   Vector visible_images_;
   Object visible_images_lock_ = new Object();
 
   Rectangle old_clip_rect = new Rectangle();
+    
+  MapManagerHook map_manager_;  
 
   SwingWorker swing_worker_;
 
@@ -98,9 +106,7 @@ public class MultiMapLayer extends Layer implements GPSMapKeyConstants
   
 //----------------------------------------------------------------------
 /**
- * Construct a default route layer.  Initializes omgraphics to
- * a new OMGraphicList, and invokes createGraphics to create
- * the canned list of routes.
+ * Default Constructor
  */
   public MultiMapLayer()
   {
@@ -113,13 +119,15 @@ public class MultiMapLayer extends Layer implements GPSMapKeyConstants
  *
  * @param resources the resources to use.
  */
-  public void initialize(Resources resources)
+  public void initializePlugin(PluginSupport support)
   {
-    resources_ = resources;
+    resources_ = support.getResources();
+    map_manager_ = support.getMapManagerHook();
+    map_manager_.addMapsChangedListener(this);
     layer_active_ = resources_.getBoolean(KEY_MAP_LAYER_ACTIVE);
     visible_map_scale_factor_ = 1.0/resources_.getDouble(KEY_MAP_VISIBLE_MAP_SCALE_FACTOR);
     
-          /** the Actions */
+        /** the Actions */
     Action[] actions_ = { new MultiMapLayerActivateAction()};
     action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
     action_store_.addActions(actions_);
@@ -128,16 +136,34 @@ public class MultiMapLayer extends Layer implements GPSMapKeyConstants
 
 //----------------------------------------------------------------------
 /**
+ * Called when a map is added or removed.
+ *
+ * @param event the event
+ */
+  public void mapsChanged(MapsChangedEvent event)
+
+  {
+//  	if(event.getAction() == MapsChangedEvent.MAP_ADDED)
+//  	    addMap(event.getMapInfo());
+//  	else
+//  	    if(event.getAction() == MapsChangedEvent.MAP_REMOVED)
+//  		removeMap(event.getMapInfo());
+    calculateVisibleImages();
+  }
+  
+
+//----------------------------------------------------------------------
+/**
  * Adds a map to this panel.
  *
  * @param map_info the info describing the map.
  */
 
-  public void addMap(MapInfo map_info)
-  {
-    map_infos_.add(map_info);
-    calculateVisibleImages();
-  }
+//    public void addMap(MapInfo map_info)
+//    {
+//      map_infos_.add(map_info);
+//      calculateVisibleImages();
+//    }
 
 
 //----------------------------------------------------------------------
@@ -147,17 +173,17 @@ public class MultiMapLayer extends Layer implements GPSMapKeyConstants
  * @param map_infos a vector containing MapInfo objects.
  */
 
-  public void addMaps(Vector map_infos)
-  {
-    MapInfo map_info;
-    Iterator map_iterator = map_infos.iterator();
-    while(map_iterator.hasNext())
-    {
-      map_info = (MapInfo)map_iterator.next();
-      map_infos_.add(map_info);
-    }
-    calculateVisibleImages();
-  }
+//    public void addMaps(List map_infos)
+//    {
+//      MapInfo map_info;
+//      Iterator map_iterator = map_infos.iterator();
+//      while(map_iterator.hasNext())
+//      {
+//        map_info = (MapInfo)map_iterator.next();
+//        map_infos_.add(map_info);
+//      }
+//      calculateVisibleImages();
+//    }
 
 
 //----------------------------------------------------------------------
@@ -168,18 +194,18 @@ public class MultiMapLayer extends Layer implements GPSMapKeyConstants
  * @param map_infos a vector containing MapInfo objects.
  */
 
-  public void setMaps(Vector map_infos)
-  {
-    map_infos_.clear();
-    MapInfo map_info;
-    Iterator map_iterator = map_infos.iterator();
-    while(map_iterator.hasNext())
-    {
-      map_info = (MapInfo)map_iterator.next();
-      map_infos_.add(map_info);
-    }
-    calculateVisibleImages();
-  }
+//    public void setMaps(Vector map_infos)
+//    {
+//      map_infos_.clear();
+//      MapInfo map_info;
+//      Iterator map_iterator = map_infos.iterator();
+//      while(map_iterator.hasNext())
+//      {
+//        map_info = (MapInfo)map_iterator.next();
+//        map_infos_.add(map_info);
+//      }
+//      calculateVisibleImages();
+//    }
 
 
 //----------------------------------------------------------------------
@@ -190,13 +216,13 @@ public class MultiMapLayer extends Layer implements GPSMapKeyConstants
  * @return <code>true</code> if the MapInfo was removed.
  */
 
-  public boolean removeMap(MapInfo map_info)
-  {
-    boolean result = map_infos_.remove(map_info);
-    if(result)
-      calculateVisibleImages();
-    return(result);
-  }
+//    public boolean removeMap(MapInfo map_info)
+//    {
+//      boolean result = map_infos_.remove(map_info);
+//      if(result)
+//        calculateVisibleImages();
+//      return(result);
+//    }
 
 
 //----------------------------------------------------------------------
@@ -223,47 +249,15 @@ public class MultiMapLayer extends Layer implements GPSMapKeyConstants
         public Object construct()
         {
           fireStatusUpdate(LayerStatusEvent.START_WORKING);
-          Vector all_images = new Vector();
-          MapInfo map_info = null;
-          Point position = new Point();
-
-          float scale_factor = 1.0f;
           Projection projection = getProjection();
-//     Point proj_center = projection.forward(projection.getCenter());
-//    Point proj_center = new Point(projection.getWidth()/2,projection.getHeight()/2);
-
-
-              // create projected position of all mapimages:
-    
-          synchronized(map_infos_)
-          {
-            Iterator map_iterator = map_infos_.iterator();
-            while(map_iterator.hasNext())
-            {
-              map_info = (MapInfo)map_iterator.next();
-              scale_factor = map_info.getScale() / projection.getScale();
-
-                  // if the scale factor is too small, do not use the image
-              if(scale_factor >= visible_map_scale_factor_)
-              {
-                position = projection.forward(map_info.getCenter(),position);
-                position.translate((int)(-map_info.getWidth()/2 * scale_factor),
-                                   (int)(-map_info.getHeight()/2 * scale_factor)); // left upper corner
-
-                all_images.addElement(new ImageInfo(map_info,
-                                                    (int)position.getX(),
-                                                    (int)position.getY(),
-                                                    scale_factor));
-              }
-            }
-          }
-
+              // find out, which images are really visible:
+          Collection visible_images = map_manager_.getAllVisibleImages(projection,
+                                                                       visible_map_scale_factor_);
+//          System.out.println("MultiMap: visible maps are: "+visible_images);
               // find out, which images (and which areas of them) are really visible:
-
-
           worker_visible_images_ = VisibleImage.findVisibleImages(0,projection.getWidth(),
                                                                   0,projection.getHeight(),
-                                                                  all_images,
+                                                                  visible_images,
                                                                   worker_visible_images_,
                                                                   worker_empty_rectangles_);
 //          System.out.println("Visible images: "+worker_visible_images_);

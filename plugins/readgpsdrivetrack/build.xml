@@ -1,4 +1,4 @@
-
+ 
 <project name="org.dinopolis.gpstool.plugin.readgpsdrivetrack" default="help" basedir=".">
 
   <property name="release_version" value="0.01"/>
@@ -20,6 +20,10 @@
 
 <!-- patternset including all required library jar files (other than dinopolis classes) -->
   <patternset id="gpstool_plugin_readgpsdrivetrack.lib.patternset">
+<!-- 
+    <include name="jcommon-0.8.3.jar"/>
+    <include name="jfreechart-0.9.8.jar"/>
+-->
   </patternset>
 
 <!-- patternset including all required dinoplis library jar files -->
@@ -65,25 +69,27 @@ The following targets are available:
 
 <!-- create a property holding the Class-Path for the manifest -->
     <path id="gpstool_plugin_readgpsdrivetrack.dist.classpath">
-<!-- no other libraries needed: 
+      <pathelement location="${aux_dir}"/>
+<!-- no other libraries needed
       <fileset dir="${lib_dir}">
         <patternset refid="gpstool_plugin_readgpsdrivetrack.lib.patternset"/>
       </fileset>
 -->
-      <pathelement location="${aux_dir}"/>
     </path>
 
     <pathconvert pathsep=" " dirsep="/" property="gpstool_plugin_readgpsdrivetrack.dist.lib.classpath"
                  refid="gpstool_plugin_readgpsdrivetrack.dist.classpath">
-<!--      <map from="${user.dir}/${lib_dir}" to="${lib_dir}"/> -->
+      <map from="${user.dir}${file.separator}plugins${file.separator}readgpsdrivetrack${file.separator}" to=""/> 
       <map from="${user.dir}${file.separator}" to=""/> 
     </pathconvert>
-<!--
+
+<!--    
     <echo>
       user dir: ${user.dir}
       path: ${gpstool_plugin_readgpsdrivetrack.dist.lib.classpath}
     </echo>
 -->
+
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
     <!-- properties files and the images ! -->
     <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
@@ -101,7 +107,7 @@ The following targets are available:
         </section>
       </manifest>
 
-      <fileset dir="${aux_dir}"/>
+      <fileset dir="${aux_dir}"/>  
       <fileset dir="${target_class_dir}"/>
       <fileset dir=".">
         <include name="META-INF/services/org.dinopolis.gpstool.*"/>
@@ -119,7 +125,7 @@ The following targets are available:
     <tar longfile="gnu"
       tarfile="${dist_dir}/${dist_name}_bin-${release_version}.tar"
       basedir="${dist_dir}"           
-      includes="${dist_name}-${release_version}.jar,${lib_dir}/**"/>
+      includes="${dist_name}-${release_version}.jar"/>
     <gzip zipfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz" 
       src="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
     <delete file="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
@@ -132,7 +138,7 @@ The following targets are available:
     <tar longfile="gnu"
       basedir="${basedir}"
       destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
-      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,META-INF/**"
+      includes="${source_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,META-INF/**"
       excludes="*CVS*"
       compression="gzip"/>
   </target>
@@ -145,7 +151,7 @@ The following targets are available:
            classpathref="gpstool_plugin_readgpsdrivetrack_class_path">
        <classpath id="gpstool_plugin_readgpsdrivetrack_class_path">
 <!-- no other libraries needed
-        <fileset dir="lib/java">
+       <fileset dir="lib/java">
           <patternset refid="gpstool_plugin_readgpsdrivetrack.lib.patternset"/>
         </fileset>
 -->

@@ -255,7 +255,11 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
     if(track == null)
       throw new IllegalArgumentException("Track with identifier '"
                                          +identifier+"' does not exist.");
+    if(trackpoint == null)
+      throw new IllegalArgumentException("Trackpoint must not be null");
+    
     track.addWaypoint(trackpoint);
+//    System.out.println("added trackpoint to track");
     fireTrackChangedEvent(new TrackChangedEvent(this,
                                                 identifier,
                                                 TrackChangedEvent.TRACK_CHANGED));
@@ -272,6 +276,7 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
   public void addToActiveTrack(GPSTrackpoint trackpoint)
     throws IllegalArgumentException
   {
+//    System.out.println("adding trackpoint to active track"+trackpoint);
     addToTrack(active_track_identifier_,trackpoint);
   }
 
@@ -391,9 +396,17 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
  * is determined for the given projection.
  *
  * @param projection the projection to use.
+ * @throws InterruptedException if the thread was interrupted while
+ * calculating the projection. This happens, if the projection changes
+ * again, before the first calculations are finished and the second
+ * SwingWorker interrupts the first one (the result of the first
+ * worker is not valid any more anyway. This is done in the {@link
+ * org.dinopolis.gpstool.gui.util.BasicLayer#recalculateCoordinates()}
+ * method.
  * @return a list containing {@link org.dinopolis.gpstool.track.Track} objects.
  */
   public List getVisibleProjectedTracks(Projection projection)
+    throws InterruptedException
   {
     Vector tracks = new Vector();
     GeoExtent visible_area = new GeoExtent(projection);
@@ -411,8 +424,14 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
         track = (Track)getTrack(id);
         if(isTrackVisible(track,visible_area))
         {
+//          System.out.println("projection of track "+track.getIdentification());
           track.forward(projection);
+//          System.out.println("end of projection of track "+track.getIdentification());
           tracks.add(track);
+        }
+        if(Thread.interrupted())
+        {
+          throw new InterruptedException("Track Projection was interrupted");
         }
       }
     }

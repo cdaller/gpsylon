@@ -76,6 +76,7 @@ public interface GPSRoute
 //----------------------------------------------------------------------
 /**
  * Set the routepoints.
+ *
  * @param routepoints The routepoints.
  */
   public void setWaypoints(List routepoints);
@@ -83,13 +84,15 @@ public interface GPSRoute
 //----------------------------------------------------------------------
 /**
  * Add a route point at the end of the list.
+ *
  * @param routepoint The routepoint to add.
  */
   public void addWaypoint(GPSWaypoint routepoint);
 
 //----------------------------------------------------------------------
 /**
- * Add a route point at the end of the list.
+ * Add a route point at the given position.
+ *
  * @param position the new position of the routepoint at (0 = add as first point). 
  * @param routepoint The routepoint to add.
  */
@@ -97,7 +100,8 @@ public interface GPSRoute
 
 //----------------------------------------------------------------------
 /**
- * Get the routepoint at the given position.
+ * Return the routepoint at the given position.
+ *
  * @return the routepoint.
  *
  * @throws IndexOutofBoundsException if the index is out of range

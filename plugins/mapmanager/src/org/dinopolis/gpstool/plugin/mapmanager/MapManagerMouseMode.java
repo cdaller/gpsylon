@@ -24,9 +24,11 @@ package org.dinopolis.gpstool.plugin.mapmanager;
 
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.Vector;
 
 import javax.swing.Icon;
 
+import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.util.Resources;
@@ -193,17 +195,23 @@ public class MapManagerMouseMode implements MouseMode
 	 */
 	public void mouseClicked(MouseEvent event)
 	{
+    if(!mode_active_)
+      return;
 		LatLonPoint coordinates = layer_.getProjection().inverse(event.getPoint());
 		Collection map_infos;
 		// shift selects all maps (from largest scale to the map clicked:
 		if(event.isShiftDown())
 		{
-			map_infos =	map_manager_.getMapInfos(coordinates.getLatitude(),	coordinates.getLongitude());
+			map_infos =	map_manager_.getMapInfos(coordinates.getLatitude(),	
+			coordinates.getLongitude());
 		}
 		else
 		{
-		 	map_infos = map_manager_.getBestMatchingMapInfo(coordinates.getLatitude(),
+		 	map_infos = new Vector();
+		 	MapInfo map_info = map_manager_.getBestMatchingMapInfo(coordinates.getLatitude(),
 		 											          coordinates.getLongitude());
+		 	if(map_info != null)
+		 	  map_infos.add(map_info);										          
 		}			
 		// control adds the map
 		if(event.isControlDown())

@@ -196,7 +196,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <target name="javadoc_proxy" depends="compile" if="internal_use_proxy">
     <exec executable="/bin/sh">
       <arg value="-c"/>
-      <arg value="javadoc -J-Dhttp.proxyHost=${http_proxy_host} -J-Dhttp.proxyPort=${http_proxy_port} -classpath ${target_class_dir}:lib/java/openmap.jar:lib/java/gnu-regexp-1.1.3.jar -d ${javadoc_dir} -sourcepath ${source_dir}/ -version -author -link http://openmap.bbn.com/doc/api/ -link http://java.sun.com/j2se/1.4/docs/api/ -subpackages org.dinopolis"/>
+      <arg value="javadoc -J-Dhttp.proxyHost=${http_proxy_host} -J-Dhttp.proxyPort=${http_proxy_port} -breakiterator -classpath ${target_class_dir}:lib/java/openmap.jar:lib/java/gnu-regexp-1.1.3.jar:lib/java/log4j-1.2.8.jar:lib/java/velocity-dep-1.3.1.jar -d ${javadoc_dir} -sourcepath ${source_dir}/ -version -author -link http://openmap.bbn.com/doc/api/ -link http://java.sun.com/j2se/1.4/docs/api/ -subpackages org.dinopolis"/>
     </exec>
   </target>
 

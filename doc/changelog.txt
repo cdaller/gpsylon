@@ -1,5 +1,8 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2004/01/13: fixed bug in TrackManagerImpl.getVisibleTracks, that
+            sometimes did not find all visible tracks.
+
 2003/12/01: changed all "packages" to "packets" (for garmin data packets)
 
             moved ProgressListener to org.dinopolis.util package

@@ -135,6 +135,14 @@ public class SimpleDemoLayer extends BasicLayer
       geo_pos = (LatLonPoint)geo_positions_.get(index);
       screen_pos = projection.forward(geo_pos);
       screen_positions.add(screen_pos);
+      if(Thread.interrupted())
+      {
+            // this happens, if the projection changes before the
+            // calculation is finished and the second SwingWorker
+            // interrupts the first one (the old results won't be used
+            // anyway)
+        return;
+      }
     }
     
     // synchronize, so no change of this object occurs while painting it:

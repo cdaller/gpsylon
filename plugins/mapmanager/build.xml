@@ -1,8 +1,9 @@
 
-<project name="org.dinopolis.gpstool.plugin.mapmanager" default="help">
+<project name="org.dinopolis.gpstool.plugin.mapmanager" default="help" basedir=".">
 
   <property name="release_version" value="0.01"/>
   <property name="dist_name" value="gpstool_plugin_mapmanager"/>
+  <property name="target_class_dir" value="classes"/>
   <property name="dist_dir" value="dist"/>
   <property name="lib_dir" value="lib/java"/>
   <property name="aux_dir" value="auxiliary"/>
@@ -68,14 +69,17 @@ The following targets are available:
       <pathelement location="${aux_dir}"/>
     </path>
 
-    <pathconvert pathsep=" " property="gpstool_plugin_mapmanager.dist.lib.classpath"
+    <pathconvert pathsep=" " dirsep="/" property="gpstool_plugin_mapmanager.dist.lib.classpath"
                  refid="gpstool_plugin_mapmanager.dist.classpath">
 <!--      <map from="${user.dir}/${lib_dir}" to="${lib_dir}"/> -->
-      <map from="${user.dir}/${aux_dir}" to="${aux_dir}"/> 
-      <map from="${user.dir}\\${aux_dir}" to="${aux_dir}"/>  <!-- for windows -->
+      <map from="${user.dir}${file.separator}" to=""/> 
     </pathconvert>
-
-
+<!--
+    <echo>
+      user dir: ${user.dir}
+      path: ${gpstool_plugin_mapmanager.dist.lib.classpath}
+    </echo>
+-->
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
     <!-- properties files and the images ! -->
     <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
@@ -84,19 +88,20 @@ The following targets are available:
         <attribute name="Built-By" value="${user.name}"/>
         <attribute name="Class-Path" value="${gpstool_plugin_mapmanager.dist.lib.classpath}" />
         <section name="common">
-          <attribute name="Specification-Title" value="Navigation Mouse Mode Plugin for GPSTool" />
+          <attribute name="Specification-Title" value="Map Manager Plugin for GPSTool" />
           <attribute name="Specification-Version" value="${release_version}" />
           <attribute name="Specification-Vendor" value="Christof Dallermassl" />
-          <attribute name="Implementation-Title" value="Navigation Mouse Mode Plugin for GPSTool" />
+          <attribute name="Implementation-Title" value="Map Manager Plugin for GPSTool" />
           <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
           <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
         </section>
       </manifest>
 
       <fileset dir="${aux_dir}"/>
-      <fileset dir="classes"/>
+      <fileset dir="${target_class_dir}"/>
       <fileset dir=".">
         <include name="META-INF/services/org.dinopolis.gpstool.*"/>
+        <include name="${aux_dir}/**"/>
       </fileset>
     </jar>
 
@@ -130,9 +135,9 @@ The following targets are available:
   
 <!-- compile target -->
   <target name="compile">
-    <mkdir dir="classes"/>
+    <mkdir dir="${target_class_dir}"/>
     <javac srcdir="src"
-           destdir="classes"
+           destdir="${target_class_dir}"
            classpathref="gpstool_plugin_mapmanager_class_path">
        <classpath id="gpstool_plugin_mapmanager_class_path">
 <!-- no other libraries needed

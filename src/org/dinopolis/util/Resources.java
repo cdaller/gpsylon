@@ -96,7 +96,8 @@ public interface Resources
   /** the delimiter used in resources for string arrays */
   public final static String RESOURCE_STRING_ARRAY_DELIMITER = ",";
   
-  /** the delimiter used for variable replacement */
+  /** the delimiter used for variable replacement. So '$key$' will be
+   * replace by the value of 'key' */
   public final static String VAR_IDENTIFIER = "$";
   
   /** the length of VAR_IDENTIFIER */
@@ -125,6 +126,18 @@ public interface Resources
    */
 
   public void unset(String key)
+    throws UnsupportedOperationException;
+
+  //----------------------------------------------------------------------
+  /**
+   * Resets the bound value to its default value (if supported).
+   *
+   * @param key the key of the resource to reset.
+   * @exception UnsupportedOperationException if the resources is not
+   * capable of resetting values, or in particular the given key.
+   */
+
+  public void reset(String key)
     throws UnsupportedOperationException;
 
   //----------------------------------------------------------------------

@@ -38,13 +38,15 @@ public class MapsChangedEvent
 
   protected int action_;
   protected MapInfo map_info_;
+  protected Object source_;
   
 //----------------------------------------------------------------------
 /**
  * Constructor
  */
-  public MapsChangedEvent(MapInfo info, int action)
+  public MapsChangedEvent(Object source, MapInfo info, int action)
   {
+  	source_ = source;
     map_info_ = info;
     action_ = action;
   }
@@ -69,6 +71,17 @@ public class MapsChangedEvent
   public int getAction()
   {
     return(action_);
+  } 
+  
+//----------------------------------------------------------------------
+/**
+ * Returns the source of the event.
+ *
+ * @return the source
+ */
+  public Object getSource()
+  {
+  	return(source_);
   }
 }
 

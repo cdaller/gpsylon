@@ -146,7 +146,7 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
     
       map_writer.close();
 
-      fireMapsChanged(new MapsChangedEvent(map_info,MapsChangedEvent.MAP_ADDED));
+      fireMapsChanged(new MapsChangedEvent(this,map_info,MapsChangedEvent.MAP_ADDED));
     }
     catch(IOException ioe)
     {

@@ -2938,7 +2938,7 @@ public class GPSMap
 
          // inform me as well about any changes! (could also be implemented
          // by overriding the firePropertyChanged method)
-     addPropertyChangeListener(this);
+     this.addPropertyChangeListener(this);
    }
 
        //----------------------------------------------------------------------

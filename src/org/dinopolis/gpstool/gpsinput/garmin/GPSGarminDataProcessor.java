@@ -129,10 +129,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected final static int RECEIVED_ROUTES = 4;
 
       // Definitions for DLE, ETX, ACK and NAK
-  public final static int DLE = 16;
-  public final static int ETX = 3;
-  public final static int ACK = 6;
-  public final static int NAK = 21;
+  public final static int DLE = 16; // 0x10
+  public final static int ETX = 3;  // 0x03
+  public final static int ACK = 6;  // 0x06
+  public final static int NAK = 21; // 0x15
   
 /**
  * Identifiers for L000 - Basic Link Protocol
@@ -198,6 +198,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Cmnd_Transfer_Trk_A010   = 6;  // 0x06
   public final static int Cmnd_Transfer_Wpt_A010   = 7;  // 0x07
   public final static int Cmnd_Turn_Off_Pwr_A010   = 8;  // 0x08
+	public final static int Cmnd_Transfer_Voltage_A010 = 17; // 0x11  // untested and undocumented
   public final static int Cmnd_Transfer_Screenbitmap_A010 = 32; // 0x20
   public final static int Cmnd_Start_Pvt_Data_A010 = 49;  // 0x31
   public final static int Cmnd_Stop_Pvt_Data_A010  = 50;  // 0x32
@@ -218,7 +219,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   public final static int Cmnd_Set_Serial_Speed    = 48; // 0x30 // from gpsexplorer
   public final static int Pid_Change_Serial_Speed  = 49; // 0x31 // from gpsexplorer
-  public final static int Pid_Request_File         = 89;  // 0x59  // from gpsexplorer
+  public final static int Pid_Request_File         = 89; // 0x59 // from gpsexplorer
       /**
        * Other Commands
        */
@@ -1400,6 +1401,49 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
 //----------------------------------------------------------------------
 /**
+ * Request the voltage from a garmin device. This method is untested and the
+ * response is unknown at the moment!
+ * Excerpt from newsgroup (taken from g7to):
+ * extern BYTE	VoltsM[]; '  "\x0a\x02\x11\x00";	'  SEND voltages
+ * 
+ * extern DOUBLE  InternalVolts;			'  Internal (AA) voltage returned by Garmin
+ * extern DOUBLE  ExternalVolts;			'  External voltage returned by Garmin
+ * 
+ * PROCX void doGPSVolts(void)
+ * {
+ * 	INT i;
+ * 	i=' ((INT' )(SerialMessage+3));
+ * 	InternalVolts=(float)i/100.0;
+ * 	i=' ((INT' )(SerialMessage+5));
+ * 	ExternalVolts=(float)i/100.0;
+ * } '  doGPSVolts ' 
+ * 
+ * '  -------------------------------------------------------------------------- ' 
+ * PROCX void getGPSVolts(void)
+ * {
+ * 	SendGarminMessage(VoltsM,4,"Send Voltages");	'  ask FOR volts
+ * 	getGarminMessage(1); 						'  GET & PARSE ack
+ * 	getGarminMessage(1);						'  GET & PARSE volts
+ * 	printf("Int: %5.2lf,  Ext: %5.2lf\n",InternalVolts,ExternalVolts);
+ * } '  getGPSVolts ' 
+ * 
+ * '  -------------------------------------------------------------------------- ' 
+ * 
+ * This is what I get:
+ * TX - 10 0A 02 11 00 E3 10 03
+ * RX - 10 06 02 0A 00 EE 10 03
+ * TX - 10 06 02 23 00 D5 10 03
+ * RX - 10 0C 02 03 00 EF 10 03
+ */
+	public void requestVoltage()
+		throws IOException
+	{
+		waitTillReady();
+		sendCommandAsync(Pid_Command_Data_L001, Cmnd_Transfer_Voltage_A010);
+	}
+
+//----------------------------------------------------------------------
+/**
  * Method to request screenshot from device.
  */
   public void requestScreenShot()
@@ -1903,7 +1947,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       }
     }
     if(Debug.DEBUG)
-      Debug.println("gps_garmin","Result received: "+result);
+      Debug.println("gps_garmin","Result received: "+result+" for package id "+package_id
+);
   }
   
 //----------------------------------------------------------------------
@@ -1924,15 +1969,15 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         // create int[] buffer (intermediate solution, as the
         // Garmin** classes do not work with the GarminPackage class
         // yet:
-    int[] buffer = garmin_package.getCompatibilityBuffer();
+//    int[] buffer = garmin_package.getCompatibilityBuffer();
       
     switch(package_id)
     {
     case NAK:
-      fireResult(false,buffer[1]);
+      fireResult(false,package_id);
       break;
     case ACK:
-      fireResult(true,buffer[1]);
+      fireResult(true,package_id);
       break;
           // product info:
     case Pid_Product_Data:
@@ -2037,7 +2082,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     case Pid_Records_L002:
       if(capabilities_ == null)
         return;
-      int package_num = buffer[2]+256*buffer[3];
+      int package_num = garmin_package.getWord(0); // buffer[2]+256*buffer[3];
       int package_count = 0;
       if(Debug.DEBUG)
         Debug.println("gps_garmin_package","Receiving "+package_num+" packets from device.");
@@ -2055,12 +2100,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
           next_garmin_package = getPackage();
         }
         while(next_garmin_package == null);
-        buffer = next_garmin_package.getCompatibilityBuffer();
+//        buffer = next_garmin_package.getCompatibilityBuffer();
         package_count++;
         if(Debug.DEBUG)
           Debug.println("gps_garmin_package","read package "
                         +(package_count+1)+" of "+package_num);
-        switch((int)buffer[0])
+				package_id = next_garmin_package.getPackageId();
+        switch(package_id)
         {
               // route header:
         case Pid_Rte_Hdr_L001:
@@ -2204,7 +2250,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
           break;
         default:
           System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
-                             +(int)buffer[0]);
+                             +package_id);
           if(Debug.DEBUG)
             Debug.println("gps_garmin","unknown package: "+next_garmin_package);
         }
@@ -2265,7 +2311,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         if(next_garmin_package.getPackageId() != Pid_File_Data)
         {
           System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
-                             +(int)buffer[0]+" while waiting for File Data!");
+                             +package_id+" while waiting for File Data!");
           if(Debug.DEBUG)
             Debug.println("gps_garmin","unknown package: "+garmin_package);
         }
@@ -2305,7 +2351,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       break;
     default:
       System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
-                         +(int)buffer[0]);
+                         +package_id);
       if(Debug.DEBUG)
         Debug.println("gps_garmin","unknown package: "+garmin_package);
     }
@@ -2423,41 +2469,46 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //         gps_processor.getMap(map_description,0L);
 
 
-      Vector waypoints = new Vector();
-      WaypointImpl wpt;
-      wpt = new WaypointImpl("Hart bei Straden",46.783300,15.866700);
-      wpt.setSymbolName("car");
-      wpt.setComment("Hart bei Straden");
-      waypoints.add(wpt);
-      wpt = new WaypointImpl("Stephansdom",48.208773,16.372496);
-      wpt.setSymbolName("flag");
-      wpt.setComment("Stephansdom");
-      waypoints.add(wpt);
-      wpt = new WaypointImpl("Dallermassl_VBruck",47.998845, 13.647118);
-      wpt.setSymbolName("wpt-dot");
-      wpt.setComment("Dallermassl_VBruck");
-      waypoints.add(wpt);
-      wpt = new WaypointImpl("Voralpenkreuz",48.061010, 14.039118);
-      wpt.setSymbolName("gas_plus");
-      wpt.setComment("Voralpenkreuz");
-      waypoints.add(wpt);
-      wpt = new WaypointImpl("Schmaranz_Home",47.020032, 15.508126);
-      wpt.setSymbolName("camp");
-      wpt.setComment("Schmaranz_Home");
-      waypoints.add(wpt);
-      wpt = new WaypointImpl("Dallermassl Graz",47.060099, 15.473327,483);
-      wpt.setSymbolName("house");
-      wpt.setComment("Dallermassl Graz");
-      waypoints.add(wpt);
-      wpt = new WaypointImpl("landhaus",47.070416, 15.439635);
-      wpt.setSymbolName("trcbck");
-      wpt.setComment("landhaus");
-      waypoints.add(wpt);
-      wpt = new WaypointImpl("test",46.766694, 14.359430);
-      wpt.setSymbolName("1st_aid");
-      wpt.setComment("test");
-      waypoints.add(wpt);
-      gps_processor.setWaypoints(waypoints);
+// ======================================================================
+//       Vector waypoints = new Vector();
+//       WaypointImpl wpt;
+//       wpt = new WaypointImpl("Hart bei Straden",46.783300,15.866700);
+//       wpt.setSymbolName("car");
+//       wpt.setComment("Hart bei Straden");
+//       waypoints.add(wpt);
+//       wpt = new WaypointImpl("Stephansdom",48.208773,16.372496);
+//       wpt.setSymbolName("flag");
+//       wpt.setComment("Stephansdom");
+//       waypoints.add(wpt);
+//       wpt = new WaypointImpl("Dallermassl_VBruck",47.998845, 13.647118);
+//       wpt.setSymbolName("wpt-dot");
+//       wpt.setComment("Dallermassl_VBruck");
+//       waypoints.add(wpt);
+//       wpt = new WaypointImpl("Voralpenkreuz",48.061010, 14.039118);
+//       wpt.setSymbolName("gas_plus");
+//       wpt.setComment("Voralpenkreuz");
+//       waypoints.add(wpt);
+//       wpt = new WaypointImpl("Schmaranz_Home",47.020032, 15.508126);
+//       wpt.setSymbolName("camp");
+//       wpt.setComment("Schmaranz_Home");
+//       waypoints.add(wpt);
+//       wpt = new WaypointImpl("Dallermassl Graz",47.060099, 15.473327,483);
+//       wpt.setSymbolName("house");
+//       wpt.setComment("Dallermassl Graz");
+//       waypoints.add(wpt);
+//       wpt = new WaypointImpl("landhaus",47.070416, 15.439635);
+//       wpt.setSymbolName("trcbck");
+//       wpt.setComment("landhaus");
+//       waypoints.add(wpt);
+//       wpt = new WaypointImpl("test",46.766694, 14.359430);
+//       wpt.setSymbolName("1st_aid");
+//       wpt.setComment("test");
+//       waypoints.add(wpt);
+//       gps_processor.setWaypoints(waypoints);
+
+// ======================================================================
+
+			gps_processor.requestVoltage();
       
       System.in.read();
 //       List waypoints = gps_processor.getWaypoints();

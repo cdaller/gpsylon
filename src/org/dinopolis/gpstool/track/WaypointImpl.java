@@ -61,6 +61,71 @@ public class WaypointImpl implements Waypoint
   public WaypointImpl()
   {
   }
+
+//----------------------------------------------------------------------
+/**
+ * Constructor using id, latitude and longitude of the waypoint. The
+ * altitude is set to invalid (Double.NaN).
+ *
+ * @param identification the identification of the waypoint
+ * @param latitude the latitude
+ * @param longitude the longitude
+ */
+  public WaypointImpl(String identification, double latitude, double longitude)
+  {
+    this(identification,latitude,longitude,Double.NaN);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Constructor using id, latitude, longitude and altitude of the waypoint.
+ *
+ * @param identification the identification of the waypoint
+ * @param latitude the latitude
+ * @param longitude the longitude
+ * @param altitude the altitude
+ */
+  public WaypointImpl(String identification, double latitude, double longitude, double altitude)
+  {
+    setIdentification(identification);
+    setLatitude(latitude);
+    setLongitude(longitude);
+    setAltitude(altitude);
+  }
+//----------------------------------------------------------------------
+/**
+ * Constructor using id, latitude and longitude of the waypoint. The
+ * altitude is set to invalid (Double.NaN).
+ *
+ * @param identification the identification of the waypoint
+ * @param comment the comment of the waypoint
+ * @param latitude the latitude
+ * @param longitude the longitude
+ */
+  public WaypointImpl(String identification, String comment, double latitude, double longitude)
+  {
+    this(identification,comment,latitude,longitude,Double.NaN);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Constructor using id, latitude, longitude and altitude of the waypoint.
+ *
+ * @param identification the identification of the waypoint
+ * @param comment the comment of the waypoint
+ * @param latitude the latitude
+ * @param longitude the longitude
+ * @param altitude the altitude
+ */
+  public WaypointImpl(String identification, String comment,
+                      double latitude, double longitude, double altitude)
+  {
+    setIdentification(identification);
+    setComment(comment);
+    setLatitude(latitude);
+    setLongitude(longitude);
+    setAltitude(altitude);
+  }
   
 //----------------------------------------------------------------------
 /**
@@ -224,6 +289,19 @@ public class WaypointImpl implements Waypoint
   public String getSymbolName()
   {
     return(symbol_name_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Sets the name of the symbol of the waypoint. The names are taken
+ * from the garmin specification and are listed in {@link
+ * org.dinopolis.gpstool.gpsinput.garmin.GarminWaypointSymbols} at the
+ * moment.
+ * @param name the name of the symbol of the waypoint or null.
+ */
+  public void setSymbolName(String name)
+  {
+    symbol_name_ = name;
   }
 
 //----------------------------------------------------------------------

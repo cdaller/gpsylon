@@ -826,26 +826,67 @@ public class GPSMap
 
 //----------------------------------------------------------------------
 /**
+ * Looks for a menu or a menu item with the given name in the given
+ * menu bar.
+ *
+ * @param menu_bar the menu bar to search.
+ * @param name the name to search for.
+ * @return the menu/menuitem or <ocde>null</code> if no menu was found.
+ */
+  protected JMenuItem findMenuItem(JMenuBar menu_bar, String name)
+  {
+    int menu_index = 0;
+    JMenuItem menu_item;
+    while(menu_index < menu_bar.getMenuCount())
+    {
+      menu_item = menu_bar.getMenu(menu_index);
+      if(menu_item.getText().equals(name))
+      {
+        return(menu_item);
+      }
+      menu_index++;
+    }
+        // nothing found:
+    return(null);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Looks for a menu or a menu item with the given name in the given menu.
+ *
+ * @param menu the menu to search.
+ * @param name the name to search for.
+ * @return the menu/menuitem or <ocde>null</code> if no menu was found.
+ */
+  protected JMenuItem findMenuItem(JMenu menu, String name)
+  {
+    int menu_index = 0;
+    JMenuItem menu_item;
+    while(menu_index < menu.getItemCount())
+    {
+      menu_item = menu.getItem(menu_index);
+      if(menu_item.getText().equals(name))
+      {
+        return(menu_item);
+      }
+      menu_index++;
+    }
+        // nothing found:
+    return(null);
+  }
+
+//----------------------------------------------------------------------
+/**
  * Adds the mouse modes of the MouseModeManager to the menu bar (Menu
- * Control/Mouse Mode).
+ * Mouse Mode).
  *
  */
   protected void addMouseModesToMenu()
   {
         // find the menu that should contain the mouse modes (control/mouse mode):
-    JMenu mouse_mode_menu = null;
-    JMenu menu;
-    int menu_index = 0;
-    while((menu_index < menu_bar_.getMenuCount()) && (mouse_mode_menu == null))
-    {
-      menu = menu_bar_.getMenu(menu_index);
-      if(menu.getText().equals(resources_.getString(KEY_MENU_MOUSE_MODE_LABEL)))
-      {
-        mouse_mode_menu = menu;
-      }
-      menu_index++;
-    }
 
+    JMenu mouse_mode_menu = (JMenu)findMenuItem(menu_bar_,
+                                                resources_.getString(KEY_MENU_MOUSE_MODE_LABEL));
     if(mouse_mode_menu != null)
     {
       JMenuItem[] mouse_mode_items = mouse_mode_manager_.getMenuItems();
@@ -857,9 +898,33 @@ public class GPSMap
     }
     else
     {
-      System.err.println("ERROR: Could not find '/Mouse Mode' menu, no mouse modes added to menu!");
+      System.err.println("ERROR: Could not find 'Mouse Mode' menu, no mouse modes added to menu!");
     }
-    
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Adds the sub menus of plugins to the  menu bar (Menu Plugin).
+ */
+  protected void addToPluginsMenu(JMenuItem plugin_sub_menu)
+  {
+        // find the menu that should contain the mouse modes (control/mouse mode):
+
+    JMenu plugin_menu = (JMenu)findMenuItem(menu_bar_,
+                                            resources_.getString(KEY_MENU_PLUGIN_LABEL));
+    if(plugin_menu != null)
+    {
+      JMenuItem[] mouse_mode_items = mouse_mode_manager_.getMenuItems();
+      for(int item_count = 0; item_count < mouse_mode_items.length; item_count++)
+      {
+//          System.out.println("Adding Mouse Mode "+mouse_mode_items[item_count] +" to menu.");
+        plugin_menu.add(mouse_mode_items[item_count]);
+      }
+    }
+    else
+    {
+      System.err.println("ERROR: Could not find 'Plugins' menu, no plugin menus added to menu!");
+    }
   }
 
 //----------------------------------------------------------------------
@@ -1265,20 +1330,28 @@ public class GPSMap
   protected void initializePlugins()
   {
         // TODO FIXXME check for duplicate plugins (old and new version)
-        // and kill the old one
+        // and remove the old one
 
     Vector mouse_modes = new Vector();
     
         // GuiPlugins
     Object[] plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.GuiPlugin.class);
     GuiPlugin gui_plugin;
+    JMenuItem plugin_menu;
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       gui_plugin = (GuiPlugin)plugins[plugins_index];
       System.out.println("Adding Gui Plugin: " + gui_plugin.getPluginName());
       gui_plugin.initializePlugin(hook_manager_);
       addMouseModes(gui_plugin.getMouseModes());
-          // TODO FIXXME add main menu actions and sub menu actions of plugins!
+          // add sub menus of plugin:
+      plugin_menu = gui_plugin.getSubMenu();
+      if(plugin_menu != null)
+        addToPluginsMenu(plugin_menu);
+
+          // add main menu of plugin:
+      plugin_menu = gui_plugin.getMainMenu();
+      menu_bar_.add(plugin_menu);
     }
 
         // LayerPlugins
@@ -1291,7 +1364,14 @@ public class GPSMap
       layer_plugin.initializePlugin(hook_manager_);
       addMouseModes(layer_plugin.getMouseModes());
       map_bean_.add(layer_plugin);
-          // TODO FIXXME add main menu actions and sub menu actions of plugins!
+          // add sub menus of plugin:
+      plugin_menu = layer_plugin.getSubMenu();
+      if(plugin_menu != null)
+        addToPluginsMenu(plugin_menu);
+
+          // add main menu of plugin:
+      plugin_menu = layer_plugin.getMainMenu();
+      menu_bar_.add(plugin_menu);
     }
 
         // MouseMode Plugins:

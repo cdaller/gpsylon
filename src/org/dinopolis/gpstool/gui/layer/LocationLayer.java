@@ -435,7 +435,7 @@ public class LocationLayer extends Layer
         String jdbc_driver = resources_.getString(KEY_LOCATION_MARKER_DB_JDBCDRIVER);
         String jdbc_url =  resources_.getString(KEY_LOCATION_MARKER_DB_URL);
         String jdbc_username =  resources_.getString(KEY_LOCATION_MARKER_DB_USER);
-        String jdbc_password =  resources_.getString(KEY_LOCATION_MARKER_DB_PASSWORD);
+        String jdbc_password =  resources_.getString(KEY_LOCATION_MARKER_DB_PASSWORD,"");
 
         JDBCUtil jdbc_util = new JDBCUtil(jdbc_driver,jdbc_url,jdbc_username,jdbc_password);
 

@@ -1,9 +1,18 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2003/12/01: changed all "packages" to "packets" (for garmin data packets)
+
+	    moved ProgressListener to org.dinopolis.util package
+        
+     	    moved ProgressFrame to org.dinopolis.util.gui package
+
+	    added some helper variables to the velocity context for
+	    waypoint/route/trackpoint formatting
+
 2003/11/28: fixed getroutes/setroutes (for commandline tool), added
             workaround that does not block caller if no
-            routes/tracks/waypoints are sent from the device (if none
-            are available).
+	    routes/tracks/waypoints are sent from the device (if none are
+	    available).
 
             fixed bug in date/time conversion (trackpoints)
 
@@ -35,9 +44,9 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
 2003/11/17: fixed bug in garmin protocol reading product information
 
-						added garmin command to read voltage, but does not work
-						with eTrex Legend. No idea, if this works on other
-						devices.
+            added garmin command to read voltage, but does not work
+            with eTrex Legend. No idea, if this works on other
+            devices.
 
 2003/11/05: fixed getValueString method in unithelper, so values <
             100.0 are displayed with one digit behind the comma.
@@ -45,7 +54,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 2003/10/15: Added a quick'n'dirty import plugin for top40 overlay
             tracks (ascii format). 
 
-						0.4.15-pre8 released
+	    0.4.15-pre8 released
 
 2003/10/14: did some testing with Streetpilot III (screenshot), works
             now, but the device I used switches off after sending 10
@@ -56,7 +65,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 2003/10/13: added support for screenshot on geko(201). Thanks to Frank
             Wilhelm for providing the log data!
 
-						Added PVT data type D802 (not tested!)
+            Added PVT data type D802 (not tested!)
 
 2003/10/02: 0.4.15-pre7 released
 

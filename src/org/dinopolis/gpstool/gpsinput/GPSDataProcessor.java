@@ -229,13 +229,13 @@ public interface GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Write the routes to the gps device.
- * @param waypoints The new waypoints.
+ * @param routes The new routes.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.
  * @throws GPSException if the operation threw an exception
  * (e.g. communication problem).
- * @see GPSWaypoint
+ * @see GPSRoute
  */
   public void setRoutes(List routes)
     throws UnsupportedOperationException, GPSException;
@@ -249,7 +249,7 @@ public interface GPSDataProcessor
  * supported by the gps device or by the protocol used.
  * @throws GPSException if the operation threw an exception
  * (e.g. communication problem).
- * @see GPSRoute
+ * @see GPSTrack
  */
   public List getTracks()
     throws UnsupportedOperationException, GPSException;
@@ -257,13 +257,13 @@ public interface GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Write the tracks to the gps device.
- * @param waypoints The new waypoints.
+ * @param tracks The new tracks.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.
  * @throws GPSException if the operation threw an exception
  * (e.g. communication problem).
- * @see GPSRoute
+ * @see GPSTrack
  */
   public void setTracks(List tracks)
     throws UnsupportedOperationException, GPSException;

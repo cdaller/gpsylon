@@ -137,7 +137,7 @@ public class GeoScreenList extends AbstractList implements GeoScreen, Cloneable
  * specified element (optional operation).
  *
  * @param index index of element to replace.
- * @param element element to be stored at the specified position.
+ * @param object element to be stored at the specified position.
  * @return the element previously at the specified position.
  * 
  * @throws    ClassCastException if the class of the specified element
@@ -163,7 +163,7 @@ public class GeoScreenList extends AbstractList implements GeoScreen, Cloneable
      * This implementation always throws an UnsupportedOperationException.
      *
      * @param index index at which the specified element is to be inserted.
-     * @param element element to be inserted.
+     * @param object element to be inserted.
      * 
      * @throws ClassCastException if the class of the specified element
      * 		  prevents it from being added to this list.

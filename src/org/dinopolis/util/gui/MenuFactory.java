@@ -156,7 +156,7 @@ public class MenuFactory
    * @return the new created menu.
    */
 
-  protected static JMenu createMenu(String prefix,
+  public static JMenu createMenu(String prefix,
                                     String menu_name,
                                     Resources resources,
                                     ActionGenerator action_gen)
@@ -253,7 +253,7 @@ public class MenuFactory
    * @return the new created menu item.
    */
  
-  protected static JComponent createMenuComponent(String prefix,
+  public static JComponent createMenuComponent(String prefix,
                                                   String menu_name, 
                                                   Resources resources,
                                                   ActionGenerator action_gen) 
@@ -295,7 +295,7 @@ public class MenuFactory
    * @return the new created menu item.
    */
  
-  protected static JComponent createMenuItem(String prefix,
+  public static JComponent createMenuItem(String prefix,
                                              String menu_names, 
                                              Resources resources,
                                              ActionGenerator action_gen) 
@@ -350,7 +350,7 @@ public class MenuFactory
    * @return the new created menu item.
    */
  
-  protected static JComponent createRadioButtonMenuItem(String prefix,
+  public static JComponent createRadioButtonMenuItem(String prefix,
                                                         String menu_name, 
                                                         Resources resources,
                                                         ActionGenerator action_gen) 
@@ -387,7 +387,7 @@ public class MenuFactory
    * @return the new created menu item.
    */
  
-  protected static JComponent createCheckBoxMenuItem(String prefix,
+  public static JComponent createCheckBoxMenuItem(String prefix,
                                                      String menu_name, 
                                                      Resources resources,
                                                      ActionGenerator action_gen) 

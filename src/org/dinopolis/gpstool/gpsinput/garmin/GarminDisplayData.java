@@ -22,6 +22,7 @@ public class GarminDisplayData
 
   public GarminDisplayData(GarminPackage garmin_package)
   {
+		System.out.println("first display data package: "+garmin_package);
     width_ = (int)garmin_package.getLong(16);
     height_ = (int)garmin_package.getLong(20);
     if(rotate_image_degrees_ != 0)
@@ -36,8 +37,17 @@ public class GarminDisplayData
     for(int color_index = 0; color_index < 4; color_index++)
     {
       value = garmin_package.getByte(color_index + 24);
-      grey_value = value * 16;
-      colors_[color_index] = new Color(grey_value,grey_value,grey_value);
+
+					// garmin indicates "no color" by value 255 
+					// (e.g. black/white displays have 255 as
+					// 3rd and 4th color)
+			if (value < 255)
+			{
+				grey_value = value * 16;
+				colors_[color_index] = new Color(grey_value,grey_value,grey_value);
+			}
+			else
+				colors_[color_index] = new Color(0,0,0);
     }
     
     graphics_ = image_.createGraphics();

@@ -56,18 +56,18 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 
   protected ReaderThread read_thread_;
   protected boolean continue_pvt_thread_ = true;
-  /** Determine how often the pvt information is requested from the
-   * gps device (in milliseconds) */ 
+      /** Determine how often the pvt information is requested from the
+       * gps device (in milliseconds) */ 
   protected long pvt_thread_sleep_time_ = 1000L;
 
-  /** lock used to synchronize ACK/NAK of packages from device with
-   * reader thread */
+      /** lock used to synchronize ACK/NAK of packages from device with
+       * reader thread */
   protected Object acknowledge_lock_ = new Object();
-  /** helper variable to pass result (ACK/NAK) from reader thread to
-   * writer thread */
+      /** helper variable to pass result (ACK/NAK) from reader thread to
+       * writer thread */
   protected boolean send_success_ = false;
 
-  // lock objects and result objects for synchronous calls:
+      // lock objects and result objects for synchronous calls:
   protected Object route_sync_request_lock_ = new Object();
   protected List result_routes_;
   protected Object track_sync_request_lock_ = new Object();
@@ -88,7 +88,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
   public GarminProduct product_info_;
 
   protected final static int MAX_GARMIN_MESSAGE_LENGTH = 260;
-  /** timeout in milliseconds to wait for ACK/NAK from device (0 waits forever) */
+      /** timeout in milliseconds to wait for ACK/NAK from device (0 waits forever) */
   protected final static long ACK_TIMEOUT = 0L;
 
 /** 
@@ -104,7 +104,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 //   private static boolean[] A = new boolean[999];
 //   private static boolean[] D = new boolean[999];
 
-  // Definitions for DLE, ETX, ACK and NAK
+      // Definitions for DLE, ETX, ACK and NAK
   private final static char DLE = (char)16;
   private final static char ETX = (char)3;
   private final static char ACK = (char)6;
@@ -173,24 +173,31 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
   public final static char Cmnd_Transfer_Wpt_A011   = (char)21;
   public final static char Cmnd_Turn_Off_Pwr_A011   = (char)26;
 
+/**
+ * Inofficial Commands
+ */
+  public final static char Cmnd_Set_Serial_Speed    = (char)48; // from gpsexplorer
+  public final static char Pid_Change_Serial_Seed   = (char)49; // from gpsexplorer
+
+
 //----------------------------------------------------------------------
 /**
  * Default constructor.
  */
   public GPSGarminDataProcessor()
-    {
-    }
+  {
+  }
   
 
   public GarminProduct getProductInfo()
-    {
-      return(product_info_);
-    }
+  {
+    return(product_info_);
+  }
 
   public GarminCapabilities getCapabilities()
-    {
-      return(capabilities_);
-    }
+  {
+    return(capabilities_);
+  }
   
 // //----------------------------------------------------------------------
 // /**
@@ -241,10 +248,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * @exception if an error occured on initializing.
  */
   public void init(Hashtable environment) throws GPSException
-    {
-      if (gps_device_ == null)
-	throw new GPSException("No GPSDevice set!");
-    }
+  {
+    if (gps_device_ == null)
+      throw new GPSException("No GPSDevice set!");
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -255,40 +262,40 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * @exception if an error occured on connecting.
  */
   public void open() throws GPSException
-    {
-      if (gps_device_ == null)
-	throw new GPSException("no GPSDevice set!");
+  {
+    if (gps_device_ == null)
+      throw new GPSException("no GPSDevice set!");
 
-      try
-      {
-	gps_device_.open();
-	in_stream_ = gps_device_.getInputStream();
-	out_stream_ = gps_device_.getOutputStream();
+    try
+    {
+      gps_device_.open();
+      in_stream_ = gps_device_.getInputStream();
+      out_stream_ = gps_device_.getOutputStream();
 
 //       comm_thread_ = new Thread(this,"GPSGarminDataProcessorIn");
 //       comm_thread_.setDaemon(true); // so thread is finished after exit of application
 //       comm_thread_.start();
 
-	read_thread_ = new ReaderThread();
-	read_thread_.setName("Garmin Reader");
-	read_thread_.setDaemon(true);
-	read_thread_.start();
+      read_thread_ = new ReaderThread();
+      read_thread_.setName("Garmin Reader");
+      read_thread_.setDaemon(true);
+      read_thread_.start();
 
-	requestProductInfo(); // needed to know the capabilities of the device
+      requestProductInfo(); // needed to know the capabilities of the device
 	
 //       write_thread_ = new WriterThread(out_stream_);
 //       write_thread_.setName("Garmin Writer");
 //       write_thread_.setDaemon(true);
 //       write_thread_.start();
 
-	// read product data      readProductData();
-      }
-      catch(IOException e)
-      {
-	throw new GPSException(e.getMessage());
-      }
-    
+          // read product data      readProductData();
     }
+    catch(IOException e)
+    {
+      throw new GPSException(e.getMessage());
+    }
+    
+  }
   
 //----------------------------------------------------------------------
 /**
@@ -298,14 +305,14 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * @exception if an error occured on disconnecting.
  */
   public void close() throws GPSException
-    {
-      if (gps_device_ == null)
-	throw new GPSException("no GPSDevice set!");
-      continue_pvt_thread_ = false;
-      if(read_thread_ != null)
-	read_thread_.stopThread();
-      gps_device_.close();
-    }
+  {
+    if (gps_device_ == null)
+      throw new GPSException("no GPSDevice set!");
+    continue_pvt_thread_ = false;
+    if(read_thread_ != null)
+      read_thread_.stopThread();
+    gps_device_.close();
+  }
 
   
 //----------------------------------------------------------------------
@@ -320,23 +327,23 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
     {
       try
       {
-	pvt = getPVT(0L); // do not care about beeing blocked
-	if((pvt != null) && (pvt.getFix() > 1))
-	{
-	  changeGPSData(LOCATION,new GPSPosition(pvt.getLat(),pvt.getLon()));
-	  changeGPSData(SPEED,new Float(calcSpeed(pvt.getNorth(),pvt.getEast())));
-	  changeGPSData(ALTITUDE,new Float(pvt.getAlt()));
-	  changeGPSData(HEADING,new Float(calcHeading(pvt.getNorth(),pvt.getEast())));
-	}
+        pvt = getPVT(0L); // do not care about beeing blocked
+        if((pvt != null) && (pvt.getFix() > 1))
+        {
+          changeGPSData(LOCATION,new GPSPosition(pvt.getLat(),pvt.getLon()));
+          changeGPSData(SPEED,new Float(calcSpeed(pvt.getNorth(),pvt.getEast())));
+          changeGPSData(ALTITUDE,new Float(pvt.getAlt()));
+          changeGPSData(HEADING,new Float(calcHeading(pvt.getNorth(),pvt.getEast())));
+        }
       }
       catch(IOException ioe)
       {
-	ioe.printStackTrace();
-	return;
+        ioe.printStackTrace();
+        return;
       }
       try
       {
-	Thread.sleep(pvt_thread_sleep_time_);
+        Thread.sleep(pvt_thread_sleep_time_);
       }
       catch(InterruptedException ignored) {}
     }
@@ -347,20 +354,20 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 /**
  * Returns the heading
  */
-    protected float calcHeading(float speed_north, float speed_east)
-    {
-      // TODO check if correct!!!
-      return((float)Math.toDegrees(Math.atan2(speed_north,speed_east)));
-    }
+  protected float calcHeading(float speed_north, float speed_east)
+  {
+        // TODO check if correct!!!
+    return((float)Math.toDegrees(Math.atan2(speed_north,speed_east)));
+  }
 
 //----------------------------------------------------------------------
 /**
  * Returns the heading
  */
-    protected float calcSpeed(float speed_north, float speed_east)
-    {
-      return((float)Math.sqrt(speed_north*speed_north+speed_east*speed_east));
-    }
+  protected float calcSpeed(float speed_north, float speed_east)
+  {
+    return((float)Math.sqrt(speed_north*speed_north+speed_east*speed_east));
+  }
 
 // //----------------------------------------------------------------------
 // /**
@@ -458,12 +465,12 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   protected boolean sendCommand(char rqst, char cmd, long timeout)
     throws IOException
-    {
-      char[] command = new char[2];
-      command[0] = cmd;
-      command[1] = 0;
-      return(sendCommand(rqst, command,timeout));
-    }
+  {
+    char[] command = new char[2];
+    command[0] = cmd;
+    command[1] = 0;
+    return(sendCommand(rqst, command,timeout));
+  }
   
 //----------------------------------------------------------------------
 /**
@@ -476,18 +483,18 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   protected boolean sendCommand(char rqst, char[] cmd, long timeout)
     throws IOException
+  {
+    synchronized(acknowledge_lock_)
     {
-      synchronized(acknowledge_lock_)
+      sendCommandAsync(rqst,cmd);
+      try
       {
-	sendCommandAsync(rqst,cmd);
-	try
-	{
-	  acknowledge_lock_.wait(timeout);
-	}
-	catch(InterruptedException ignore){}
+        acknowledge_lock_.wait(timeout);
       }
-      return(send_success_);
+      catch(InterruptedException ignore){}
     }
+    return(send_success_);
+  }
   
 
 //----------------------------------------------------------------------
@@ -500,12 +507,12 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   protected void sendCommandAsync(char rqst, char cmd)
     throws IOException
-    {
-      char[] command = new char[2];
-      command[0] = cmd;
-      command[1] = 0;
-      sendCommandAsync(rqst, command);
-    }
+  {
+    char[] command = new char[2];
+    command[0] = cmd;
+    command[1] = 0;
+    sendCommandAsync(rqst, command);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -517,64 +524,64 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   protected synchronized void sendCommandAsync(char rqst, char[] cmd)
     throws IOException
-    {
-      if(cmd.length > 0)
-	if(Debug.DEBUG)
-	  Debug.println("gps_garmin","Sending request: "+(int)rqst+"/"+(int)cmd[0]);
-	else
-	  if(Debug.DEBUG)
-	    Debug.println("gps_garmin","Sending request: "+(int)rqst);
+  {
+    if(cmd.length > 0)
+      if(Debug.DEBUG)
+        Debug.println("gps_garmin","Sending request: "+(int)rqst+"/"+(int)cmd[0]);
+      else
+        if(Debug.DEBUG)
+          Debug.println("gps_garmin","Sending request: "+(int)rqst);
 	
-      char check = (char)0;
-      char icheck = (char)0;
+    char check = (char)0;
+    char icheck = (char)0;
 
-      int packet = 0;
-      int length = cmd.length;
+    int packet = 0;
+    int length = cmd.length;
 
-      // Start sending request to device
-      // If any byte in size, data or checksum fields is equal to DLE
-      // a second DLE is sent immediately following this byte
+        // Start sending request to device
+        // If any byte in size, data or checksum fields is equal to DLE
+        // a second DLE is sent immediately following this byte
+    out_stream_.write(DLE);
+    out_stream_.write(rqst);
+      
+        // Write length of packet data to output stream
+    out_stream_.write((char)length);
+    if (length == DLE)
+    {
       out_stream_.write(DLE);
-      out_stream_.write(rqst);
-      
-      // Write length of packet data to output stream
-      out_stream_.write((char)length);
-      if (length == DLE)
-      {
-	out_stream_.write(DLE);
-      }
-      
-      // Write packet data to device
-      for (int i=0;i<length;i++)
-      {
-//	if(Debug.DEBUG)
-	Debug.println("gps_garmin","write: "+i+" "+(int)cmd[i]);
-	out_stream_.write(cmd[i]);
-	if (cmd[i] == DLE)
-	{
-	  out_stream_.write(DLE);
-	}
-	packet += cmd[i];
-	if ((int)packet > 255) packet -= 256;
-      }
-      
-      // Create checksum and write to device
-      check += (rqst + length);
-      if ((int)check > 255) check -= 256;
-      check += packet;
-      if ((int)check > 255) check -= 256;
-      
-      icheck = (char)(256-check);
-      out_stream_.write(icheck);
-      if (icheck == DLE) {out_stream_.write(DLE);}
-      
-      // Finish request and flush output stream
-      out_stream_.write(DLE);
-      out_stream_.write(ETX);
-      out_stream_.flush();
-
-      // TODO: register for next result, and resend if not successfully sent!
     }
+      
+        // Write packet data to device
+    for (int i=0;i<length;i++)
+    {
+//	if(Debug.DEBUG)
+      Debug.println("gps_garmin","write: "+i+" "+(int)cmd[i]);
+      out_stream_.write(cmd[i]);
+      if (cmd[i] == DLE)
+      {
+        out_stream_.write(DLE);
+      }
+      packet += cmd[i];
+      if ((int)packet > 255) packet -= 256;
+    }
+      
+        // Create checksum and write to device
+    check += (rqst + length);
+    if ((int)check > 255) check -= 256;
+    check += packet;
+    if ((int)check > 255) check -= 256;
+      
+    icheck = (char)(256-check);
+    out_stream_.write(icheck);
+    if (icheck == DLE) {out_stream_.write(DLE);}
+      
+        // Finish request and flush output stream
+    out_stream_.write(DLE);
+    out_stream_.write(ETX);
+    out_stream_.flush();
+
+        // TODO: register for next result, and resend if not successfully sent!
+  }
   
 // //----------------------------------------------------------------------
 // /**
@@ -670,93 +677,93 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * @return a char array containing one garmin data package.
  */
   protected char[] getPackage()
+  {
+    char check = (char)0;
+    char icheck = (char)0;
+
+    int checksum = 0;
+    int packet_checksum;
+      
+    int count = 0;
+    int data;
+    char[] buffer;
+    byte[] buffer2;
+      
+    char pid;
+    boolean success = false;
+
+        // Initialize receive buffer and check whether device is ready
+    buffer = new char[MAX_GARMIN_MESSAGE_LENGTH];
+    buffer2 = new byte[MAX_GARMIN_MESSAGE_LENGTH];
+
+    try
     {
-      char check = (char)0;
-      char icheck = (char)0;
-
-      int checksum = 0;
-      int packet_checksum;
-      
-      int count = 0;
-      int data;
-      char[] buffer;
-      byte[] buffer2;
-      
-      char pid;
-      boolean success = false;
-
-      // Initialize receive buffer and check whether device is ready
-      buffer = new char[MAX_GARMIN_MESSAGE_LENGTH];
-      buffer2 = new byte[MAX_GARMIN_MESSAGE_LENGTH];
-
-      try
+      do
       {
-	do
-	{
-	  // Wait for beginning of next incoming message
-	  while ((data = in_stream_.read()) != DLE) 
-	  {}
+            // Wait for beginning of next incoming message
+        while ((data = in_stream_.read()) != DLE) 
+        {}
 
 //         if (in_stream_.available() == 0)
 //           throw new IOException("Device not ready!");
 
-	  while (count<MAX_GARMIN_MESSAGE_LENGTH)
-	  {
-	    // Read data from instream
-	    data = in_stream_.read();
-	    if (count > 0)
-	    {
-	      if ((buffer[count-1] == DLE) && (data == ETX))
-		break;
-	    }
+        while (count<MAX_GARMIN_MESSAGE_LENGTH)
+        {
+              // Read data from instream
+          data = in_stream_.read();
+          if (count > 0)
+          {
+            if ((buffer[count-1] == DLE) && (data == ETX))
+              break;
+          }
 
-	    // Write received data into buffer
-	    if (count == 0)
-	      if(Debug.DEBUG)
-		Debug.print("gps_garmin","Incoming package: "+(int)data+", ");
-	    if (count == 1)
-	      if(Debug.DEBUG)
-		Debug.println("gps_garmin","Package size: "+(int)data);
+              // Write received data into buffer
+          if (count == 0)
+            if(Debug.DEBUG)
+              Debug.print("gps_garmin","Incoming package: "+(int)data+", ");
+          if (count == 1)
+            if(Debug.DEBUG)
+              Debug.println("gps_garmin","Package size: "+(int)data);
 
-	    // If two subsequent DLE's have been received, one is ignored due to
-	    // transfer protocol specifications
-	    if (data == DLE && buffer[count-1] == DLE)
-	    {
-	    }
-	    else
-	    {
-	      buffer[count] = (char)(data & 0xff);
-	      buffer2[count] = (byte)data;
-	      count++;
-	    }
+              // If two subsequent DLE's have been received, one is ignored due to
+              // transfer protocol specifications
+          if (data == DLE && buffer[count-1] == DLE)
+          {
+          }
+          else
+          {
+            buffer[count] = (char)(data & 0xff);
+            buffer2[count] = (byte)data;
+            count++;
+          }
 
-	  }
+        }
 
-	  // Get packet id
-	  pid = buffer[0];
+            // Get packet id
+        pid = buffer[0];
 
-	  // Reduce counter by one because last byte (ETX) is not stored at all
-	  // Last char is DLE signalling end of packet
-	  count--;
+            // Reduce counter by one because last byte (ETX) is not stored at all
+            // Last char is DLE signalling end of packet
+        count--;
 
-	  // Calculate checksum for received package (ignore checksum byte at end)
-	  for (int i=0;i<count-1;i++)
-	  {
-	    check += buffer[i];
-	    if ((int)check > 255)
-	      check -= 256;
-	    checksum += buffer2[i];
-	  }
+            // Calculate checksum for received package (ignore checksum byte at end)
+        for (int i=0;i<count-1;i++)
+        {
+          check += buffer[i];
+          if ((int)check > 255)
+            check -= 256;
+          checksum += buffer2[i];
+        }
 
-	  // Check if calculated checksum is equal to received checksum
-	  // Acknowledge received packet if it was correctly trasmitted
-	  // Otherwise ask for new transmission of packet
-	  icheck=(char)(256-check);
+            // Check if calculated checksum is equal to received checksum
+            // Acknowledge received packet if it was correctly trasmitted
+            // Otherwise ask for new transmission of packet
+        icheck=(char)(256-check);
 
-	  // for test purpose, ignore checksum! TODO FIXXME!!!!!!!!!!!!!
-	  success = true;
-	  if ((pid != ACK) && (pid != NAK))
-	    sendCommandAsync(ACK,pid);
+            // for test purpose, ignore checksum! TODO FIXXME!!!!!!!!!!!!!
+        success = true;
+        if ((pid != ACK) && (pid != NAK))
+          sendCommandAsync(ACK,pid);
 
 	  
 // 	  if ((int)icheck == (int)(buffer[count-1] & 0xff))
@@ -774,16 +781,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 // 			       +", sent checksum: "+(int)buffer[count-1]);
 // 	    count = 0;
 // 	  }
-	}
-	while (!success);
       }
-      catch(IOException ioe)
-      {
-	ioe.printStackTrace();
-      }
-
-      return buffer;
+      while (!success);
     }
+    catch(IOException ioe)
+    {
+      ioe.printStackTrace();
+    }
+
+    return buffer;
+  }
 
 
 // //----------------------------------------------------------------------
@@ -1389,16 +1396,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * Sleep until capabilities are available.
  */
   protected void waitTillReady()
+  {
+    while(capabilities_ == null)
     {
-      while(capabilities_ == null)
+      try
       {
-	try
-	{
-	  Thread.sleep(100);
-	}
-	catch(InterruptedException ignore) {}
+        Thread.sleep(100);
       }
+      catch(InterruptedException ignore) {}
     }
+  }
 
 
 //----------------------------------------------------------------------
@@ -1414,19 +1421,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public GarminPVT getPVT(long timeout)
     throws IOException
+  {
+    synchronized(pvt_sync_request_lock_)
     {
-      synchronized(pvt_sync_request_lock_)
+      result_pvt_ = null;
+      requestPVT();
+      try
       {
-	result_pvt_ = null;
-	requestPVT();
-	try
-	{
-	  pvt_sync_request_lock_.wait(timeout);
-	}
-	catch(InterruptedException ignore){}
+        pvt_sync_request_lock_.wait(timeout);
       }
-      return(result_pvt_);
+      catch(InterruptedException ignore){}
     }
+    return(result_pvt_);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1439,19 +1446,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public List getRoutes(long timeout)
     throws IOException
+  {
+    synchronized(route_sync_request_lock_)
     {
-      synchronized(route_sync_request_lock_)
+      result_routes_ = null;
+      requestRoutes();
+      try
       {
-	result_routes_ = null;
-	requestRoutes();
-	try
-	{
-	  route_sync_request_lock_.wait(timeout);
-	}
-	catch(InterruptedException ignore){}
+        route_sync_request_lock_.wait(timeout);
       }
-      return(result_routes_);
+      catch(InterruptedException ignore){}
     }
+    return(result_routes_);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1464,19 +1471,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public List getTracks(long timeout)
     throws IOException
+  {
+    synchronized(track_sync_request_lock_)
     {
-      synchronized(track_sync_request_lock_)
+      result_tracks_ = null;
+      requestTracks();
+      try
       {
-	result_tracks_ = null;
-	requestTracks();
-	try
-	{
-	  track_sync_request_lock_.wait(timeout);
-	}
-	catch(InterruptedException ignore){}
+        track_sync_request_lock_.wait(timeout);
       }
-      return(result_tracks_);
+      catch(InterruptedException ignore){}
     }
+    return(result_tracks_);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1489,19 +1496,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public List getWaypoints(long timeout)
     throws IOException
+  {
+    synchronized(waypoint_sync_request_lock_)
     {
-      synchronized(waypoint_sync_request_lock_)
+      result_waypoints_ = null;
+      requestWaypoints();
+      try
       {
-	result_waypoints_ = null;
-	requestWaypoints();
-	try
-	{
-	  waypoint_sync_request_lock_.wait(timeout);
-	}
-	catch(InterruptedException ignore){}
+        waypoint_sync_request_lock_.wait(timeout);
       }
-      return(result_waypoints_);
+      catch(InterruptedException ignore){}
     }
+    return(result_waypoints_);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1510,23 +1517,23 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public void requestPowerOff()
     throws IOException
+  {
+    waitTillReady();
+        // Turn off power using link protocol L001 and command protocol A010
+    if (capabilities_.hasCapability("L1") &&
+        capabilities_.hasCapability("A10"))
     {
-      waitTillReady();
-      // Turn off power using link protocol L001 and command protocol A010
-      if (capabilities_.hasCapability("L1") &&
-	  capabilities_.hasCapability("A10"))
-      {
-	sendCommandAsync(Pid_Command_Data_L001, Cmnd_Turn_Off_Pwr_A010);
-      }
-
-      // Turn off power using link protocol L002 and command protocol A011
-      if (capabilities_.hasCapability("L2") &&
-	  capabilities_.hasCapability("A11"))
-      {
-	sendCommandAsync(Pid_Command_Data_L002, Cmnd_Turn_Off_Pwr_A011);
-      }
-
+      sendCommandAsync(Pid_Command_Data_L001, Cmnd_Turn_Off_Pwr_A010);
     }
+
+        // Turn off power using link protocol L002 and command protocol A011
+    if (capabilities_.hasCapability("L2") &&
+        capabilities_.hasCapability("A11"))
+    {
+      sendCommandAsync(Pid_Command_Data_L002, Cmnd_Turn_Off_Pwr_A011);
+    }
+
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1536,40 +1543,40 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public void requestRoutes()
     throws IOException
-    {
-      waitTillReady();
+  {
+    waitTillReady();
       
-      boolean success = false;
-      while(!success)
+    boolean success = false;
+    while(!success)
+    {
+          // Does device support route transfer protocol
+      if(capabilities_.hasCapability("A200") || capabilities_.hasCapability("A201"))
       {
-	// Does device support route transfer protocol
-	if(capabilities_.hasCapability("A200") || capabilities_.hasCapability("A201"))
-	{
-	  if(capabilities_.hasCapability("L1"))
-	  {
-	    if(capabilities_.hasCapability("A10"))
-	    {
-	      success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Rte_A010,ACK_TIMEOUT);
-	    }
-	    else // A011
-	    {
-	      success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Rte_A011,ACK_TIMEOUT);
-	    }
-	  }
-	  else // L002
-	  {
-	    if(capabilities_.hasCapability("A10"))
-	    {
-	      success = sendCommand(Pid_Command_Data_L002, Cmnd_Transfer_Rte_A010,ACK_TIMEOUT);
-	    }
-	    else // A011
-	    {
-	      success = sendCommand(Pid_Command_Data_L002, Cmnd_Transfer_Rte_A011,ACK_TIMEOUT);
-	    }
-	  }
-	}
+        if(capabilities_.hasCapability("L1"))
+        {
+          if(capabilities_.hasCapability("A10"))
+          {
+            success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Rte_A010,ACK_TIMEOUT);
+          }
+          else // A011
+          {
+            success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Rte_A011,ACK_TIMEOUT);
+          }
+        }
+        else // L002
+        {
+          if(capabilities_.hasCapability("A10"))
+          {
+            success = sendCommand(Pid_Command_Data_L002, Cmnd_Transfer_Rte_A010,ACK_TIMEOUT);
+          }
+          else // A011
+          {
+            success = sendCommand(Pid_Command_Data_L002, Cmnd_Transfer_Rte_A011,ACK_TIMEOUT);
+          }
+        }
       }
     }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1579,40 +1586,40 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public void requestWaypoints()
     throws IOException
-    {
-      waitTillReady();
+  {
+    waitTillReady();
       
-      boolean success = false;
-      while(!success)
+    boolean success = false;
+    while(!success)
+    {
+          // Does device support route transfer protocol
+      if(capabilities_.hasCapability("A100"))
       {
-	// Does device support route transfer protocol
-	if(capabilities_.hasCapability("A100"))
-	{
-	  if(capabilities_.hasCapability("L1"))
-	  {
-	    if(capabilities_.hasCapability("A10"))
-	    {
-	      success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Wpt_A010,ACK_TIMEOUT);
-	    }
-	    else // A011
-	    {
-	      success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Wpt_A011,ACK_TIMEOUT);
-	    }
-	  }
-	  else // L002
-	  {
-	    if(capabilities_.hasCapability("A10"))
-	    {
-	      success = sendCommand(Pid_Command_Data_L002, Cmnd_Transfer_Wpt_A010,ACK_TIMEOUT);
-	    }
-	    else // A011
-	    {
-	      success = sendCommand(Pid_Command_Data_L002, Cmnd_Transfer_Wpt_A011,ACK_TIMEOUT);
-	    }
-	  }
-	}
+        if(capabilities_.hasCapability("L1"))
+        {
+          if(capabilities_.hasCapability("A10"))
+          {
+            success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Wpt_A010,ACK_TIMEOUT);
+          }
+          else // A011
+          {
+            success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Wpt_A011,ACK_TIMEOUT);
+          }
+        }
+        else // L002
+        {
+          if(capabilities_.hasCapability("A10"))
+          {
+            success = sendCommand(Pid_Command_Data_L002, Cmnd_Transfer_Wpt_A010,ACK_TIMEOUT);
+          }
+          else // A011
+          {
+            success = sendCommand(Pid_Command_Data_L002, Cmnd_Transfer_Wpt_A011,ACK_TIMEOUT);
+          }
+        }
       }
     }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1622,25 +1629,25 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public void requestTracks()
     throws IOException
-    {
-      waitTillReady();
+  {
+    waitTillReady();
       
-      boolean success = false;
-      while(!success)
+    boolean success = false;
+    while(!success)
+    {
+          // Does device support route transfer protocol
+      if(capabilities_.hasCapability("A300") || capabilities_.hasCapability("A301"))
       {
-	// Does device support route transfer protocol
-	if(capabilities_.hasCapability("A300") || capabilities_.hasCapability("A301"))
-	{
-	  if(capabilities_.hasCapability("L1"))
-	  {
-	    if(capabilities_.hasCapability("A10"))
-	    {
-	      success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Trk_A010,ACK_TIMEOUT);
-	    }
-	  }
-	}
+        if(capabilities_.hasCapability("L1"))
+        {
+          if(capabilities_.hasCapability("A10"))
+          {
+            success = sendCommand(Pid_Command_Data_L001, Cmnd_Transfer_Trk_A010,ACK_TIMEOUT);
+          }
+        }
       }
     }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1650,15 +1657,15 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public void requestProductInfo()
     throws IOException
+  {
+    boolean success = false;
+    while(!success)
     {
-      boolean success = false;
-      while(!success)
-      {
-	success = sendCommand(Pid_Product_Rqst,new char[0],ACK_TIMEOUT);
-	if(!success)
-	  System.out.println("WARNING GPSGarminDataProcessor: NAK");
-      }
+      success = sendCommand(Pid_Product_Rqst,new char[0],ACK_TIMEOUT);
+      if(!success)
+        System.out.println("WARNING GPSGarminDataProcessor: NAK");
     }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1668,20 +1675,20 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
   public void requestPVT()
     throws IOException
-    {
-      waitTillReady();
+  {
+    waitTillReady();
 
-      if(capabilities_.hasCapability("A800") &&
-	 capabilities_.hasCapability("L1") &&
-	 capabilities_.hasCapability("A10"))
+    if(capabilities_.hasCapability("A800") &&
+       capabilities_.hasCapability("L1") &&
+       capabilities_.hasCapability("A10"))
+    {
+      boolean success = false;
+      while(!success)
       {
-	boolean success = false;
-	while(!success)
-	{
-	  success = sendCommand(Pid_Command_Data_L001, Cmnd_Start_Pvt_Data_A010,ACK_TIMEOUT);
-	}
+        success = sendCommand(Pid_Command_Data_L001, Cmnd_Start_Pvt_Data_A010,ACK_TIMEOUT);
       }
     }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1689,16 +1696,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * gps device when route packages were sent.
  */
   protected void fireRoutesReceived(Vector routes)
+  {
+        // if a snychronous call was made, notify the thread for the results
+    synchronized(route_sync_request_lock_)
     {
-      // if a snychronous call was made, notify the thread for the results
-      synchronized(route_sync_request_lock_)
-      {
-	result_routes_ = routes;
-	route_sync_request_lock_.notify();
-      }
-      if(Debug.DEBUG)
-	Debug.println("gps_garmin","Routes received: "+routes);
+      result_routes_ = routes;
+      route_sync_request_lock_.notify();
     }
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","Routes received: "+routes);
+  }
   
 //----------------------------------------------------------------------
 /**
@@ -1706,16 +1713,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * gps device when track packages were sent.
  */
   protected void fireTracksReceived(Vector tracks)
+  {
+        // if a snychronous call was made, notify the thread for the results
+    synchronized(track_sync_request_lock_)
     {
-      // if a snychronous call was made, notify the thread for the results
-      synchronized(track_sync_request_lock_)
-      {
-	result_tracks_ = tracks;
-	track_sync_request_lock_.notify();
-      }
-      if(Debug.DEBUG)
-	Debug.println("gps_garmin","Tracks received: "+tracks);
+      result_tracks_ = tracks;
+      track_sync_request_lock_.notify();
     }
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","Tracks received: "+tracks);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1723,16 +1730,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * gps device when waypoint packages were sent.
  */
   protected void fireWaypointsReceived(List waypoints)
+  {
+        // if a snychronous call was made, notify the thread for the results
+    synchronized(waypoint_sync_request_lock_)
     {
-      // if a snychronous call was made, notify the thread for the results
-      synchronized(waypoint_sync_request_lock_)
-      {
-	result_waypoints_ = waypoints;
-	waypoint_sync_request_lock_.notify();
-      }
-      if(Debug.DEBUG)
-	Debug.println("gps_garmin","Waypoints received: "+waypoints);
+      result_waypoints_ = waypoints;
+      waypoint_sync_request_lock_.notify();
     }
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","Waypoints received: "+waypoints);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1740,10 +1747,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * gps device when transfer complete packages were sent.
  */
   protected void fireTransferCompleteReceived()
-    {
-      if(Debug.DEBUG)
-	Debug.println("gps_garmin","TransferComplete received");
-    }
+  {
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","TransferComplete received");
+  }
   
 //----------------------------------------------------------------------
 /**
@@ -1751,11 +1758,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * gps device when product data package was sent.
  */
   protected void fireProductDataReceived(GarminProduct product)
-    {
-      product_info_ = product;
-      if(Debug.DEBUG)
-	Debug.println("gps_garmin","product data received: "+product);
-    }
+  {
+    product_info_ = product;
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","product data received: "+product);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1763,11 +1770,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * gps device when protocol array (capabilities) package was sent.
  */
   protected void fireProtocolArrayReceived(GarminCapabilities capabilities)
-    {
-      capabilities_ = capabilities;
-      if(Debug.DEBUG)
-	Debug.println("gps_garmin","product capabilities received: "+capabilities_);
-    }
+  {
+    capabilities_ = capabilities;
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","product capabilities received: "+capabilities_);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1775,10 +1782,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * gps device when PVT (position, velocity, ...) package was sent.
  */
   protected void firePVTDataReceived(GarminPVT pvt)
-    {
-      if(Debug.DEBUG)
-	Debug.println("gps_garmin","pvt received: "+pvt);
-    }
+  {
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","pvt received: "+pvt);
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1786,15 +1793,15 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * gps device when a acknowledge (ACK or NAK) was sent.
  */
   protected void fireResult(boolean result)
+  {
+    synchronized(acknowledge_lock_)
     {
-      synchronized(acknowledge_lock_)
-      {
-	send_success_ = result;
-	acknowledge_lock_.notify();
-      }
-      if(Debug.DEBUG)
-	Debug.println("gps_garmin","Result received: "+result);
+      send_success_ = result;
+      acknowledge_lock_.notify();
     }
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","Result received: "+result);
+  }
   
 //----------------------------------------------------------------------
 /**
@@ -1806,142 +1813,142 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * packages.
  */
   protected void firePackageReceived(char[] buffer)
+  {
+    switch((int)buffer[0])
     {
-      switch((int)buffer[0])
-      {
 	  case NAK:
 	    fireResult(false);
 	    break;
 	  case ACK:
 	    fireResult(true);
 	    break;
-	    // product info:
+          // product info:
 	  case Pid_Product_Data:
 	    fireProductDataReceived(new GarminProduct(buffer));
 	    break;
-	    // capabilities:
+          // capabilities:
 	  case Pid_Protocol_Array:
 	    fireProtocolArrayReceived(new GarminCapabilities(buffer));
 	    break;
-	    // PVT package
+          // PVT package
 	  case Pid_Pvt_Data_L001:
 	    if(capabilities_.hasCapability("D800"))
 	    {
 	      firePVTDataReceived(new GarminPVTD800(buffer));
 	    }
 	    break;
-	    // larger amount of packages belong together:
+          // larger amount of packages belong together:
 	  case Pid_Records_L001:
 	  case Pid_Records_L002:
 	    int package_num = buffer[2]+256*buffer[3];
 	    int package_count = 0;
 	    if(Debug.DEBUG)
 	      Debug.println("gps_garmin","Receiving "+package_num+" packets from device.");
-	    // var to store the resulting route/track/etc.
-	    // I hope that packets may not be mixed (route and tracks)!
+          // var to store the resulting route/track/etc.
+          // I hope that packets may not be mixed (route and tracks)!
 	    Vector items = new Vector();
 	    Object item = null;
 	    
-	    // Receive routes/tracks/... from device
+          // Receive routes/tracks/... from device
 	    boolean transfer_complete = false;
 	    while(!transfer_complete)
 	    {
 	      buffer=getPackage();
 	      package_count++;
 	      if(Debug.DEBUG)
-		Debug.println("gps_garmin","read package "+(package_count+1)+" of "+package_num);
+          Debug.println("gps_garmin","read package "+(package_count+1)+" of "+package_num);
 	      switch((int)buffer[0])
 	      {
-		// route header:
-		  case Pid_Rte_Hdr_L001:
-		  case Pid_Rte_Hdr_L002:
-		    // save previous item
-		    if(item != null)
-		      items.add(item);
+              // route header:
+        case Pid_Rte_Hdr_L001:
+        case Pid_Rte_Hdr_L002:
+              // save previous item
+          if(item != null)
+            items.add(item);
 
-		    // create route header depending on used format:
-		    if(capabilities_.hasCapability("D200"))
-		      item = new GarminRouteD200(buffer);
-		    if(capabilities_.hasCapability("D201"))
-		      item = new GarminRouteD201(buffer);
-		    if(capabilities_.hasCapability("D202"))
-		      item = new GarminRouteD202(buffer);
-		    break;
+              // create route header depending on used format:
+          if(capabilities_.hasCapability("D200"))
+            item = new GarminRouteD200(buffer);
+          if(capabilities_.hasCapability("D201"))
+            item = new GarminRouteD201(buffer);
+          if(capabilities_.hasCapability("D202"))
+            item = new GarminRouteD202(buffer);
+          break;
 		    
-		    // route point:
-		  case Pid_Rte_Wpt_Data_L001:
-		  case Pid_Rte_Wpt_Data_L002:
-		    if(capabilities_.hasCapability("D108"))
-		      ((GarminRoute)item).addRoutePoint(new GarminWaypointD108(buffer));
-		    break;
-		    // route link:
-		  case Pid_Rte_Link_Data_L001:
-		    if(capabilities_.hasCapability("D210"))
-		      ((GarminRoute)item).addRouteLinkData(new GarminRouteLinkD210(buffer));
-		    break;
+              // route point:
+        case Pid_Rte_Wpt_Data_L001:
+        case Pid_Rte_Wpt_Data_L002:
+          if(capabilities_.hasCapability("D108"))
+            ((GarminRoute)item).addRoutePoint(new GarminWaypointD108(buffer));
+          break;
+              // route link:
+        case Pid_Rte_Link_Data_L001:
+          if(capabilities_.hasCapability("D210"))
+            ((GarminRoute)item).addRouteLinkData(new GarminRouteLinkD210(buffer));
+          break;
 
-		    // track header
-		  case Pid_Trk_Hdr_L001:
-		    // save previous item
-		    if(item != null)
-		      items.add(item);
+              // track header
+        case Pid_Trk_Hdr_L001:
+              // save previous item
+          if(item != null)
+            items.add(item);
 
-		    // create route header depending on used format:
-		    if(capabilities_.hasCapability("D310"))
-		      item = new GarminTrackD310(buffer);
-		    if(Debug.DEBUG)
-		      Debug.println("gps_garmin","Track Header: "+item);
-		    break;
+              // create route header depending on used format:
+          if(capabilities_.hasCapability("D310"))
+            item = new GarminTrackD310(buffer);
+          if(Debug.DEBUG)
+            Debug.println("gps_garmin","Track Header: "+item);
+          break;
 
-		    // track waypoints
-		  case Pid_Trk_Data_L001:
-		    if(capabilities_.hasCapability("D300"))
-		      ((GarminTrack)item).addTrackPoint(new GarminTrackpointD300(buffer));
-		    if(capabilities_.hasCapability("D301"))
-		      ((GarminTrack)item).addTrackPoint(new GarminTrackpointD301(buffer));
-		    break;
+              // track waypoints
+        case Pid_Trk_Data_L001:
+          if(capabilities_.hasCapability("D300"))
+            ((GarminTrack)item).addTrackPoint(new GarminTrackpointD300(buffer));
+          if(capabilities_.hasCapability("D301"))
+            ((GarminTrack)item).addTrackPoint(new GarminTrackpointD301(buffer));
+          break;
 
-		  case Pid_Wpt_Data_L001:
-		  case Pid_Wpt_Data_L002:
-		    if(capabilities_.hasCapability("D108"))
-		    {
-		      if(items == null)
-			items = new Vector();
-		      items.add(new GarminWaypointD108(buffer));
-		    }
-		    break;
-		    // transfer complete
-		  case Pid_Xfer_Cmplt_L001:
+        case Pid_Wpt_Data_L001:
+        case Pid_Wpt_Data_L002:
+          if(capabilities_.hasCapability("D108"))
+          {
+            if(items == null)
+              items = new Vector();
+            items.add(new GarminWaypointD108(buffer));
+          }
+          break;
+              // transfer complete
+        case Pid_Xfer_Cmplt_L001:
 //		  case Pid_Xfer_Cmplt_L002: // same number as Pid_Xfer_Cmplt_L001
-		    if(Debug.DEBUG)
-		      Debug.println("gps_garmin","transfer complete");
-		    transfer_complete = true;
-		    break;
-		  default:
-		    System.err.println("WARNING GPSGarminDataProcessor: unknown packet: "
-				       +(int)buffer[0]);
+          if(Debug.DEBUG)
+            Debug.println("gps_garmin","transfer complete");
+          transfer_complete = true;
+          break;
+        default:
+          System.err.println("WARNING GPSGarminDataProcessor: unknown packet: "
+                             +(int)buffer[0]);
 	      }
 	    }
 	    
-	    // add last item vector:
+          // add last item vector:
 	    if(item != null)
 	      items.add(item);
 	    if(items.size() > 0)
 	    {
 	      if(items.get(0) instanceof GarminRoute)
 	      {
-		fireRoutesReceived(items);
+          fireRoutesReceived(items);
 	      }
 	      else
-		if(items.get(0) instanceof GarminTrack)
-		{
-		  fireTracksReceived(items);
-		}
-		else
-		  if(items.get(0) instanceof GarminWaypoint)
-		  {
-		    fireWaypointsReceived(items);
-		  }
+          if(items.get(0) instanceof GarminTrack)
+          {
+            fireTracksReceived(items);
+          }
+          else
+            if(items.get(0) instanceof GarminWaypoint)
+            {
+              fireWaypointsReceived(items);
+            }
 	    }
 	    break;
 	  case Pid_Xfer_Cmplt_L001:
@@ -1949,8 +1956,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 	    break;
 	  default:
 	    System.err.println("WARNING GPSGarminDataProcessor : unknown packet: "+(int)buffer[0]);
-      }
     }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1960,21 +1967,21 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  */
 
   public GPSPosition getGPSPosition()
+  {
+    try
     {
-      try
-      {
-	GarminPVT pvtdata = getPVT(0L);
-	if(pvtdata != null)
-	  return(new GPSPosition(pvtdata.getLat(),pvtdata.getLon()));
-	else
-	  return(null);
-      }
-      catch(Exception e)
-      {
-	e.printStackTrace();
-	return(null);
-      }
+      GarminPVT pvtdata = getPVT(0L);
+      if(pvtdata != null)
+        return(new GPSPosition(pvtdata.getLat(),pvtdata.getLon()));
+      else
+        return(null);
     }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+      return(null);
+    }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1983,23 +1990,23 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
  * @return the heading from the GPSDevice.
  */
   public float getHeading()
-    {
-      return(-1.0f);
-    }
+  {
+    return(-1.0f);
+  }
 
   public static void main(String[] args)
+  {
+    try
     {
-      try
-      {
-	GPSGarminDataProcessor gps_processor = new GPSGarminDataProcessor();
-	GPSDevice gps_device;
-	Hashtable environment = new Hashtable();
-	environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS0");
-	environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(9600));
-	gps_device = new GPSSerialDevice();
-	gps_device.init(environment);
-	gps_processor.setGPSDevice(gps_device);
-	gps_processor.open();
+      GPSGarminDataProcessor gps_processor = new GPSGarminDataProcessor();
+      GPSDevice gps_device;
+      Hashtable environment = new Hashtable();
+      environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS0");
+      environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(9600));
+      gps_device = new GPSSerialDevice();
+      gps_device.init(environment);
+      gps_processor.setGPSDevice(gps_device);
+      gps_processor.open();
 
 //	System.out.println("REQ: requesting produce info");
 //	gps_processor.requestProductInfo();
@@ -2013,28 +2020,28 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
 //      gps_processor.requestTracks();
 
 
-	System.out.println("Requesting PVT");
-	GarminPVT pvt = gps_processor.getPVT(1000L);
-	System.out.println("Sync PVT: "+pvt);
+      System.out.println("Requesting PVT");
+      GarminPVT pvt = gps_processor.getPVT(1000L);
+      System.out.println("Sync PVT: "+pvt);
 	
-	List routes = gps_processor.getRoutes(0L);
-	System.out.println("Sync Routes: "+routes);
-	List waypoints = gps_processor.getWaypoints(0L);
-	System.out.println("Sync Waypoints: "+waypoints);
+      List routes = gps_processor.getRoutes(0L);
+      System.out.println("Sync Routes: "+routes);
+      List waypoints = gps_processor.getWaypoints(0L);
+      System.out.println("Sync Waypoints: "+waypoints);
 //       List tracks = gps_processor.getTracks(0L);
 //       System.out.println("Sync Tracks: "+tracks);
       
 //	System.in.read(); // wait for keypress
 //      gps_processor.requestPowerOff();
       
-	gps_processor.close();
-      }
-      catch(Exception e)
-      {
-	e.printStackTrace();
-      }
-    
+      gps_processor.close();
     }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
+    
+  }
 
 
 //----------------------------------------------------------------------
@@ -2048,27 +2055,27 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor implements R
     boolean running_ = true;
 
     public ReaderThread()
-      {
-	super();
-      }
+    {
+      super();
+    }
 
     public void run()
-      { 
-	while(running_)
-	{
-	  if(Debug.DEBUG)
-	    Debug.println("gps_garmin","reading package...");
-	  char[] buffer = getPackage();
-	  if(Debug.DEBUG)
-	    Debug.println("gps_garmin","package received");
-	  firePackageReceived(buffer);
-	}
+    { 
+      while(running_)
+      {
+        if(Debug.DEBUG)
+          Debug.println("gps_garmin","reading package...");
+        char[] buffer = getPackage();
+        if(Debug.DEBUG)
+          Debug.println("gps_garmin","package received");
+        firePackageReceived(buffer);
       }
+    }
 
     public void stopThread()
-      {
-	running_ = false;
-      }
+    {
+      running_ = false;
+    }
   }
 
 }

@@ -130,6 +130,36 @@ class DownloadMouseMode implements MouseMode
     return("Download Maps from Internet Servers");
   }
 
+//----------------------------------------------------------------------
+/**
+ * Returns the mnemonic character that is used for manual (keyboard)
+ * selection in a menu. If possible, it should be the first letter of
+ * the name (default).
+ *
+ * @return a string describing the mnemonic character for this mouse
+ * mode when used in a menu.
+ */
+  public char getMouseModeMnemonic()
+  {
+    return('D');
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Returns the accelerator key that is used for the mouse mode in the
+ * menu or toolbar. The format of the key strings is described in
+ * {@link javax.swing.Keystroke#getKeyStroke(java.lang.String)}. Some
+ * examples are given: <code>INSERT</code>,<code>controle
+ * DELETE</code>,<code>alt shift X</code>,<code>shift
+ * F</code>.
+ *
+ * @return a string describing the accelerator key.
+ */
+  public String getMouseModeAcceleratorKey()
+  {
+    return("control D");
+  }
 
 //----------------------------------------------------------------------
 // MouseListener Adapter

@@ -24,13 +24,13 @@ package org.dinopolis.gpstool;
 
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.lang.ref.SoftReference;
+
 import javax.swing.ImageIcon;
 
 import org.dinopolis.util.Debug;
 
 import com.bbn.openmap.LatLonPoint;
-
-import java.lang.ref.SoftReference;
 
 //----------------------------------------------------------------------
 /**
@@ -41,7 +41,7 @@ import java.lang.ref.SoftReference;
  * @version $Revision$
  */
 
-public class MapInfo
+public class MapInfo implements Comparable
 {
   protected LatLonPoint center_;
   protected float scale_;
@@ -308,4 +308,14 @@ public class MapInfo
   }
 
   
+	/**
+	 * Compares the filesnames of the given map info object to the filename of
+	 * this map info.
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object other)
+	{
+	  return(((MapInfo)other).getFilename().compareTo(getFilename()));
+	}
+
 }

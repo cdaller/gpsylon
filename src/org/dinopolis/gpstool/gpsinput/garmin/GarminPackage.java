@@ -131,6 +131,92 @@ class GarminPackage
     return(data_[get_index_++]);
   }
 
+//----------------------------------------------------------------------
+/**
+ * Get the byte on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the byte at the given position
+ */
+  public int get(int offset)
+  {
+    return(data_[offset]);
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Get the byte on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the byte at the given position
+ */
+  public int getByte(int offset)
+  {
+    return(get(offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the int on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the integer at the given position
+ */
+  public int getInt(int offset)
+  {
+    return(GarminDataConverter.getGarminInt(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the float on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the float at the given position
+ */
+  public float getFloat(int offset)
+  {
+    return(GarminDataConverter.getGarminFloat(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the long on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the long at the given position
+ */
+  public long getLong(int offset)
+  {
+    return(GarminDataConverter.getGarminLong(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the string on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the string at the given position
+ */
+  public String getString(int offset)
+  {
+    return(GarminDataConverter.getGarminString(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the string on the given offset.
+ *
+ * @param offset the position to return.
+ * @param max_length the maximum length of the string
+ * @return the string at the given position
+ */
+  public String getString(int offset, int max_length)
+  {
+    return(GarminDataConverter.getGarminString(data_,offset,max_length));
+  }
+
   
 //----------------------------------------------------------------------
 /**

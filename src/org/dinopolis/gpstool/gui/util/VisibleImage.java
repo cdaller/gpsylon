@@ -23,9 +23,11 @@
 
 package org.dinopolis.gpstool.gui.util;
 
-import java.util.Vector;
+import java.util.List;
 import java.util.Iterator;
 import java.awt.Rectangle;
+import java.util.Vector;
+import java.util.Collection;
 
 
 //----------------------------------------------------------------------
@@ -34,11 +36,8 @@ import java.awt.Rectangle;
  * to show, paint it, and find the rectangles on the screen that are
  * not covered by this map. For the remaining empty rectangles, the
  * algorithm is repeated until the screen is filled, or no more maps
- * are available.searches the smallest map to show, paint it, and find
- * the rectangles on the screen that are not covered by this map. For
- * the remaining empty rectangles, the algorithm is repeated until the
- * screen is filled, or no more maps are available.
- *<p>
+ * are available. 
+ * <p>
  * The following shows, how a map may be location on a given viewport:
  *<pre>
  *             viewport_xmin       viewport_xmax
@@ -200,7 +199,7 @@ import java.awt.Rectangle;
  * </p>
  * <p>
  * Figure 10:<br>
- *   image_xmin &lt; viewport_xmin &amp; image_xmax &gt; viewport_xmax &amp; image_ymin &lt; viewport_ymin &amp; image_ymax &gt; viewport_ymax
+ *   image_xmin &lt;= viewport_xmin &amp; image_xmax &gt;= viewport_xmax &amp; image_ymin &lt;= viewport_ymin &amp; image_ymax &gt;= viewport_ymax
  * </p>
  * <p>
  * Figure 11:<br>
@@ -242,7 +241,8 @@ public class VisibleImage
  * @param viewport_xmax the right coordinate of the viewport
  * @param viewport_ymin the top coordinate of the viewport
  * @param viewport_ymax the bottom coordinate of the viewport
- * @param available all available images
+ * @param available all available images sorted from the smallest scale
+ * to the largest.
  * @param result the vector used to add the resulting images that are
  * visible
  * @param empty_rec a vector holding Rectangle objects for the areas
@@ -253,7 +253,7 @@ public class VisibleImage
 
   public static Vector findVisibleImages(int viewport_xmin, int viewport_xmax,
                                          int viewport_ymin, int viewport_ymax,
-                                         Vector available, Vector result, Vector empty_rect)
+                                         Collection available, Vector result, Vector empty_rect)
   {
 //     System.out.println("findRectangles:" + viewport_xmin +"," +viewport_xmax +" / "
 //                        + viewport_ymin + "," + viewport_ymax);
@@ -525,8 +525,8 @@ public class VisibleImage
       }
       else
 // Figure 10:
-      if(image_xmin<viewport_xmin & image_xmax>viewport_xmax
-         & image_ymin<viewport_ymin & image_ymax>viewport_ymax)
+      if(image_xmin<=viewport_xmin & image_xmax>=viewport_xmax
+         & image_ymin<=viewport_ymin & image_ymax>=viewport_ymax)
       {
         // System.out.println("figure 10 detected");
         image_found = true;
@@ -687,7 +687,7 @@ public class VisibleImage
     {
       empty_rect.add(new Rectangle(viewport_xmin,viewport_ymin,
                                    viewport_xmax-viewport_xmin,viewport_ymax-viewport_ymin));
-          // System.out.println("no image for rectangle found");
+       // System.out.println("no image for rectangle found");
     }
     return(result);
   }

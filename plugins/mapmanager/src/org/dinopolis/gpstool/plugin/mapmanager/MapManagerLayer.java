@@ -34,6 +34,11 @@ import org.dinopolis.gpstool.event.MapsChangedEvent;
 import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.gui.util.ImageInfo;
+import java.util.Set;
+import java.awt.Color;
+import org.dinopolis.gpstool.MapInfo;
+import org.dinopolis.util.Debug;
+import java.util.TreeSet;
 
 
 
@@ -53,6 +58,11 @@ public class MapManagerLayer extends BasicLayer
   MapManagerHook map_manager_;
   Collection visible_images_;
   Object visible_images_lock_ = new Object();
+  Set selected_maps_;
+  Object selected_maps_lock_ = new Object();
+  Color unselected_color_ = new Color(0,0,0);
+  Color selected_color_ = new Color(255,0,0);
+  Color selected_fill_color_ = new Color(255,0,0,128);
   
 //----------------------------------------------------------------------
 /**
@@ -87,14 +97,32 @@ public class MapManagerLayer extends BasicLayer
       else
         return; // nothing to do, return
     }
+
+    System.out.println("selected: "+selected_maps_);
+
         // create projected position of all mapimages:
     Iterator iterator = visible_images.iterator();
     ImageInfo image;
+    MapInfo map_info;
     while(iterator.hasNext())
     {
       image = (ImageInfo)iterator.next();
-      g.drawRect(image.getX(),image.getY(),image.getWidth(),image.getHeight());
-      g.drawString(image.getMapInfo().getFilename(),image.getX()+10,image.getY()+10);
+      map_info = image.getMapInfo();
+
+      if((selected_maps_ == null) || !selected_maps_.contains(map_info.getFilename()))
+      {
+        g.setColor(unselected_color_);
+        g.drawRect(image.getX(),image.getY(),image.getWidth(),image.getHeight());
+//        g.drawString(image.getMapInfo().getFilename(),image.getX()+10,image.getY()+10);
+      }
+      else
+      {
+        System.out.println("drawing selected map");
+        g.setColor(selected_fill_color_);
+        g.fillRect(image.getX(),image.getY(),image.getWidth(),image.getHeight());
+        g.setColor(selected_color_);
+        g.drawRect(image.getX(),image.getY(),image.getWidth(),image.getHeight());
+      }
     }
   }
 
@@ -123,6 +151,21 @@ public class MapManagerLayer extends BasicLayer
     }
   }
   
+//----------------------------------------------------------------------
+/**
+ * Sets the selected maps in a synchronized way.
+ *
+ * @param selected_maps a set containing the filenames of the map info
+ * objects.
+ */
+  protected void setSelectedMaps(Set selected_maps)
+  {
+    synchronized(selected_maps_lock_)
+    {
+      selected_maps_ = selected_maps;
+    }
+  }
+  
   
 //----------------------------------------------------------------------
 /**
@@ -134,6 +177,8 @@ public class MapManagerLayer extends BasicLayer
   {
     recalculateCoordinates();
   }
+
+
 }
 
 

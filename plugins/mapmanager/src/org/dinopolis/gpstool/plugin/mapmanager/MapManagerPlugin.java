@@ -23,15 +23,34 @@
 
 package org.dinopolis.gpstool.plugin.mapmanager;
 
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import com.bbn.openmap.Layer;
 import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-
-import com.bbn.openmap.Layer;
+import org.dinopolis.util.Debug;
+import org.dinopolis.util.ResourceManager;
+import org.dinopolis.util.Resources;
+import org.dinopolis.util.gui.ActionStore;
+import org.dinopolis.util.gui.MenuFactory;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
+import java.util.Set;
+import java.util.TreeSet;
+import org.dinopolis.gpstool.util.MapInfoScaleComparator;
+import javax.swing.event.ListSelectionEvent;
 
 
 
@@ -43,10 +62,46 @@ import com.bbn.openmap.Layer;
  * @version $Revision$
  */
 
-public class MapManagerPlugin implements GuiPlugin 
+public class MapManagerPlugin implements GuiPlugin, ListSelectionListener
 {
-  MapManagerHook map_manager_;
-  MapManagerLayer layer_;
+      /** the map manager to retrieve the information about maps from */
+  protected MapManagerHook map_manager_;
+      /** the layer to draw */
+  protected MapManagerLayer layer_;
+  protected JMenuItem frame_menu_item_;
+  /** the resources of the map manager plugin */
+  protected Resources resources_;
+  /** the resources of the GPSMap application */
+  protected Resources application_resources_;
+      /** the action store */
+  protected ActionStore action_store_;
+      /** the map manager frame */
+  protected MapManagerFrame main_frame_;
+
+      // keys for resources:
+  public static final String KEY_MAPMANAGER_PLUGIN_IDENTIFIER = "mapmanager.plugin.identifier";
+  public static final String KEY_MAPMANAGER_PLUGIN_VERSION = "mapmanager.plugin.version";
+  public static final String KEY_MAPMANAGER_PLUGIN_NAME = "mapmanager.plugin.name";
+  public static final String KEY_MAPMANAGER_PLUGIN_DESCRIPTION = "mapmanager.plugin.description";
+  public static final String KEY_MAPMANAGER_WINDOW_REMEMBER_SETTINGS = "mapmanager.window.remember_settings";
+  public static final String KEY_MAPMANAGER_WINDOW_DIMENSION_WIDTH = "mapmanager.window.dimension.width";
+  public static final String KEY_MAPMANAGER_WINDOW_DIMENSION_HEIGHT = "mapmanager.window.dimension.height";
+  public static final String KEY_MAPMANAGER_WINDOW_LOCATION_X = "mapmanager.window.location.x";
+  public static final String KEY_MAPMANAGER_WINDOW_LOCATION_Y = "mapmanager.window.location.y";
+  public static final String KEY_MAPMANAGER_TABLE_COLUMN_NAMES = "mapmanager.table.column_names";
+  
+  public static final String KEY_MAPMANAGER_MENU_NAME = "mapmanager";
+  
+  
+	/** the name of the resource file */
+	private final static String RESOURCE_BUNDLE_NAME = "MapManagerPlugin";
+
+	/** the name of the directory containing the resources */
+	private final static String USER_RESOURCE_DIR_NAME = ".mapmanagerplugin";
+
+  public static final String MAPMANAGER_ACTION_STORE_ID = RESOURCE_BUNDLE_NAME;
+  public static final String ACTION_MAPMANAGER_MAPMANAGER_FRAME = "map_manager";
+
 
 // ----------------------------------------------------------------------  
 // Implementation of org.dinopolis.gpstool.plugin.Plugin
@@ -62,6 +117,15 @@ public class MapManagerPlugin implements GuiPlugin
   public void initializePlugin(PluginSupport support)
   {
     map_manager_ = support.getMapManagerHook();
+    application_resources_ = support.getResources();
+        // load map manager resources:
+    if(Debug.DEBUG)
+      Debug.println("MapManager_init","loading resources");
+    loadResources();
+
+        // prepare the actionstore for the menu:
+    action_store_ = ActionStore.getStore(MAPMANAGER_ACTION_STORE_ID);
+    action_store_.addActions(new Action[] {new MapManagerFrameAction()});
   }
 
 //----------------------------------------------------------------------
@@ -91,6 +155,22 @@ public class MapManagerPlugin implements GuiPlugin
   public void stopPlugin()
     throws Exception
   {
+    boolean store_resources = false;
+        // save window locaton and dimensions:
+    if (resources_.getBoolean(KEY_MAPMANAGER_WINDOW_REMEMBER_SETTINGS) && (main_frame_ != null))
+    {
+      Point location = main_frame_.getLocationOnScreen();
+      Dimension dimension = main_frame_.getSize();
+      resources_.setInt(KEY_MAPMANAGER_WINDOW_LOCATION_X, location.x);
+      resources_.setInt(KEY_MAPMANAGER_WINDOW_LOCATION_Y, location.y);
+      resources_.setInt(KEY_MAPMANAGER_WINDOW_DIMENSION_WIDTH, dimension.width);
+      resources_.setInt(KEY_MAPMANAGER_WINDOW_DIMENSION_HEIGHT, dimension.height);
+      store_resources = true;
+    }
+
+    if(store_resources)
+      resources_.store();
+
   }
 
 //----------------------------------------------------------------------
@@ -116,7 +196,7 @@ public class MapManagerPlugin implements GuiPlugin
 
   public float getPluginVersion()
   {
-    return(0.1f);
+    return((float)resources_.getDouble(KEY_MAPMANAGER_PLUGIN_VERSION));
   }
 
 //----------------------------------------------------------------------
@@ -130,7 +210,7 @@ public class MapManagerPlugin implements GuiPlugin
 
   public String getPluginName()
   {
-    return("Map Manager");
+    return(resources_.getString(KEY_MAPMANAGER_PLUGIN_NAME));
   }
 
 //----------------------------------------------------------------------
@@ -145,7 +225,7 @@ public class MapManagerPlugin implements GuiPlugin
 
   public String getPluginDescription()
   {
-    return("Displays available maps");
+    return(resources_.getString(KEY_MAPMANAGER_PLUGIN_DESCRIPTION));
   }
   
 
@@ -182,7 +262,14 @@ public class MapManagerPlugin implements GuiPlugin
  */
   public JMenuItem getSubMenu()
   {
-    return(null);
+  	if(frame_menu_item_ == null)
+  	{
+      frame_menu_item_ = (JMenuItem)MenuFactory.createMenuComponent(MenuFactory.KEY_MENUE_PREFIX,
+                                                                    KEY_MAPMANAGER_MENU_NAME,
+                                                                    resources_,
+                                                                    action_store_);
+  	}
+    return(frame_menu_item_);
   }
 
 //----------------------------------------------------------------------
@@ -244,6 +331,127 @@ public class MapManagerPlugin implements GuiPlugin
   {
     return(layer_.isActive());
   }
+
+//----------------------------------------------------------------------
+// other methods
+//----------------------------------------------------------------------
+
+//----------------------------------------------------------------------
+/**
+ * Loads the resource file, or exits on a MissingResourceException.
+ */
+
+  void loadResources()
+  {
+    try 
+    {
+      resources_ = ResourceManager.getResources(MapManagerPlugin.class,
+                                                RESOURCE_BUNDLE_NAME,
+                                                USER_RESOURCE_DIR_NAME,
+                                                Locale.getDefault());
+    }
+    catch (MissingResourceException mre) 
+    {
+      if (Debug.DEBUG)
+        Debug.println("MapManagerPlugin", mre.toString()+'\n'+
+                      Debug.getStackTrace(mre));
+      System.err.println("MapManagerPlugin: resource file '"+RESOURCE_BUNDLE_NAME+"' not found");
+      System.err.println("please make sure that this file is within the classpath !");
+      System.exit(1);
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Updates the locations according to the values set within the
+ * resource file. 
+ */
+
+  protected void updateWindowLocation()
+  {
+    try
+    {
+      main_frame_.setLocation(resources_.getInt(KEY_MAPMANAGER_WINDOW_LOCATION_X),
+                              resources_.getInt(KEY_MAPMANAGER_WINDOW_LOCATION_Y));
+      main_frame_.setSize(resources_.getInt(KEY_MAPMANAGER_WINDOW_DIMENSION_WIDTH),
+                          resources_.getInt(KEY_MAPMANAGER_WINDOW_DIMENSION_HEIGHT));
+    }
+    catch (MissingResourceException exc)
+    {
+    }
+    catch (NumberFormatException exc)
+    {
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Called when the user selects or deselects a map in the table.
+ *
+ * @param event the event
+ */
+  public void valueChanged(ListSelectionEvent event)
+  {
+    if(Debug.DEBUG)
+      Debug.println("MapManager_selection","selection changed "+event);
+    MapInfoTable table = main_frame_.getMapInfoTable();
+    MapInfoTableModel table_model = (MapInfoTableModel)table.getModel();
+
+        // find and store all selected maps:
+    int[] selected_rows = table.getSelectedRows();
+    Set selected_map_infos = new TreeSet();; 
+    for(int sel_row_index=0; sel_row_index < selected_rows.length; sel_row_index++)
+    {
+      selected_map_infos.add(table_model.getMapInfo(selected_rows[sel_row_index]).getFilename());
+    }
+    layer_.setSelectedMaps(selected_map_infos);
+    layer_.repaint();
+  }
+  
+//----------------------------------------------------------------------
+// inner classes
+//----------------------------------------------------------------------
+
+      //----------------------------------------------------------------------
+     /**
+      * The Action for switching a layer on or off
+      */
+
+ class MapManagerFrameAction extends AbstractAction
+ {
+
+       //----------------------------------------------------------------------
+       /**
+        * The Default Constructor.
+        */
+
+   public MapManagerFrameAction()
+   {
+     super(ACTION_MAPMANAGER_MAPMANAGER_FRAME);
+   }
+
+       //----------------------------------------------------------------------
+       /**
+        * Ouputs some test message
+        * 
+        * @param event the action event
+        */
+
+   public void actionPerformed(ActionEvent event)
+   {
+     if(main_frame_ == null)
+     {
+       main_frame_ = new MapManagerFrame();
+       main_frame_.initialize(map_manager_,application_resources_,resources_);
+       JTable table = main_frame_.getMapInfoTable();
+       ListSelectionModel selection_model = table.getSelectionModel();
+           // add the layer as selection listener, so it may paint the selected maps
+       selection_model.addListSelectionListener(MapManagerPlugin.this);
+     }
+     updateWindowLocation();
+     main_frame_.setVisible(true);
+   }
+ }
 
 }
 

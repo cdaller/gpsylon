@@ -23,14 +23,17 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 
 //----------------------------------------------------------------------
 /**
  * Adapter to map the interface of a GPSTrackpoint to the interface of
  * the GarminWaypoint (altitude is a float, not a double in the garmin
- * protocol, identification and comment are empty). At the moment,
- * only get methods are supported.
+ * protocol, identification and comment are empty, date is translated
+ * from garmin format). At the moment, only get methods are supported.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -40,6 +43,26 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
 {
 
   protected GarminTrackpoint trackpoint_;
+
+  public static long garmin_zero_date_seconds_;
+
+
+  static
+  {
+    TimeZone timezone = TimeZone.getTimeZone("UTC");
+    Calendar garmin_zero = Calendar.getInstance(timezone);
+    garmin_zero.set(Calendar.DAY_OF_MONTH,0);
+    garmin_zero.set(Calendar.MONTH,0);
+    garmin_zero.set(Calendar.YEAR,1990);
+    garmin_zero.set(Calendar.HOUR_OF_DAY,0);
+    garmin_zero.set(Calendar.MINUTE,0);
+    garmin_zero.set(Calendar.SECOND,0);
+    garmin_zero.set(Calendar.MILLISECOND,0);
+//     System.out.println("garmin garmin_zero_: "+garmin_zero.getTime()+" "+garmin_zero);
+    garmin_zero_date_seconds_ = garmin_zero.getTime().getTime() / 1000;
+        // alternative is to set the value directly (taken from gpspoint2):
+//    garmin_zero_date_seconds_ = 631065600L;
+  }
   
   public GarminTrackpointAdapter(GarminTrackpoint trackpoint)
   {
@@ -163,6 +186,33 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
     return(!Double.isNaN(getAltitude()));
   }
 
+
+//----------------------------------------------------------------------
+/**
+ * Returns the date of the given trackpoint or null, if no date was set.
+ *
+ * @return the date of the given trackpoint or null, if no date was set.
+ */
+  public Date getDate()
+  {
+//     long unixtime = (trackpoint_.getTime() + garmin_zero_date_seconds_) * 1000;
+//     System.out.println("garmin time: "+trackpoint_.getTime()+" unixtime: "+unixtime+" date:"+new Date(unixtime));
+//     System.out.println("Garmin zero: "+garmin_zero_date_seconds_);
+//     System.out.println("calc: "+getDateFromGarminTime(trackpoint_.getTime()));
+    return(getDateFromGarminTime(trackpoint_.getTime()));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Sets the date of the given trackpoit.
+ *
+ * @param date the date of the trackpoint.
+ */
+  public void setDate(Date date)
+  {
+//    trackpoint_.setTime(getGarminTimeFromDate(date));
+  }
+
   
 //----------------------------------------------------------------------
 /**
@@ -189,6 +239,33 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
         //trackpoint_.setNewTrack(new_segment);
   }
 
+
+//----------------------------------------------------------------------
+/**
+ * Returns the seconds from 1.1.1990 from the given date.
+ *
+ * @param the date.
+ * @return the seconds from 1.1.1990 from the given date.
+ */
+  protected long getGarminTimeFromDate(Date date)
+  {
+    return(date.getTime()/1000 - garmin_zero_date_seconds_);
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Returns the date from the seconds since 1.1.1990.
+ *
+ * @param the seconds.
+ * @return the date from the seconds since 1.1.1990.
+ */
+  protected Date getDateFromGarminTime(long garmin_time)
+  {
+//     Calendar new_cal = (Calendar)garmin_zero_.clone();
+//     new_cal.add(Calendar.SECOND,(int)garmin_time);
+//     return(new_cal.getTime());
+    return(new Date((garmin_zero_date_seconds_ + garmin_time) * 1000));
+  }
   
 }
 

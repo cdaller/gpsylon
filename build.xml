@@ -67,6 +67,7 @@ Christof Dallermassl (cdaller@iicm.edu)
     <echo>
       The following targets are available:
       - help: shows all available targets of this build.xml file
+      - run: runs the GPSMap application
       - compile: compiles the gpstool library and the GPSMap application
       - compile_plugins: compiles all plugins
       - clean_all: deletes the '${target_class_dir}','${dist_dir}' and '${javadoc_dir}' directory.

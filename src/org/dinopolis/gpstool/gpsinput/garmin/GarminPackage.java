@@ -237,7 +237,7 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
- * Get the word on the given offset.
+ * Get the word (16bit, unsigned) on the given offset.
  *
  * @param offset the position to return.
  * @return the word at the given position
@@ -249,14 +249,38 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
- * Get the int on the given offset.
+ * Get the (signed) int (16bit) on the given offset.
  *
  * @param offset the position to return.
  * @return the integer at the given position
  */
   public int getInt(int offset)
   {
-    return(GarminDataConverter.getGarminInt(data_,offset));
+    return(getSignedInt(offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the (signed) int (16bit) on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the integer at the given position
+ */
+  public int getSignedInt(int offset)
+  {
+    return(GarminDataConverter.getGarminSignedInt(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the unsigned int (16bit) on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the integer at the given position
+ */
+  public int getUnsignedInt(int offset)
+  {
+    return(GarminDataConverter.getGarminSignedInt(data_,offset));
   }
 
 //----------------------------------------------------------------------
@@ -273,15 +297,53 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
- * Get the long on the given offset.
+ * Get the (unsigned) long (32 bit) on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the long at the given position
+ * @deprecated use getLongWord or getSignedLong instead
+ */
+  public long getLong(int offset)
+  {
+    return(getSignedInt(offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the (unsigned) long (32 bit) on the given offset.
  *
  * @param offset the position to return.
  * @return the long at the given position
  */
-  public long getLong(int offset)
+  public long getLongWord(int offset)
   {
-    return(GarminDataConverter.getGarminLong(data_,offset));
+    return(getUnsignedInt(offset));
   }
+
+//----------------------------------------------------------------------
+/**
+ * Get the (signed) long (32 bit) on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the long at the given position
+ */
+  public long getSignedLong(int offset)
+  {
+    return(GarminDataConverter.getGarminSignedLong(data_,offset));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the (unsigned) long (32 bit) on the given offset.
+ *
+ * @param offset the position to return.
+ * @return the long at the given position
+ */
+  public long getUnsignedLong(int offset)
+  {
+    return(GarminDataConverter.getGarminUnsignedLong(data_,offset));
+  }
+
 
 //----------------------------------------------------------------------
 /**
@@ -411,41 +473,43 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
- * Get the next data value as int.
+ * Get the next data value as int (32bit, signed).
  * @return the next value as int
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
+ * @deprecated Use getNextAsSigendInt, getNextAsUnsignedInt or getNextAsWord
+ * (same as getNextAsUnsignedInt) instead.
  */
   public int getNextAsInt()
     throws IllegalStateException
   {
-    int value = GarminDataConverter.getGarminInt(data_,get_index_);
-    get_index_ += 4;
-    return(value);
+    return(getNextAsSignedInt());
   }
+
 
 //----------------------------------------------------------------------
 /**
- * Set the next data value as int.
+ * Set the next data value as int (32bit, signed)
  * @param value the next value as int
+ * @deprecated Use setNextAsSigendInt, setNextAsUnsignedInt or setNextAsWord
+ * (same as setNextAsUnsignedInt) instead.
  */
   public void setNextAsInt(int value)
   {
-    data_ = GarminDataConverter.setGarminInt(value,data_,put_index_);
-    put_index_ += 4;
+		setNextAsSignedInt(value);
   }
 
 //----------------------------------------------------------------------
 /**
- * Get the next data value as word.
- * @return the next value as word
+ * Get the next data value as int (32bit, signed).
+ * @return the next value as int
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
  */
-  public int getNextAsWord()
+  public int getNextAsSignedInt()
     throws IllegalStateException
   {
-    int value = GarminDataConverter.getGarminWord(data_,get_index_);
+    int value = GarminDataConverter.getGarminSignedInt(data_,get_index_);
     get_index_ += 2;
     return(value);
   }
@@ -453,13 +517,64 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
- * Set the next data value as word.
+ * Set the next data value as int (32bit, signed)
+ * @param value the next value as int
+ */
+  public void setNextAsSignedInt(int value)
+  {
+    data_ = GarminDataConverter.setGarminSignedInt(value,data_,put_index_);
+    put_index_ += 2;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as int (32bit, unsigned).
+ * @return the next value as int
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public int getNextAsUnsignedInt()
+    throws IllegalStateException
+  {
+    int value = GarminDataConverter.getGarminUnsignedInt(data_,get_index_);
+    get_index_ += 2;
+    return(value);
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as int (32bit, unsigned)
+ * @param value the next value as int
+ */
+  public void setNextAsUnsignedInt(int value)
+  {
+    data_ = GarminDataConverter.setGarminUnsignedInt(value,data_,put_index_);
+    put_index_ += 2;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as word (16 bit, unsigned).
+ * @return the next value as word
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public int getNextAsWord()
+    throws IllegalStateException
+  {
+    return(getNextAsUnsignedInt());
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as word (16 bit, unsigned).
  * @param value the next value as word
  */
   public void setNextAsWord(int value)
   {
-    data_ = GarminDataConverter.setGarminWord(value,data_,put_index_);
-    put_index_ += 2;
+		setNextAsUnsignedInt(value);
   }
 
 //----------------------------------------------------------------------
@@ -490,27 +605,103 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
- * Get the next data value as long.
+ * Get the next data value as long (32bit, unsigned).
  * @return the next value as long.
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
+ * @deprecated Use getNextAsSigendLong, getNextAsUnsignedLong or getNextAsLongWord
+ * (same as getNextAsUnsignedLong) instead.
  */
   public long getNextAsLong()
     throws IllegalStateException
   {
-    long value = GarminDataConverter.getGarminLong(data_,get_index_);
+		return(getNextAsUnsignedLong());
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as long (32bit, unsigned).
+ * @param value the next value as long
+ * @deprecated Use setNextAsSigendLong, setNextAsUnsignedLong or setNextAsLongWord
+ * (same as setNextAsUnsignedLong) instead.
+ */
+  public void setNextAsLong(long value)
+  {
+		setNextAsUnsignedLong(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as long (32bit, unsigned).
+ * @return the next value as long.
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public long getNextAsLongWord()
+    throws IllegalStateException
+  {
+		return(getNextAsUnsignedLong());
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as long (32bit, unsigned).
+ * @param value the next value as long
+ */
+  public void setNextAsLongWord(long value)
+  {
+		setNextAsUnsignedLong(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as long (32bit, unsigned).
+ * @return the next value as long.
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public long getNextAsUnsignedLong()
+    throws IllegalStateException
+  {
+    long value = GarminDataConverter.getGarminUnsignedLong(data_,get_index_);
     get_index_ += 4;
     return(value);
   }
 
 //----------------------------------------------------------------------
 /**
- * Set the next data value as long.
+ * Set the next data value as long (32bit, unsigned).
  * @param value the next value as long
  */
-  public void setNextAsLong(long value)
+  public void setNextAsUnsignedLong(long value)
   {
-    data_ = GarminDataConverter.setGarminLong(value,data_,put_index_);
+    data_ = GarminDataConverter.setGarminUnsignedLong(value,data_,put_index_);
+    put_index_ += 4;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as long (32bit, signed).
+ * @return the next value as long.
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public long getNextAsSignedLong()
+    throws IllegalStateException
+  {
+    long value = GarminDataConverter.getGarminSignedLong(data_,get_index_);
+    get_index_ += 4;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the next data value as long (32bit, signed).
+ * @param value the next value as long
+ */
+  public void setNextAsSignedLong(long value)
+  {
+    data_ = GarminDataConverter.setGarminSignedLong(value,data_,put_index_);
     put_index_ += 4;
   }
 

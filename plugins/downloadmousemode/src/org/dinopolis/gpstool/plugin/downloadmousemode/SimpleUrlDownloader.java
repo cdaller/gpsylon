@@ -36,7 +36,7 @@ import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.plugin.MapRetrievalPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.util.ProgressListener;
+import org.dinopolis.util.ProgressListener;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.HTMLViewerFrame;

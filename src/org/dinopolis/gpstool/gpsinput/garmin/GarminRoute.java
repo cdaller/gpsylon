@@ -22,120 +22,31 @@
 
 
 package org.dinopolis.gpstool.gpsinput.garmin;
-import java.util.List;
-import java.util.Vector;
+
+import org.dinopolis.gpstool.gpsinput.GPSRouteImpl;
+
 
 //----------------------------------------------------------------------
 /**
+ * At the moment, the same as the GPSRouteImpl. The only exception is
+ * that it accepts GarminWaypoints as well and converts them to
+ * GPSWaypoints by using the {@link GarminWaypointAdapter}.
+ *
  * @author Christof Dallermassl
  * @version $Revision$
  */
 
-public class GarminRoute  
+public class GarminRoute extends GPSRouteImpl
 {
-  Vector route_points_ = new Vector();
-  String identification_;
-  String comment_;
-
-  public GarminRoute()
-  {
-  }
-
-//----------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 /**
- * Get the identification.
- *
- * @return the identification.
+ * Add a garmin waypoint at the end of the list.
+ * @param routepoint The routepoint to add.
  */
-  public String getIdentification() 
+  public void addWaypoint(GarminWaypoint routepoint)
   {
-    return (identification_);
-  }
-  
-//----------------------------------------------------------------------
-/**
- * Set the identification.
- *
- * @param identification the identification.
- */
-  protected void setIdentification(String identification) 
-  {
-    identification_ = identification;
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the comment.
- *
- * @return the comment.
- * @throws GarminUnsupportedMethodException
- */
-  public String getComment()
-    throws GarminUnsupportedMethodException
-  {
-    if(comment_ == null)
-      throw new GarminUnsupportedMethodException("Comment not supported");
-    else
-      return(comment_);
-  }
-  
-//----------------------------------------------------------------------
-/**
- * Set the comment.
- *
- * @param comment the comment.
- */
-  protected void setComment(String comment) 
-  {
-    comment_ = comment;
-  }
-  
-  
-//----------------------------------------------------------------------
-/**
- * Get a list of route_points (GarminWaypoint objects) and Link objects.
- *
- * @return a list of  route_points.
- */
-  public List getRoutePoints() 
-  {
-    return (route_points_);
-  }
-  
-// //----------------------------------------------------------------------
-// /**
-//  * Set the route_points.
-//  *
-//  * @param route_points the route_points.
-//  */
-//   public void setRoutePoints(GarminWaypoint[] route_points) 
-//   {
-//     for(int index = 0; index < route_points.length; index++)
-//       addRoutePoint(route_points[index]);
-//   }
-  
-//----------------------------------------------------------------------
-/**
- * Add a route point.
- *
- * @param route_point the route point to add.
- */
-  public void addRoutePoint(GarminWaypoint route_point) 
-  {
-    route_points_.add(route_point);
-  }
-
-  public void addRouteLinkData(GarminRouteLinkD210 link_type)
-  {
-    route_points_.add(link_type); // FIXXME: maybe not clever to mix route points and links!
-  }
-
-  public String toString()
-  {
-    StringBuffer buf = new StringBuffer();
-    buf.append("GarminRoute[identification=").append(identification_).append(",");
-    buf.append("route points/links=").append(route_points_.toString()).append("]");
-    return(buf.toString());
+        // adopts the GarminWaypoint to a GPSWaypoint
+    super.addWaypoint(new GarminWaypointAdapter(routepoint));
   }
   
 }

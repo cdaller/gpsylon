@@ -22,6 +22,7 @@
 
 
 package org.dinopolis.gpstool.gpsinput.garmin;
+import java.awt.Color;
 import java.util.List;
 import java.util.Vector;
 
@@ -31,66 +32,28 @@ import java.util.Vector;
  * @version $Revision$
  */
 
-public class GarminTrack
+public class GarminTrack extends GarminRoute
 {
-  Vector track_points_ = new Vector();
   boolean display_;
+
   short color_;
-  String identification_;
-
-  public GarminTrack()
-  {
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the identification.
- *
- * @return the identification.
- */
-  public String getIdentification() 
-  {
-    return (identification_);
-  }
   
-//----------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 /**
- * Set the identification.
- *
- * @param identification the identification.
+ * Add a garmin trackpoint at the end of the list.
+ * @param routepoint The routepoint to add.
  */
-  protected void setIdentification(String identification) 
+  public void addWaypoint(GarminTrackpoint trackpoint)
   {
-    identification_ = identification;
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get a list of track_points (GarminTrackpoint objects).
- *
- * @return a list of track_points.
- */
-  public List getTrackPoints() 
-  {
-    return (track_points_);
-  }
-  
-//----------------------------------------------------------------------
-/**
- * Add a track_point.
- *
- * @param track_point the route point to add.
- */
-  public void addTrackPoint(GarminTrackpoint track_point) 
-  {
-    track_points_.add(track_point);
+        // adopts the GarminTrackpoint to a GPSTrackpoint
+    super.addWaypoint(new GarminTrackpointAdapter(trackpoint));
   }
 
   public String toString()
   {
     StringBuffer buf = new StringBuffer();
-    buf.append("GarminTrack[identification=").append(identification_).append(",");
-    buf.append("track points/links=").append(track_points_.toString()).append("]");
+    buf.append("GarminTrack[identification=").append(getIdentification()).append(",");
+    buf.append("track points/links=").append(getWaypoints().toString()).append("]");
     return(buf.toString());
   }
 }

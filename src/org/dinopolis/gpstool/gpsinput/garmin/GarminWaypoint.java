@@ -22,6 +22,7 @@
 
 
 package org.dinopolis.gpstool.gpsinput.garmin;
+
 import java.awt.Color;
 
 //----------------------------------------------------------------------
@@ -37,11 +38,11 @@ public interface GarminWaypoint
  * Get the Waypoint Type
  *
  * @return Waypoint Type
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public byte getType()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -49,22 +50,22 @@ public interface GarminWaypoint
  * Get the Waypoint Class Type
  *
  * @return Waypoint Class Type
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public int getClassType()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Class Name
  *
  * @return Waypoint Class Name
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getClassName()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 
   
 //----------------------------------------------------------------------
@@ -72,11 +73,11 @@ public interface GarminWaypoint
  * Get the Waypoint Color
  *
  * @return Waypoint Color
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public Color getColor()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -84,11 +85,11 @@ public interface GarminWaypoint
  * Get the Waypoint Display Options
  *
  * @return		Waypoint Display Options
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getDisplayOptions()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -96,11 +97,11 @@ public interface GarminWaypoint
  * Get the Waypoint Attributes
  *
  * @return		Waypoint Attributes
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public short getAttributes()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -108,22 +109,22 @@ public interface GarminWaypoint
  * Get the Waypoint Symbol Type
  *
  * @return		Waypoint Symbol Type
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public int getSymbolType()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Waypoint Symbol Name
  *
  * @return		Waypoint Symbol Name or "unknown" if unknown.
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getSymbolName()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -131,11 +132,11 @@ public interface GarminWaypoint
  * Get the Waypoint Subclass
  *
  * @return		Waypoint Subclass
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public byte[] getSubclass()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -143,11 +144,11 @@ public interface GarminWaypoint
  * Get the Latitude (degrees)
  *
  * @return		Latitude (degrees)
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public double getLatitude()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -155,22 +156,22 @@ public interface GarminWaypoint
  * Get the Longitude (degrees)
  *
  * @return		Longitude (degrees)
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public double getLongitude()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Altitude (metres).  A value of 1.0e25 means the parameter is unsupported or unknown.
  *
  * @return		Altitude (metres)
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public float getAltitude()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -178,11 +179,11 @@ public interface GarminWaypoint
  * Get the Depth (metres). A value of 1.0e25 means the parameter is unsupported or unknown.
  *
  * @return		Depth (metres)
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public float getDepth()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -190,11 +191,11 @@ public interface GarminWaypoint
  * Get the Distance (metres). A value of 1.0e25 means the parameter is unsupported or unknown.
  *
  * @return		Distance (metres)
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public float getDistance()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -202,11 +203,11 @@ public interface GarminWaypoint
  * Get the State Code
  *
  * @return		State Code
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getStateCode()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -214,33 +215,33 @@ public interface GarminWaypoint
  * Get the Country Code
  *
  * @return		Country Code
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getCountryCode()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Estimated Time Enroute
  *
  * @return		ETE
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public int getEstimatedTimeEnroute()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Identification String
  *
  * @return		Identification String
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getIdentification()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -248,11 +249,11 @@ public interface GarminWaypoint
  * Get the Comment String
  *
  * @return		Comment String
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getComment()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -260,11 +261,11 @@ public interface GarminWaypoint
  * Get the Facility String
  *
  * @return		Facility String
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getFacility()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -272,11 +273,11 @@ public interface GarminWaypoint
  * Get the City String
  *
  * @return		City String
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getCity()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -284,11 +285,11 @@ public interface GarminWaypoint
  * Get the Address String
  *
  * @return		Address String
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getAddress()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 	
 
 //----------------------------------------------------------------------
@@ -296,22 +297,22 @@ public interface GarminWaypoint
  * Get the Crossroad String
  *
  * @return		Crossroad String
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getCrossroad()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
  * Get the Link Identification String
  *
  * @return		Link Identification String
- * @throws GarminUnsupportedMethodException
+ * @throws UnsupportedOperationException
  */
 	
 	public String getLinkIdentification()
-    throws GarminUnsupportedMethodException;
+    throws UnsupportedOperationException;
 
 }
 

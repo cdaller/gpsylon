@@ -146,7 +146,6 @@ public interface GPSMapKeyConstants
   public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_FILE_NOT_FOUND_MESSAGE = "localize.message.download_error.file_not_found_message";
   public static final String KEY_LOCALIZE_MESSAGE_FILE_NOT_FOUND_MESSAGE = "localize.message.file_not_found_message";
   public static final String KEY_LOCALIZE_BYTES_READ = "localize.bytes_read";
-  public static final String KEY_LOCALIZE_LOAD_TRACK_DIALOG_TITLE = "localize.load_track.dialog_title";
   public static final String KEY_LOCALIZE_LOAD_SHAPE_DIALOG_TITLE = "localize.load_shape.dialog_title";
   public static final String KEY_LOCALIZE_LOAD_LOCATION_DIALOG_TITLE = "localize.load_location.dialog_title";
   public static final String KEY_LOCALIZE_LOAD_PROGRESS = "localize.load_progress";

@@ -1,23 +1,28 @@
-<?xml version="1.0"?>
-<gpx
+<?xml version="1.0"?>$dateformatter.applyPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")$longitudeformatter.applyPattern("0.000000")$latitudeformatter.applyPattern("0.000000")$altitudeformatter.applyPattern("0")
+ <gpx
   version="1.0"
   creator="$author"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://www.topografix.com/GPX/1/0"
   xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">
-  <time>${date_year}-${date_month}-${date_day}T${date_hour}:${date_minute}:${date_second}Z</time>
+  <time>$dateformatter.format($creation_date)</time>
   <bounds minlat="$min_latitude" minlon="$min_longitude"
           maxlat="$max_latitude" maxlon="$max_longitude"/>
 
 ## print all waypoints that are available:
 #if($printwaypoints)
 #foreach( $point in $waypoints )
-  <wpt lat="$point.Latitude" lon="$point.Longitude">
+  <wpt lat="$latitudeformatter.format($point.Latitude)" lon="$longitudeformatter.format($point.Longitude)">
 #if($point.hasValidAltitude())
-    <ele>$point.Altitude</ele>
+    <ele>$altitudeformatter.format($point.Altitude)</ele>
 #end
     <name>$!point.Identification</name>
+#if($point.getComment().length() > 0)
     <desc>![CDATA[$!point.Comment]]</desc>
+#end
+#if($point.getSymbolName())
+    <sym>$point.getSymbolName()</sym>
+#end
   </wpt>
 #end
 #end
@@ -26,13 +31,21 @@
 #foreach( $route in $routes )
   <rte>
     <name>$!route.Identification</name>
+#if($route.getComment().length() > 0)
     <desc>![CDATA[$!route.Comment]]</desc>
+#end
     <number>$velocityCount</number>
 #set ($points = $route.getWaypoints())
 #foreach ($point in $points)
-    <rtept lat="$point.Latitude" lon="$point.Longitude">
+    <rtept lat="$latitudeformatter.format($point.Latitude)" lon="$longitudeformatter.format($point.Longitude)">
 #if($point.hasValidAltitude())
-        <ele>$point.Altitude</ele>
+        <ele>$altitudeformatter.format($point.Altitude)</ele>
+#end
+#if($point.getIdentification().length() > 0)
+    <name>![CDATA[$!point.Identification]]</name>
+#end
+#if($point.getComment().length() > 0)
+    <desc>![CDATA[$!point.Comment]]</desc>
 #end
     </rtept>
 #end
@@ -42,22 +55,28 @@
 ## print all tracks that are available:
 #if($printtracks)
 #foreach( $track in $tracks )
+#set($close_segment = false)
   <trk>
     <name>$!track.Identification</name>
-    <desc>![CDATA[$!track.Comment]]</desc>
+#if($point.getComment().length() > 0)
+    <desc>![CDATA[$!point.Comment]]</desc>
+#end
 ##      <number>$velocityCount</number>
 #set ($points = $track.getWaypoints())##
 #foreach ($point in $points)##
 #if($point.isNewTrack())
-#if($close_segment)  ## close trkseg, if not the first occurence
+#if($close_segment)## close trkseg, if not the first occurence
     </trkseg>
 #end
     <trkseg>
 #set($close_segment = true)
 #end
-      <trkpt lat="$point.Latitude" lon="$point.Longitude">
+      <trkpt lat="$latitudeformatter.format($point.Latitude)" lon="$longitudeformatter.format($point.Longitude)">
 #if($point.hasValidAltitude())
-        <ele>$point.Altitude</ele>
+        <ele>$altitudeformatter.format($point.Altitude)</ele>
+#end
+#if($point.getDate())## only if there is a time set! 
+        <time>$dateformatter.format($point.getDate())</time>
 #end
       </trkpt>
 #end
@@ -66,3 +85,4 @@
 #end
 #end
 </gpx>
+

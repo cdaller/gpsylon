@@ -63,7 +63,7 @@ public class LocationMarkerCategory implements GPSMapKeyConstants, Comparable
 /**
  * Copy Constructor.
  *
- * @param marker the marker to copy.
+ * @param category the category to copy.
  */
   public LocationMarkerCategory(LocationMarkerCategory category)
   {
@@ -261,7 +261,7 @@ public class LocationMarkerCategory implements GPSMapKeyConstants, Comparable
 /**
  * Returns an Array that holds localized categories. These resources
  * are created from the data in resources set via the static method
- * setResources().
+ * {@link #setResources(Resources)}.
  *
  * @return a Array that holds localized categories.
  * @exception IllegalStateException if the resources were not set before.
@@ -342,10 +342,9 @@ public class LocationMarkerCategory implements GPSMapKeyConstants, Comparable
 //----------------------------------------------------------------------
 /**
  * Writes the information in the categories back to the resource that
- * were set via the static method setResources();
+ * were set via the static method {@link #setResources(Resources)}.
  *
  * @param categories the categories to write.
- * @param resources the resources to write to.
  * @exception IllegalStateException if the resources were not set before.
  */
   public static void setCategories(LocationMarkerCategory[] categories)

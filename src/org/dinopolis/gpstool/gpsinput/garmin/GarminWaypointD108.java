@@ -344,7 +344,7 @@ public class GarminWaypointD108 implements GarminWaypoint
  * @throws UnsupportedOperationException
  */
 	
-	public int getEstimatedTimeEnroute()
+	public long getEstimatedTimeEnroute()
     throws UnsupportedOperationException
   {
     throw new UnsupportedOperationException("Estimated Time En Route not supported");

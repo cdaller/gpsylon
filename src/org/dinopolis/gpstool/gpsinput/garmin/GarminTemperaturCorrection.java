@@ -22,9 +22,6 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------

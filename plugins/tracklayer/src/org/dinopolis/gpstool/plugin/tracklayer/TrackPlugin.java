@@ -22,36 +22,22 @@
 
 package org.dinopolis.gpstool.plugin.tracklayer;
 
-import com.bbn.openmap.Layer;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.Set;
-import java.util.TreeSet;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
-import org.dinopolis.gpstool.track.Track;
-import org.dinopolis.gpstool.track.TrackImpl;
-import org.dinopolis.gpstool.track.Trackpoint;
-import org.dinopolis.gpstool.track.TrackpointImpl;
-import org.dinopolis.gpstool.util.ExtensionFileFilter;
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.ResourceManager;
-import org.dinopolis.util.Resources;
+import org.dinopolis.gpstool.track.*;
+import org.dinopolis.util.*;
 import org.dinopolis.util.gui.ActionStore;
-import org.dinopolis.util.gui.MenuFactory;
+
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**

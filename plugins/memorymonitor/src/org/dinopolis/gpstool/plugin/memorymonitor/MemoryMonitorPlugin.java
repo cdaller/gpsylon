@@ -23,22 +23,16 @@
 
 package org.dinopolis.gpstool.plugin.memorymonitor;
 
-import org.dinopolis.gpstool.plugin.GuiPlugin;
-import org.dinopolis.gpstool.plugin.Plugin;
-import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.MapManagerHook;
-import javax.swing.JMenuItem;
-import javax.swing.JMenu;
-import com.bbn.openmap.Layer;
-import javax.swing.KeyStroke;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
+
+import javax.swing.*;
+
 import org.apache.batik.util.gui.MemoryMonitor;
 import org.dinopolis.gpstool.gui.MouseMode;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import org.dinopolis.gpstool.plugin.GuiPlugin;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**

@@ -23,29 +23,6 @@
 
 package org.dinopolis.gpstool.plugin.downloadmousemode;
 
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.NoRouteToHostException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapInfo;
-import org.dinopolis.gpstool.plugin.MapRetrievalPlugin;
-import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.plugin.downloadmousemode.DownloadMouseModeLayer;
-import org.dinopolis.gpstool.util.HttpRequester;
-import org.dinopolis.util.ProgressListener;
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.Resources;
-import org.dinopolis.util.gui.HTMLViewerFrame;
 
 
 

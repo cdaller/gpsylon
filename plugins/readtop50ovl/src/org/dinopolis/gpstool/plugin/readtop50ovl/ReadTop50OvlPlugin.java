@@ -23,30 +23,16 @@
 
 package org.dinopolis.gpstool.plugin.readtop50ovl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.ParsePosition;
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
+import java.util.*;
+
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
-import org.dinopolis.gpstool.track.Track;
-import org.dinopolis.gpstool.track.TrackImpl;
-import org.dinopolis.gpstool.track.Trackpoint;
-import org.dinopolis.gpstool.track.TrackpointImpl;
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.ResourceManager;
-import org.dinopolis.util.Resources;
+import org.dinopolis.gpstool.track.*;
+import org.dinopolis.util.*;
 
 //----------------------------------------------------------------------
 /**

@@ -22,39 +22,25 @@
 
 package org.dinopolis.gpstool.plugin.gpstool;
 
-import com.bbn.openmap.Layer;
-import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.Set;
-import java.util.TreeSet;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+
+import javax.swing.*;
+
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSException;
-import org.dinopolis.gpstool.gui.ImageFrame;
-import org.dinopolis.gpstool.gui.MouseMode;
-import org.dinopolis.gpstool.gui.NmeaDataTextFrame;
-import org.dinopolis.util.gui.ProgressFrame;
+import org.dinopolis.gpstool.gui.*;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.util.ExtensionFileFilter;
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.ResourceManager;
-import org.dinopolis.util.Resources;
-import org.dinopolis.util.gui.ActionStore;
-import org.dinopolis.util.gui.MenuFactory;
+import org.dinopolis.util.*;
+import org.dinopolis.util.gui.*;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
+
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**

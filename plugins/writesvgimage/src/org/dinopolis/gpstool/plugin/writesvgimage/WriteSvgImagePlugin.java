@@ -22,22 +22,15 @@
 
 package org.dinopolis.gpstool.plugin.writesvgimage;
 
-import org.dinopolis.gpstool.plugin.WriteImagePlugin;
-import java.io.IOException;
-import java.awt.image.BufferedImage;
 import java.awt.Component;
-import java.awt.Graphics2D;
-import java.io.OutputStream;
-import javax.imageio.ImageIO;
+import java.io.*;
 
-import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.svggen.SwingSVGPrettyPrint;
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMImplementation;
-import java.io.OutputStreamWriter;
-import javax.swing.JComponent;
+import org.apache.batik.svggen.SVGGraphics2D;
 import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.plugin.WriteImagePlugin;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 
 //----------------------------------------------------------------------
 /**

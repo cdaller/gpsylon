@@ -25,29 +25,22 @@
 
 package org.dinopolis.gpstool.plugin.kismetimport;
 
-import org.dinopolis.gpstool.plugin.GuiPlugin;
-import org.dinopolis.gpstool.plugin.PluginSupport;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JTable;
-import com.bbn.openmap.Layer;
-
-import org.dinopolis.gpstool.gui.MouseMode;
-import org.dinopolis.util.Resources;
-
-import org.dinopolis.util.gui.MenuFactory;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
-import javax.swing.JFileChooser;
-import javax.swing.JButton;
-
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.SAXParser;
-import org.xml.sax.InputSource;
-
 import java.io.File;
 import java.io.FileInputStream;
+
+import javax.swing.*;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.gui.layer.location.LocationMarkerSource;
+import org.dinopolis.gpstool.plugin.GuiPlugin;
+import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.util.Resources;
+import org.xml.sax.InputSource;
+
+import com.bbn.openmap.Layer;
 
 /**
  * The KismetImportPlugin will simply invoke a FileChooser dialog
@@ -255,7 +248,7 @@ public class KismetImportPlugin implements GuiPlugin, ActionListener {
         }
         
         // import the file when user requested to do so
-        if (fileChooser.showDialog(new JFrame(),"import") == fileChooser.APPROVE_OPTION)
+        if (fileChooser.showDialog(new JFrame(),"import") == JFileChooser.APPROVE_OPTION)
             importFile(fileChooser.getSelectedFile());
     }
     

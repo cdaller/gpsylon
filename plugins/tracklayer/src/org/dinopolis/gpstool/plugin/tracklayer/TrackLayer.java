@@ -23,29 +23,23 @@
 
 package org.dinopolis.gpstool.plugin.tracklayer;
 
-import com.bbn.openmap.proj.Projection;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Graphics;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Vector;
+
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.event.TrackChangedEvent;
 import org.dinopolis.gpstool.event.TrackChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.track.Track;
-import org.dinopolis.gpstool.track.TrackImpl;
-import org.dinopolis.gpstool.track.Trackpoint;
-import org.dinopolis.gpstool.track.TrackpointImpl;
+import org.dinopolis.gpstool.track.*;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
+
+import com.bbn.openmap.proj.Projection;
 
 
 

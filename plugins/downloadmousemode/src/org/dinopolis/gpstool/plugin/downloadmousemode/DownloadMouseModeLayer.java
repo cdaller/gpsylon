@@ -23,49 +23,24 @@
 
 package org.dinopolis.gpstool.plugin.downloadmousemode;
 
-import com.bbn.openmap.proj.Projection;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.io.BufferedInputStream;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.NoRouteToHostException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.MessageFormat;
 import java.text.ParseException;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+import java.util.*;
+
 import javax.swing.JOptionPane;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapInfo;
-import org.dinopolis.gpstool.MapManagerHook;
-import org.dinopolis.gpstool.MapNavigationHook;
-import org.dinopolis.gpstool.gui.MouseMode;
+
+import org.dinopolis.gpstool.*;
 import org.dinopolis.gpstool.gui.util.AngleJTextField;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.plugin.MapRetrievalPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.ResourceManager;
-import org.dinopolis.util.Resources;
-import org.dinopolis.util.gui.HTMLViewerFrame;
-import org.dinopolis.util.ProgressListener;
+import org.dinopolis.util.*;
+
+import com.bbn.openmap.proj.Projection;
 
 
 //----------------------------------------------------------------------

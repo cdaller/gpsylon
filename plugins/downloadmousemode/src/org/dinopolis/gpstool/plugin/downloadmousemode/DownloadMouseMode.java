@@ -23,14 +23,15 @@
 
 package org.dinopolis.gpstool.plugin.downloadmousemode;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Layer;
 import java.awt.event.MouseEvent;
+
 import javax.swing.Icon;
+
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
 import org.dinopolis.util.Resources;
+
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**

@@ -22,24 +22,21 @@
 
 package org.dinopolis.gpstool.plugin.averagepos;
 
-import com.bbn.openmap.Layer;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+
+import javax.swing.*;
+
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.util.Debug;
-import org.dinopolis.util.ResourceManager;
-import org.dinopolis.util.Resources;
+import org.dinopolis.util.*;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
+
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**

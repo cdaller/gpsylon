@@ -23,23 +23,19 @@
 
 package org.dinopolis.gpstool.plugin.navigationmousemode;
 
-import com.bbn.openmap.LatLonPoint;
-import java.awt.AWTEvent;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.util.Resources;
+
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------

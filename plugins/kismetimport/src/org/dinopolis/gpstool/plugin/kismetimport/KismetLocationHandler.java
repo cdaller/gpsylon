@@ -24,21 +24,12 @@
 
 package org.dinopolis.gpstool.plugin.kismetimport;
 
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.Attributes;
 import java.util.HashMap;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerSource;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarker;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerCategory;
-import org.dinopolis.gpstool.gui.layer.location.LocationMarkerFilter;
+
+import org.dinopolis.gpstool.gui.layer.location.*;
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenList;
-
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.SAXParser;
-import org.xml.sax.InputSource;
-
-import java.io.File;
-import java.io.FileInputStream;
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
 
 /** 
  * SAX Handler for Kismet XML scan files.

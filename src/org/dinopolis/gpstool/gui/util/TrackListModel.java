@@ -23,18 +23,15 @@
 
 package org.dinopolis.gpstool.gui.util;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.*;
+
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+
 import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.event.TrackChangedEvent;
 import org.dinopolis.gpstool.event.TrackChangedListener;
-import org.dinopolis.gpstool.event.TrackChangedListener;
-import java.util.Iterator;
 
 //----------------------------------------------------------------------
 /**

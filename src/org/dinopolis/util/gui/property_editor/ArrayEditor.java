@@ -24,12 +24,8 @@ package org.dinopolis.util.gui.property_editor;
 
 import java.awt.Component;
 import java.awt.GridLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorSupport;
+import java.beans.*;
 import java.lang.reflect.Array;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.JPanel;

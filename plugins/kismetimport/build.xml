@@ -65,12 +65,12 @@ The following targets are available:
         <patternset refid="gpstool_plugin_kismetimport.lib.patternset"/>
       </fileset>
 -->
+<!-- no aux needed
       <pathelement location="${aux_dir}"/>
+-->
     </path>
-
     <pathconvert pathsep=" " dirsep="/" property="gpstool_plugin_kismetimport.dist.lib.classpath"
                  refid="gpstool_plugin_kismetimport.dist.classpath">
-<!--      <map from="${user.dir}/${lib_dir}" to="${lib_dir}"/> -->
       <map from="${user.dir}${file.separator}" to=""/> 
     </pathconvert>
 <!--
@@ -96,11 +96,15 @@ The following targets are available:
         </section>
       </manifest>
 
+<!-- no aux needed
       <fileset dir="${aux_dir}"/>
+-->
       <fileset dir="${target_class_dir}"/>
       <fileset dir=".">
         <include name="META-INF/services/org.dinopolis.gpstool.*"/>
+<!-- no aux needed
         <include name="${aux_dir}/**"/>
+-->
       </fileset>
     </jar>
 
@@ -127,7 +131,7 @@ The following targets are available:
     <tar longfile="gnu"
       basedir="${basedir}"
       destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
-      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,META-INF/**"
+      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,build.xml,META-INF/**"
       excludes="*CVS*"
       compression="gzip"/>
   </target>
@@ -149,7 +153,9 @@ The following targets are available:
           <patternset refid="gpstool_plugin_kismetimport.dinopolis_lib.patternset"/>
         </fileset>
         <pathelement path="${dinopolis_classes}"/>
+<!-- no aux needed
         <pathelement location="${aux_dir}"/>
+-->
       </classpath>
       <patternset refid="compile.files"/>
     </javac>         

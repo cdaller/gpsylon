@@ -126,7 +126,7 @@ public class GPSMap
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.14-pre7";
+  public final static String GPSMAP_VERSION = "0.4.14";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";

@@ -43,7 +43,7 @@ public class GarminWaypointD108 implements GarminWaypoint
                Color.magenta,          // magenta
                Color.cyan,             // cyan
                Color.white};           // white
-  protected final static int DEFAULT_COLOR_INDEX = 15;
+  protected final static int DEFAULT_COLOR_INDEX = 0;
 
   protected final static String[] DISPLAY_OPTIONS =
     new String[] {"symbol+name","symbol","symbol+comment"};

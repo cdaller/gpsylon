@@ -68,7 +68,6 @@ public class MappointDownloader implements MapRetrievalPlugin
 //  public static final float MAPBLAST2MAPPOINT_SCALE_FACTOR = 1.0f;
 
   public static final String HOST_NAME = "mappoint.msn.com";
-  public static final String LOCATION = "EUR"; // TODO make one for USA!
   protected static final int[] POSSIBLE_MAPPOINT_SCALES = {1,3,6,12,25,50,150,800,2000,7000,12000};
 
   protected HttpRequester web_request_;
@@ -173,7 +172,12 @@ public class MappointDownloader implements MapRetrievalPlugin
 
   protected String getMapServerName()
   {
-    return("Mappoint");
+    return("Mappoint "+getLocation());
+  }
+
+  protected String getLocation()
+  {
+    return("EUR");
   }
 
 //----------------------------------------------------------------------
@@ -322,7 +326,7 @@ public class MappointDownloader implements MapRetrievalPlugin
       url = new URL ("http://"+HOST_NAME+"/"+session_key+"/map.aspx?"
                      +"C="+latitude+","+longitude
                      +"&A="+mappoint_scale
-                     +"&L="+LOCATION
+                     +"&L="+getLocation()
                      +"&P=");
 
       if(Debug.DEBUG)
@@ -352,7 +356,7 @@ public class MappointDownloader implements MapRetrievalPlugin
       url = new URL("http://"+HOST_NAME+"/"+session_key+"/map.aspx?"
                     +"ID="+session_id
                     +"&C="+latitude+","+longitude
-                    +"&L="+LOCATION
+                    +"&L="+getLocation()
                     +"&A="+mappoint_scale
                     +"&PN="+session_pn
                     +"&S="+image_width+","+image_height
@@ -365,7 +369,7 @@ public class MappointDownloader implements MapRetrievalPlugin
           // finally request the image:
       url = new URL("http://"+HOST_NAME+"/"+session_key+"/MPSvc.aspx?MPMtd=M"
                     +"&ID="+session_id
-                    +"&L="+LOCATION
+                    +"&L="+getLocation()
                     +"&C="+latitude+","+longitude
                     +"&A="+mappoint_scale
                     +"&S="+image_width+","+image_height

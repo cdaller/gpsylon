@@ -59,6 +59,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -72,11 +73,12 @@ import org.dinopolis.gpstool.gpsinput.GPSDevice;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSFileDevice;
 import org.dinopolis.gpstool.gpsinput.GPSNetworkGpsdDevice;
-import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSPosition;
 import org.dinopolis.gpstool.gpsinput.GPSRawDataFileLogger;
 import org.dinopolis.gpstool.gpsinput.GPSSerialDevice;
 import org.dinopolis.gpstool.gpsinput.GPSSimulationDataProcessor;
+import org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor;
+import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.gpstool.gui.LatLongInputDialog;
 import org.dinopolis.gpstool.gui.MapKeyHandler;
 import org.dinopolis.gpstool.gui.MouseMode;
@@ -105,11 +107,10 @@ import org.dinopolis.util.commandarguments.CommandArguments;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
 import org.dinopolis.util.gui.ResourceEditorFrame;
+import org.dinopolis.util.gui.SelectedButtonActionSynchronizer;
 import org.dinopolis.util.gui.SplashScreen;
 import org.dinopolis.util.servicediscovery.RepositoryClassLoader;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
-import javax.swing.JCheckBoxMenuItem;
-import org.dinopolis.util.gui.SelectedButtonActionSynchronizer;
 
 //----------------------------------------------------------------------
 /**
@@ -126,7 +127,7 @@ public class GPSMap
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.14";
+  public final static String GPSMAP_VERSION = "0.4.15-pre2";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -200,6 +201,9 @@ public class GPSMap
 
   protected boolean simulation_mode_ = false;
 
+      /** print warning to restart GPSMap if gps properties were changed */
+  protected boolean print_gps_device_properties_warning_ = false;
+  
       /** the service discoverer (for plugin functionality) */
   public static ServiceDiscovery service_discovery_;
   public static RepositoryClassLoader repository_class_loader_;
@@ -372,6 +376,7 @@ public class GPSMap
     setLocale();
     initFilenames();
     processCommandLineArguments(args);
+    print_gps_device_properties_warning_ = true;
 
             // initialize for plugins:
     initializePluginArchitecture();
@@ -445,6 +450,8 @@ public class GPSMap
     
     checkLockFiles(resources_.getStringArray(KEY_LOCKFILES));
 
+    connectGPSDevice();
+    
     updateResources(null);
     updateWindowLocation();
 
@@ -849,7 +856,7 @@ public class GPSMap
     String[] valid_args =
       new String[] {"device*","d*","help","h","speed#","s#","gpsfile*","f*",
                     "nmealogfile*","l*","gpsdhost*","g*","gpsdport#","p#",
-                    "file","gpsd","serial","alarmfile*"};
+                    "file","gpsd","serial","alarmfile*","nmea","garmin"};
 
     CommandArguments args = null;
     try
@@ -868,6 +875,14 @@ public class GPSMap
         System.exit(0);
       }
 
+      if (args.isSet("nmea"))
+      {
+        resources_.setString(KEY_GPS_DEVICE_PROTOCOL,VALUE_KEY_DEVICE_PROTOCOL_NMEA);
+      }
+      if (args.isSet("garmin"))
+      {
+        resources_.setString(KEY_GPS_DEVICE_PROTOCOL,VALUE_KEY_DEVICE_PROTOCOL_GARMIN);
+      }
       if (args.isSet("device"))
       {
         resources_.setString(KEY_GPS_DEVICE_SERIAL_PORT,args.getStringValue("device"));
@@ -880,18 +895,33 @@ public class GPSMap
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_SERIAL);
       }
 
-      if (args.isSet("speed"))
+      if (args.isSet("speed") || args.isSet("s"))
       {
-        resources_.setString(KEY_GPS_DEVICE_SERIAL_SPEED,args.getStringValue("speed"));
+        String protocol = resources_.getString(KEY_GPS_DEVICE_PROTOCOL);
+        int speed = args.getIntegerValue("speed").intValue();
+        int default_speed = -1;
+        if(protocol.equals(VALUE_KEY_DEVICE_PROTOCOL_GARMIN))
+          default_speed = resources_.getInt(KEY_GPS_DEVICE_SERIAL_SPEED_DEFAULT_GARMIN);
+        if(protocol.equals(VALUE_KEY_DEVICE_PROTOCOL_NMEA))
+          default_speed = resources_.getInt(KEY_GPS_DEVICE_SERIAL_SPEED_DEFAULT_NMEA);
+//         if(resources_.getString(KEY_GPS_DEVICE_PROTOCOL).equals(VALUE_KEY_DEVICE_PROTOCOL_SIRF2))
+//           default_speed = resources_.getInt(KEY_GPS_DEVICE_SERIAL_SPEED_DEFAULT_SIRF2);
+
+        if((speed != default_speed) && (default_speed > 0))
+        {
+          System.err.println("WARNING: selected speed ("+speed+") is not the default speed ("+default_speed+")");
+          System.err.println("         for the chosen protocol! GPS device may not work!");
+        }
+        resources_.setInt(KEY_GPS_DEVICE_SERIAL_SPEED,speed);
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_SERIAL);
       }
       else 
       if (args.isSet("s"))
       {
-        resources_.setString(KEY_GPS_DEVICE_SERIAL_SPEED,args.getStringValue("s"));
+        resources_.setInt(KEY_GPS_DEVICE_SERIAL_SPEED,args.getIntegerValue("s").intValue());
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_SERIAL);
       }
-
+      
       if (args.isSet("gpsfile") || args.isSet("f"))
       {
         String filename;
@@ -999,6 +1029,8 @@ public class GPSMap
     System.out.println("--help, -h: this screen");
     System.out.println("--device, -d <device>: serial device for NMEA device (e.g. /dev/ttyS0 or COM1)");
     System.out.println("--speed, -s <speed>: speed for serial device (NMEA uses 4800 (default))");
+    System.out.println("--nmea: the serial device is a NMEA device");
+    System.out.println("--garmin: the serial device is a Garmin device");
     System.out.println("--gpsfile, -f <filename>: the file is used as input for NMEA data (if set to 'none', no file is used)");
     System.out.println("--gpsdhost, -g <hostname> : NMEA data is fetched from gpsd (gps data server)");
     System.out.println("--gpsdport, -p <port>: the port of the gpsd server");
@@ -1361,8 +1393,17 @@ public class GPSMap
       if((key == null) || (key.startsWith(KEY_HTTP_PROXY_PREFIX)))
         updateProxySettings();
 
-      if((key == null) || (key.startsWith(KEY_GPS_DEVICE_PREFIX)))
-        updateGPSConnection();
+      if((key != null) && key.startsWith(KEY_GPS_DEVICE_PREFIX))
+      {
+        if(print_gps_device_properties_warning_)
+        {
+          String message = resources_.getString(KEY_LOCALIZE_MESSAGE_GPS_PROPERTIES_EFFECT_ON_RESTART);
+          JOptionPane.showMessageDialog(main_frame_, message);
+          System.out.println("WARNING: "+message);
+          print_gps_device_properties_warning_ = false;
+        }
+//        updateGPSConnection();
+      }
 
       if((key == null) || key.equals(KEY_NUMBER_FORMAT_DISTANCE))
       {
@@ -1436,11 +1477,15 @@ public class GPSMap
  * resource file. 
  */
 
-  public void updateGPSConnection()
+  public void connectGPSDevice()
   {
     try
     {
       String gps_mode = resources_.getString(KEY_GPS_DEVICE_MODE);
+      String gps_protocol = resources_.getString(KEY_GPS_DEVICE_PROTOCOL);
+          // TODO check plausability (e.g. protocol is garmin, but
+          // logfile for nmea is set, protocol garmin, but tcp is set,
+          // ...)
 //      System.out.println("GPSMode: "+gps_mode);
       
       if(!gps_mode.equals(VALUE_KEY_DEVICE_MODE_NONE))
@@ -1493,27 +1538,52 @@ public class GPSMap
           {
             String serial_port_name = resources_.getString(KEY_GPS_DEVICE_SERIAL_PORT);
             int serial_port_speed = resources_.getInt(KEY_GPS_DEVICE_SERIAL_SPEED);
-    	  
-            gps_data_processor_ = new GPSNmeaDataProcessor();
+
+            if(gps_protocol.equals(VALUE_KEY_DEVICE_PROTOCOL_NMEA))
+            {
+              if(Debug.DEBUG)
+                Debug.println("GPSMap_GPSConnection","connecting to nmea device");
+              gps_data_processor_ = new GPSNmeaDataProcessor();
+//               int default_speed = resources_.getInt(KEY_GPS_DEVICE_SERIAL_SPEED_DEFAULT_NMEA);
+//               if(default_speed != serial_port_speed)
+//               {
+//                 System.err.println("WARNING: set serial speed is improbable for chosen protocol!");
+//                 System.err.println("         reset to default speed: "+default_speed);
+//                 serial_port_speed = default_speed;
+// //                resources_.setInt(KEY_GPS_DEVICE_SERIAL_SPEED,default_speed);
+//               }
+                  // NMEA LOGFILE:
+              String nmea_logfile = resources_.getString(KEY_GPS_DEVICE_NMEALOGFILE);
+              if((nmea_logfile != null) && (nmea_logfile.length() > 0))
+                gps_data_processor_.addGPSRawDataListener(new GPSRawDataFileLogger(nmea_logfile));
+            }
+            else
+            {
+              if(Debug.DEBUG)
+                Debug.println("GPSMap_GPSConnection","connecting to garmin device");
+              gps_data_processor_ = new GPSGarminDataProcessor();
+//               int default_speed = resources_.getInt(KEY_GPS_DEVICE_SERIAL_SPEED_DEFAULT_GARMIN);
+//               if(default_speed != serial_port_speed)
+//               {
+//                 System.err.println("WARNING: serial speed set is improbable for chosen protocol!");
+//                 System.err.println("         reset to default speed: "+default_speed);
+//                 serial_port_speed = default_speed;
+// //                resources_.setInt(KEY_GPS_DEVICE_SERIAL_SPEED,default_speed);
+//               }
+            }
             GPSDevice gps_device;
             Hashtable environment = new Hashtable();
             environment.put(GPSSerialDevice.PORT_NAME_KEY,serial_port_name);
             environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(serial_port_speed));
             gps_device = new GPSSerialDevice();
 
-
-              // NMEA LOGFILE:
-            String nmea_logfile = resources_.getString(KEY_GPS_DEVICE_NMEALOGFILE);
-            if((nmea_logfile != null) && (nmea_logfile.length() > 0))
-              gps_data_processor_.addGPSRawDataListener(new GPSRawDataFileLogger(nmea_logfile));
-            
             gps_device.init(environment);
             gps_data_processor_.setGPSDevice(gps_device);
             if(Debug.DEBUG)
               Debug.println("GPSMap_GPSConnection","connecting to gpsdevice on port "
-                            +serial_port_name);
+                            +serial_port_name +" at "+serial_port_speed+" baud");
             gps_data_processor_.open();
-
+            gps_data_processor_.startSendPositionPeriodically(1000L);
           }
           else
             if(gps_mode.equals(VALUE_KEY_DEVICE_MODE_GPSD))
@@ -2533,7 +2603,7 @@ public class GPSMap
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(simulation_mode_));
 
-      updateGPSConnection();
+      connectGPSDevice();
       if(simulation_mode_ && (destination_position_ != null))
         startSimulation(current_gps_position_,destination_position_);
     }

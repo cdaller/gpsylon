@@ -151,6 +151,7 @@ public class GPSMap
 
   protected MapKeyHandler map_key_handler_;
   protected MapManager map_manager_;
+  protected TrackManagerImpl track_manager_;
   
   protected StatusBar status_bar_;
   protected Tachometer tacho_meter_;
@@ -194,7 +195,7 @@ public class GPSMap
   private final static String RESOURCE_BOUNDLE_NAME = "GPSMap";
 
       /** the name of the directory containing the resources */
-  private final static String USER_RESOURCE_DIR_NAME = ".gpsmap";
+  public final static String USER_RESOURCE_DIR_NAME = ".gpsmap";
 
       /** the action store */
   private ActionStore action_store_;
@@ -330,6 +331,9 @@ public class GPSMap
       /** the key for the info of the gps satellites from the gps device. The
        * value is an array of {@link org.dinopolis.gpstool.gpsinput.SatelliteInfo} objects. */
   public final static String PROPERTY_KEY_GPS_SATELLITE_INFO = GPSDataProcessor.SATELLITE_INFO;
+      /** the key for the info of the gps position error. The
+       * value an {@link org.dinopolis.gpstool.gpsinput.GPSPositionError} object. */
+  public final static String PROPERTY_KEY_GPS_POS_ERROR = GPSDataProcessor.EPE;
   public final static String PROPERTY_KEY_ROUTE_DESTINATION = "route.destination";
   public final static String PROPERTY_KEY_ROUTE_DESTINATION_DISTANCE = "route.destination.distance";
   public final static String PROPERTY_KEY_TOTAL_DISTANCE = "total.distance";
@@ -466,6 +470,9 @@ public class GPSMap
 
     map_manager_ = new MapManager();
     map_manager_.initialize(resources_,main_frame_);
+
+    track_manager_ = new TrackManagerImpl();
+    track_manager_.setGPSDataProcessor(gps_data_processor_);
     
         // initialize data for plugins (PluginSupport):
     hook_manager_.setMapManagerHook(map_manager_);
@@ -475,6 +482,7 @@ public class GPSMap
     hook_manager_.setMapComponent(map_bean_);
     hook_manager_.setPropertyChangeSupport(property_change_support_);
     hook_manager_.setResources(resources_);
+    hook_manager_.setTrackManager(track_manager_);
 
         // create MouseModeManager
     mouse_mode_manager_ = new MouseModeManager();
@@ -562,6 +570,7 @@ public class GPSMap
     addPropertyChangeListener(PROPERTY_KEY_TOTAL_DISTANCE, status_bar_);
     addPropertyChangeListener(PROPERTY_KEY_ROUTE_DESTINATION_DISTANCE, status_bar_);
     addPropertyChangeListener(PROPERTY_KEY_GPS_SATELLITE_INFO, status_bar_);
+    addPropertyChangeListener(PROPERTY_KEY_GPS_POS_ERROR, status_bar_);
 
     addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, tacho_meter_);
     addPropertyChangeListener(PROPERTY_KEY_GPS_SPEED, tacho_meter_);

@@ -36,10 +36,11 @@ public class DownloadMapCalculator
 {
 
       /** in scale 1.0, mapblast images have 2817 pixels per meter */
-  public static float MAPBLAST_METERS_PER_PIXEL = 1.0f/2817.947378f;
-  public static final float EARTH_EQUATORIAL_RADIUS_M = 6378137f;
-  public static final float EARTH_POLAR_RADIUS_M = 6356752.3f;
-  public static final float VERTICAL_METER_PER_DEGREE = (float)(EARTH_POLAR_RADIUS_M * 2 * Math.PI / 360.0);
+  public static final double MAPBLAST_METERS_PER_PIXEL = 1.0f/2817.947378f;
+  public static final double EARTH_EQUATORIAL_RADIUS_M = 6378137;
+  public static final double EARTH_POLAR_RADIUS_M = 6356752.3;
+  public static final double VERTICAL_METER_PER_DEGREE = EARTH_POLAR_RADIUS_M * 2 * Math.PI / 360.0;
+  public static final double OVERLAP_FACTOR = 0.98;
 
       /** the scale of the image (mapblast scales are used here) */
   protected double scale_;
@@ -152,8 +153,9 @@ public class DownloadMapCalculator
     }
 
         // calculate coordinates for an area:
-    
-    double image_height_degree = image_height_ * scale_ * meters_per_pixel_ / VERTICAL_METER_PER_DEGREE;
+
+        // use only 0.95 percent, so images do overlap slightly
+    double image_height_degree = OVERLAP_FACTOR * image_height_ * scale_ * meters_per_pixel_ / VERTICAL_METER_PER_DEGREE;
 
     double start_lat;
     double start_long;
@@ -190,7 +192,7 @@ public class DownloadMapCalculator
           // (contributed by Alexander Fedorov):
       horiz_meter_per_degree = Math.cos(Math.toRadians(current_lat))
                                        *EARTH_EQUATORIAL_RADIUS_M*2*Math.PI / 360.0;
-      image_width_degree = image_width_ * scale_ * meters_per_pixel_ / horiz_meter_per_degree;
+      image_width_degree = OVERLAP_FACTOR * image_width_ * scale_ * meters_per_pixel_ / horiz_meter_per_degree;
 
           // center of image are not at corners of rectangle,
           // therefore half of the image width is added:

@@ -150,15 +150,10 @@ public class DownloadMapCalculator
                                                   image_height_,
                                                   (float)scale_)});
     }
-        // calculate circumference of small circle at latitude:
-    double horiz_meter_per_degree = Math.cos(Math.toRadians(center_latitude_))
-                                    *EARTH_EQUATORIAL_RADIUS_M*2*Math.PI / 360.0;
-    
-    double image_width_degree = image_width_ * scale_ * meters_per_pixel_ / horiz_meter_per_degree;
-    double image_height_degree = image_height_ * scale_ * meters_per_pixel_ / VERTICAL_METER_PER_DEGREE;
 
-    double lat_offset = image_height_degree / 2; 
-    double long_offset = image_width_degree / 2;
+        // calculate coordinates for an area:
+    
+    double image_height_degree = image_height_ * scale_ * meters_per_pixel_ / VERTICAL_METER_PER_DEGREE;
 
     double start_lat;
     double start_long;
@@ -167,11 +162,9 @@ public class DownloadMapCalculator
 
         // bottom left (latitude origin is in bottom) of rectangle:
     start_lat = south_;
-    start_long = west_;
     
         // top right of rectangle:
     end_lat = north_;
-    end_long = east_;
 
 //     System.out.println("Calculation: from lat "+ start_lat +" to "+ end_lat
 //                        + " from long "+start_long+" to "+ end_long
@@ -179,27 +172,38 @@ public class DownloadMapCalculator
 
         // center of image are not at corners of rectangle:
     start_lat += image_height_degree/2;
-    start_long += image_width_degree/2;
 
         // end is reached if the complete image would be outside the
         // rectangle.  therefore we stop if the coordinates are one
         // image size beyond the rectangle:
     end_lat += image_height_degree/2;
-    end_long += image_width_degree/2;
 
     double current_lat = start_lat;
-    double current_long = start_long;
-
+    double current_long;
+    double horiz_meter_per_degree;
+    double image_width_degree;
+    
     Vector maps = new Vector();
     while(current_lat < end_lat)
     {
+          // horizontal calculation is adoped to latitude (due to form of earth)
+          // (contributed by Alexander Fedorov):
+      horiz_meter_per_degree = Math.cos(Math.toRadians(current_lat))
+                                       *EARTH_EQUATORIAL_RADIUS_M*2*Math.PI / 360.0;
+      image_width_degree = image_width_ * scale_ * meters_per_pixel_ / horiz_meter_per_degree;
+
+          // center of image are not at corners of rectangle,
+          // therefore half of the image width is added:
+      start_long = west_ + image_width_degree/2;
+      end_long = east_ + image_width_degree/2;
+
+      current_long = start_long;
       while(current_long < end_long)
       {
         maps.add(new MapRectangle((float)current_lat, (float)current_long,
                                   image_width_, image_height_, (float)scale_));
         current_long += image_width_degree;
       }
-      current_long = start_long;
       current_lat += image_height_degree;
     }
     MapRectangle[] rectangles = new MapRectangle[maps.size()];

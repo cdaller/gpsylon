@@ -29,6 +29,7 @@ import java.beans.PropertyChangeSupport;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.util.Resources;
+import org.dinopolis.util.servicediscovery.ServiceDiscovery;
 
 //----------------------------------------------------------------------
 /**
@@ -53,6 +54,7 @@ public class HookManager implements PluginSupport
   Resources resources_;
   GPSDataProcessor gps_data_processor_;
   TrackManager track_manager_;
+  ServiceDiscovery service_discovery_;
   
   public HookManager()
   {
@@ -264,6 +266,28 @@ public class HookManager implements PluginSupport
   public void setGPSDataProcessor(GPSDataProcessor processor)
   {
     gps_data_processor_ = processor;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the service discovery that allows to find all kind of plugins.
+ *
+ * @return the service discovery.
+ */
+  public ServiceDiscovery getServiceDiscovery()
+  {
+    return(service_discovery_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Set the service discovery that allows to find all kind of plugins.
+ *
+ * @return the service discovery.
+ */
+  public void setServiceDiscovery(ServiceDiscovery service_discovery)
+  {
+    service_discovery_ = service_discovery;
   }
 
 }

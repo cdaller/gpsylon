@@ -1,5 +1,16 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/06/24: changed map download completely (now using plugins, so
+            extending it should be easier now!
+ 
+            changed screenshot to find out about the colors used in
+            the gps device (garmin only). Still most of the protocol
+            unknown, but it works at least for eTrex and eMaps
+            devices. More feedback is needed to find out more about
+            the protocol!
+
+            0.4.15-pre4 released
+
 2003/06/17: changed download of screenshot (orientation is now correct
             for etrex legend and eMap(?), download is repeated when a
             corrupt package is received.

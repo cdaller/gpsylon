@@ -35,7 +35,7 @@ import org.dinopolis.util.ProgressListener;
 //----------------------------------------------------------------------
 /**
  * This frame may be used to display the information from the {@link
- * org.dinopolis.gpstool.util.ProgressListener}.
+ * org.dinopolis.util.ProgressListener}.
  *
  * @author Christof Dallermassl
  * @version $Revision$

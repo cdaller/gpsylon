@@ -67,7 +67,9 @@ public class WaypointImpl implements Waypoint
   
 //----------------------------------------------------------------------
 /**
- * Empty Constructor
+ * Copy Constructor
+ *
+ * @param waypoint the waypoint to copy
  */
   public WaypointImpl(GPSWaypoint waypoint)
   {
@@ -80,6 +82,20 @@ public class WaypointImpl implements Waypoint
 //    depth_ = waypoint.getDepth();
     identification_ = waypoint.getIdentification();
     comment_ = waypoint.getComment();
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Copy Constructor for Waypoints (copy the screen coordinates as well).
+ *
+ * @param waypoint the waypoint to copy
+ */
+  public WaypointImpl(Waypoint waypoint)
+  {
+    this((GPSWaypoint)waypoint);
+    System.out.println("copy constr. waypointimpl");
+    x_ = waypoint.getX();
+    y_ = waypoint.getY();
   }
   
 //----------------------------------------------------------------------

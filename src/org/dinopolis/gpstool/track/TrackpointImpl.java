@@ -57,10 +57,28 @@ public class TrackpointImpl extends WaypointImpl implements Trackpoint
 //----------------------------------------------------------------------
 /**
  * Copy Constructor
+ *
+ * @param trackpoint the trackpoint to copy
  */
   public TrackpointImpl(GPSTrackpoint trackpoint)
   {
     super(trackpoint);
+    date_ = trackpoint.getDate();
+    new_track_ = trackpoint.isNewTrack();
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Copy Constructor. This constructor is needed, as otherwise the
+ * trackpoints are copied as GPSTrackpoints and the screen coordinates
+ * are not copied.
+ *
+ * @param trackpoint the trackpoint to copy
+ */
+  public TrackpointImpl(Trackpoint trackpoint)
+  {
+    super(trackpoint);
+    System.out.println("copy constr. trackpointimpl");
     date_ = trackpoint.getDate();
     new_track_ = trackpoint.isNewTrack();
   }

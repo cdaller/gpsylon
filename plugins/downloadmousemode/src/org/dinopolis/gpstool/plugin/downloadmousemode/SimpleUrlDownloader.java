@@ -163,7 +163,7 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
     try
     {
           // calculate the best scale for this mapserver:
-      double mapserver_scale = getScale(wanted_mapblast_scale);
+      double mapserver_scale = getDownloadScale(wanted_mapblast_scale);
           // create the url to fetch the image:
       URL url = new URL(getUrl(latitude,longitude,mapserver_scale,image_width, image_height));
 
@@ -223,7 +223,7 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
       MapInfo map_info = new MapInfo();
       map_info.setLatitude(latitude);
       map_info.setLongitude(longitude);
-      map_info.setScale((float)mapserver_scale);
+      map_info.setScale((float)getCorrectedMapblastScale(wanted_mapblast_scale));
       map_info.setWidth(image_width);
       map_info.setHeight(image_height);
       map_info.setFilename(filename);
@@ -289,16 +289,23 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
 
 
   protected abstract String getMapServerName();
-  
-  protected double getScale(double wanted_mapblast_scale)
+
+  protected double getScaleFactor()
   {
-    double scale_factor =
-      resources_.getDouble(DownloadMouseModeLayer.KEY_DOWNLOAD_MAP_SCALE_FACTOR_PREFIX
-                                              + "."+getMapServerName());
+    return(resources_.getDouble(DownloadMouseModeLayer.KEY_DOWNLOAD_MAP_SCALE_FACTOR_PREFIX
+                                              + "."+getMapServerName()));
+  }
+  
+  protected double getDownloadScale(double wanted_mapblast_scale)
+  {
         // for map servers with different scale system than mapblast
-        // but with a integer value for their scale:
-    double scale = Math.round(wanted_mapblast_scale / scale_factor);
-    return(scale * scale_factor);
+    return(Math.round(wanted_mapblast_scale / getScaleFactor()));
+  }
+  
+  protected double getCorrectedMapblastScale(double wanted_mapblast_scale)
+  {
+        // for map servers with different scale system than mapblast
+    return(getDownloadScale(wanted_mapblast_scale) * getScaleFactor());
   }
   
   protected String getUrl(double latitude, double longitude, double scale, int width, int height)

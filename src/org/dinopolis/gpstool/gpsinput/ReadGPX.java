@@ -23,6 +23,7 @@
 package org.dinopolis.gpstool.gpsinput;
 
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -33,9 +34,9 @@ import org.dinopolis.gpstool.track.RouteImpl;
 import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.gpstool.track.TrackpointImpl;
 import org.dinopolis.gpstool.track.WaypointImpl;
+import org.dinopolis.util.Debug;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**
@@ -478,7 +479,24 @@ public class ReadGPX
       // Ending of time information of track point
       if (qName.equals("time") && (is_track_ && is_track_point_))
       {
-        actual_trkpt_.setDate(date_format_.parse(characters_.toString(),dummy_position_));
+// 				try
+// 				{
+// 				System.out.println("time characters: '"+characters_+"'");
+// 				System.out.println(" is date: "+date_format_.parse(characters_.toString()));
+// 				System.out.println(" is date: "+date_format_.parse(characters_.toString(),dummy_position_));
+// 				}
+// 				catch(Exception e)
+// 				{
+// 					e.printStackTrace();
+// 				}
+				try
+				{
+					actual_trkpt_.setDate(date_format_.parse(characters_.toString()));
+				}
+				catch(ParseException pe)
+				{
+					System.err.println("illegal time/date format: '"+characters_+"'");
+				}
 
 	// Debug
         if(Debug.DEBUG)

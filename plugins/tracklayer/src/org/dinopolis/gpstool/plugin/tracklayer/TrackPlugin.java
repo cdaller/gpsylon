@@ -55,11 +55,8 @@ import org.dinopolis.util.gui.MenuFactory;
 
 //----------------------------------------------------------------------
 /**
- * This plugin allows to manage the available maps. It shows all
- * available maps on a layer it provides, it provides a table that
- * lists all available maps and allows to edit them, and it provides a
- * mouse mode, that lets the user interact with the map manager by
- * clicking on the map component.
+ * This plugin allows to display the available tracks from the
+ * trackmanager.
  * 
  * @author Christof Dallermassl
  * @version $Revision$

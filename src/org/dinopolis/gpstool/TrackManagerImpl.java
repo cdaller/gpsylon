@@ -488,18 +488,40 @@ public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants
                     +" track maxlon="+track.getMaxLongitude());
 
     int track_size = track.size();
-    GPSWaypoint point;
-    for(int index = 0; index < track_size; index++)
+    if(track_size == 0)
+      return(false);
+    
+    GPSWaypoint start_point;
+    GPSWaypoint next_point;
+    int index = 1;
+    start_point = track.getWaypoint(0);
+
+    if(track_size == 1)
+      return(visible_area.isInside(start_point.getLatitude(), start_point.getLongitude()));
+    
+    while (index < track_size)
     {
-      point = track.getWaypoint(index);
-      if((point.getLatitude() > visible_area.getSouth())
-         && (point.getLatitude() < visible_area.getNorth())
-         && (point.getLongitude() > visible_area.getWest())
-         && (point.getLongitude() < visible_area.getEast()))
+      next_point = track.getWaypoint(index);
+      if(visible_area.intersectsLine(start_point.getLatitude(), start_point.getLongitude(),
+                                     next_point.getLatitude(), next_point.getLongitude()))
         return(true);
+      start_point = next_point;
+      index++;
     }
-        // no point inside, return false:
     return(false);
+    
+//     GPSWaypoint point;
+//     for(int index = 0; index < track_size; index++)
+//     {
+//       point = track.getWaypoint(index);
+//       if((point.getLatitude() > visible_area.getSouth())
+//          && (point.getLatitude() < visible_area.getNorth())
+//          && (point.getLongitude() > visible_area.getWest())
+//          && (point.getLongitude() < visible_area.getEast()))
+//         return(true);
+//     }
+        // no point inside, return false:
+//    return(false);
   }
 
 

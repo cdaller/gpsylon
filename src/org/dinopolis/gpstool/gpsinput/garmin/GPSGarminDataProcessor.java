@@ -37,6 +37,7 @@ import org.dinopolis.gpstool.gpsinput.GPSDevice;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSGeneralDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSPosition;
+import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.GPSSerialDevice;
 import org.dinopolis.util.Debug;
 
@@ -1437,6 +1438,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         double altitude = pvt.getAlt() + pvt.getMslHeight();
         changeGPSData(ALTITUDE,new Float(altitude));
         changeGPSData(HEADING,new Float(calcHeading(pvt.getNorth(),pvt.getEast())));
+        GPSPositionError pos_error = new GPSPositionError(pvt.getEpe(),pvt.getEph(),pvt.getEpv());
+        changeGPSData(EPE,pos_error);
       }
       pvt_sync_request_lock_.notify();
     }

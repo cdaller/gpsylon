@@ -1,0 +1,44 @@
+## print all waypoints that are available:
+#if($printwaypoints)
+
+#
+# Waypoints
+#
+
+#foreach( $point in $waypoints )
+type="waypoint" latitude="$point.Latitude" longitude="$point.Longitude" altitude="$point.Altitude" name="$!point.Identification"
+#end
+#end
+
+## print all routes that are available:
+#if($printroutes)
+
+#
+# Routes
+#
+
+#foreach( $route in $routes )
+type="route" routename="$!route.Identification" routenumber="$velocityCount"
+#set ($points = $route.getWaypoints())##
+#foreach ($point in $points)##
+type="routepoint" latitude="$point.Latitude" longitude="$point.Longitude" altitude="$point.Altitude" name="$!point.Identification"
+#end
+#end
+#end
+## print all tracks that are available:
+#if($printtracks)
+
+#
+# Tracks
+#
+
+#foreach( $track in $tracks )
+
+type="track" trackname="$!track.Identification"
+
+#set ($points = $track.getWaypoints())
+#foreach ($point in $points)
+type="trackpoint" latitude="$point.Latitude" longitude="$point.Longitude" altitude="$point.Altitude" newsegment="$point.isNewTrack()"
+#end
+#end
+#end

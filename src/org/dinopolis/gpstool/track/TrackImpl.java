@@ -93,5 +93,14 @@ public class TrackImpl extends RouteImpl implements Track
 
   }
 
+
+  public String toString()
+  {
+    StringBuffer buf = new StringBuffer();
+    buf.append("TrackImpl[identification=").append(identification_).append(",");
+    buf.append("track points=").append(route_points_.toString()).append("]");
+    return(buf.toString());
+  }
+
 }
 

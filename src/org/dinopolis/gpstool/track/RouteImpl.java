@@ -249,5 +249,14 @@ public class RouteImpl extends GPSRouteImpl implements Route
     }
     minmax_valid_ = true;
   }
+
+
+  public String toString()
+  {
+    StringBuffer buf = new StringBuffer();
+    buf.append("RouteImpl[identification=").append(identification_).append(",");
+    buf.append("route points=").append(route_points_.toString()).append("]");
+    return(buf.toString());
+  }
 }
 

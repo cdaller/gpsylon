@@ -1,5 +1,11 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2003/11/28: fixed getroutes/setroutes (for commandline tool), added
+            workaround that does not block caller if no
+            routes/tracks/waypoints are sent from the device (if none
+            are available).
+
+            fixed bug in date/time conversion (trackpoints)
 
 2003/11/25: fixed more bugs in dataconversion
 

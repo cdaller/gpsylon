@@ -817,6 +817,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       if((package_id != ACK) && (package_id != NAK))
         sendCommandAsync(ACK,package_id);
       watch_dog_.stopWatching();
+
+          // inform raw data listeners:
+      String buffer_string = "received: "+garmin_package.toString();
+      fireRawDataReceived(buffer_string.toCharArray(),0,buffer_string.length());
       
       return (garmin_package); 
     }
@@ -1420,8 +1424,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         // Garmin** classes do not work with the GarminPackage class
         // yet:
     int[] buffer = garmin_package.getCompatibilityBuffer();
-    String buffer_string = "received: "+garmin_package.toString();
-    fireRawDataReceived(buffer_string.toCharArray(),0,buffer_string.length());
       
     switch((int)buffer[0])
     {

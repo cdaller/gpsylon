@@ -23,6 +23,7 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
+
 //----------------------------------------------------------------------
 /**
  * This class represents packages in Garmin data format D210.
@@ -36,21 +37,18 @@ public class GarminRouteLinkD210
   int class_;
   String class_name_;
   byte[] subclass_;
-  String identification_;
+  String identification_ = "";
 
   public static final String[] CLASS_NAME = new String[] {"line","link","net","direct"
                                                           ,"snap"};
+
+  public GarminRouteLinkD210()
+  {
+	}
   
   public GarminRouteLinkD210(int[] buffer)
   {
     class_ = GarminDataConverter.getGarminWord(buffer,2);
-    int class_index = class_;
-    if(class_ == -1)
-      class_index = CLASS_NAME.length;
-    if(class_index < CLASS_NAME.length)
-      class_name_ = CLASS_NAME[class_index];
-    else
-      class_name_ = "unknown";
     subclass_ = GarminDataConverter.getGarminByteArray(buffer,4,18);
     identification_ = GarminDataConverter.getGarminString(buffer,22,(int)buffer[1]-21);
   }
@@ -58,18 +56,91 @@ public class GarminRouteLinkD210
   public GarminRouteLinkD210(GarminPackage pack)
   {
     class_ = pack.getNextAsWord();
-    int class_index = class_;
-    if(class_ == -1)
-      class_index = CLASS_NAME.length;
-    if(class_index < CLASS_NAME.length)
-      class_name_ = CLASS_NAME[class_index];
-    else
-      class_name_ = "unknown";
     subclass_ = pack.getNextAsByteArray(18);
     identification_ = pack.getNextAsString(51);
   }
 
-  //----------------------------------------------------------------------
+//----------------------------------------------------------------------
+/**
+* Get the class value.
+* @return the class value.
+*/
+	public int getClassId()
+	{
+		return (class_);
+	}
+
+//----------------------------------------------------------------------
+/**
+* Set the class value.
+* @param class The new class value.
+*/
+	public void setClassId(int class_id)
+	{
+		class_ = class_id;
+	}
+
+
+//----------------------------------------------------------------------
+/**
+* Get the ClassName value.
+* @return the ClassName value.
+*/
+	public static String getClassName(int class_id)
+	{
+    if(class_id == 0xff)
+      return(CLASS_NAME[CLASS_NAME.length-1]);
+    if(class_id < CLASS_NAME.length-1)
+      return(CLASS_NAME[class_id]);
+    else
+      return("unknown");
+	}
+
+//----------------------------------------------------------------------
+/**
+* Get the subclass value.
+* @return the subclass value.
+*/
+	public byte[] getSubclass()
+	{
+		return (subclass_);
+	}
+
+//----------------------------------------------------------------------
+/**
+* Set the subclass value (18bytes!).
+* @param subclass The new subclass value.
+* @throws IllegalArgumentException if subclass does not hold 18 bytes.
+*/
+	public void setSubclass(byte[] subclass)
+	{
+		if(subclass.length != 18)
+			throw new IllegalArgumentException("Subclass is not byte[18]!");
+		subclass_ = subclass;
+	}
+
+//----------------------------------------------------------------------
+/**
+* Get the identification value.
+* @return the identification value.
+*/
+	public String getIdentification()
+	{
+		return (identification_);
+	}
+
+//----------------------------------------------------------------------
+/**
+* Set the identification value.
+* @param identification The new identification value.
+*/
+	public void setIdentification(String identification)
+	{
+		identification_ = identification;
+	}
+
+
+//----------------------------------------------------------------------
 /**
  * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
  * @return GarminPackage representing content of data type.
@@ -86,7 +157,11 @@ public class GarminRouteLinkD210
 
   public String toString()
   {
-    return("GarminRouteLinkD210[class="+class_+", class_name="+class_name_
-           +", identification="+identification_+"]");
+		StringBuffer subclass = new StringBuffer();
+		for(int count = 0; count < subclass_.length-1; count++)
+			subclass.append(Integer.toHexString(subclass_[count] & 0xff)).append(",");
+		subclass.append(Integer.toHexString(subclass_[subclass_.length-1] & 0xff));
+    return("GarminRouteLinkD210[class="+class_+", class_name="+getClassName(class_)
+           +", identification="+identification_+",subclass="+subclass.toString()+"]");
   }
 }

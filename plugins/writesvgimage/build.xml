@@ -44,6 +44,10 @@ The following targets are available:
       '${plugin_install_dir} directory.
  - install_plugin_home: installs the plugins and all needed libraries into the
       '${plugin_install_home_dir} directory.
+ - clean_old_plugins: removes the old versions of this plugin in the plugins
+      directory '${plugin_install_dir}. 
+ - clean_old_plugins_home: removes the old versions of this plugin in the plugins
+      directory '${plugin_install_home_dir}. 
     </echo>
   </target>
 
@@ -162,7 +166,7 @@ The following targets are available:
   </target>
 
 <!-- install plugin target -->
-  <target name="install_plugin" depends="bin_dist">
+  <target name="install_plugin" depends="clean_dist,bin_dist,clean_old_plugins">
     <copy todir="${plugin_install_dir}">
       <fileset dir="${dist_dir}">
         <exclude name="*.tar.gz"/>
@@ -171,11 +175,30 @@ The following targets are available:
   </target>
 
 <!-- install plugin home target -->
-  <target name="install_plugin_home" depends="bin_dist">
+  <target name="install_plugin_home" depends="clean_dist,bin_dist,clean_old_plugins_home">
     <copy todir="${plugin_install_home_dir}">
       <fileset dir="${dist_dir}">
         <exclude name="*.tar.gz"/>
       </fileset>
     </copy>
   </target>
+
+<!-- delete old versions of plugin target -->
+  <target name="clean_old_plugins">
+    <delete>
+     <fileset dir="${plugin_install_dir}">
+       <include name="${dist_name}*.jar"/>
+     </fileset>
+    </delete>
+  </target>
+
+<!-- delete old versions of plugin in home dirtarget -->
+  <target name="clean_old_plugins_home">
+    <delete>
+     <fileset dir="${plugin_install_home}">
+       <include name="${dist_name}*.jar"/>
+     </fileset>
+    </delete>
+  </target>
+
 </project>

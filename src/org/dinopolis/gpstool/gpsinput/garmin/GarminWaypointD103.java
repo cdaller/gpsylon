@@ -3,13 +3,13 @@ import java.awt.Color;
 
 public class GarminWaypointD103 implements GarminWaypoint
 {
-  public String display_options_;
-  public int symbol_type_;
-  public String symbol_name_;
-  public double latitude_;
-  public double longitude_;
-  public String identification_;
-  public String comment_;
+  protected String display_options_;
+  protected int symbol_type_;
+  protected String symbol_name_;
+  protected double latitude_;
+  protected double longitude_;
+  protected String identification_;
+  protected String comment_;
 
   protected final static byte WAYPOINT_TYPE = 103;
   
@@ -31,10 +31,10 @@ public class GarminWaypointD103 implements GarminWaypoint
 
   public GarminWaypointD103(int[] buffer)
   {
-    for(int index = 0; index < buffer.length; index++)
-    {
-      System.out.println(index+":"+buffer[index] + " / " + (char)buffer[index]);
-    }
+//     for(int index = 0; index < buffer.length; index++)
+//     {
+//       System.out.println(index+":"+buffer[index] + " / " + (char)buffer[index]);
+//     }
     identification_ = GarminDataConverter.getGarminString(buffer,2,6).trim();
     latitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,8);
     longitude_ = GarminDataConverter.getGarminSemicircleDegrees(buffer,12);
@@ -318,7 +318,7 @@ public class GarminWaypointD103 implements GarminWaypoint
  * @throws UnsupportedOperationException
  */
 	
-	public int getEstimatedTimeEnroute()
+	public long getEstimatedTimeEnroute()
     throws UnsupportedOperationException
   {
     throw new UnsupportedOperationException("Operation not supported by Waypoint D103");

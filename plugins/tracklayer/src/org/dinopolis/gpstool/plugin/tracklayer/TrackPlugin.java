@@ -22,9 +22,6 @@
 
 package org.dinopolis.gpstool.plugin.tracklayer;
 
-
-
-
 import com.bbn.openmap.Layer;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -83,6 +80,8 @@ public class TrackPlugin implements GuiPlugin
 
   PluginSupport plugin_support_;
 
+  protected ActiveTrackLogger track_logger_;
+
 	// keys for resources:
 	public static final String KEY_TRACK_PLUGIN_IDENTIFIER =
 		"track.plugin.identifier";
@@ -140,10 +139,14 @@ public class TrackPlugin implements GuiPlugin
 			Debug.println("trackplugin_init", "loading resources");
 		loadResources();
 
+    track_logger_ = new ActiveTrackLogger();
+    track_logger_.initialize(track_manager_);
+    support.getPropertyChangeSupport().addPropertyChangeListener(track_logger_);
+    
 		// prepare the actionstore for the menu:
 // 		action_store_ = ActionStore.getStore(TRACK_ACTION_STORE_ID);
 // 		action_store_.addActions(new Action[] { new LoadTrackAction()});
-
+    
     loadTestTrack();
 	}
 
@@ -159,6 +162,7 @@ public class TrackPlugin implements GuiPlugin
 
 	public void startPlugin() throws Exception
 	{
+    track_logger_.enable(true);
 	}
 
 	//----------------------------------------------------------------------
@@ -172,6 +176,7 @@ public class TrackPlugin implements GuiPlugin
 
 	public void stopPlugin() throws Exception
 	{
+    track_logger_.enable(false);
 // 		boolean store_resources = false;
 // 		// save window locaton and dimensions:
 // 		if (resources_.getBoolean(KEY_MAPMANAGER_WINDOW_REMEMBER_SETTINGS)

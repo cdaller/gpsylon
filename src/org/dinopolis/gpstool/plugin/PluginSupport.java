@@ -127,7 +127,7 @@ public interface PluginSupport
  *
  * @return the gps data processor
  */
-//  public GPSDataProcessor getGPSDataProcessor();
+  public GPSDataProcessor getGPSDataProcessor();
 }
 
 

@@ -203,10 +203,18 @@ public interface TrackManager
  * is determined for the given projection.
  *
  * @param projection the projection to use.
+ * @throws InterruptedException if the thread was interrupted while
+ * calculating the projection. This happens, if the projection changes
+ * again, before the first calculations are finished and the second
+ * SwingWorker interrupts the first one (the result of the first
+ * worker is not valid any more anyway. This is done in the {@link
+ * org.dinopolis.gpstool.gui.util.BasicLayer#recalculateCoordinates()}
+ * method.
  * @return a list containing {@link org.dinopolis.gpstool.track.Track}
  * objects or an empty list.
  */
-  public List getVisibleProjectedTracks(Projection projection);
+  public List getVisibleProjectedTracks(Projection projection)
+    throws InterruptedException;
   
 //----------------------------------------------------------------------
 /**

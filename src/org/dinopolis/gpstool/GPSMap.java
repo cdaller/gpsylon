@@ -368,6 +368,8 @@ public class GPSMap
     System.out.println("by Christof Dallermassl (christof@dallermassl.at)");
     System.out.println("latest version at: http://gpsmap.sourceforge.net");
     System.out.println("using");
+    System.out.println("Java Version: "+System.getProperty("java.vm.vendor")+" "
+                       +System.getProperty("java.vm.version"));
 
     property_change_support_ = new PropertyChangeSupport(this);
 
@@ -592,7 +594,8 @@ public class GPSMap
     addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, position_layer_);
     addPropertyChangeListener(PROPERTY_KEY_CURRENT_HEADING, position_layer_);
     resources_.addPropertyChangeListener(KEY_POSITION_USE_ICON,position_layer_);
-    resources_.addPropertyChangeListener(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER,position_layer_);
+//    resources_.addPropertyChangeListener(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER,position_layer_);
+    resources_.addPropertyChangeListener(KEY_POSITION_FOLLOW_ME_PITCH,position_layer_);
     
 //    addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, track_layer_);
 //    addPropertyChangeListener(PROPERTY_KEY_GPS_SPEED, track_layer_);
@@ -1153,6 +1156,7 @@ public class GPSMap
           old_gps_pos = new LatLonPoint(pos.getLatitude(),pos.getLongitude());
         new_event = new PropertyChangeEvent(this,PROPERTY_KEY_GPS_LOCATION,
                                             old_gps_pos,new_gps_pos);
+        new_event.setPropagationId(event.getPropagationId());
 
         if(Debug.DEBUG)
           Debug.println("GPSMap_GPSdata","gps event: position old="
@@ -1162,6 +1166,7 @@ public class GPSMap
       {  // all other events are forwarded (they use the same property names!!!)
         new_event = new PropertyChangeEvent(this,event.getPropertyName(),
                                             event.getOldValue(),event.getNewValue());
+        new_event.setPropagationId(event.getPropagationId());
         Debug.println("GPSMap_GPSdata","gps event: '"+event.getPropertyName()+"': old="
                       +event.getOldValue()+" new="+event.getNewValue());
       }

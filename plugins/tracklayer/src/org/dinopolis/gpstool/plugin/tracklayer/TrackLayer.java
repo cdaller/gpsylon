@@ -23,11 +23,14 @@
 
 package org.dinopolis.gpstool.plugin.tracklayer;
 
+import com.bbn.openmap.proj.Projection;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.RenderingHints;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -53,7 +56,7 @@ import org.dinopolis.util.Resources;
  * @version $Revision$
  */
 
-public class TrackLayer extends BasicLayer implements TrackChangedListener
+public class TrackLayer extends BasicLayer implements TrackChangedListener, PropertyChangeListener
 {
   TrackManager track_manager_;
   List tracks_;
@@ -61,9 +64,17 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
 
   Resources resources_;
   BasicStroke loaded_track_line_stroke_;
-  BasicStroke current_track_line_stroke_;
+  BasicStroke active_track_line_stroke_;
   Color loaded_track_color_;
-  Color current_track_color_;
+  Color active_track_color_;
+
+      // resource keys:
+  public static final String KEY_TRACK_LOADED_TRACK_LINE_WIDTH = "track.loaded_track.line.width";
+  public static final String KEY_TRACK_LOADED_TRACK_COLOR = "track.loaded_track.color";
+  public static final String KEY_TRACK_ACTIVE_TRACK_LINE_WIDTH = "track.active_track.line.width";
+  public static final String KEY_TRACK_ACTIVE_TRACK_COLOR = "track.active_track.color";
+  public static final String KEY_TRACK_DISPLAY_MODE = "track.display_mode";
+  public static final String KEY_TRACK_LAYER_ACTIVE = "track.layer_active";
 
 
 //----------------------------------------------------------------------
@@ -89,9 +100,17 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
     track_manager_ = support.getTrackManager();
     resources_ = support.getResources();
     track_manager_.addTrackListener(this);
-    loaded_track_color_ = resources_.getColor(GPSMapKeyConstants.KEY_TRACK_LOADED_TRACK_COLOR);
+        // set attributes for loaded tracks:
+    loaded_track_color_ = resources_.getColor(KEY_TRACK_LOADED_TRACK_COLOR);
     loaded_track_line_stroke_ =
-      new BasicStroke((float)resources_.getDouble(GPSMapKeyConstants.KEY_TRACK_LOADED_TRACK_LINE_WIDTH));
+      new BasicStroke((float)resources_.getDouble(KEY_TRACK_LOADED_TRACK_LINE_WIDTH));
+        // set attributes for active track:
+    active_track_color_ = resources_.getColor(KEY_TRACK_ACTIVE_TRACK_COLOR);
+    active_track_line_stroke_ =
+      new BasicStroke((float)resources_.getDouble(KEY_TRACK_ACTIVE_TRACK_LINE_WIDTH));
+    boolean active = resources_.getBoolean(KEY_TRACK_LAYER_ACTIVE);
+    System.out.println("TrackLayer was last "+active);
+    setActive(active);
   }
 
   //----------------------------------------------------------------------
@@ -120,9 +139,6 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
     Graphics2D g2 = (Graphics2D) g;
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    g2.setStroke(loaded_track_line_stroke_);
-    g2.setColor(loaded_track_color_);
-
     Iterator track_iterator = tracks.iterator();
     Track track;
     while(track_iterator.hasNext())
@@ -130,6 +146,16 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
       track = (Track)track_iterator.next();
       if(Debug.DEBUG)
         Debug.println("trackplugin_paint","painting track "+track.getIdentification());
+      if(track.getIdentification().equals(resources_.getString(GPSMapKeyConstants.KEY_TRACK_ACTIVE_TRACK_IDENTIFIER)))
+      {
+        g2.setStroke(active_track_line_stroke_);
+        g2.setColor(active_track_color_);
+      }
+      else
+      {
+        g2.setStroke(loaded_track_line_stroke_);
+        g2.setColor(loaded_track_color_);
+      }
       List trackpoints = track.getWaypoints();
       Iterator point_iterator = trackpoints.iterator();
       int start_x,start_y, end_x, end_y;
@@ -171,7 +197,10 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
  */
   protected void doCalculation()
   {
-    List tracks = track_manager_.getVisibleProjectedTracks(getProjection());
+    Projection projection = getProjection();
+    if(projection == null)
+      return;
+    List tracks = track_manager_.getVisibleProjectedTracks(projection);
     if(Debug.DEBUG)
       Debug.println("trackplugin","doCalculation of tracks: "+tracks);
     setVisibleTracks(tracks);
@@ -212,6 +241,30 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener
   {
     recalculateCoordinates();
   }
+
+
+//----------------------------------------------------------------------
+/**
+ * Callback method for property change events (Postion, altitude, ...)
+ * 
+ * @param event the property change event.
+ */
+
+  public void propertyChange(PropertyChangeEvent event)
+  {
+    String name = event.getPropertyName();
+    if(name.equals(KEY_TRACK_LOADED_TRACK_COLOR))
+    {
+      loaded_track_color_ = resources_.getColor(KEY_TRACK_LOADED_TRACK_COLOR);
+      return;
+    }
+    if(name.equals(KEY_TRACK_ACTIVE_TRACK_COLOR))
+    {
+      active_track_color_ = resources_.getColor(KEY_TRACK_ACTIVE_TRACK_COLOR);
+      return;
+    }
+  }
+
 }
 
 

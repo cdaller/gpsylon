@@ -83,8 +83,9 @@ public class MultiMapLayer extends Layer
 
   Resources resources_;
   
-      // scale/PIXELFACT = meters/pixel
-  public static float PIXELFACT = 2817.947378f;
+//       // scale/PIXELFACT = meters/pixel
+//   public static final float PIXELFACT = FlatProjection.PIXELFACT;
+// //  public static float PIXELFACT = 2817.947378f;
 
   ActionStore action_store_;
 

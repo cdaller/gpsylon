@@ -30,7 +30,7 @@ import java.util.Iterator;
 //----------------------------------------------------------------------
 /**
  * An vector based implementation of {@link Track}. Only {@link
- * Waypoints} are allowed!
+ * org.dinopolis.gpstool.track.Waypoint} objects are allowed!
  *
  * @author Christof Dallermassl
  * @version $Revision$

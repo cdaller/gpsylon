@@ -58,6 +58,21 @@ public class GPSSimulationDataProcessor extends GPSGeneralDataProcessor implemen
   {
   }
 
+
+//----------------------------------------------------------------------
+/**
+ * Returns information about the gps connected (name of device, type
+ * of connection, etc.) This information is for display to the user,
+ * not for further processing (may change without notice).
+ *
+ * @return information about the gps connected.
+ */
+  public String[] getGPSInfo()
+  {
+    String[] info = new String[] {"Simulation data"};
+    return(info);
+  }
+  
 //----------------------------------------------------------------------
 /**
  * Requests the gps device to send the current

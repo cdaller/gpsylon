@@ -1,4 +1,9 @@
-ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
+ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
+
+2003/07/11: If no maps are visible (as the scale of the maps is too
+            small, retry with a new scale limit. This will help not to
+            confuse new users, as they download a new map, but they do
+            not see it, as it is too small!
 
 2003/07/10: added print capabilities of the map
 

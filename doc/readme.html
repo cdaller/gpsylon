@@ -1,19 +1,20 @@
 <html>
   <head>
     <title>
-      GPSMap - an Open Source Java GPS Map Application/Framework.
+      GPSMap/GPSilon - an Open Source Java GPS Map Application/Framework.
     </title>
   </head>
 
   <body>
-    <h1>GPSMap</h1>
+    <h1>GPSilon (former GPSMap)</h1>
 
     <ul>
+      <li><a href="#news">Latest News</a></li>
       <li><a href="#general_description">General Description</a></li>
       <li><a href="#screenshots">Screenshots</a></li>
       <li><a href="#supported_devices">Supported GPSDevices</a></li>
       <li><a href="#installation">Installation</a></li>
-      <li><a href="#run_gpsmap">Run GPSMap</a></li>
+      <li><a href="#run_gpsmap">Run GPSilon</a></li>
       <li><a href="#download">Download</a></li>
       <li><a href="#status">Status</a></li>
       <li><a href="#plugins">Plugins</a></li>
@@ -32,14 +33,23 @@
       The dinopolis gpstool package is an open source (LGPL) Java GPS
       application.  It consists of different modules that may be used as a
       programmer's framework or as an application. The main application is
-      GPSMap. 
+      <a href="#general_description">GPSilon</a>. A smaller command line tool is
+      <a href="#gpstool">GPSTool</a>.
     </p>
 
+    <a name="news">
+      <h2>News</h2>
+      <p>
+        2003/05/12:<br>
+        As the name GPSMap is already used by several other projects/products, the main
+        application is renamed to GPSilon.<br>
+      </p>
+
     <a name="general_description">
-      <h2>Short Description of GPSMap</h2>
+      <h2>Short Description of GPSilon</h2>
 
    <p>
-    GPSMap is able to show maps downloaded from the 
+    GPSilon is able to show maps downloaded from the 
     <a href="http://www.mapblast.com">mapblast</a>
     or 
     <a href="http://www.expedia.com">expedia</a>
@@ -53,7 +63,7 @@
    </p>
           
           <p>
-          The main feature is the display of various maps. GPSMap allows the
+          The main feature is the display of various maps. GPSilon allows the
           user to navigate around like in a digital atlas. It shows maps of
           different scales, so missing maps of one scale do not result in a
           black screen, but show the next larger scale. See <a
@@ -87,7 +97,7 @@
         <li>Uses the following NMEA sentences: GLL, HDG, RMC, GGA, GSV, DBT, VTG, HTD.</li>
         <li>Display a track from gps data.</li>
         <li>Save the track.</li>
-        <li>Load a track created from GPSMap or from <a href="http://gpsdrive.kraftvoll.at">gpsdrive</a>.</li>
+        <li>Load a track created from GPSilon or from <a href="http://gpsdrive.kraftvoll.at">gpsdrive</a>.</li>
         <li>Import maps from gpsdrive.</li>
         <li>Download a map for a given position.</li>
         <li>Download maps for an area.</li>
@@ -132,19 +142,20 @@
         <a name="supported_devices">
           <h2>Supported GPS Devices</h2>
           <p>
-            In general, all gps devices that support NMEA communication should work.
+            In general, all gps devices that support NMEA communication should
+            work. Garmin protocol support is built in, but not very well tested.
           </p>
           <p>
-            There were reports of the following devices to work with GPSMap:
+            There were reports of the following devices to work with GPSilon:
             <ul>
-              <li>Garmin Etrex Summit/Legend (tested by myself)</li>
-              <li>Trimble Lassen SK8 (reported by Didier Donsez)</li>
+              <li>Garmin Etrex Summit/Legend (nmea/garmin modes) tested by myself)</li>
+              <li>Trimble Lassen SK8 (nmea mode) (reported by Didier Donsez)</li>
             </ul>
             </p>
           <a name="installation">
             <h2>Installation</h2>
             <p>
-              No installation of GPSMap itself is needed. Nevertheless, some dependencies
+              No installation of GPSilon itself is needed. Nevertheless, some dependencies
               exist:
 
               <ul>
@@ -167,7 +178,7 @@
                   <p>
                     Jan van Haarst reported that 
                     <a href="http://www.brianpoe.com/comfoolery/">comfoolery</a>
-                    can be used to forward the serial data to a network socket. GPSMap may
+                    can be used to forward the serial data to a network socket. GPSilon may
                     connect to this socket when it is configured to use gpsd instead of
                     the serial device.
                   </p>
@@ -176,11 +187,11 @@
             <a name="installation_database">
             <h3>Database for Location Markers</h3>
             <p>
-              GPSMap is able to store and retrieve location markers from
+              GPSilon is able to store and retrieve location markers from
               relational databases via JDBC. By default it uses the pure java
               open source <a href="http://hsqldb.sourceforge.net">Hypersonic
               DB (hsqldb)</a>. It has the advantage that no installation is needed and
-              GPSMap creates a database on demand without any hassle.
+              GPSilon creates a database on demand without any hassle.
             </p>
        <p>
         As the 
@@ -199,7 +210,7 @@
           Create the database: e.g. with the command 
           <code>mysqladmin create gpsmap</code>
          </li>
-         <li>Start GPSMap and edit database settings in the preferences
+         <li>Start GPSilon and edit database settings in the preferences
           (Location Marker tab):</li>
          <ul>
           <li>
@@ -213,8 +224,8 @@
            <code>sql/create_loation_mysql.sql</code>
           </li>
          </ul>
-         <li>quit GPSMap</li>
-         <li>on the next start, GPSMap tries to access the new database, but
+         <li>quit GPSilon</li>
+         <li>on the next start, GPSilon tries to access the new database, but
           cannot (as the tables are missing). It asks for administrators
           username/password (try "root" and empty password :-) so it can create
           the table(s). It will also add a user "sa" with no password for
@@ -238,10 +249,10 @@
         and user rights, ...)
        </p>
             <a name="run_gpsmap">
-              <h2>Run GPSMap</h2>
+              <h2>Run GPSilon</h2>
               <p>
-                To start GPSMap, <a href="https://sourceforge.net/project/showfiles.php?group_id=64816">download</a> the gpstool-archive, unpack it and call<br> 
-                  <code>java -jar gpstool.jar</code><br> 
+                To start GPSilon, <a href="https://sourceforge.net/project/showfiles.php?group_id=64816">download</a> the gpstool-archive, unpack it and call<br> 
+                  <code>java -jar gpssilon.jar</code><br> 
                     or if your environment is setup to handle jar-archives correctly, simply
                     double click on the jar-archive (should work under
                     windows). All needed classes are contained in the jar file. 
@@ -250,10 +261,10 @@
               <p>
                 For commandline arguments (everything may be configured in the
                 application as well!), call<br>
-                  <code>java -jar gpstool.jar --help</code><br> 
+                  <code>java -jar gpsilon.jar --help</code><br> 
               </p>
 	      <h3>Mouse Modes</h3>
-	      GPSMap supports different mouse modes. Mouse modes may be added
+	      GPSilon supports different mouse modes. Mouse modes may be added
 	      as plugins. At the moment, two mouse modes are available:
 	      <ul>
 	      <li>Navigation Mode: click anywhere in the map to zoom in and
@@ -278,7 +289,7 @@
 	      <a name="plugins">
 	       <h2>Plugins</h2>
 	       <p>
-	       GPSMap supports plugins of various kinds. The plugin-jars
+	       GPSilon supports plugins of various kinds. The plugin-jars
 	       are used without the need to set the
 	       <code>CLASSPATH</code>. All jars in the directories
 	       <code>[home]/.gpsmap/plugins</code> and in the
@@ -286,13 +297,13 @@
 	       </p>
               <a name="download">
                 <h2>Download</h2>
-                Please download the latest distribution of GPSMap at the 
+                Please download the latest distribution of GPSilon at the 
                 <a href="http://sourceforge.net/project/showfiles.php?group_id=64816">download 
                   page on sourceforge</a>.
                 <a name="status">
                   <h2>Status</h2>
                   <p>
-                    GPSMap is in beta-status. It runs quite stable, but many features are
+                    GPSilon is in beta-status. It runs quite stable, but many features are
                     not implemented yet.
                   </p>
                   <a name="todo">
@@ -440,25 +451,59 @@
                               <code>ant help</code> gives all ant-tasks.
              </p>
 
-                            <a name="license">
-                              <h2>License</h2> 
-                              <p> 
-                                The source of the gpstool framework
-                                basically is licensed unter the Lesser Gnu
-                                Public License (LGPL). Some parts in the
-                                framework (e.g. the main application GPSMap)
-                                uses the Open Source library openmap which is
-                                licensed under the GPL, so take care which
-                                modules you use and which license you have to
-                                respect. 
-                              </p>
-                              <p>
-                                The module that is responsible for reading gps
-                                data from a gps device in completely
-                                independent from the openmap library and may
-                                therefore be used under the LGPL license.
-                              </p>
+             <a name="gpstool">
+             <h2>Commandline tool GPSTool</h2> 
                 <p>
+                 GPSTool is a small command line application that demonstrates
+                 the usage of the classes to read data from a gps device. The
+                 main class is
+                 <code>org.dinopolis.gpstool.gpsinput.GPSTool</code>
+                 and it may
+                 be started using the provided gpstool.jar file. Use "--help"
+                 to see all commandline switches.<br>
+                  The following features are implemented in GPSTool:
+                  <ul>
+                   <li>
+                    Show current position/altitude/speed/heading/info about
+                    satellites.
+                   </li>
+                   <li>
+                    Use NMEA or Garmin protocol.
+                   </li>
+                   <li>
+                    Download tracks, routes, and/or waypoints and print them in
+                    <a href="http://www.topografix.com/gpx.asp">GPX</a>
+                    format.
+                   </li>
+                   <li>
+                    Supprts 
+                    <a href="http://jakarta.apache.org/velocity/">Velocity</a>
+                    templates to print tracks, routes, waypoints. These
+                    templates are easy to write. Use command line switch
+                    " --printdefaulttemplate" to show the gpx template. Other
+                    templates are provided in the auxiliary directory.</li>
+                  </ul>
+             </p>
+
+             <a name="license">
+             <h2>License</h2> 
+             <p> 
+               The source of the gpstool framework
+               basically is licensed unter the Lesser Gnu
+               Public License (LGPL). Some parts in the
+               framework (e.g. the main application GPSilon)
+               uses the Open Source library openmap which is
+               licensed under the GPL, so take care which
+               modules you use and which license you have to
+               respect. 
+             </p>
+             <p>
+               The module that is responsible for reading gps
+               data from a gps device in completely
+               independent from the openmap library and may
+               therefore be used under the LGPL license.
+             </p>
+                 <p>
                   Please report any comments, bugfixes, ...
                   to 
                   <address><a href="mailto:cdaller@iicm.edu">Christof

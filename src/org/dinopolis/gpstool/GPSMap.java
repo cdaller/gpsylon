@@ -268,7 +268,8 @@ public class GPSMap
   public final static String ACTION_DOWNLOAD_MAP_POSITION = "download_map_position";
   public final static String ACTION_DOWNLOAD_MAP_AREA = "download_map_area";
   public final static String ACTION_LOAD_SHAPE = "load_shape";
-  public final static String ACTION_VIEW_GPS_DATA = "view_gps_data";
+//  public final static String ACTION_VIEW_GPS_DATA = "view_gps_data";
+  public final static String ACTION_PRINT_MAP = "print_map";
 
       // pan actions:
   public final static String ACTION_PAN_WEST = "pan_west";
@@ -420,6 +421,7 @@ public class GPSMap
                           new SetScaleAction(),
                           new CenterMapAction(),
                           new SaveAsImagePluginAction(),
+                          new PrintMapAction(),
 //                                new TestAction(),
                           new ImportGpsDriveAction()
     };
@@ -2943,7 +2945,39 @@ public class GPSMap
     }
   }
 
-     //----------------------------------------------------------------------
+      //----------------------------------------------------------------------
+      /**
+       * The Action that prints the map.
+       */
+
+  class PrintMapAction extends AbstractAction //implements java.awt.print.Printable
+  {
+    
+        //----------------------------------------------------------------------
+        /**
+         * The Default Constructor.
+         */
+
+    public PrintMapAction()
+    {
+      super(ACTION_PRINT_MAP);
+    }
+
+        //----------------------------------------------------------------------
+        /**
+         * Open the frame to show gps data
+         * 
+         * @param event the action event
+         */
+
+    public void actionPerformed(ActionEvent event)
+    {
+      org.dinopolis.util.PrintUtilities.printComponent(map_bean_);
+    }
+  }
+
+
+//----------------------------------------------------------------------
      /**
       * The Action for switching a layer on or off
       */

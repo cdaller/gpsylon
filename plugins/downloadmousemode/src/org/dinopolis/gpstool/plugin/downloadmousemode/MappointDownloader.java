@@ -69,6 +69,9 @@ public class MappointDownloader implements MapRetrievalPlugin
 
   public static final String HOST_NAME = "mappoint.msn.com";
   protected static final int[] POSSIBLE_MAPPOINT_SCALES = {1,3,6,12,25,50,150,800,2000,7000,12000};
+      // 500 gives the same result as 800
+      // 300 gives the same result as 800
+      // 10000 gives the same result as 12000 ....
 
   protected HttpRequester web_request_;
 

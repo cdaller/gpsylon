@@ -1,6 +1,6 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
-*
+ *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 
@@ -48,36 +48,91 @@ import javax.swing.KeyStroke;
 
 public class MouseModeManager  
 {
-  protected Vector mouse_modes_;
-  protected ButtonGroup button_group_;
+  protected Vector mouse_mode_infos_;
+  protected ButtonGroup menu_button_group_;
 
+//----------------------------------------------------------------------
+/**
+ * Default Constructor
+ *
+ */
   public MouseModeManager()
   {
-    mouse_modes_ = new Vector();
-    button_group_ = new ButtonGroup();
+    mouse_mode_infos_ = new Vector();
+    menu_button_group_ = new ButtonGroup();
   }
 
+//----------------------------------------------------------------------
+/**
+ * Add a mouse mode
+ * @param mode the mouse mode to add
+ */
   public void addMouseMode(MouseMode mode)
   {
-    mouse_modes_.add(mode);
+    Action action = createMouseModeAction(mode);
+    MouseModeInfo info = new MouseModeInfo(mode,action);
+    mouse_mode_infos_.add(info);
   }
 
+//----------------------------------------------------------------------
+/**
+ * Add mouse modes
+ * @param modes the mouse modes to add
+ */
   public void addMouseModes(MouseMode[] modes)
   {
     for(int index = 0; index < modes.length; index++)
       addMouseMode(modes[index]);
   }
 
-  public void removeMouseMode(MouseMode mode)
-  {
-    mouse_modes_.remove(mode);
-  }
+//----------------------------------------------------------------------
+/**
+ * Remove a mouse mode
+ * @param mode the mouse mode to remove
+ */
+//    public void removeMouseMode(MouseMode mode)
+//    {
+//      mouse_modes_.remove(mode);
+//    }
 
-  public boolean containsMouseMode(MouseMode mode)
-  {
-    return(mouse_modes_.contains(mode));
-  }
+//----------------------------------------------------------------------
+/**
+ * Returns true if the manager holds the given mouse mode
+ * @param mode the mouse mode to check
+ */
+//    public boolean containsMouseMode(MouseMode mode)
+//    {
+//      return(mouse_modes_.contains(mode));
+//    }
 
+
+//----------------------------------------------------------------------
+/**
+ * Activate the mouse mode with the given name
+ *
+ * @param mode_name the mouse mode to activate
+ * @return true if a mouse mode was found with the given name, false
+ * otherwise.
+ */
+  public boolean activateMouseMode(String mode_name)
+  {
+    Iterator iterator = mouse_mode_infos_.iterator();
+    MouseModeInfo info;
+    MouseMode mode;
+    while(iterator.hasNext())
+    {
+      info = (MouseModeInfo)iterator.next();
+      mode = info.getMouseMode();
+      if(mode_name.equals(mode.getMouseModeName()))
+      {
+	info.getAction().putValue(SelectedButtonActionSynchronizer.SELECTED,
+				  new Boolean(true));
+	return(true);
+      }
+    }
+    return(false);
+  }
+  
 //----------------------------------------------------------------------
 /**
  * Returns an action for the given mouse mode (using its name, icon
@@ -111,6 +166,12 @@ public class MouseModeManager
     action.putValue(Action.NAME,mode.getMouseModeName());
     action.putValue(Action.SHORT_DESCRIPTION,mode.getMouseModeDescription());
     action.putValue(Action.SMALL_ICON,mode.getMouseModeIcon());
+    action.putValue(Action.ACCELERATOR_KEY,
+		    KeyStroke.getKeyStroke(mode.getMouseModeAcceleratorKey()));
+    char mnemonic = mode.getMouseModeMnemonic();
+    if(mnemonic == 0)
+      mnemonic = mode.getMouseModeName().charAt(0);
+    action.putValue(Action.MNEMONIC_KEY,new Integer((int)mnemonic));
 
         // add property change listener to react on change of the
         // "selected" property and therefore to de-/activate the mouse mode:
@@ -144,42 +205,88 @@ public class MouseModeManager
 
   public JMenuItem[] getMenuItems()
   {
-    JMenuItem[] menu_items = new JRadioButtonMenuItem[mouse_modes_.size()];
+    JMenuItem[] menu_items = new JRadioButtonMenuItem[mouse_mode_infos_.size()];
     JRadioButtonMenuItem item = null;
     MouseMode mode;
     Action action;
     JMenuItem active_item = null;
-    for(int mode_index = 0; mode_index < mouse_modes_.size(); mode_index++)
+    MouseModeInfo info;
+    for(int mode_index = 0; mode_index < mouse_mode_infos_.size(); mode_index++)
     {
-//       menu_items[mode_index] = new JRadioButtonMenuItem(mouse_modes_.getMouseModeName(),
-//                                                         mouse_modes_.getMouseModeIcon());
-      mode = (MouseMode)mouse_modes_.elementAt(mode_index);
-      action = createMouseModeAction(mode);
+      info = (MouseModeInfo)mouse_mode_infos_.elementAt(mode_index);
+      mode = info.getMouseMode();
+      action = info.getAction();
       item = new JRadioButtonMenuItem(action);
-      String accelerator_key = mode.getMouseModeAcceleratorKey();
-      if((accelerator_key != null) && (accelerator_key.length() > 0))
-        item.setAccelerator(KeyStroke.getKeyStroke(accelerator_key));
-      char mnemonic = mode.getMouseModeMnemonic();
-      if(mnemonic == 0)
-        mnemonic = mode.getMouseModeName().charAt(0);
-      item.setMnemonic(mnemonic);
           // create a synchronizer, that keeps the selected state of
-          // action and item synchronized. there is no need to keep
+          // action and item synchronized. There is no need to keep
           // this reference, as the synchronizer is added as listener
           // to action and item.
       new SelectedButtonActionSynchronizer(item,action);
       menu_items[mode_index] = item;
-      button_group_.add(item);
+      menu_button_group_.add(item);
       if(mode.isActive())
         active_item = item;
     }
-    if(active_item != null)
-      active_item.setSelected(true);
-    else
-      if(item != null)
-        item.setSelected(true); // activate the last one
+//      if(active_item != null)
+//        active_item.setSelected(true);
+//      else
+//        if(item != null)
+//          item.setSelected(true); // activate the last one
     return(menu_items);
   }
+
+//----------------------------------------------------------------------
+// Inner Classes
+//----------------------------------------------------------------------
+
+//----------------------------------------------------------------------
+/**
+ * Holds a mouse mode and the action that is used in a menu or
+ * toolbar to activate/deactivate it.
+ */
+  class MouseModeInfo
+  {
+    MouseMode mode_;
+    Action action_;
+    
+//----------------------------------------------------------------------
+/**
+ * Creates a new <code>MouseModeInfo</code> instance.
+ *
+ * @param mode a <code>MouseMode</code> 
+ * @param action the <code>Action</code> that is used in a menu or
+ * toolbar to activate/deactivate the mouse mode.
+ */
+    public MouseModeInfo(MouseMode mode, Action action)
+    {
+      mode_ = mode;
+      action_ = action;
+    }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the mouse mode.
+ *
+ * @return the mouse mode.
+ */
+    public MouseMode getMouseMode()
+    {
+      return(mode_);
+    }
+//----------------------------------------------------------------------
+/**
+ * Returns the action
+ *
+ * @return the action.
+ */
+    public Action getAction()
+    {
+      return(action_);
+    }
+  }
+  
 }
+
+
 
 

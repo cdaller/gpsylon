@@ -29,6 +29,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Vector;
+import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**
@@ -177,28 +178,41 @@ public class RepositoryClassLoader extends URLClassLoader
  */
   public void addRepository(File repository)
   {
-    if (repository.exists() && repository.isDirectory())
-    {
-      repositories_.add(repository.toString());
-      File[] jars = repository.listFiles();
-
-      for (int j = 0; j < jars.length; j++)
-      {
-        if (jars[j].getAbsolutePath().endsWith(".jar"))
-        {
-          try
-          {
-            URL url = jars[j].toURL();
-            super.addURL(url);               
-          }
-          catch (MalformedURLException e)
-          {
-            throw new IllegalArgumentException(e.toString());
-          }
-        }
-      }
-    }
-  }
+		try
+		{
+			if (repository.exists())
+			{
+				if(repository.isDirectory())
+				{
+					if(Debug.DEBUG)
+						Debug.println("RepositoryClassLoader","adding Repository Directory: " + repository.toString());
+					repositories_.add(repository.toString());
+					File[] jars = repository.listFiles();
+				
+					for (int j = 0; j < jars.length; j++)
+					{
+						if (jars[j].getAbsolutePath().endsWith(".jar"))
+						{
+							URL url = jars[j].toURL();
+							if(Debug.DEBUG)
+								Debug.println("RepositoryClassLoader","adding jar file " + url.toString());
+							super.addURL(url);               
+						}
+					}
+				}
+				else
+				{
+					if(Debug.DEBUG)
+						Debug.println("RepositoryClassLoader","adding file " + repository);
+					super.addURL(repository.toURL());
+				}
+			}
+		}
+		catch (MalformedURLException e)
+		{
+			throw new IllegalArgumentException(e.toString());
+		}
+	}
 
 //----------------------------------------------------------------------
 /**

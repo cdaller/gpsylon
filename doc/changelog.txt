@@ -1,7 +1,13 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2003/07/24: fixed a problem in the tracklayer that resulted in
+            painting a line to the top/left corner from time to time.
+
+            0.4.16-pre6 released
+
 2003/07/23: upload to garmin devices should work now (from command
-            line tool). GPX file format is supported to be read.
+            line tool). GPX file format is supported to be read (from
+            Import/Export plugin).
 
             SimpleDemo plugin added for demonstation how to create a
             new layer/plugin.

@@ -3,6 +3,8 @@
 
   <property name="release_version" value="0.1"/>
   <property name="dist_name" value="gpstool_plugin_writesvgimage"/>
+  <property name="target_class_dir" value="classes"/>
+  <property name="source_dir" value="src"/>
   <property name="dist_dir" value="dist"/>
   <property name="lib_dir" value="lib/java"/>
   <property name="dinopolis_classes" value="../../classes"/>
@@ -96,13 +98,17 @@ The following targets are available:
       </fileset>
     </copy>
 
+    <copy todir="${dist_dir}">
+      <fileset dir=".">
+        <include name="*.txt"/>
+      </fileset>
+    </copy>
+
     <tar longfile="gnu"
-      tarfile="${dist_dir}/${dist_name}_bin-${release_version}.tar"
+      destfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz"
       basedir="${dist_dir}"           
-      includes="${dist_name}-${release_version}.jar,${lib_dir}/**"/>
-    <gzip zipfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz" 
-      src="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
-    <delete file="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
+      includes="${dist_name}-${release_version}.jar,${lib_dir}/**,*.txt"
+      compression="gzip"/>
   </target>
 
   
@@ -112,7 +118,7 @@ The following targets are available:
     <tar longfile="gnu"
       basedir="${basedir}"
       destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
-      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,META-INF/**"
+      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,META-INF/**,*.txt"
       excludes="*CVS*"
       compression="gzip"/>
   </target>
@@ -120,8 +126,8 @@ The following targets are available:
   <!-- compile target -->
   <target name="compile">
     <mkdir dir="classes"/>
-    <javac srcdir="src"
-      destdir="classes"
+    <javac srcdir="${source_dir}"
+      destdir="${target_class_dir}"
       classpathref="gpstool_plugin_writesvgimage_class_path">
       <classpath id="gpstool_plugin_writesvgimage_class_path">
         <fileset dir="lib/java">
@@ -133,6 +139,13 @@ The following targets are available:
     </javac>         
   </target>       
   
+  <!-- upload distributions target -->
+  <target name="upload_sourceforge_dist">
+    <exec dir="${dist_dir}" executable="/bin/sh">
+      <arg value="-c"/>
+      <arg value='ncftpput upload.sourceforge.net incoming ${dist_name}_???-${release_version}.tar.gz'/>
+    </exec>
+  </target>
 
 <!-- clean_all target -->
   <target name="clean_all" depends="clean,clean_dist">

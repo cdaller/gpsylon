@@ -83,7 +83,6 @@ import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.gui.MouseModeManager;
 import org.dinopolis.gpstool.gui.NmeaDataTextFrame;
 import org.dinopolis.gpstool.gui.StatusBar;
-import org.dinopolis.gpstool.gui.layer.DestinationLayer;
 import org.dinopolis.gpstool.gui.layer.GraticuleLayer;
 import org.dinopolis.gpstool.gui.layer.LocationLayer;
 import org.dinopolis.gpstool.gui.layer.MultiMapLayer;
@@ -137,7 +136,6 @@ public class GPSMap
       /** the layer to display the maps */
   protected MultiMapLayer map_layer_;
   protected PositionLayer position_layer_;
-  protected DestinationLayer destination_layer_;
   protected TrackLayer track_layer_;
   protected ShapeLayer shape_layer_;
   protected LocationLayer location_layer_;
@@ -511,11 +509,6 @@ public class GPSMap
     track_layer_.initialize(hook_manager_);
     map_bean_.add(track_layer_);
     
-    destination_layer_ = new DestinationLayer(resources_);
-    map_bean_.add(destination_layer_);
-    map_bean_.addMouseListener(destination_layer_);
-    map_bean_.addMouseMotionListener(destination_layer_);
-
     position_layer_ = new PositionLayer(resources_);
     map_bean_.add(position_layer_);
     map_bean_.addMouseListener(position_layer_);
@@ -546,8 +539,6 @@ public class GPSMap
     resources_.addPropertyChangeListener(KEY_POSITION_USE_ICON,position_layer_);
     resources_.addPropertyChangeListener(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER,position_layer_);
     
-    addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, destination_layer_);
-
     addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, track_layer_);
 //    addPropertyChangeListener(PROPERTY_KEY_GPS_SPEED, track_layer_);
     addPropertyChangeListener(PROPERTY_KEY_GPS_ALTITUDE, track_layer_);
@@ -576,8 +567,6 @@ public class GPSMap
     
     position_layer_.addPropertyChangeListener(this);
     position_layer_.setMapNavigationHook(this);
-
-    destination_layer_.addPropertyChangeListener(this);
 
         // add the status bar as StatusLayerListener for all layers:
     map_layer_.addLayerStatusListener(status_bar_);
@@ -610,7 +599,6 @@ public class GPSMap
 //      map_bean_.add(location_layer_);
 //      map_bean_.add(shape_layer_);
 //  //    map_bean_.add(track_layer_);
-//      map_bean_.add(destination_layer_);
 //  //      map_bean_.add(position_layer_);
 //  //    map_bean_.add(map_layer_);
 

@@ -1632,7 +1632,9 @@ public class TrackChartPlugin implements GuiPlugin
     public void actionPerformed(ActionEvent event)
     {
       TrackChartFrame frame_ = new TrackChartFrame(resources_.getString(KEY_TRACKCHART_PLUGIN_NAME));
-      frame_.initialize(application_resources_,resources_,plugin_support_.getTrackManager());
+      frame_.initialize(application_resources_,resources_,
+                        plugin_support_.getTrackManager(),
+                        plugin_support_.getUnitHelper());
       frame_.setVisible(true);
     }
   }

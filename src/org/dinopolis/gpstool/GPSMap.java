@@ -127,12 +127,12 @@ public class GPSMap
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.15-pre2";
+  public final static String GPSMAP_VERSION = "0.4.15-pre3";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
 
-  HookManager hook_manager_;
+  protected HookManager hook_manager_;
   
       /** the layer to display the maps */
   protected MultiMapLayer map_layer_;
@@ -362,12 +362,12 @@ public class GPSMap
   public GPSMap(String[] args)
   {
 
-    System.out.println("GPSilon V"+GPSMAP_VERSION);
+    System.out.println("GPSylon V"+GPSMAP_VERSION);
     System.out.println("by Christof Dallermassl (christof@dallermassl.at)");
     System.out.println("latest version at: http://gpsmap.sourceforge.net");
     System.out.println("using");
 
-    SplashScreen splash_screen = new SplashScreen("GPSilon V"+GPSMAP_VERSION,10000);
+    SplashScreen splash_screen = new SplashScreen("GPSylon V"+GPSMAP_VERSION,10000);
 
     property_change_support_ = new PropertyChangeSupport(this);
 
@@ -423,7 +423,7 @@ public class GPSMap
         // Create a Swing frame.  The OpenMapFrame knows how to use
         // the MapHandler to locate and place certain objects.
 //    main_frame_ = new OpenMapFrame("GPS Map");
-    main_frame_ = new JFrame("GPSilon V"+GPSMAP_VERSION);
+    main_frame_ = new JFrame("GPSylon V"+GPSMAP_VERSION);
         // Size the frame appropriately
     main_frame_.setSize(640, 480);
     
@@ -450,6 +450,9 @@ public class GPSMap
     
     checkLockFiles(resources_.getStringArray(KEY_LOCKFILES));
 
+        // create hook_manager
+    hook_manager_ = new HookManager();
+
     connectGPSDevice();
     
     updateResources(null);
@@ -465,7 +468,6 @@ public class GPSMap
     map_manager_.initialize(resources_,main_frame_);
     
         // initialize data for plugins (PluginSupport):
-    hook_manager_ = new HookManager();
     hook_manager_.setMapManagerHook(map_manager_);
     hook_manager_.setMapNavigationHook(this);
     hook_manager_.setStatusHook(this); 
@@ -1620,6 +1622,7 @@ public class GPSMap
           // set me as gps data listener into the data processor:
       if(gps_data_processor_ != null)
       {
+        hook_manager_.setGPSDataProcessor(gps_data_processor_);
         gps_data_processor_.addGPSDataChangeListener(this);
         String alarm_file = resources_.getString(KEY_ALARM_FILE,"");
         if((alarm_file != null) && (alarm_file.length() > 0))

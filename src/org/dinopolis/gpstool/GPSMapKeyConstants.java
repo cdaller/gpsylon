@@ -130,10 +130,12 @@ public interface GPSMapKeyConstants
   public static final String KEY_LOCALIZE_PREVIEW_BUTTON = "localize.preview_button";
   public static final String KEY_LOCALIZE_FILENAME = "localize.filename";
   public static final String KEY_LOCALIZE_MESSAGE_LATITUDE_WRONG_FORMAT = "localize.message.latitude_wrong_format";
-  public static final String KEY_LOCALIZE_MESSAGE_LONGITUDE_WRONG_FORMAT = "localize.message.longitude_wrong_format";
+  public static final String KEY_LOCALIZ_MESSAGE_LONGITUDE_WRONG_FORMAT = "localize.message.longitude_wrong_format";
   public static final String KEY_LOCALIZE_MESSAGE_ERROR_TITLE = "localize.message.error_title";
   public static final String KEY_LOCALIZE_MESSAGE_INFO_TITLE = "localize.message.info_title";
   public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_MESSAGE = "localize.message.download_error_message";
+  public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_NO_ROUTE_TO_HOST_MESSAGE = "localize.message.download_error.no_route_to_host_message";
+  public static final String KEY_LOCALIZE_MESSAGE_DOWNLOAD_ERROR_FILE_NOT_FOUND_MESSAGE = "localize.message.download_error.file_not_found_message";
   public static final String KEY_LOCALIZE_MESSAGE_FILE_NOT_FOUND_MESSAGE = "localize.message.file_not_found_message";
   public static final String KEY_LOCALIZE_BYTES_READ = "localize.bytes_read";
   public static final String KEY_LOCALIZE_LOAD_TRACK_DIALOG_TITLE = "localize.load_track.dialog_title";

@@ -58,6 +58,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -107,8 +108,10 @@ import org.dinopolis.gpstool.gui.layer.ScaleLayer;
 import org.dinopolis.gpstool.gui.layer.ShapeLayer;
 import org.dinopolis.gpstool.gui.layer.TestLayer;
 import org.dinopolis.gpstool.gui.layer.TrackLayer;
-import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
+import org.dinopolis.gpstool.plugin.LayerPlugin;
+import org.dinopolis.gpstool.plugin.MouseModePlugin;
+import org.dinopolis.gpstool.plugin.Plugin;
 import org.dinopolis.gpstool.plugin.WriteImagePlugin;
 import org.dinopolis.gpstool.projection.FlatProjection;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
@@ -126,7 +129,6 @@ import org.dinopolis.util.gui.ResourceEditorFrame;
 import org.dinopolis.util.gui.SplashScreen;
 import org.dinopolis.util.servicediscovery.RepositoryClassLoader;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
-import org.dinopolis.gpstool.plugin.Plugin;
 
 //----------------------------------------------------------------------
 /**
@@ -316,16 +318,39 @@ public class GPSMap
       // test action
   public final static String ACTION_TESTACTION = "testaction";
 
-      // the keys for gps property change events 
+      // the keys for gps property change events
+  
+      /** the key for the current location from the gps device. The
+       * value is a {@com.bbn.openmap.LatLonPoint} object. */
   public final static String PROPERTY_KEY_GPS_LOCATION = GPSDataProcessor.LOCATION;
+      /** the key for the heading from the gps device. Usually, you want to use
+       * <code>PROPERTY_KEY_CURRENT_HEADING</code> instead! The value
+       * is a Float object. */
   public final static String PROPERTY_KEY_GPS_HEADING = GPSDataProcessor.HEADING;
+      /** the key for the heading either from the gps device or
+       * calculated from the last and the current location. This
+       * property is always triggered, even if the gps device does not
+       * send heading-information. The value is a Float object. */
+  public final static String PROPERTY_KEY_CURRENT_HEADING = "current.heading";
+      /** the key for the speed from the gps device. Usually, you want
+       * to use <code>PROPERTY_KEY_CURRENT_SPEED</code> instead! The
+       * value is a Float object and the speed is in kilometers per
+       * hour. */
   public final static String PROPERTY_KEY_GPS_SPEED = GPSDataProcessor.SPEED;
+      /** the key for the speed either from the gps device or
+       * calculated from the last and the current location. This
+       * property is always triggered, even if the gps device does not
+       * send speed-information. The value is a Float object and the
+       * speed is in kilometers per hour. */
+  public final static String PROPERTY_KEY_CURRENT_SPEED = "current.speed";
+      /** the key for the altitude from the gps device. The
+       * value is a Float object and the altitude is given in meters. */
   public final static String PROPERTY_KEY_GPS_ALTITUDE = GPSDataProcessor.ALTITUDE;
+      /** the key for the info of the gps satellites from the gps device. The
+       * value is an array of {@link org.dinopolis.gpstool.gpsinput.SatelliteInfo} objects. */
   public final static String PROPERTY_KEY_GPS_SATELLITE_INFO = GPSDataProcessor.SATELLITE_INFO;
   public final static String PROPERTY_KEY_ROUTE_DESTINATION = "route.destination";
   public final static String PROPERTY_KEY_ROUTE_DESTINATION_DISTANCE = "route.destination.distance";
-  public final static String PROPERTY_KEY_CURRENT_HEADING = "current.heading";
-  public final static String PROPERTY_KEY_CURRENT_SPEED = "current.speed";
   public final static String PROPERTY_KEY_TOTAL_DISTANCE = "total.distance";
 
 
@@ -490,12 +515,15 @@ public class GPSMap
     status_bar_ = new StatusBar(resources_,this);
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
     
-    map_mouse_mode_ = new MapMouseMode(map_bean_);
-    map_mouse_mode_.initializePlugin(hook_manager_);
-    map_bean_.addMouseListener(map_mouse_mode_);
-    map_bean_.addMouseMotionListener(map_mouse_mode_);
-    mouse_mode_manager_.addMouseMode(map_mouse_mode_);
-
+//     map_mouse_mode_ = new MapMouseMode(map_bean_);
+//     map_mouse_mode_.initializePlugin(hook_manager_);
+//     map_bean_.addMouseListener(map_mouse_mode_);
+//     map_bean_.addMouseMotionListener(map_mouse_mode_);
+//     mouse_mode_manager_.addMouseMode(map_mouse_mode_);
+    
+        // instantiate, initialize and add plugins (layers, gui and mousemdoes)
+    initializePlugins();
+    
     graticule_layer_ = new GraticuleLayer();
     graticule_layer_.initialize(resources_);
     map_bean_.add(graticule_layer_);
@@ -598,9 +626,8 @@ public class GPSMap
         // add menu bar at the end (maybe some modules add actions to it!)
     menu_bar_ = MenuFactory.createMenuBar(resources_, action_store_);
     
-    initializePlugins();
     addMouseModesToMenu();
-    map_mouse_mode_.setActive(true); // default mode
+//    map_mouse_mode_.setActive(true); // default mode
 
     
     main_frame_.setJMenuBar(menu_bar_);
@@ -847,7 +874,7 @@ public class GPSMap
         JMenuItem[] mouse_mode_items = mouse_mode_manager_.getMenuItems();
         for(int item_count = 0; item_count < mouse_mode_items.length; item_count++)
         {
-          System.out.println("Adding Mouse Mode "+mouse_mode_items[item_count] +" to menu.");
+//          System.out.println("Adding Mouse Mode "+mouse_mode_items[item_count] +" to menu.");
           mouse_mode_menu.add(mouse_mode_items[item_count]);
         }
       }
@@ -1184,7 +1211,14 @@ public class GPSMap
 
   protected void initializePluginArchitecture()
   {
-    service_discovery_ = new ServiceDiscovery(false); // and do not use the system loader (is used automatically by the RepositoryClassLoader)
+    
+    if(resources_.getBoolean(KEY_DEVELOPMENT_PLUGINS_CLASSLOADER_USE_DEFAULT_CLASSLOADER))
+          // use default classloader as well, so plugins are searched
+          // in classpath (useful for development of plugins)
+      service_discovery_ = new ServiceDiscovery(true); 
+    else
+      // do not use the system loader (is used automatically by the RepositoryClassLoader)
+      service_discovery_ = new ServiceDiscovery(false);
     repository_class_loader_ = new RepositoryClassLoader();
     
         // find paths that should be searched for plugin/service jars:
@@ -1255,31 +1289,78 @@ public class GPSMap
 
   protected void initializePlugins()
   {
+        // TODO FIXXME check for duplicate plugins (old and new version)
+        // and kill the old one
+
+    Vector mouse_modes = new Vector();
+    
         // GuiPlugins
     Object[] plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.GuiPlugin.class);
     GuiPlugin gui_plugin;
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       gui_plugin = (GuiPlugin)plugins[plugins_index];
-      mouse_mode_manager_.addMouseModes(gui_plugin.getMouseModes());
+      System.out.println("Adding Gui Plugin: " + gui_plugin.getPluginName());
       gui_plugin.initializePlugin(hook_manager_);
+      addMouseModes(gui_plugin.getMouseModes());
+          // TODO FIXXME add main menu actions and sub menu actions of plugins!
+    }
+
+        // LayerPlugins
+    plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.LayerPlugin.class);
+    LayerPlugin layer_plugin;
+    for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
+    {
+      layer_plugin = (LayerPlugin)plugins[plugins_index];
+      System.out.println("Adding Layer Plugin: " + layer_plugin.getPluginName());
+      layer_plugin.initializePlugin(hook_manager_);
+      addMouseModes(layer_plugin.getMouseModes());
+      map_bean_.add(layer_plugin);
           // TODO FIXXME add main menu actions and sub menu actions of plugins!
     }
 
         // MouseMode Plugins:
     plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.MouseModePlugin.class);
+        // initialize all mouse modes and add them as mouselisteners:
     MouseModePlugin mouse_mode_plugin;
     for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
     {
       mouse_mode_plugin = (MouseModePlugin)plugins[plugins_index];
+      System.out.println("Adding Mouse Mode Plugin: " + mouse_mode_plugin.getMouseModeName());
       mouse_mode_plugin.initializePlugin(hook_manager_);
-      mouse_mode_manager_.addMouseMode(mouse_mode_plugin);
-      mouse_mode_plugin.setActive(false);
-      map_bean_.addMouseListener(mouse_mode_plugin);
-      map_bean_.addMouseMotionListener(mouse_mode_plugin);
+      addMouseMode(mouse_mode_plugin);
     }
-    
-    
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Adds the given mouse mode to the mouse mode manager and
+ * registers it as a mouse listener and as as a mouse motion
+ * listener.
+ *
+ * @param mouse_mode the mouse mode
+ */
+  protected void addMouseMode(MouseMode mouse_mode)
+  {
+    mouse_mode_manager_.addMouseMode(mouse_mode);
+    mouse_mode.setActive(false);
+    map_bean_.addMouseListener(mouse_mode);
+    map_bean_.addMouseMotionListener(mouse_mode);
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Adds the given mouse modes to the mouse mode manager and
+ * registers them as a mouse listener and as as a mouse motion
+ * listener.
+ *
+ * @param mouse_mode the mouse mode
+ */
+  protected void addMouseModes(MouseMode[] mouse_modes)
+  {
+    for(int index = 0; index < mouse_modes.length; index++)
+      addMouseMode(mouse_modes[index]);
   }
 
 

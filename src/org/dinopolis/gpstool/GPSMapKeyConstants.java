@@ -206,10 +206,6 @@ public interface GPSMapKeyConstants
   public static final String KEY_TRACK_FILE_PATTERN = "track.file.pattern";
   public static final String KEY_TRACK_FILE_EXTENSION = "track.file.extension";
   public static final String KEY_TRACK_FILE_DESCRIPTIVE_NAME = "track.file.descriptive_name";
-  public static final String KEY_TRACK_GPSDRIVE_FILE_PREFIX  = "track.gpsdrive_file.prefix";
-  public static final String KEY_TRACK_GPSDRIVE_FILE_PATTERN  = "track.gpsdrive_file.pattern";
-  public static final String KEY_TRACK_GPSDRIVE_FILE_EXTENSION  = "track.gpsdrive_file.extension";
-  public static final String KEY_TRACK_GPSDRIVE_FILE_DESCRIPTIVE_NAME  = "track.gpsdrive_file.descriptive_name";
   public static final String KEY_TRACK_ACTIVE_TRACK_IDENTIFIER = "track.active_track.identifier";
   
       /** graticule resources */

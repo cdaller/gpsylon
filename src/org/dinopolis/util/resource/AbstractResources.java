@@ -112,10 +112,10 @@ public abstract class AbstractResources implements Resources
   private boolean dead_lock_detect_ = false;
 
   /** the null key */
-  private final static String NULL_KEY = "null";
+  protected final static String NULL_KEY = "null";
 
   /** the unset key */
-  private final static String UNSET_KEY = "unset";
+  protected final static String UNSET_KEY = "unset";
 
   //----------------------------------------------------------------------
   /**
@@ -189,6 +189,26 @@ public abstract class AbstractResources implements Resources
     throws UnsupportedOperationException
   {
     throw(new UnsupportedOperationException("remove methods are not "+
+                                            "supported by this"+
+                                            "Resources class"));    
+  }
+
+  //----------------------------------------------------------------------
+  /**
+   * Resets the bound value for the given key to its default value. If
+   * no value was bound under the given key, this method does
+   * nothing. Key is garanteed to be non-null!  Overwrite this method
+   * in classes extending AbstractResources, if reset is supported.
+   *
+   * @param key the key of the resource to reset.
+   * @exception UnsupportedOperationException if the resources is not
+   * capable of resetting values.
+   */
+
+  protected void resetValue(String key)
+    throws UnsupportedOperationException
+  {
+    throw(new UnsupportedOperationException("reset methods are not "+
                                             "supported by this"+
                                             "Resources class"));    
   }
@@ -404,6 +424,41 @@ public abstract class AbstractResources implements Resources
   }
 
   //----------------------------------------------------------------------
+  /**
+   * Resets the bound value to its default value (if supported).
+   *
+   * @param key the key of the resource to reset.
+   * @exception UnsupportedOperationException if the resources is not
+   * capable of resetting values, or in particular the given key.
+   */
+
+  public void reset(String key)
+    throws UnsupportedOperationException
+  {
+    if (key == null)
+      throw(new IllegalArgumentException("'key' must not be 'null'"));
+    
+    String old_value = null;
+    try
+    {
+      old_value = getValue(key);
+    }
+    catch(MissingResourceException exc)
+    {
+    }
+    String new_value = null;
+    try
+    {
+      new_value = getValue(key);
+    }
+    catch(MissingResourceException exc)
+    {
+    }
+    resetValue(key);
+    property_change_support_.firePropertyChange(key, old_value, new_value);
+  }
+
+ //----------------------------------------------------------------------
   /**
    * Returns true, if this resources is capable of storing and
    * deleting resources, false otherwise.

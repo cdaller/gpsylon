@@ -36,12 +36,14 @@ import org.dinopolis.gpstool.event.TrackChangedListener;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
+import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 import org.dinopolis.gpstool.track.RouteIdentificationComparator;
 import org.dinopolis.gpstool.track.Track;
 import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.gpstool.util.GeoExtent;
 import org.dinopolis.util.Debug;
+import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
 /**
@@ -55,21 +57,24 @@ import org.dinopolis.util.Debug;
  * @version $Revision$
  */
 
-public class TrackManagerImpl implements TrackManager  
+public class TrackManagerImpl implements TrackManager, GPSMapKeyConstants 
 {
 //  List tracks_ = new Vector();
 //  Map track_map_ = new TreeMap(new RouteIdentificationComparator());
   Map track_map_ = new TreeMap();
   GPSDataProcessor gps_data_processor_;
   Vector track_listeners_;
+  String active_track_identifier_;
+  Resources resources_;
 
 //----------------------------------------------------------------------
 /**
  * Empty constructor
  */
-  public TrackManagerImpl()
+  public TrackManagerImpl(Resources resources)
   {
-    
+    resources_ = resources;
+    active_track_identifier_ = resources_.getString(KEY_TRACK_ACTIVE_TRACK_IDENTIFIER);
   }
 
 //----------------------------------------------------------------------
@@ -102,27 +107,33 @@ public class TrackManagerImpl implements TrackManager
 
 //----------------------------------------------------------------------
 /**
- * Set the tracks.
+ * Set the tracks. All previously stored tracks are removed.
  *
  * @param tracks a list of tracks.
  */
   public void setTracks(List tracks)
   {
-    synchronized(track_map_)
+        // first remove the old tracks one by one (so the
+        // TrackListeners are informed):
+    List old_tracks = getTracks();
+    Iterator iterator = old_tracks.iterator();
+    while(iterator.hasNext())
     {
-      track_map_.clear();
-      Iterator iterator = tracks.iterator();
-      while(iterator.hasNext())
-      {
-        addTrack(new TrackImpl((GPSTrack)iterator.next()));
-      }
+      removeTrack(((GPSTrack)iterator.next()).getIdentification());
+    }
+        // add the new tracks:
+    iterator = tracks.iterator();
+    while(iterator.hasNext())
+    {
+      addTrack(new TrackImpl((GPSTrack)iterator.next()));
     }
   }
 
 //----------------------------------------------------------------------
 /**
- * Add a track. 
- * TODO: what happens, when the track has the same id as an already existing track?
+ * Add a track. If a track with the same identifier already exists,
+ * the old track is overwritten.
+ *
  * @param track the track to add.
  */
   public void addTrack(GPSTrack track)
@@ -184,9 +195,82 @@ public class TrackManagerImpl implements TrackManager
     {
       track_map_.remove(identifier);
       fireTrackChangedEvent(new TrackChangedEvent(this,
-                                                   identifier,
-                                                   TrackChangedEvent.TRACK_REMOVED));
+                                                  identifier,
+                                                  TrackChangedEvent.TRACK_REMOVED));
     }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Defines the track with the given identifier as the active track
+ * (the track used by the {@link
+ * #addToActiveTrack(org.dinopolis.gpstool.gpsinput.GPSTrackpoint} method).
+ *
+ * @param identifier the identifier of the track to use as active track.
+ * @throws IllegalArgumentException if not track exists with the given
+ * name or the identifier is null
+ */
+  public void setActiveTrackIdentifier(String identifier)
+    throws IllegalArgumentException
+  {
+    if(identifier == null)
+      throw new IllegalArgumentException("Identifier must not be null!");
+    Track track = getTrack(identifier);
+    if(track == null)
+      throw new IllegalArgumentException("Track with identifier '"
+                                         +identifier+"' does not exist.");
+    
+    active_track_identifier_ = identifier;
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Returns the name of the active track
+ * (the track used by the {@link
+ * #addToActiveTrack(org.dinopolis.gpstool.gpsinput.GPSTrackpoint} method).
+ *
+ * @return the identifier of the track to use as active track.
+ */
+  public String getActiveTrackIdentifier()
+  {
+    return(active_track_identifier_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Adds the given trackpoint to the track with the given identifier.
+ *
+ * @param identifier the identifier of the track.
+ * @param trackpoint the trackpoint to add to the track.
+ * @throws IllegalArgumentException if the track does not exist or any
+ * of the arguments are null.
+ */
+  public void addToTrack(String identifier, GPSTrackpoint trackpoint)
+    throws IllegalArgumentException
+  {
+    Track track = getTrack(identifier);
+    if(track == null)
+      throw new IllegalArgumentException("Track with identifier '"
+                                         +identifier+"' does not exist.");
+    track.addWaypoint(trackpoint);
+    fireTrackChangedEvent(new TrackChangedEvent(this,
+                                                identifier,
+                                                TrackChangedEvent.TRACK_CHANGED));
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Adds the given trackpoint to the active track.
+ *
+ * @param trackpoint the trackpoint to add to the active track.
+ * @throws IllegalArgumentException if the track does not exist or is
+ * null.
+ */
+  public void addToActiveTrack(GPSTrackpoint trackpoint)
+    throws IllegalArgumentException
+  {
+    addToTrack(active_track_identifier_,trackpoint);
   }
 
 
@@ -214,6 +298,7 @@ public class TrackManagerImpl implements TrackManager
     {
       gps_track = (GPSTrack)iterator.next();
       track = new TrackImpl(gps_track);
+      
       addTrack(track);
     }
   }

@@ -1,6 +1,6 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
-*
+ * 
  * Copyright (c) 2002 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 
@@ -37,6 +37,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
 import java.io.OutputStreamWriter;
 import javax.swing.JComponent;
+import org.dinopolis.gpstool.plugin.PluginSupport;
 
 //----------------------------------------------------------------------
 /**
@@ -51,6 +52,46 @@ import javax.swing.JComponent;
 
 public class WriteSvgImagePlugin implements WriteImagePlugin
 {
+
+//----------------------------------------------------------------------
+/**
+ * Initialize the plugin and pass a PluginSupport that provides
+ * objects, the plugin may use.
+ *
+ * @param support the PluginSupport object
+ */
+  public void initializePlugin(PluginSupport support)
+  {
+  }
+
+//----------------------------------------------------------------------
+/**
+ * The application calls this method to indicate that the plugin is
+ * activated and will be used from now on. The Plugin should
+ * initialize any needed resources (files, etc.) in this method.
+ *
+ * @throws Exception if an error occurs. If this method throws an
+ * exception, the plugin will not be used by the application.
+ */
+
+  public void startPlugin()
+    throws Exception
+  {
+  }
+
+//----------------------------------------------------------------------
+/**
+ * The application calls this method to indicate that the plugin is
+ * deactivated and will not be used any more. The Plugin should
+ * release all resources (close files, etc.) in this method.
+ *
+ * @throws Exception if an error occurs.
+ */
+
+  public void stopPlugin()
+    throws Exception
+  {
+  }
 
 //----------------------------------------------------------------------
 /**

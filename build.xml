@@ -42,6 +42,7 @@ Christof Dallermassl (cdaller@iicm.edu)
       <include name="mysql-connector-java-2.0.14-bin.jar" />
       <include name="pg73jdbc3.jar" />
       <include name="velocity-dep-1.3.1.jar" />
+      <include name="log4j-1.2.8.jar" />
     </patternset>
 
     <!-- patternset including all plugins -->

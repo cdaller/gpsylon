@@ -531,7 +531,7 @@ public class GPSMap
     map_bean_.add(shape_layer_);
     
     track_layer_ = new TrackLayer();
-    track_layer_.initialize(resources_);
+    track_layer_.initialize(hook_manager_);
     map_bean_.add(track_layer_);
     
     destination_layer_ = new DestinationLayer(resources_);

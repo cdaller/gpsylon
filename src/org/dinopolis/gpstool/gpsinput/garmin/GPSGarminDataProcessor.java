@@ -82,6 +82,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected List result_waypoints_;
   protected Object pvt_sync_request_lock_ = new Object();
   protected GarminPVT result_pvt_;
+  protected Object product_info_lock_ = new Object();
 
       /** Listeners for the Result Packages */
   protected Vector result_listeners_;
@@ -194,16 +195,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   }
   
 
-  public GarminProduct getProductInfo()
-  {
-    return(product_info_);
-  }
 
-  public GarminCapabilities getCapabilities()
-  {
-    return(capabilities_);
-  }
-  
   
 //--------------------------------------------------------------------------------
 // GPSDataProcessor interface
@@ -254,7 +246,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       read_thread_.setDaemon(true);
       read_thread_.start();
 
-      requestProductInfo(); // needed to know the capabilities of the device
+      getGarminProductInfo(0L); // needed to know the capabilities of the device
 	
 //       write_thread_ = new WriterThread(out_stream_);
 //       write_thread_.setName("Garmin Writer");
@@ -265,7 +257,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     }
     catch(IOException e)
     {
-      throw new GPSException(e.getMessage());
+      throw new GPSException(e);
     }
     
   }
@@ -286,7 +278,34 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     gps_device_.close();
   }
 
-      //----------------------------------------------------------------------
+
+//----------------------------------------------------------------------
+/**
+ * Returns information about the gps connected (name of device, type
+ * of connection, etc.) This information is for display to the user,
+ * not for further processing (may change without notice).
+ *
+ * @return information about the gps connected.
+ */
+  public String[] getGPSInfo()
+  {
+    String name = product_info_.getProductName()
+                  +" ("+product_info_.getProductId()
+                  +") V"+product_info_.getProductSoftware();
+    Vector capabilities = capabilities_.getProductCapabilities();
+    StringBuffer capabilities_string = new StringBuffer();
+    for(int index=0; index < capabilities.size()-1; index++)
+    {
+      capabilities_string.append(capabilities.get(index)).append(", ");
+    }
+        // add last:
+    capabilities_string.append(capabilities.get(capabilities.size()-1));
+    String[] info = new String[] {name, capabilities_string.toString()};
+    return(info);
+  }
+
+  
+//----------------------------------------------------------------------
 /**
  * Requests the gps device to send the current
  * position/heading/etc. periodically. This implemenation ignores the
@@ -552,8 +571,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   {
     try
     {
-//       if(Debug.DEBUG)
-// 	Debug.println("gps_garmin_package","Sending package "+garmin_package);
+      if(Debug.DEBUG)
+        Debug.println("gps_garmin_package","Sending package async "+garmin_package.getPackageId());
           // package header
       out_stream_.write(DLE);
       out_stream_.write(garmin_package.getPackageId());
@@ -614,12 +633,15 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       {
         send_success_ = false;
         send_package_id_ = 0;
+//        System.err.println("Sending package in putPackage()");
         putPackageAsync(garmin_package);
         try
         {
+//          System.err.println("waiting for ACK");
           acknowledge_lock_.wait(timeout);
         }
         catch(InterruptedException ignore){}
+//        System.err.println("after waiting for ACK");
       }
     }
     while(send_success_ && (send_package_id_ == garmin_package.getPackageId()));
@@ -640,8 +662,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
       while(true)
       {
-        watch_dog_.startWatching();
         package_id = in_stream_.read();
+        watch_dog_.startWatching();   // start watchdog after first byte arrived
         watch_dog_.reset();
         bytes_scanned++;
         if(package_id == DLE)
@@ -752,16 +774,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         {
           if(Debug.isEnabled("gps_garmin_package"))
           {
-            System.err.println("bad packet framing");
-            System.err.println("id is " + package_id);
-            System.err.println("size is " + package_size);
-            System.err.println("data is: ");
+            Debug.println("gps_garmin_package","bad packet framing");
+            Debug.println("gps_garmin_package","id is " + package_id);
+            Debug.println("gps_garmin_package","size is " + package_size);
+            Debug.println("gps_garmin_package","data is: ");
             for (int i = 0; i < package_size; i++) {
-              System.err.print(garmin_package.get() + " ");
+              Debug.print("gps_garmin_package",garmin_package.get() + " ");
             }
-            System.err.println("\nchecksum is " + package_checksum);
-            System.err.println("DLE byte is " + dle);
-            System.err.println("ETX byte is " + etx);
+            Debug.println("gps_garmin_package","\nchecksum is " + package_checksum);
+            Debug.println("gps_garmin_package","DLE byte is " + dle);
+            Debug.println("gps_garmin_package","ETX byte is " + etx);
           }
         }
         sendCommandAsync(NAK,package_id);
@@ -802,6 +824,45 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   }
 
 
+//----------------------------------------------------------------------
+/**
+ * Returns information about the garmin product.
+ *
+ * @return information about the garmin product.
+ */
+  protected GarminProduct getGarminProductInfo(long timeout)
+    throws IOException
+  {
+    if(product_info_ != null)
+      return(product_info_);
+
+    synchronized(product_info_lock_)
+    {
+      requestProductInfo();
+      try
+      {
+        product_info_lock_.wait(timeout);
+      }
+      catch(InterruptedException ignore){}
+    }
+    return(product_info_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns the capablitilites of the garmin product.
+ *
+ * @return the capablitilites of the garmin product.
+ */
+  protected GarminCapabilities getGarminCapabilities(long timeout)
+    throws IOException
+  {
+    if(product_info_ == null)
+      getGarminProductInfo(timeout);
+    return(capabilities_);
+  }
+
+  
 //----------------------------------------------------------------------
 /**
  * Returns all the current PVT (position, velocity, etc.) from the gps
@@ -1200,9 +1261,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void fireProtocolArrayReceived(GarminCapabilities capabilities)
   {
-    capabilities_ = capabilities;
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","product capabilities received: "+capabilities_);
+    synchronized(product_info_lock_)
+    {
+      capabilities_ = capabilities;
+      product_info_lock_.notify();
+    }
+      if(Debug.DEBUG)
+        Debug.println("gps_garmin","product capabilities received: "+capabilities_);
   }
 
 //----------------------------------------------------------------------
@@ -1212,15 +1277,19 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void firePVTDataReceived(GarminPVT pvt)
   {
+    synchronized(pvt_sync_request_lock_)
+    {
+      if((pvt != null) && (pvt.getFix() > 1))
+      {
+        changeGPSData(LOCATION,new GPSPosition(pvt.getLat(),pvt.getLon()));
+        changeGPSData(SPEED,new Float(calcSpeed(pvt.getNorth(),pvt.getEast())));
+        changeGPSData(ALTITUDE,new Float(pvt.getAlt() + pvt.getMslHeight()));
+        changeGPSData(HEADING,new Float(calcHeading(pvt.getNorth(),pvt.getEast())));
+      }
+      pvt_sync_request_lock_.notify();
+    }
     if(Debug.DEBUG)
       Debug.println("gps_garmin","pvt received: "+pvt);
-    if((pvt != null) && (pvt.getFix() > 1))
-    {
-      changeGPSData(LOCATION,new GPSPosition(pvt.getLat(),pvt.getLon()));
-      changeGPSData(SPEED,new Float(calcSpeed(pvt.getNorth(),pvt.getEast())));
-      changeGPSData(ALTITUDE,new Float(pvt.getAlt() + pvt.getMslHeight()));
-      changeGPSData(HEADING,new Float(calcHeading(pvt.getNorth(),pvt.getEast())));
-    }
   }
 
 //----------------------------------------------------------------------

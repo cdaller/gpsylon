@@ -40,6 +40,7 @@ import org.dinopolis.gpstool.MapNavigationHook;
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.util.Resources;
+import com.bbn.openmap.Layer;
 
 //----------------------------------------------------------------------
 /**
@@ -200,6 +201,20 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
 
 //----------------------------------------------------------------------
 /**
+ * If the mouse mode plugin wants to draw anything on the map it may
+ * return a layer here or <code>null</code> if not.
+ *
+ * @return the layer the plugin wants to paint into.
+ * @see com.bbn.openmap.Layer
+ */
+
+  public Layer getLayer()
+  {
+    return(null);
+  }
+  
+//----------------------------------------------------------------------
+/**
  * The name returned here is used in the menu and/or the toolbar of
  * the application to switch the mouse mode on or off. It should be
  * localized.
@@ -236,6 +251,37 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
     return("Zoom In/Out");
   }
 
+//----------------------------------------------------------------------
+/**
+ * Returns the mnemonic character that is used for manual (keyboard)
+ * selection in a menu. If possible, it should be the first letter of
+ * the name (default).
+ *
+ * @return a string describing the mnemonic character for this mouse
+ * mode when used in a menu.
+ */
+  public char getMouseModeMnemonic()
+  {
+    return('N');
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * Returns the accelerator key that is used for the mouse mode in the
+ * menu or toolbar. The format of the key strings is described in
+ * {@link javax.swing.Keystroke#getKeyStroke(java.lang.String)}. Some
+ * examples are given: <code>INSERT</code>,<code>controle
+ * DELETE</code>,<code>alt shift X</code>,<code>shift
+ * F</code>.
+ *
+ * @return a string describing the accelerator key.
+ */
+  public String getMouseModeAcceleratorKey()
+  {
+    return("control N");
+  }
+  
 //----------------------------------------------------------------------
 // Plugin methods
 //----------------------------------------------------------------------

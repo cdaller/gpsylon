@@ -109,17 +109,20 @@ public class TrackChartFrame extends JFrame implements ActionListener
 
   protected JFreeChart getTrackChart(Track track)
   {
-        //    System.out.println("create chart for track "+track.getIdentification());
+//    System.out.println("create chart for track "+track.getIdentification());
     XYSeries xy_series = new XYSeries(track.getIdentification());
     List waypoints = track.getWaypoints();
     Iterator waypoint_iterator = waypoints.iterator();
     double last_x = 0.0;
     Trackpoint last_trackpoint = null;
     Trackpoint trackpoint;
+    double y_value;
     if(waypoint_iterator.hasNext())
     {
       last_trackpoint = (Trackpoint)waypoint_iterator.next(); // start trackpoint
-      xy_series.add(last_x,last_trackpoint.getAltitude());
+      y_value = unit_helper_.getAltitude(last_trackpoint.getAltitude());
+      xy_series.add(last_x,y_value);
+//      System.out.println("chart x="+last_x+", y="+y_value);
     
       while(waypoint_iterator.hasNext())
       {
@@ -128,8 +131,9 @@ public class TrackChartFrame extends JFrame implements ActionListener
         double distance_km = GeoMath.distance(last_trackpoint.getLatitude(), last_trackpoint.getLongitude(),
                                               trackpoint.getLatitude(),trackpoint.getLongitude())/1000.0;
         last_x += unit_helper_.getDistance(distance_km);
-        xy_series.add(last_x,
-                      unit_helper_.getAltitude(trackpoint.getAltitude()));
+        y_value = unit_helper_.getAltitude(trackpoint.getAltitude());
+        xy_series.add(last_x,y_value);
+//        System.out.println("chart x="+last_x+", y="+y_value);
         last_trackpoint = trackpoint;
       }
     }

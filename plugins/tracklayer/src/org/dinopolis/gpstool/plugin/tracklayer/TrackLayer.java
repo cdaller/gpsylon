@@ -109,7 +109,6 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
     active_track_line_stroke_ =
       new BasicStroke((float)resources_.getDouble(KEY_TRACK_ACTIVE_TRACK_LINE_WIDTH));
     boolean active = resources_.getBoolean(KEY_TRACK_LAYER_ACTIVE);
-    System.out.println("TrackLayer was last "+active);
     setActive(active);
   }
 

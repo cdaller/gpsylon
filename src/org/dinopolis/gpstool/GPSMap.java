@@ -22,14 +22,9 @@
 
 package org.dinopolis.gpstool;
 
-import com.bbn.openmap.BufferedMapBean;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.proj.GreatCircle;
-import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,22 +40,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -71,7 +57,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.Vector;
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
@@ -108,7 +93,6 @@ import org.dinopolis.gpstool.gui.layer.ShapeLayer;
 import org.dinopolis.gpstool.gui.layer.TrackLayer;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
-import org.dinopolis.gpstool.plugin.Plugin;
 import org.dinopolis.gpstool.plugin.WriteImagePlugin;
 import org.dinopolis.gpstool.projection.FlatProjection;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
@@ -119,7 +103,6 @@ import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
-import org.dinopolis.util.commandarguments.InvalidCommandArgumentException;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
 import org.dinopolis.util.gui.ResourceEditorFrame;
@@ -2966,7 +2949,7 @@ public class GPSMap
 
          // inform me as well about any changes! (could also be implemented
          // by overriding the firePropertyChanged method)
-     addPropertyChangeListener(this);
+     GPSMap.this.addPropertyChangeListener(this);
    }
 
        //----------------------------------------------------------------------

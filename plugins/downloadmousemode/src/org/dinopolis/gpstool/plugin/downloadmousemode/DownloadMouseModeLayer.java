@@ -144,15 +144,13 @@ public class DownloadMouseModeLayer extends BasicLayer
  */
   protected void doCalculation()
   {
-    System.out.println("DownloadMouseModeLayer: active="+mouse_mode_active_);
-    System.out.println("DownloadMouseModeLayer: isActive="+isActive());
     if(!mouse_mode_active_)
       return;
     Projection projection = getProjection();
 
         // calculate preview rectangles:
     map_rectangles_ = download_calculator_.calculateMapRectangles();
-    System.out.println("Map Rectangles to calculate: "+Debug.objectToString(map_rectangles_));
+//    System.out.println("Map Rectangles to calculate: "+Debug.objectToString(map_rectangles_));
     Rectangle[] preview_rectangles = new Rectangle[map_rectangles_.length];
     Rectangle rectangle;
     MapRectangle map;

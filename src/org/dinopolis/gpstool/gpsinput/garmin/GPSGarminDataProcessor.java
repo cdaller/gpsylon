@@ -118,71 +118,73 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Identifiers for L000 - Basic Link Protocol
  */
-  public final static int Pid_Protocol_Array = 253;
-  public final static int Pid_Product_Rqst   = 254;
-  public final static int Pid_Product_Data   = 255;
+  public final static int Pid_Protocol_Array = 253;  // 0xfd
+  public final static int Pid_Product_Rqst   = 254;  // 0xfe
+  public final static int Pid_Product_Data   = 255;  // 0xff
 
 /**
  * Identifiers for L001 - Link Protocol 1
  */
-  public final static int Pid_Command_Data_L001   = 10;
-  public final static int Pid_Xfer_Cmplt_L001     = 12;
-  public final static int Pid_Date_Time_Data_L001 = 14;
-  public final static int Pid_Position_Data_L001  = 17;
-  public final static int Pid_Prx_Wpt_Data_L001   = 19;
-  public final static int Pid_Records_L001        = 27;
-  public final static int Pid_Rte_Hdr_L001        = 29;
-  public final static int Pid_Rte_Wpt_Data_L001   = 30;
-  public final static int Pid_Almanac_Data_L001   = 31;
-  public final static int Pid_Trk_Data_L001       = 34;
-  public final static int Pid_Wpt_Data_L001       = 35;
-  public final static int Pid_Pvt_Data_L001       = 51;
-  public final static int Pid_Rte_Link_Data_L001  = 98;
-  public final static int Pid_Trk_Hdr_L001        = 99;
+  public final static int Pid_Command_Data_L001   = 10;  // 0x0a
+  public final static int Pid_Xfer_Cmplt_L001     = 12;  // 0x0c
+  public final static int Pid_Date_Time_Data_L001 = 14;  // 0x0e
+  public final static int Pid_Position_Data_L001  = 17;  // 0x11
+  public final static int Pid_Prx_Wpt_Data_L001   = 19;  // 0x13
+  public final static int Pid_Satellite_Info      = 26;  // 0x1a // undocumented async
+  public final static int Pid_Records_L001        = 27;  // 0x1b
+  public final static int Pid_Enable_Async_Events = 28;  // 0x1c // from http://playground.sun.com/pub/soley/garmin.txt
+  public final static int Pid_Rte_Hdr_L001        = 29;  // 0x1d
+  public final static int Pid_Rte_Wpt_Data_L001   = 30;  // 0x1e
+  public final static int Pid_Almanac_Data_L001   = 31;  // 0x1f
+  public final static int Pid_Trk_Data_L001       = 34;  // 0x22
+  public final static int Pid_Wpt_Data_L001       = 35;  // 0x23
+  public final static int Pid_Pvt_Data_L001       = 51;  // 0x33
+  public final static int Pid_Rte_Link_Data_L001  = 98;  // 0x62
+  public final static int Pid_Trk_Hdr_L001        = 99;  // 0x63
 
 /**
  * Identifiers for L002 - Link Protocol 2
  */
-  public final static int Pid_Almanac_Data_L002   = 4;
-  public final static int Pid_Command_Data_L002   = 11;
-  public final static int Pid_Xfer_Cmplt_L002     = 12;
-  public final static int Pid_Date_Time_Data_L002 = 20;
-  public final static int Pid_Position_Data_L002  = 24;
-  public final static int Pid_Records_L002        = 35;
-  public final static int Pid_Rte_Hdr_L002        = 37;
-  public final static int Pid_Rte_Wpt_Data_L002   = 39;
-  public final static int Pid_Wpt_Data_L002       = 43;
+  public final static int Pid_Almanac_Data_L002   = 4;   // 0x04
+  public final static int Pid_Command_Data_L002   = 11;  // 0x0b
+  public final static int Pid_Xfer_Cmplt_L002     = 12;  // 0x0c
+  public final static int Pid_Date_Time_Data_L002 = 20;  // 0x14
+  public final static int Pid_Position_Data_L002  = 24;  // 0x18
+  public final static int Pid_Records_L002        = 35;  // 0x23
+  public final static int Pid_Rte_Hdr_L002        = 37;  // 0x25
+  public final static int Pid_Rte_Wpt_Data_L002   = 39;  // 0x27
+  public final static int Pid_Wpt_Data_L002       = 43;  // 0x2b
 
 /**
  * Identifiers for A010 - Device Command Protocol 1
  */
-  public final static int Cmnd_Abort_Transfer_A010 = 0;
-  public final static int Cmnd_Transfer_Alm_A010   = 1;
-  public final static int Cmnd_Transfer_Posn_A010  = 2;
-  public final static int Cmnd_Transfer_Prx_A010   = 3;
-  public final static int Cmnd_Transfer_Rte_A010   = 4;
-  public final static int Cmnd_Transfer_Time_A010  = 5;
-  public final static int Cmnd_Transfer_Trk_A010   = 6;
-  public final static int Cmnd_Transfer_Wpt_A010   = 7;
-  public final static int Cmnd_Turn_Off_Pwr_A010   = 8;
-  public final static int Cmnd_Start_Pvt_Data_A010 = 49;
-  public final static int Cmnd_Stop_Pvt_Data_A010  = 50;
+  public final static int Cmnd_Abort_Transfer_A010 = 0;  // 0x00
+  public final static int Cmnd_Transfer_Alm_A010   = 1;  // 0x01
+  public final static int Cmnd_Transfer_Posn_A010  = 2;  // 0x02
+  public final static int Cmnd_Transfer_Prx_A010   = 3;  // 0x03
+  public final static int Cmnd_Transfer_Rte_A010   = 4;  // 0x04
+  public final static int Cmnd_Transfer_Time_A010  = 5;  // 0x05
+  public final static int Cmnd_Transfer_Trk_A010   = 6;  // 0x06
+  public final static int Cmnd_Transfer_Wpt_A010   = 7;  // 0x07
+  public final static int Cmnd_Turn_Off_Pwr_A010   = 8;  // 0x08
+  public final static int Cmnd_Start_Pvt_Data_A010 = 49;  // 0x31
+  public final static int Cmnd_Stop_Pvt_Data_A010  = 50;  // 0x32
 
 /**
  * Identifiers for A011 - Device Command Protocol 2
  */
-  public final static int Cmnd_Abort_Transfer_A011 = 0;
-  public final static int Cmnd_Transfer_Alm_A011   = 4;
-  public final static int Cmnd_Transfer_Rte_A011   = 8;
-  public final static int Cmnd_Transfer_Time_A011  = 20;
-  public final static int Cmnd_Transfer_Wpt_A011   = 21;
-  public final static int Cmnd_Turn_Off_Pwr_A011   = 26;
+  public final static int Cmnd_Abort_Transfer_A011 = 0;  //0x00
+  public final static int Cmnd_Transfer_Alm_A011   = 4;  // 0x04
+  public final static int Cmnd_Transfer_Rte_A011   = 8;  // 0x08
+  public final static int Cmnd_Transfer_Time_A011  = 20;  // 0x14
+  public final static int Cmnd_Transfer_Wpt_A011   = 21;  // 0x15
+  public final static int Cmnd_Turn_Off_Pwr_A011   = 26;  // 0x1a
 
 /**
  * Inofficial Commands
  */
-  public final static int Cmnd_Set_Serial_Speed    = 48; // from gpsexplorer
-  public final static int Pid_Change_Serial_Speed  = 49; // from gpsexplorer
+  public final static int Cmnd_Set_Serial_Speed    = 48; // 0x30 // from gpsexplorer
+  public final static int Pid_Change_Serial_Speed  = 49; // 0x31 // from gpsexplorer
 
       /**
        * Other Commands
@@ -196,8 +198,6 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   {
   }
   
-
-
   
 //--------------------------------------------------------------------------------
 // GPSDataProcessor interface
@@ -1011,6 +1011,41 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
 //----------------------------------------------------------------------
 /**
+ * Request to send async packages from the gps device. As the packages
+ * sent are not known at this time, this method should not be used!!! 
+ */
+  protected void requestAsyncEvents()
+  {
+        // experimental code (from http://playground.sun.com/pub/soley/garmin.txt):
+        // more information about these packages can be found at:
+        // http://artico.lma.fi.upm.es/numerico/miembros/antonio/async/report.txt
+    waitTillReady();
+    GarminPackage garmin_package = new GarminPackage(Pid_Enable_Async_Events,2);
+        // 00 00 = 0x0= disable all (no bits set)
+        // 01 00 = 0x1= enables RecordType=00,01,02 // etrex summit: nothing sent
+        // 02 00 = 0x2= enables RecordType=0d // etrex summit: nothing sent
+        // 04 00 = 0x4= enables RecordType=14,27,28 // etrex summit: packages id 39/0x27 (2 bytes) are sent
+        // 08 00 = 0x8= enables RecordType=16 // etrex summit: nothing sent
+        // 10 00 = 0x10= enables RecordType=17 // etrex summit: nothing sent
+        // 20 00 = 0x20= enables RecordType=07,12,19 // etrex summit: packages id 55/0x37(36bytes),56/0x38(40bytes) are sent
+        // 40 00 = 0x40= enables RecordType=07,12 // etrex summit: packages 55,56 are sent
+        // 80 00 = 0x80= enables RecordType=1a // etrex summit: package 26/0x1a (96bytes) every second
+        // 00 01 = 0x100= enables RecordType=29,2a // etrex summit: nothing sent
+        // 00 02 = 0x200= enables RecordType=?? // etrex summit: packages 102/0x66 (20bytes), 104/0x68(20 bytes) sent
+        // 00 04 = 0x400= enables RecordType=?? // etrex summit: nothing sent
+        // 00 08 = 0x800= enables RecordType=?? // etrex summit: nothing sent
+        // 00 10 = 0x1000= enables RecordType=?? // etrex summit: nothing sent
+        // 00 20 = 0x20100= enables RecordType=?? // etrex summit: nothing sent
+        // 00 40 = 0x20100= enables RecordType=?? // etrex summit: nothing sent
+        // 00 80 = 0x20100= enables RecordType=?? // etrex summit: nothing sent
+        // ff ff = 0xffff= enables all (all bits set)
+    garmin_package.put(0x80);
+    garmin_package.put(0);
+    putPackageAsync(garmin_package);
+  }
+
+//----------------------------------------------------------------------
+/**
  * Requests to send a PVT package every second.
  */
   protected void requestStartPvtData()
@@ -1523,13 +1558,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
               // transfer complete
         case Pid_Xfer_Cmplt_L001:
 //		  case Pid_Xfer_Cmplt_L002: // same number as Pid_Xfer_Cmplt_L001
+//          GarminXferComplete xfer_complete = new GarminXferComplete(garmin_package);
           if(Debug.DEBUG)
             Debug.println("gps_garmin","transfer complete");
           transfer_complete = true;
           break;
         default:
-          System.err.println("WARNING GPSGarminDataProcessor: unknown packet: "
+          System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
                              +(int)buffer[0]);
+          if(Debug.DEBUG)
+            Debug.println("gps_garmin","unknown package: "+garmin_package);
 	      }
 	    }
 	    
@@ -1564,8 +1602,14 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	  case Pid_Xfer_Cmplt_L001:
 	    fireTransferCompleteReceived();
 	    break;
+//     case Pid_Satellite_Info:
+//       GarminSatelliteInfo info = new GarminSatelliteInfo(garmin_package);
+//       break;
 	  default:
-	    System.err.println("WARNING GPSGarminDataProcessor : unknown packet: "+(int)buffer[0]);
+      System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
+                         +(int)buffer[0]);
+      if(Debug.DEBUG)
+        Debug.println("gps_garmin","unknown package: "+garmin_package);
     }
   }
 
@@ -1636,7 +1680,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       GPSGarminDataProcessor gps_processor = new GPSGarminDataProcessor();
       GPSDevice gps_device;
       Hashtable environment = new Hashtable();
-      environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS0");
+      environment.put(GPSSerialDevice.PORT_NAME_KEY,"/dev/ttyS1");
       environment.put(GPSSerialDevice.PORT_SPEED_KEY,new Integer(9600));
       gps_device = new GPSSerialDevice();
       gps_device.init(environment);
@@ -1654,19 +1698,21 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //      System.out.println("REQ: requesting tracks");
 //      gps_processor.requestTracks();
 
+      System.out.println("requesting async events");
+      gps_processor.requestAsyncEvents();
 
-      System.out.println("Requesting PVT");
-      GarminPVT pvt = gps_processor.getPVT(1000L);
-      System.out.println("Sync PVT: "+pvt);
+//       System.out.println("Requesting PVT");
+//       GarminPVT pvt = gps_processor.getPVT(1000L);
+//       System.out.println("Sync PVT: "+pvt);
 	
 //      List routes = gps_processor.getRoutes(0L);
 //      System.out.println("Sync Routes: "+routes);
 //	List waypoints = gps_processor.getWaypoints(0L);
 //	System.out.println("Sync Waypoints: "+waypoints);
-      List tracks = gps_processor.getTracks(0L);
-      System.out.println("Sync Tracks: "+tracks);
+//       List tracks = gps_processor.getTracks(0L);
+//       System.out.println("Sync Tracks: "+tracks);
       
-//	System.in.read(); // wait for keypress
+      System.in.read(); // wait for keypress
 //      gps_processor.requestPowerOff();
       
       gps_processor.close();

@@ -71,7 +71,7 @@ public class TrackImpl extends RouteImpl implements Track
   }
 //----------------------------------------------------------------------
 /**
- * Copy constructor for {@link org.dinopolis.gpstool.gpsinput.Track}.
+ * Copy constructor for {@link Track}.
  * Creates for all Trackpoints a corresponding Trackpoint object. This
  * constructor is needed, as otherwise the trackpoints are copied as
  * GPSTrackpoints and the screen coordinates are not copied.

@@ -268,8 +268,8 @@ public class WaypointImpl implements Waypoint
 //----------------------------------------------------------------------
 /**
  * Returns true if the altitude of this waypoint is valid. This is
- * equal to the expression <code>getAltitude() == Double.NaN</code>.
- * @param true if waypoint has valid altitude.
+ * equal to the expression <code>Double.isNaN(getAltitude())</code>.
+ * @return true if waypoint has valid altitude.
  */
   public boolean hasValidAltitude()
   {

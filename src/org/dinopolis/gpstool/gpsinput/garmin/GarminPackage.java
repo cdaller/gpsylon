@@ -132,48 +132,94 @@ class GarminPackage
   }
 
   
-// //----------------------------------------------------------------------
-// /**
-//  * Get the next data value as byte.
-//  * @return the next byte
-//  * @throws IllegalStateException on a try to read more bytes than were
-//  * added before.
-//  */
-//   public byte getNextAsByte()
-//     throws IllegalStateException
-//   {
-//     return(get());
-//   }
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as byte.
+ * @return the next byte
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public byte getNextAsByte()
+    throws IllegalStateException
+  {
+    return((byte)get());
+  }
 
-// //----------------------------------------------------------------------
-// /**
-//  * Get the next data value as int.
-//  * @return the next value as int
-//  * @throws IllegalStateException on a try to read more bytes than were
-//  * added before.
-//  */
-//   public int getNextAsInteger()
-//     throws IllegalStateException
-//   {
-//     int value = GarminDataConverter.getGarminInt(data_,get_index_);
-//     get_index_ += 2;
-//     return(value);
-//   }
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as int.
+ * @return the next value as int
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public int getNextAsInt()
+    throws IllegalStateException
+  {
+    int value = GarminDataConverter.getGarminInt(data_,get_index_);
+    get_index_ += 2;
+    return(value);
+  }
 
-// //----------------------------------------------------------------------
-// /**
-//  * Get the next data value as String.
-//  * @return the next value as String
-//  * @throws IllegalStateException on a try to read more bytes than were
-//  * added before.
-//  */
-//   public String getNextAsString()
-//     throws IllegalStateException
-//   {
-//     String value = GarminDataConverter.getGarminString(data_,get_index_);
-//     get_index_ += value.length;
-//     return(value);
-//   }
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as float.
+ * @return the next value as float
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public float getNextAsFloat()
+    throws IllegalStateException
+  {
+    float value = GarminDataConverter.getGarminFloat(data_,get_index_);
+    get_index_ += 4;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as long.
+ * @return the next value as long.
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public long getNextAsLong()
+    throws IllegalStateException
+  {
+    long value = GarminDataConverter.getGarminLong(data_,get_index_);
+    get_index_ += 4;
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as String.
+ * @return the next value as String
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public String getNextAsString()
+    throws IllegalStateException
+  {
+    String value = GarminDataConverter.getGarminString(data_,get_index_);
+    get_index_ += value.length();
+    return(value);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Get the next data value as String.
+ * @param max_length the maximum length allowed for the string.
+ * @return the next value as String
+ * @throws IllegalStateException on a try to read more bytes than were
+ * added before.
+ */
+  public String getNextAsString(int max_length)
+    throws IllegalStateException
+  {
+    String value = GarminDataConverter.getGarminString(data_,get_index_,max_length);
+    get_index_ += value.length();
+    return(value);
+  }
 
 //----------------------------------------------------------------------
 /**

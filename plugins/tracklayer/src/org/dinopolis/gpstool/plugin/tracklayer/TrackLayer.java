@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Vector;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.TrackManager;
+import org.dinopolis.gpstool.event.TrackChangedEvent;
+import org.dinopolis.gpstool.event.TrackChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.track.Track;
@@ -50,7 +52,7 @@ import org.dinopolis.util.Resources;
  * @version $Revision$
  */
 
-public class TrackLayer extends BasicLayer
+public class TrackLayer extends BasicLayer implements TrackChangedListener
 {
   TrackManager track_manager_;
   List tracks_;
@@ -85,6 +87,7 @@ public class TrackLayer extends BasicLayer
   {
     track_manager_ = support.getTrackManager();
     resources_ = support.getResources();
+    track_manager_.addTrackListener(this);
     loaded_track_color_ = resources_.getColor(GPSMapKeyConstants.KEY_TRACK_LOADED_TRACK_COLOR);
     loaded_track_line_stroke_ =
       new BasicStroke((float)resources_.getDouble(GPSMapKeyConstants.KEY_TRACK_LOADED_TRACK_LINE_WIDTH));
@@ -189,6 +192,16 @@ public class TrackLayer extends BasicLayer
     }
   }
 
+//----------------------------------------------------------------------
+/**
+ * Called when a track is added or removed.
+ *
+ * @param event the event
+ */
+  public void trackChanged(TrackChangedEvent event)
+  {
+    
+  }
 }
 
 

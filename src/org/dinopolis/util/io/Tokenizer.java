@@ -47,10 +47,51 @@ import java.io.FileInputStream;
  * <p>
  * The high level interface consists of the methods hasNextLine() and
  * nextLine(). They use the low level interface to parse the data line
- * by line and create a list of strings from it.  <p> It is unsure, if
- * it is wise to mix the usage of the high and the low level
- * interface. For normal usage, the high level interface should be
- * more comfortable to use and does not provide any drawbacks.
+ * by line and create a list of strings from it.
+ * <p>
+ * It is unsure, if it is wise to mix the usage of the high and
+ * the low level interface. For normal usage, the high level interface
+ * should be more comfortable to use and does not provide any
+ * drawbacks.
+ * <p>
+
+ * An example for the high level interface:
+ * <pre>
+ *    try
+ *    {
+ *          // simple example, tokenizing string, no escape, but quoted
+ *          // works:
+ *      System.out.println("example 1");
+ *      Tokenizer tokenizer = new Tokenizer("text,,,\"another,text\"");
+ *      List tokens;
+ *      while(tokenizer.hasNextLine())
+ *      {
+ *        tokens = tokenizer.nextLine();
+ *        System.out.println(tokens.get(0)); // prints 'text'
+ *        System.out.println(tokens.get(1)); // prints ''
+ *        System.out.println(tokens.get(2)); // prints ''
+ *        System.out.println(tokens.get(3)); // prints 'another,text'
+ *      }
+ *
+ *      System.out.println("example 2");
+ *          // simple example, tokenizing string, using escape char and
+ *          // quoted strings:
+ *      tokenizer = new Tokenizer("text,text with\\,comma,,\"another,text\"");
+ *      tokenizer.respectEscapedCharacters(true);
+ *      while(tokenizer.hasNextLine())
+ *      {
+ *        tokens = tokenizer.nextLine();
+ *        System.out.println(tokens.get(0)); // prints 'text'
+ *        System.out.println(tokens.get(1)); // prints 'text with, comma'
+ *        System.out.println(tokens.get(2)); // prints ''
+ *        System.out.println(tokens.get(3)); // prints 'another,text'
+ *      }
+ *    }
+ *    catch(Exception ioe)
+ *    {
+ *      ioe.printStackTrace();
+ *    }
+ * </pre>
  * <p>
  * The advantages compared to the StreamTokenizer class are: Unlike
  * the StreamTokenizer, this Tokenizer class returns the delimiters as
@@ -61,18 +102,19 @@ import java.io.FileInputStream;
  * The tokenizer respect quoted words, so the delimiter is ignored if
  * inside quotes. And it may handle escaped characters (like an
  * escaped quote character, or an escaped new line). So the line
- * <code>eric,"he said \"great!\""</code> returns <code>eric</code>
- * and <code>he said "great"</code> as words.
+ * <code>eric,"he said, \"great!\""</code> returns <code>eric</code>
+ * and <code>he said, "great!"</code> as words.
  * <p>
- * The design of the
- * Tokenizer allows to get empty columns as well as treat multiple
- * delimiters in a row as one delimiter. For the first approach
- * trigger the values on every DELIMITER and EOF token whereas for the
- * second, trigger only on WORD tokens.
+ * Low level interface: The design of the Tokenizer allows to get
+ * empty columns as well as treat multiple delimiters in a row as one
+ * delimiter. For the first approach trigger the values on every
+ * DELIMITER and EOF token whereas for the second, trigger only on
+ * WORD tokens.
  * <p>
  * If one wants to be informed about empty words as well, use the
  * Tokenizer like in the following code fragment:
  *  <pre>
+ *   Tokenizer tokenizer = new Tokenizer("text,,,another text");
  *   String word = "";
  *   int token;
  *   while((token = tokenizer.nextToken()) != Tokenizer.EOF)
@@ -100,34 +142,7 @@ import java.io.FileInputStream;
  *   }
  * </pre>
  * In this example, if the delimiter is set to a comma, a line like
- * <code>column1,,,column4</code> would be treated correctly.
- * <p>
- * The following example shows the usage of the tokenizer, if empty
- * fields can be ignored:
- * <pre>
- *  int token;
- *  while((token = tokenizer.nextToken()) != Tokenizer.EOF)
- *  {
- *    switch(token)
- *    {
- *    case Tokenizer.EOL:
- *      System.out.println("-------------");
- *      break;
- *    case Tokenizer.WORD:
- *      System.out.println("word: "+tokenizer.getWord());
- *      break;
- *    case Tokenizer.QUOTED_WORD:
- *      System.out.println("quoted word: "+tokenizer.getWord());
- *      break;
- *    case Tokenizer.DELIMITER:
- *      break;
- *    default:
- *      System.err.println("Unknown Token: "+token);
- *    }
- *  }
- * </pre>
- * Using a star as delimiter, the line <code>column1***column2<code>
- * could be correctly tokenized.
+ * <code>column1,,,"column4,partofcolumn4"</code> would be treated correctly.
  * <p> 
  * This tokenizer uses the LF character as end of line characters. It
  * ignores any CR characters, so it can be used in windows
@@ -177,6 +192,22 @@ public class Tokenizer
   public Tokenizer(String string)
   {
     this(new StringReader(string));
+  }
+  
+//----------------------------------------------------------------------
+/**
+ * Creates a tokenizer that reads from the given string. All
+ * characters in the given delimiters string are used as
+ * delimiter. The tokenizer does not respect escape characters but
+ * respects quoted words.
+ *
+ * @param string the string to read from.
+ * @param delimiters the delimiters to use.
+ */
+  public Tokenizer(String string, String delimiters)
+  {
+    this(new StringReader(string));
+    setDelimiters(delimiters);
   }
   
 //----------------------------------------------------------------------
@@ -842,12 +873,52 @@ public class Tokenizer
       ioe.printStackTrace();
     }
   }
-  
+
+
+  protected static void testHighLevelExample()
+  {
+    try
+    {
+          // simple example, tokenizing string, no escape, but quoted
+          // works:
+      System.out.println("example 1");
+      Tokenizer tokenizer = new Tokenizer("text,,,\"another,text\"");
+      List tokens;
+      while(tokenizer.hasNextLine())
+      {
+        tokens = tokenizer.nextLine();
+        System.out.println(tokens.get(0)); // prints 'text'
+        System.out.println(tokens.get(1)); // prints ''
+        System.out.println(tokens.get(2)); // prints ''
+        System.out.println(tokens.get(3)); // prints 'another,text'
+      }
+
+      System.out.println("example 2");
+          // simple example, tokenizing string, using escape char and
+          // quoted strings:
+      tokenizer = new Tokenizer("text,text with\\,comma,,\"another,text\"");
+      tokenizer.respectEscapedCharacters(true);
+      while(tokenizer.hasNextLine())
+      {
+        tokens = tokenizer.nextLine();
+        System.out.println(tokens.get(0)); // prints 'text'
+        System.out.println(tokens.get(1)); // prints 'text with, comma'
+        System.out.println(tokens.get(2)); // prints ''
+        System.out.println(tokens.get(3)); // prints 'another,text'
+      }
+    }
+    catch(Exception ioe)
+    {
+      ioe.printStackTrace();
+    }
+  }
+
   public static void main(String[] args)
   {
 //    testLowLevel(args);
 //    testHighLevel(args);
-    testGeonetUTF8(args);
+//    testGeonetUTF8(args);
+    testHighLevelExample();
   }
 }
 

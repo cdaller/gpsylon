@@ -1,5 +1,12 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/02/17: removed all unused import statements (thanks to eclipse) 
+            and fixed all other warnings eclipse showed.
+
+            added table that shows the available maps to mapmanager
+            plugin
+
+
 2003/02/11: fixed bug in download mouse mode: not exception is thrown
             and its layer is switched on/off correctly
 

@@ -1,3 +1,11 @@
+
+<!--
+This is the ant build file for gpstool.
+If you have problems, please contact
+Christof Dallermassl (cdaller@iicm.edu)
+-->
+
+
 <project name="org.dinopolis.gpstool" default="help">
  
 <!-- patternset of gpstool files needed to compile the distribution -->

@@ -1,8 +1,8 @@
 
 <!--
 This is the ant build file for gpstool.
-If you have problems, please contact
-Christof Dallermassl (cdaller@iicm.edu)
+If you have problems, please contact the author of gpstool
+Christof Dallermassl (christof@dallermassl.at)
 -->
 
 
@@ -12,7 +12,7 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.4.15-pre9"/>
+    <property name="release_version" value="0.4.15-pre10"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib${file.separator}java"/>
@@ -108,7 +108,8 @@ Christof Dallermassl (cdaller@iicm.edu)
     <javac srcdir="${source_dir}" 
       destdir="${target_class_dir}"
       classpathref="compile_classpath"
-      debug="on">
+      debug="on"
+			deprecation="on">
       <classpath id="compile_classpath">
         <fileset dir="${basedir}/${lib_dir}">
           <include name="**/*.jar"/>

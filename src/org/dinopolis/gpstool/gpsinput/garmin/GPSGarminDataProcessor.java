@@ -1978,6 +1978,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         {
           num_corrupt_packages = 0;
           fireProgressActionStart(GETSCREENSHOT,1,height);
+							// TODO: height != number of packages for color devices!!!!!
           for(int linenum = 0; linenum < height-num_corrupt_packages; linenum++)
           {
             do
@@ -2002,7 +2003,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
               if(linenum % 10 == 0)
                 fireProgressActionProgress(GETSCREENSHOT,linenum);
                   // add line to display data:
-              display_data.addLine(next_garmin_package);
+              display_data.addData(next_garmin_package);
             }
           }
 //	      System.out.println("finished one run");

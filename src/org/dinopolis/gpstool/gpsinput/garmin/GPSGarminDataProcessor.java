@@ -1511,7 +1511,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * @return information about the garmin product.
  */
   protected GarminProduct getGarminProductInfo(long timeout)
-    throws IOException
+    throws IOException, GPSException
   {
     if(product_info_ != null)
       return(product_info_);
@@ -1525,6 +1525,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       }
       catch(InterruptedException ignore){}
     }
+				// added by
+				// Marc Rechte: begin 
+				// If not gotten within time, the device may not be able to report its
+				// capabilities, lets use the product id to find out:
+			if (product_info_ != null && capabilities_ == null) 
+				capabilities_ = new GarminCapabilities(product_info_);
+				// Marc Rechte: end
     return(product_info_);
   }
 
@@ -1535,11 +1542,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * @return the capablitilites of the garmin product.
  */
   protected GarminCapabilities getGarminCapabilities(long timeout)
-    throws IOException
+    throws IOException, GPSException
   {
     if(product_info_ == null)
       getGarminProductInfo(timeout);
-// if capabilities_ is still null, set capabilities to (using the product_id).
     return(capabilities_);
   }
 

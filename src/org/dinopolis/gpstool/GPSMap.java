@@ -471,7 +471,6 @@ public class GPSMap
     map_manager_.initialize(resources_,main_frame_);
 
     track_manager_ = new TrackManagerImpl();
-    track_manager_.setGPSDataProcessor(gps_data_processor_);
     
         // initialize data for plugins (PluginSupport):
     hook_manager_.setMapManagerHook(map_manager_);
@@ -483,6 +482,8 @@ public class GPSMap
     hook_manager_.setResources(resources_);
     hook_manager_.setTrackManager(track_manager_);
     hook_manager_.setServiceDiscovery(service_discovery_);
+
+    track_manager_.initialize(hook_manager_);
 
         // create MouseModeManager
     mouse_mode_manager_ = new MouseModeManager();

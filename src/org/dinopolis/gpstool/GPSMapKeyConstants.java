@@ -279,7 +279,8 @@ public interface GPSMapKeyConstants
   // cursor resources 
   public static final String KEY_CURSOR_ZOOM_IN_ICON = "cursor.zoom_in.icon";
   public static final String KEY_CURSOR_ZOOM_OUT_ICON = "cursor.zoom_out.icon";
-
+  public static final String KEY_CURSOR_PAN_ICON = "cursor.pan.icon";
+  
   // Mouse Mode resources
   public static final String KEY_MOUSE_MODE_DEFAULT_MODE = "mouse_mode.default_mode";
 }

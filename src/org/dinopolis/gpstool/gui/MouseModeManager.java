@@ -176,7 +176,8 @@ public class MouseModeManager
     if(active_item != null)
       active_item.setSelected(true);
     else
-      item.setSelected(true); // activate the last one
+      if(item != null)
+        item.setSelected(true); // activate the last one
     return(menu_items);
   }
 }

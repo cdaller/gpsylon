@@ -66,7 +66,7 @@ public class GarminTemperaturCorrection
 		int unknown = garmin_package.getNextAsWord();
 		double freq1 = garmin_package.getNextAsDouble();
 		double freq2 = garmin_package.getNextAsDouble();
-		System.out.println("temp="+temperatur+", freq1:" + freq1+", freq2:"+freq2);
+//		System.out.println("temp="+temperatur+", freq1:" + freq1+", freq2:"+freq2);
 		average_freq[temperatur+34] = freq1;
 		real_freq[temperatur+34] = freq2;
   }

@@ -80,7 +80,10 @@ public class MapManagerLayer extends BasicLayer
     List visible_images;
     synchronized(visible_images_lock_)
     {
-      visible_images = new Vector(visible_images_); // make copy of image infos
+      if(visible_images_ != null)
+        visible_images = new Vector(visible_images_); // make copy of image infos
+      else
+        return; // nothing to do, return
     }
         // create projected position of all mapimages:
     Iterator iterator = visible_images.iterator();

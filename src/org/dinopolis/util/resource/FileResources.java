@@ -88,43 +88,43 @@ import java.util.WeakHashMap;
 public class FileResources extends AbstractResources
 {
   /** the property filename extension */
-  private final static String PROPERTY_EXTENSION = ".properties";
+  protected final static String PROPERTY_EXTENSION = ".properties";
 
   /** the title suffix */
-  private final static String TITLE_SUFFIX = ".title";
+  protected final static String TITLE_SUFFIX = ".title";
 
   /** the description suffix */
-  private final static String DESCRIPTION_SUFFIX = ".description";
+  protected final static String DESCRIPTION_SUFFIX = ".description";
 
   /** the possible values suffix */
-  private final static String POSSIBLE_VALUES_SUFFIX = ".possible_values";
+  protected final static String POSSIBLE_VALUES_SUFFIX = ".possible_values";
 
   /** the type suffix */
-  private final static String TYPE_SUFFIX = ".type";
+  protected final static String TYPE_SUFFIX = ".type";
 
   /** key - value seperators */
-  private static final String KEY_VALUE_SEPARATORS = "=: \t\r\n\f";
+  protected static final String KEY_VALUE_SEPARATORS = "=: \t\r\n\f";
 
   /** whitespace charakters */
-  private final static String WHITE_SPACE_CHARS = " \t\r\n\f";
+  protected final static String WHITE_SPACE_CHARS = " \t\r\n\f";
 
   /** the resource bundle */
-  private ResourceBundle system_bundle_;
+  protected ResourceBundle system_bundle_;
 
   /** the users private resource bundle */
-  private Properties user_properties_;
+  protected Properties user_properties_;
 
   /** the file that holds the users resources */
-  private File user_resource_file_;
+  protected File user_resource_file_;
 
   /** the system resource base dir */
-  private String user_resource_base_name_;
+  protected String user_resource_base_name_;
 
   /** the user resource base dir */
-  private String system_resource_base_name_;
+  protected String system_resource_base_name_;
 
   /** the mapping holding all requested FileResources */
-  private static WeakHashMap mapping_ = new WeakHashMap();
+  protected static WeakHashMap mapping_ = new WeakHashMap();
 
   //----------------------------------------------------------------------
   /**
@@ -138,11 +138,11 @@ public class FileResources extends AbstractResources
    * system_bundles directory.
    */
 
-  private FileResources(File user_resource_file,
-                        Properties user_bundle, 
-                        String user_resource_base_name,
-                        ResourceBundle system_bundle,
-                        String system_resource_base_name)
+  protected FileResources(File user_resource_file,
+                          Properties user_bundle, 
+                          String user_resource_base_name,
+                          ResourceBundle system_bundle,
+                          String system_resource_base_name)
   {
     user_resource_file_ = user_resource_file;
     user_properties_ = user_bundle;
@@ -383,10 +383,10 @@ public class FileResources extends AbstractResources
    */
    
    public static FileResources getResources(Class caller, 
-                                           String base_name,
-                                           String dir_name,
-                                           Locale locale,
-                                           ClassLoader loader)
+                                            String base_name,
+                                            String dir_name,
+                                            Locale locale,
+                                            ClassLoader loader)
     throws MissingResourceException
   {
     String system_resource_base_name =
@@ -576,9 +576,11 @@ public class FileResources extends AbstractResources
    *
    * @param key the key of the resource property to look for.
    * @return the string loaded from the resource bundle.
+   * @throws MissingResourceException if the value is not found.
    */
   
   protected synchronized String getValue(String key)
+    throws MissingResourceException
   {
     String value = user_properties_.getProperty(key);
     if (value != null)
@@ -593,7 +595,7 @@ public class FileResources extends AbstractResources
    * @return an Enumeration containing all keys of all resources.
    */
 
-  public Enumeration getKeys()
+  protected Enumeration doGetKeys()
   {
     return(new FileResourcesEnumeration());
   }
@@ -665,7 +667,7 @@ public class FileResources extends AbstractResources
    * capable of persistently storing the resources.
    */
 
-  public synchronized void store()
+  protected synchronized void doStore()
     throws IOException, UnsupportedOperationException
   {
     String tmp_file_name = user_resource_file_.getName()+".tmp";
@@ -897,7 +899,7 @@ public class FileResources extends AbstractResources
 
   class FileResourcesEnumeration implements Enumeration
   {
-    Enumeration enum_;
+    protected Enumeration enum_;
 
     //----------------------------------------------------------------------
     /**
@@ -940,7 +942,7 @@ public class FileResources extends AbstractResources
      * .type, .description, .title or .possible_values.
      */
 
-    private boolean isSpecial(String key)
+    protected boolean isSpecial(String key)
     {
       int delimiter = key.lastIndexOf(".");
       if (delimiter <= 0)

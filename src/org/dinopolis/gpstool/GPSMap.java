@@ -837,9 +837,11 @@ public class GPSMap
 
 //----------------------------------------------------------------------
 /**
- * Adds the sub menus of plugins to the  menu bar (Menu Plugin).
+ * Adds the layers of the plugins to the "layers" menu (to switch them
+ * on/off).
+ * @param action the action to switch them on/off.
  */
-  protected void addOnOffActionToLayersMenu(Action action)
+  protected void addOnOffActionToLayersMenu(GuiPluginOnOffAction action)
   {
     JMenu layer_menu = (JMenu)findMenuItem(menu_bar_,
 					   resources_.getString(KEY_MENU_LAYERS_LABEL));
@@ -850,7 +852,8 @@ public class GPSMap
       SelectedButtonActionSynchronizer syncer =
         new SelectedButtonActionSynchronizer(menu_item,action);
       layer_menu.add(menu_item);
-      menu_item.setSelected(false);
+      boolean active = action.getPlugin().isActive();
+      menu_item.setSelected(active);
     }
     else
       System.err.println("WARNING: could not find 'layers' menu, do not add on/off action");
@@ -1294,7 +1297,8 @@ public class GPSMap
     {
       gui_plugin = (GuiPlugin)plugins[plugins_index];
       addGuiPlugin(gui_plugin);
-      System.out.println("Added Gui Plugin: " + gui_plugin.getPluginName());
+      System.out.println("Added Gui Plugin: " + gui_plugin.getPluginName()
+                         + " V"+gui_plugin.getPluginVersion());
     }
 
         // MouseMode Plugins:
@@ -1306,7 +1310,8 @@ public class GPSMap
     {
       mouse_mode_plugin = (MouseModePlugin)plugins[plugins_index];
       mouse_mode_plugin.initializePlugin(hook_manager_);
-      System.out.println("Added Mouse Mode Plugin: " + mouse_mode_plugin.getMouseModeName());
+      System.out.println("Added Mouse Mode Plugin: " + mouse_mode_plugin.getMouseModeName()
+                         + " V"+mouse_mode_plugin.getPluginVersion());
       layer = mouse_mode_plugin.getLayer();
       if(layer != null)
         map_bean_.add(layer);
@@ -2973,6 +2978,11 @@ public class GPSMap
          // inform me as well about any changes! (could also be implemented
          // by overriding the firePropertyChanged method)
      this.addPropertyChangeListener(this);
+   }
+
+   protected GuiPlugin getPlugin()
+   {
+     return(plugin_);
    }
 
        //----------------------------------------------------------------------

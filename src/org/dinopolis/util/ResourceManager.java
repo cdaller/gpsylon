@@ -41,7 +41,7 @@ public class ResourceManager
 {
   //----------------------------------------------------------------------
   /**
-   * Get the appropriate ResourceManager for the given base_name.
+   * Get the appropriate ResourceBundle for the given base_name.
    *
    * @param base_name the base name of the resource bundle.
    * @return the Resource.
@@ -58,10 +58,9 @@ public class ResourceManager
 
   //----------------------------------------------------------------------
   /**
-   * Get the appropriate ResourceManager for the given base_name and
-   * searches the system bundle in the callers package name.
-   * See also
-   * {@link #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)} 
+   * Get the appropriate ResourceBundle for the given base_name and searches the
+   * system bundle in the callers package name. See also {@link #getResources
+   * (java. lang.Class,java.lang.String,java.lang.String,java.util.Locale)}
    *
    * @param caller the caller, to search the system bundle for.
    * @param base_name the base name of the resource bundle.
@@ -78,8 +77,8 @@ public class ResourceManager
 
   //----------------------------------------------------------------------
   /**
-   * Get the appropriate ResourceManager for the given base_name and the
-   * given locale.
+   * Get the appropriate ResourceBundle for the given base_name and the given
+   * locale.
    *
    * @param base_name the base name of the resource bundle.
    * @param locale the locale.
@@ -98,10 +97,10 @@ public class ResourceManager
 
   //----------------------------------------------------------------------
   /**
-   * Get the appropriate ResourceManager for the given base_name and locale
-   * and searches the system bundle in the callers package name. See
-   * also {@link
-   * #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)}  
+   * Get the appropriate ResourceBundle for the given base_name and locale and
+   * searches the system bundle in the callers package name. See also {@link
+   * #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.
+   * Locale)}
    *
    * @param caller the caller, to search the system bundle for.
    * @param base_name the base name of the resource bundle.
@@ -121,9 +120,9 @@ public class ResourceManager
 
   //----------------------------------------------------------------------
   /**
-   * Get the appropriate ResourceManager for the given base_name and the
-   * given dir_name. The dir_name specifies the directory name of the
-   * users resource file, relative to the users home directory.
+   * Get the appropriate ResourceBundle for the given base_name and the given
+   * dir_name. The dir_name specifies the directory name of the users resource
+   * file, relative to the users home directory.
    *
    * @param base_name the base name of the resource bundle.
    * @param dir_name the name of the directory within the users homedir
@@ -142,10 +141,10 @@ public class ResourceManager
 
   //----------------------------------------------------------------------
   /**
-   * Get the appropriate ResourceManager for the given base_name and the
-   * given dir_name and searches the system bundle in the callers
-   * package name. The dir_name specifies the directory name of the
-   * users resource file, relative to the users home directory.
+   * Get the appropriate ResourceBundle for the given base_name and the given
+   * dir_name and searches the system bundle in the callers package name. The
+   * dir_name specifies the directory name of the users resource file, relative
+   * to the users home directory.
    *
    * @param caller the caller, to search the system bundle for.
    * @param base_name the base name of the resource bundle.
@@ -242,7 +241,35 @@ public class ResourceManager
   {
     return(FileResources.getResources(caller, base_name, dir_name, locale));
   }
-
+ 
+  //----------------------------------------------------------------------
+  /**
+   * Get the appropriate ResourceBundle for the given base_name, the given
+   * dir_name and the given locale. The dir_name specifies the directory name of
+   * the users resource file, relative to the users home directory.
+   *
+   * @param caller the caller, to search the system bundle for.
+   * @param base_name the base name of the resource bundle.
+   * @param locale the locale.
+   * @param dir_name the name of the directory within the users homedir
+   * to look for a property file.
+   * @param loader the classloader to use to load the resources.
+   * @return the Resource.
+   * @exception MissingResourceException if the system resource file
+   * could not be located. 
+   * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
+   */
+  public static Resources getResources(Class caller, String base_name,
+                                       String dir_name,
+                                       Locale locale,
+                                       ClassLoader loader)
+	throws MissingResourceException
+  {
+    return(FileResources.getResources(caller, base_name, dir_name, locale, loader));
+  }
+ 
+ 
+ 
 }
 
 

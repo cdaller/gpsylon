@@ -45,7 +45,7 @@ import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gui.ImageFrame;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.gui.NmeaDataTextFrame;
-import org.dinopolis.gpstool.gui.ProgressFrame;
+import org.dinopolis.util.gui.ProgressFrame;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;

@@ -322,8 +322,6 @@ public class SatelliteActivity extends JComponent
           {
 //             System.out.println("print sat index: "+sat_index);
 //             System.out.println("paintInfo: "+sat_infos[sat_index]);
-            if(sat_infos[sat_index] == null)
-               System.exit(1);
             active_height = (int)(bar_height_ * sat_infos[sat_index].getSNR()/100.0);
             
             if (active_height > 0)

@@ -250,7 +250,7 @@ public class ReadGPXPlugin extends ReadGPX implements ReadTrackPlugin, GPSMapKey
 			System.err.println(
 				"ReadgpxPlugin: resource file '"
 					+ RESOURCE_BUNDLE_NAME
-					+ "' not found");
+					+ ".properties' not found");
 			System.err.println(
 				"please make sure that this file is within the classpath !");
 			System.exit(1);

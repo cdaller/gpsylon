@@ -23,30 +23,31 @@
 package org.dinopolis.gpstool.gui.layer;
 
 
+
+
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.proj.Projection;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-
 import org.dinopolis.gpstool.GPSMap;
 import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.projection.FlatProjection;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
-
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.proj.Projection;
 
 
 //----------------------------------------------------------------------
@@ -245,7 +246,7 @@ public class ScaleLayer extends Layer
     {
       rule = valid_scales_[count];
       scale_rule_length = rule / getProjection().getScale()
-                          * MultiMapLayer.PIXELFACT / GPSMap.getDistanceOrSpeedFactor();
+                          * (float)FlatProjection.PIXELFACT / GPSMap.getDistanceOrSpeedFactor();
 //      System.out.println("checking scale: "+rule +"for scale:"+getProjection().getScale());
       diff = Math.abs(scale_rule_length - aimed_length_);
       if(diff < min_diff)

@@ -413,7 +413,6 @@ public class GPSMap
                           new ResetTachometerAction(),
                           new SimulationModeAction(),
                           new SetScaleAction(),
-                          new ViewGPSDataAction(),
                           new CenterMapAction(),
                           new SaveAsImagePluginAction(),
 //                                new TestAction(),
@@ -483,6 +482,7 @@ public class GPSMap
     hook_manager_.setPropertyChangeSupport(property_change_support_);
     hook_manager_.setResources(resources_);
     hook_manager_.setTrackManager(track_manager_);
+    hook_manager_.setServiceDiscovery(service_discovery_);
 
         // create MouseModeManager
     mouse_mode_manager_ = new MouseModeManager();
@@ -1211,6 +1211,7 @@ public class GPSMap
     else
       // do not use the system loader (is used automatically by the RepositoryClassLoader)
       service_discovery_ = new ServiceDiscovery(false);
+    
     repository_class_loader_ = new RepositoryClassLoader();
     
         // find paths that should be searched for plugin/service jars:
@@ -2773,42 +2774,6 @@ public class GPSMap
       map_bean_.setScale(scale);
     }
   }
-
-      //----------------------------------------------------------------------
-      /**
-       * The Action that triggers the display for the gps data frame
-       */
-
-  class ViewGPSDataAction extends AbstractAction 
-  {
-
-        //----------------------------------------------------------------------
-        /**
-         * The Default Constructor.
-         */
-
-    public ViewGPSDataAction()
-    {
-      super(ACTION_VIEW_GPS_DATA);
-    }
-
-        //----------------------------------------------------------------------
-        /**
-         * Open the frame to show gps data
-         * 
-         * @param event the action event
-         */
-
-    public void actionPerformed(ActionEvent event)
-    {
-      if(gps_data_processor_ != null)
-      {
-        NmeaDataTextFrame frame = new NmeaDataTextFrame(resources_,gps_data_processor_);
-        frame.setVisible(true);
-      }
-    }
-  }
-
 
       //----------------------------------------------------------------------
       /**

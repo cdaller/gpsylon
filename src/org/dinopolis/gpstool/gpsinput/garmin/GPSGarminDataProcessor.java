@@ -159,10 +159,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Pid_Version_Info        = 32;  // 0x20 // from gpsexplorer
   public final static int Pid_Trk_Data_L001       = 34;  // 0x22
   public final static int Pid_Wpt_Data_L001       = 35;  // 0x23
+	public final static int Pid_Serial_Number       = 38;  // 0x26  // from experiment
   public final static int Pid_Communication_Speed = 49;  // 0x31  // from gpsexplorer
   public final static int Pid_Pvt_Data_L001       = 51;  // 0x33
   public final static int Pid_Display_Data_L001   = 69;  // 0x45  // from garble
-  public final static int Pid_Flash_Erase_Response = 74;  // 0x4a  // from gpsexplorer
+  public final static int Pid_Flash_Erase_Response = 74; // 0x4a  // from gpsexplorer
   public final static int Pid_Flash_Erase_Request = 75;  // 0x4b  // from gpsexplorer
   public final static int Pid_File_Data           = 90;  // 0x5a  // from gpsexplorer
   public final static int Pid_File_Header         = 91;  // 0x5b  // from gpsexplorer
@@ -198,7 +199,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public final static int Cmnd_Transfer_Trk_A010   = 6;  // 0x06
   public final static int Cmnd_Transfer_Wpt_A010   = 7;  // 0x07
   public final static int Cmnd_Turn_Off_Pwr_A010   = 8;  // 0x08
-	public final static int Cmnd_Transfer_Voltage_A010 = 17; // 0x11  // untested and undocumented
+	public final static int Cmnd_Transfer_SerialNr   = 14; // 0x0e // from experiment ??????
+			// voltage is untested and reportedly works on models GPS V and 48
+      // does NOT work on eTrex Legend
+	public final static int Cmnd_Transfer_Voltage_A010 = 17; // 0x11  // untested
   public final static int Cmnd_Transfer_Screenbitmap_A010 = 32; // 0x20
   public final static int Cmnd_Start_Pvt_Data_A010 = 49;  // 0x31
   public final static int Cmnd_Stop_Pvt_Data_A010  = 50;  // 0x32
@@ -2504,6 +2508,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 		case Pid_Voltage_Response:
 			System.out.println("Voltage package received - not handled yet!");
 			break;
+		case Pid_Serial_Number:
+			System.out.println("Serial Number package received - not really handled yet!");
+//			System.out.println("Serial Number: "+garmin_package.getLong(0)); // ?????? correct????
+			break;
     default:
       System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "
                          +package_id);
@@ -2674,25 +2682,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 // 			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 15);
 // 			System.in.read();
       System.out.println("testing unkown protocols...");
-			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 41);
-      System.in.read();
-      System.out.println("testing unkown protocols...");
-			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 42);
-      System.in.read();
-      System.out.println("testing unkown protocols...");
-			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 43);
-      System.in.read();
-      System.out.println("testing unkown protocols...");
-			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 44);
-      System.in.read();
-      System.out.println("testing unkown protocols...");
-			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 45);
-      System.in.read();
-      System.out.println("testing unkown protocols...");
-			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 46);
-      System.in.read();
-      System.out.println("testing unkown protocols...");
-			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 47);
+			gps_processor.sendCommandAsync(Pid_Command_Data_L001, 14);
       System.in.read();
 //       List waypoints = gps_processor.getWaypoints();
 //       System.out.println("Sync Waypoints: "+waypoints);

@@ -49,13 +49,24 @@ import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**
- * This class implements a GARMIN-Processor that is able to connect
- * to a connected GARMIN-device, retrieve its capabilities, live
- * position-velocity-time-data and waypoint/route/track-information
- * stored in the device.
- * Waypoint/route/track-information may also be sent to the device
- * using the functions of this class.
- * <P>
+ * This class implements a GARMIN-Processor that is able to connect to a
+ * connected GARMIN-device, retrieve its capabilities, live
+ * position-velocity-time-data and waypoint/route/track-information stored in
+ * the device.  Waypoint/route/track-information may also be sent to the device
+ * using the functions of this class.  <P> This class works in two different
+ * threads: one that sends the commands (mostly this will be the caller's
+ * thread) and another, that reads packages from the garmin device. This is
+ * necessary as the garmin device may send packages without request and because
+ * sometimes the caller should not be locked if the device does not send
+ * anything at all (and java only provides blockint read). So the strategy is
+ * to send the request and then sychronize on a lock object (if we want to wait
+ * for the result). The receiving thread reads the data and calls the
+ * <code>fireXXXReceived</code> methods
+ * (e.g. <code>fireRoutesREceived(...)</code>). In there the lock object is
+ * notified and the waiting thread (if any) is woken up and reads the result
+ * from a member variable (this is kind of ugly, but I did not find another
+ * simple way to pass the result between the two threads (suggestions
+ * welcome!)). The woken up thread returns this value then to the caller. 
  *
  * @author Christof Dallermassl
  * @version $Revision$ */
@@ -1528,6 +1539,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   {
     if(product_info_ == null)
       getGarminProductInfo(timeout);
+// if capabilities_ is still null, set capabilities to (using the product_id).
     return(capabilities_);
   }
 
@@ -2739,31 +2751,43 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
           // add last item vector:
       if(item != null)
         items.add(item);
-      if(items.size() > 0)
-      {
-        switch(packages_type_received)
-        {
-        case(RECEIVED_ROUTES):
-          fireProgressActionProgress(GETROUTES,package_num);
-          fireProgressActionEnd(GETROUTES);
-          fireRoutesReceived(items);
-          break;
-        case(RECEIVED_TRACKS):
-          fireProgressActionProgress(GETTRACKS,package_num);
-          fireProgressActionEnd(GETTRACKS);
-          fireTracksReceived(items);
-          break;
-        case(RECEIVED_WAYPOINTS):
-          fireProgressActionProgress(GETWAYPOINTS,package_num);
-          fireProgressActionEnd(GETWAYPOINTS);
-          fireWaypointsReceived(items);
-          break;
-        default:
-          System.err.println("WARNING: GPSGarminDataProcessor: unknown package list (ignored)");
-        }
-        packages_type_received = 0; // reset package type
-      }
-      break;
+			switch(packages_type_received)
+			{
+			case(RECEIVED_ROUTES):
+				fireProgressActionProgress(GETROUTES,package_num);
+				fireProgressActionEnd(GETROUTES);
+				fireRoutesReceived(items);
+				break;
+			case(RECEIVED_TRACKS):
+				fireProgressActionProgress(GETTRACKS,package_num);
+				fireProgressActionEnd(GETTRACKS);
+				fireTracksReceived(items);
+				break;
+			case(RECEIVED_WAYPOINTS):
+				fireProgressActionProgress(GETWAYPOINTS,package_num);
+				fireProgressActionEnd(GETWAYPOINTS);
+				fireWaypointsReceived(items);
+				break;
+			default:
+				if(items.size() == 0)
+				{
+							// as I do not know, what kind of information we were waiting for,
+							// I'll inform all that NOTHING (empty list) came:
+					fireProgressActionProgress(GETWAYPOINTS,package_num);
+					fireProgressActionEnd(GETWAYPOINTS);
+					fireProgressActionProgress(GETROUTES,package_num);
+					fireProgressActionEnd(GETROUTES);
+					fireProgressActionProgress(GETTRACKS,package_num);
+					fireProgressActionEnd(GETTRACKS);
+							// send an empty list:
+					fireWaypointsReceived(items);
+					fireRoutesReceived(items);
+					fireTracksReceived(items);
+				}
+//				System.err.println("WARNING: GPSGarminDataProcessor: unknown package list (ignored)");
+			}
+			packages_type_received = 0; // reset package type
+      break;  // end of Pid_Records_L001/L002
     case Pid_Xfer_Cmplt_L001:
       fireTransferCompleteReceived();
       break;

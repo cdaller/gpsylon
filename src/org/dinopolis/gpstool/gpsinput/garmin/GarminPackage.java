@@ -66,6 +66,47 @@ class GarminPackage
     package_size_ = data_size;
   }
 
+
+//----------------------------------------------------------------------
+/**
+ * Append the data of the given package to the data of this package.
+ *
+ * @param garmin_package the package to append (the data of the package).
+ */
+  public void appendData(GarminPackage garmin_package)
+  {
+    appendData(garmin_package,0);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Append the data of the given package (starting at the given offset)
+ * to the data of this package.
+ *
+ * @param garmin_package the package to append (the data of the package).
+ * @param offset the offset to start copying the data.
+ */
+  public void appendData(GarminPackage garmin_package, int offset)
+  {
+    int[] new_data_ = new int[package_size_ + garmin_package.getPackageSize()-offset];
+    System.arraycopy(data_,0,new_data_,0,package_size_); // copy old
+    int[] add_data = garmin_package.getRawData();
+    System.arraycopy(add_data,offset,new_data_,package_size_,add_data.length-offset);
+    data_ = new_data_;
+    package_size_ = new_data_.length;
+    put_index_ = new_data_.length;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Return the raw data of the package.
+ * @return the raw data of the package.
+ */
+  public int[] getRawData()
+  {
+    return(data_);
+  }
+  
 //----------------------------------------------------------------------
 /**
  * Get the package id.
@@ -245,6 +286,17 @@ class GarminPackage
 
 //----------------------------------------------------------------------
 /**
+ * Set the next data value as byte.
+ * @param value the next value as byte
+ */
+  public void setNextAsByte(int value)
+  {
+    data_ = GarminDataConverter.setGarminByte(value,data_,put_index_);
+    put_index_ += 1;
+  }
+
+//----------------------------------------------------------------------
+/**
  * Get the next data value as int.
  * @return the next value as int
  * @throws IllegalStateException on a try to read more bytes than were
@@ -362,7 +414,7 @@ class GarminPackage
     throws IllegalStateException
   {
     String value = GarminDataConverter.getGarminString(data_,get_index_);
-    get_index_ += value.length();
+    get_index_ += value.length()+1; // length + zero termination
     return(value);
   }
 

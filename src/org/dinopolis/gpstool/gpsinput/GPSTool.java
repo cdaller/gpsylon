@@ -139,7 +139,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   +"  </trk>\n"
   +"#end\n"
   +"#end\n"
-  +"</gpx>";
+  +"</gpx>\n";
   
 //----------------------------------------------------------------------
 /**

@@ -23,6 +23,7 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Vector;
 
@@ -39,6 +40,8 @@ public class GPSRouteImpl implements GPSRoute
   protected Vector route_points_ = new Vector();
   protected String identification_;
   protected String comment_;
+  protected Color color_;
+  protected boolean display_;
 
   protected boolean minmax_valid_ = false;
   protected double min_latitude_ = 90.0;
@@ -90,6 +93,49 @@ public class GPSRouteImpl implements GPSRoute
   public void setComment(String comment)
   {
     comment_ = comment;
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Returns true if this track is displayed on the gps device, false otherwise.
+ *
+ * @return true if this track is displayed on the gps device, false otherwise.
+ */
+  public boolean isDisplayed()
+  {
+    return(display_);
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Define whether to display the current track or not.
+ *
+ * @param display if true, display current track.
+ */
+  public void setDisplayed(boolean display)
+  {
+    display_ = display;
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Get the color of the current track.
+ */
+  public Color getColor()
+  {
+    return(color_);
+  }
+
+//--------------------------------------------------------------------------------
+/**
+ * Define the color of the current track. See {@link
+ * GarminDaypointD108} for colors.
+ *
+ * @param color Color of the current track.
+ */
+  public void setColor(Color color)
+  {
+    color_ = color;
   }
 
 //--------------------------------------------------------------------------------

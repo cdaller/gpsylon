@@ -23,6 +23,8 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
+import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
+
 public class ReadPosition
 {
   public static void main(String[] args)

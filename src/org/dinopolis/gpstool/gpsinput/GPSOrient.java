@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
-
+import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 
 //----------------------------------------------------------------------
 /**

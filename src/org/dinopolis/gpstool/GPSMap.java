@@ -362,12 +362,12 @@ public class GPSMap
   public GPSMap(String[] args)
   {
 
-    System.out.println("GPSMap V"+GPSMAP_VERSION);
+    System.out.println("GPSilon V"+GPSMAP_VERSION);
     System.out.println("by Christof Dallermassl (christof@dallermassl.at)");
     System.out.println("latest version at: http://gpsmap.sourceforge.net");
     System.out.println("using");
 
-    SplashScreen splash_screen = new SplashScreen("GPSMap V"+GPSMAP_VERSION,10000);
+    SplashScreen splash_screen = new SplashScreen("GPSilon V"+GPSMAP_VERSION,10000);
 
     property_change_support_ = new PropertyChangeSupport(this);
 
@@ -423,7 +423,7 @@ public class GPSMap
         // Create a Swing frame.  The OpenMapFrame knows how to use
         // the MapHandler to locate and place certain objects.
 //    main_frame_ = new OpenMapFrame("GPS Map");
-    main_frame_ = new JFrame("GPS Map V"+GPSMAP_VERSION);
+    main_frame_ = new JFrame("GPSilon V"+GPSMAP_VERSION);
         // Size the frame appropriately
     main_frame_.setSize(640, 480);
     

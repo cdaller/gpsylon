@@ -343,6 +343,165 @@ editing the debug properties file. For a detailed description of the
 \classname{Debug} class, please see the design document of the debug
 utility. 
 
+%######################################################################
+%######################################################################
+\section{Plugins}
+\label{SoftwareDesignOfTheGpstoolPackage-Plugins}
+
+The GPSMap application supports different kinds of plugins. These
+plugins extend the functionality of the application. As there is a
+clearly and quite simple interface for plugins, the developement is
+quite simple and possible without the need to read and understand the
+source of the rest of the application. Another advantage of plugins
+is, that removing then makes the application smaller and probably
+faster. So big, fat computers may install and run all possible
+plugins, whereas the old notebook that is used in the car for location
+tracking just uses the plugins that are really needed. 
+
+In the following, a short explanation of the different aspects of
+plugin developement is given.
+
+%######################################################################
+\subsection{Types of Plugins}
+\label{SoftwareDesignOfTheGpstoolPackage-TypesOfPlugins}
+
+GPSMap supports different kinds of plugins for different
+purposes. Some are very special for a very small task (like saving the
+content of the map component to a file (screenshot)), others are very
+general and influence the functionaltiy in a wider way (like adding a
+layer to the map component, some entries in the menu, and may react on
+mouse clicks and keys from the user). In general, all plugin
+interfaces (and helper interfaces) are in the package
+\packagename{org.dinopolis.gpstool.plugin}.
+
+\begin{itemize}
+
+\item The \interfacename{ReadTrackPlugin} is used to load tracks from
+files.
+
+\item The \interfacename{WriteImagePlugin} is used to save a
+``screenshot'' from the map component to a file.
+
+\item The \interfacename{MouseModePlugin}: GPSMap supports different
+mouse modes that react on mouse activities from the user (click, drag,
+etc.). The user may switch a mouse mode on or off (and there is always
+only one mouse mode active). An example for a mouse mode is navigation
+(zoom in out, pan the map, etc.). As the mouse modes are switched on
+or off by the user, they have to provide some information for an entry
+in the menu or a toolbar: name, icon, shortcut key, ...
+
+Additonally, a mouse mode may provide a layer that allows the mouse
+mode to draw something on the map component.
+ 
+\item The \interfacename{GUiPlugin} has the possibility to add one or
+more entries in the menu of the application. An example would be a
+window that provides information about memory usage or a tachometer
+that shows lots of informations from the gps device (speed, average,
+direction, etc.). A \interfacename{GuiPlugin} may use the modules from
+the GPSMap application, but cannot draw into the map component. It may
+provide one or more mouse modes, so it may react on mouse clicks on
+the map component.
+
+\item The \classname{LayerPlugin} is the most complete plugin that has
+all possiblities of the \interfacename{GuiPlugin} but additionally
+represents a layer of the map component. So the location marker layer,
+the track layer, all those could be \classname{LayerPlugin}s (and
+probably will be one day). GPSMap uses the \classname{MapBean} class
+of the openmap library as the central map component. This class uses
+\classname{Layer} objects as layers. Unfortunately the openmap
+\classname{Layer} is not an interface, but a class, so the
+\classname{LayerPlugin} is not an interface, but a class. The layer is
+informed about changes of the projection (zoom in/out, move) in the
+\methodname{projectionChanged(com.bbn.openmap.proj.Projection)}
+method. The layer may paint some map details in the
+\methodname{paint(java.awt.Graphics)} or
+\methodname{paintComponent(java.awt.Graphics)} methods. Please, see
+\stdref{SoftwareDesignOfTheGpstoolPackage-Projection} for details
+about projections.
+
+The \methodname{paint()} method should return as fast as possible, so
+complicated calculations should not be done in this method but in a
+background thread. \classname{org.dinopolis.gpstool.gui.BasicLayer}
+and \classname{org.dinopolis.gpstool.plugin.BasicLayerPlugin} provide
+a framework that calls a calculation method in a background thread
+(\classname{SwingWorker}). So the developer does not need to worry
+about this!
+
+\end{itemize}
+
+The interface \interfacename{Plugin} is the base interface for all
+plugins that provide general information (like the name and version of
+a plugin). This information may be used by a plugin manager or by a
+plugin downloader to find the latest version of a plugin.
+
+All plugins are instatiated and then initialized with a
+\interfacename{PluginSupport} object that provides interfaces for all
+important modules and componentes of GPSMap.
+
+Please see the javadoc documentation of the plugin interfaces and
+classes for further details.
+
+%######################################################################
+\subsection{Loading of Plugins}
+\label{SoftwareDesignOfTheGpstoolPackage-LoadingOfPlugins}
+
+In this section the two mechanisms used to find and load plugins are
+explained: 
+
+\begin{itemize}
+
+\item Find the implementation classes of a given interface or base
+class. 
+
+\item Load classes from jar files that are not in the classpath.
+
+\end{itemize}
+
+The first problem when using plugins is to find one or more
+implementations of a special java interface or base class. The normal
+classloader does not provide this functionality, so the help of an
+external configuration is needed. Sun uses a file in the
+\texttt{META-INF/services} directory (in a jar file or elsewhere in
+the classpath) for this purpose. This file is named like the interface
+or base class and contains the names of classes that implement this
+interface or base class.
+
+As an example, suppose there are two implementations of the interface
+\interfacename{org.dinopolis.gpstool.plugin.GuiPlugin}, namely the
+classes \classname{foo.Bar} and \classname{bar.Foo}. So the file
+\texttt{META-INF/services/org.dinopolis.gpstool.plugin.GuiPlugin}
+contains two lines:
+\begin{verbatim}
+foo.Bar
+bar.Foo
+\end{verbatim}
+
+Sun uses an internal class (in the package \packagename{sun.misc}) to
+find the implementations (called \textit{services}). As the sun class
+is internal and may change in the future, its functionality was newly
+implemented. \classname{org.dinopolis.util.servicediscovery.ServiceDiscovery}
+retrieves the information in \texttt{META-INF/services} from one or
+more classloaders and returns the names or faster the instances of the
+classes of the given interface of base class.
+
+The \classname{ServiceDiscovery} uses the
+\methodname{getResources(String)} of the \classname{ClassLoader} to
+find the files in the \texttt{META-INF/services} directory. 
+
+This leads to the second problem of plugins: it cannot be guaranteed
+that the classpath includes the plugin (jar). A good plugin
+architecture allows to find, load and use the jar files that contain
+the plugins in one or more directories. For this purpose, a special
+\classname{ClassLoader} was written that loads classes from jar files
+located in one or more directories that may be given at runtime.
+
+This class loader is
+\classname{org.dinopolis.util.servicediscovery.RepositoryClassLoader}
+and in combination with the \classname{ServiceDiscovery} described
+above, it provides the wanted functionality: Find and load
+implementations of a given class and use jar files in one or more
+directories.
+
 
 %% list of acronyms
 %\addcontentsline{toc}{chapter}{\listacronymname}

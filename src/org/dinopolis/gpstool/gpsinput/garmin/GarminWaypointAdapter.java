@@ -133,10 +133,17 @@ public class GarminWaypointAdapter implements GPSWaypoint
  */
   public double getAltitude()
   {
-    float alt = waypoint_.getAltitude();
-    if(Math.abs(alt - 1.0E25) < 0.0001E25)
+    try
+    {
+      float alt = waypoint_.getAltitude();
+      if(Math.abs(alt - 1.0E25) < 0.0001E25)
+        return(Double.NaN);
+      return((double)alt);
+    }
+    catch(UnsupportedOperationException uoe)
+    {
       return(Double.NaN);
-    return((double)alt);
+    }
   }
 
 //----------------------------------------------------------------------
@@ -160,7 +167,24 @@ public class GarminWaypointAdapter implements GPSWaypoint
   {
     return(!Double.isNaN(getAltitude()));
   }
-  
+
+//----------------------------------------------------------------------
+/**
+ * Returns the name of the symbol of the waypoint or null, if no
+ * symbol was set.
+ * @return the name of the symbol of the waypoint or null, if no
+ * symbol was set or is not supported.
+ */
+  public String getSymbolName()
+  {
+    return(waypoint_.getSymbolName());
+  }
+
+
+  public String toString()
+  {
+    return("GarminWaypointAdapter [waypoint="+waypoint_.toString()+"]");
+  }
 }
 
 

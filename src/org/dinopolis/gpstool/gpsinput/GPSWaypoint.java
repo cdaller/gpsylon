@@ -113,6 +113,18 @@ public interface GPSWaypoint
  * @param true if waypoint has valid altitude.
  */
   public boolean hasValidAltitude();
+
+//----------------------------------------------------------------------
+/**
+ * Returns the name of the symbol of the waypoint or null, if no
+ * symbol was set. The names are taken from the garmin specification
+ * and are listed in {@link
+ * org.dinopolis.gpstool.gpsinput.garmin.GarminWaypointSymbols} at the
+ * moment.
+ * @return the name of the symbol of the waypoint or null, if no
+ * symbol was set or is not supported.
+ */
+  public String getSymbolName();
 }
 
 

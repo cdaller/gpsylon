@@ -377,7 +377,7 @@ public class GPSMap
     loadResources();
     int splash_progress = 0;
     int splash_max_progress = resources_.getInt(KEY_SPLASH_MAX_PROGRESS,splash_progress);
-    SplashScreen splash_screen = new SplashScreen(resources_.getIcon(KEY_SPLASH_IMAGE),10000,
+    SplashScreen splash_screen = new SplashScreen(resources_.getIcon(KEY_SPLASH_IMAGE),-1,
                                                   0,splash_max_progress);
     
     setLocale();
@@ -522,6 +522,20 @@ public class GPSMap
     status_bar_ = new StatusBar(hook_manager_);
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
     
+
+    System.out.println("Plugins in the following locations are used:");
+    List plugin_dirs = repository_class_loader_.getRepositories();
+    Iterator dir_iterator = plugin_dirs.iterator();
+    if(!dir_iterator.hasNext())
+      System.out.println("no directories given");
+    else
+    {
+      while(dir_iterator.hasNext())
+      {
+        System.out.println(dir_iterator.next());
+      }
+    }
+
     
         // instantiate, initialize and add plugins (gui and mousemodes)
     splash_screen.setStatus("Initialize plugins",splash_progress+=5);
@@ -665,18 +679,6 @@ public class GPSMap
 //     main_frame_.getContentPane().requestFocus();
 //     main_frame_.getContentPane().addKeyListener(new GPSMapKeyListener());
 
-    System.out.println("Plugins in the following locations are used:");
-    List plugin_dirs = repository_class_loader_.getRepositories();
-    Iterator dir_iterator = plugin_dirs.iterator();
-    if(!dir_iterator.hasNext())
-      System.out.println("no directories given");
-    else
-    {
-      while(dir_iterator.hasNext())
-      {
-        System.out.println(dir_iterator.next());
-      }
-    }
     if(Debug.DEBUG)
       Debug.println("splash","final splash progress reached: "+splash_progress);
     resources_.setInt(KEY_SPLASH_MAX_PROGRESS,splash_progress);

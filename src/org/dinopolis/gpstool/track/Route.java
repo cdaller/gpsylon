@@ -62,7 +62,7 @@ public interface Route extends GPSRoute, GeoScreen
  * done.
  *
  * @return minimal x value.
- * @see #forward(com.bbn.openmap.Projection)
+ * @see com.bbn.openmap.Projection#forward(com.bbn.openmap.LatLonPoint)
  */
 
   public int getMinX();
@@ -74,7 +74,7 @@ public interface Route extends GPSRoute, GeoScreen
  * done.
  *
  * @return maximal x value.
- * @see #forward(com.bbn.openmap.Projection)
+ * @see com.bbn.openmap.Projection#forward(com.bbn.openmap.LatLonPoint)
  */
 
   public int getMaxX();
@@ -86,7 +86,7 @@ public interface Route extends GPSRoute, GeoScreen
  * done.
  *
  * @return minimal y value.
- * @see #forward(com.bbn.openmap.Projection)
+ * @see com.bbn.openmap.Projection#forward(com.bbn.openmap.LatLonPoint)
  */
 
   public int getMinY();
@@ -98,7 +98,7 @@ public interface Route extends GPSRoute, GeoScreen
  * done.
  *
  * @return mayimal y value.
- * @see #forward(com.bbn.openmap.Projection)
+ * @see com.bbn.openmap.Projection#forward(com.bbn.openmap.LatLonPoint)
  */
 
   public int getMaxY();

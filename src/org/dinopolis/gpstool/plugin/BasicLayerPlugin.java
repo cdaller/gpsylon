@@ -98,7 +98,13 @@ public abstract class BasicLayerPlugin extends LayerPlugin
     swing_worker_.start();
   }
 
-  public void paintCompontent(Graphics g)
+//----------------------------------------------------------------------
+/**
+ * Paints the objects for this layer.
+ *
+ * @param g the graphics context.
+ */
+  public void paintComponent(Graphics g)
   {
   }
 

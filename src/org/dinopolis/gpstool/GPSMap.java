@@ -137,7 +137,7 @@ public class GPSMap
       /** the layer to display the maps */
   protected MultiMapLayer map_layer_;
   protected PositionLayer position_layer_;
-  protected TrackLayer track_layer_;
+//  protected TrackLayer track_layer_;
   protected ShapeLayer shape_layer_;
   protected LocationLayer location_layer_;
   protected ScaleLayer scale_layer_;
@@ -523,9 +523,9 @@ public class GPSMap
     shape_layer_ = new ShapeLayer(resources_);
     map_bean_.add(shape_layer_);
     
-    track_layer_ = new TrackLayer();
-    track_layer_.initialize(hook_manager_);
-    map_bean_.add(track_layer_);
+//     track_layer_ = new TrackLayer();
+//     track_layer_.initialize(hook_manager_);
+//     map_bean_.add(track_layer_);
     
     position_layer_ = new PositionLayer(resources_);
     map_bean_.add(position_layer_);
@@ -557,10 +557,10 @@ public class GPSMap
     resources_.addPropertyChangeListener(KEY_POSITION_USE_ICON,position_layer_);
     resources_.addPropertyChangeListener(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER,position_layer_);
     
-    addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, track_layer_);
+//    addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, track_layer_);
 //    addPropertyChangeListener(PROPERTY_KEY_GPS_SPEED, track_layer_);
-    addPropertyChangeListener(PROPERTY_KEY_GPS_ALTITUDE, track_layer_);
-    addPropertyChangeListener(PROPERTY_KEY_CURRENT_SPEED, track_layer_);
+//    addPropertyChangeListener(PROPERTY_KEY_GPS_ALTITUDE, track_layer_);
+//    addPropertyChangeListener(PROPERTY_KEY_CURRENT_SPEED, track_layer_);
     
     addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, status_bar_);
     addPropertyChangeListener(PROPERTY_KEY_CURRENT_HEADING, status_bar_);
@@ -589,7 +589,7 @@ public class GPSMap
 
         // add the status bar as StatusLayerListener for all layers:
     map_layer_.addLayerStatusListener(status_bar_);
-    track_layer_.addLayerStatusListener(status_bar_);
+//    track_layer_.addLayerStatusListener(status_bar_);
     shape_layer_.addLayerStatusListener(status_bar_);
     graticule_layer_.addLayerStatusListener(status_bar_);
     location_layer_.addLayerStatusListener(status_bar_);

@@ -31,7 +31,7 @@ package org.dinopolis.gpstool.plugin.downloadmousemode;
  * @version $Revision$
  */
 
-public class ExpediaEastDownloader extends SimpleUrlDownloader
+public class ExpediaEastDownloader extends ExpediaWestDownloader
 {
 
   public String getPluginName()

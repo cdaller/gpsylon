@@ -28,12 +28,8 @@ import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.gui.util.TableSorter;
 
 /**
- * @author cdaller
+ * This class sorts the map info table.
  *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
 public class MapInfoTableSorter extends TableSorter implements MapInfoHoldingTable
 {

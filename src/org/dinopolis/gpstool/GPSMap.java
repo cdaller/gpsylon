@@ -46,7 +46,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +82,6 @@ import org.dinopolis.gpstool.gui.LatLongInputDialog;
 import org.dinopolis.gpstool.gui.MapKeyHandler;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.gui.MouseModeManager;
-import org.dinopolis.gpstool.gui.NmeaDataTextFrame;
 import org.dinopolis.gpstool.gui.StatusBar;
 import org.dinopolis.gpstool.gui.layer.GraticuleLayer;
 import org.dinopolis.gpstool.gui.layer.LocationLayer;
@@ -533,7 +531,8 @@ public class GPSMap
     map_bean_.add(graticule_layer_);
     
     splash_screen.setStatus("Add scale layer",splash_progress+=5);
-    scale_layer_ = new ScaleLayer(resources_);
+    scale_layer_ = new ScaleLayer();
+    scale_layer_.initializePlugin(hook_manager_);
     map_bean_.add(scale_layer_);
 
     splash_screen.setStatus("Add shape layer",splash_progress+=5);

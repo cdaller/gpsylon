@@ -64,12 +64,11 @@ public class NmeaDataTextFrame extends JFrame
   
 //----------------------------------------------------------------------
 /**
- * Constructor using the current map position as download position
+ * Constructor.
  *
  * @param resources the resources
- * @param map_manager the hook to add new maps to
- * @param preview_hook the PreviewHook able to display a preview for
- * the map to download.
+ * @param gps_data_processor the data processor to get the
+ * informations from.
  */
 
   public NmeaDataTextFrame(Resources resources, GPSDataProcessor gps_data_processor)

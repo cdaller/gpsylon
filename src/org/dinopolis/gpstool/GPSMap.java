@@ -319,7 +319,7 @@ public class GPSMap
       // the keys for gps property change events
   
       /** the key for the current location from the gps device. The
-       * value is a {@com.bbn.openmap.LatLonPoint} object. */
+       * value is a {@link com.bbn.openmap.LatLonPoint} object. */
   public final static String PROPERTY_KEY_GPS_LOCATION = GPSDataProcessor.LOCATION;
       /** the key for the heading from the gps device. Usually, you want to use
        * <code>PROPERTY_KEY_CURRENT_HEADING</code> instead! The value

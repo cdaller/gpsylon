@@ -165,13 +165,13 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
  * to calculate this value to match the scale used by its map source!
  * @param image_width the width of the map to download.
  * @param image_height the height of the map to download.
- * @return the scale the plugin uses for the given parameters.
+ * @return the mapblast scale the plugin uses for the given parameters.
  */
   public double getMapScale(double latitude, double longitude,
                             double wanted_mapblast_scale, int image_height,
                             int image_width)
   {
-    return(getDownloadScale(wanted_mapblast_scale));
+    return(getCorrectedMapblastScale(wanted_mapblast_scale));
   }
 
 
@@ -210,7 +210,7 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
       double mapserver_scale = getDownloadScale(wanted_mapblast_scale);
           // create the url to fetch the image:
       URL url = new URL(getUrl(latitude,longitude,mapserver_scale,image_width, image_height));
-
+      
       if(Debug.DEBUG)
         Debug.println("map_download","loading map from url: "+url);
           // create connection to mapserver:
@@ -229,6 +229,9 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
         connection.setRequestProperty("Proxy-Authorization", auth_string);
       }
 
+          // set some request properties
+      connection = setRequestProperties(connection);
+      
       connection.connect();
           // is the image an image?:
       String mime_type = connection.getContentType().toLowerCase();
@@ -248,10 +251,10 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
           viewer.setSize(640,480);
           viewer.setTitle("ERROR on loading url: "+url);
           viewer.setVisible(true);
-          throw new IOException("Invalid mime type (expected 'image/*'): "
+          throw new IOException("Invalid mime type (expected 'image/*'): received "
                                 +mime_type+"\nPage is displayed in HTML frame.");
         }
-        throw new IOException("Invalid mime type (expected 'image/*'): "
+        throw new IOException("Invalid mime type (expected 'image/*'): received "
                               +mime_type);
       }
 
@@ -332,26 +335,97 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
 
 
 
+//----------------------------------------------------------------------
+/**
+ * Set some request properties for the url connection. This method may
+ * be overwritten to set some additional http header fields. This
+ * implementation does nothing.
+ *
+ * @param connection the connection that is used to request the url
+ * for the map.
+ * @return the same (or new connection) with some request properties
+ * set.
+ */
+  protected URLConnection setRequestProperties(URLConnection connection)
+  {
+    return(connection);
+  }
+
+
+
+//----------------------------------------------------------------------
+/**
+ * Return the server name. This information is used to create the name
+ * of the plugin and the download dialog. 
+ *
+ * @return the name of the server.
+ */
   protected abstract String getMapServerName();
 
+//----------------------------------------------------------------------
+/**
+ * Return the scale of the maps downloaded with this downloader. By
+ * default, the scale factor is looked up in the resources with the
+ * following key:
+ * <code>DownloadMouseModeLayer.KEY_DOWNLOAD_MAP_SCALE_FACTOR_PREFIX
+ *                                         + "."+getMapServerName())</code>
+ *
+ * @return the scale factor to get the appropriate mapblast scale.
+ */
   protected double getScaleFactor()
   {
     return(resources_.getDouble(DownloadMouseModeLayer.KEY_DOWNLOAD_MAP_SCALE_FACTOR_PREFIX
                                               + "."+getMapServerName()));
   }
   
+//----------------------------------------------------------------------
+/**
+ * Return the scale of the maps downloaded with this downloader. This
+ * value is dependent on the map server.
+ * @param wanted_mapblast_scale the scale the user selected
+ *
+ * @return the scale the map server is able to return.
+ */
   protected double getDownloadScale(double wanted_mapblast_scale)
   {
+//    System.out.println("map scale: "+Math.round(wanted_mapblast_scale / getScaleFactor()));
         // for map servers with different scale system than mapblast
     return(Math.round(wanted_mapblast_scale / getScaleFactor()));
   }
   
+//----------------------------------------------------------------------
+/**
+ * Return the scale of the maps downloaded with this downloader.
+ * @param wanted_mapblast_scale the scale the user selected
+ *
+ * @return the mapblast scale the map server is able to return.
+ */
   protected double getCorrectedMapblastScale(double wanted_mapblast_scale)
   {
         // for map servers with different scale system than mapblast
     return(getDownloadScale(wanted_mapblast_scale) * getScaleFactor());
   }
   
+//----------------------------------------------------------------------
+/**
+ * Return the url to use to download a map for the given
+ * parameters. This implementation gets the basic url from the
+ * resources with the key:
+ * <code>DownloadMouseModeLayer.KEY_DOWNLOAD_MAP_URL_PREFIX+"."+getMapServerName()</code>
+ * and uses this string as a <code>MessageFormat<code> and replaces
+ * the first param of the MessageFormat with the latitude, the second
+ * with the longitude, the third with the scale, the fourth with the
+ * width and the fifth with the height of the
+ * image. E.g. <code>http\://localhost/getmap.cgi?latitude={0,number,#.########}&longitude={1,number,#.########}&scale={2,number,#}&width={3,number,#}&height={4,number,#}</code>.
+ *
+ * @param latitude the latitude of the center of the map.
+ * @param longitude the longitude of the center of the map.
+ * @param scale the scale used by the map server
+ * @param width the width of the image in pixels
+ * @param height the height of the image in pixels
+ *
+ * @return the url to use to request the image from the map server.
+ */
   protected String getUrl(double latitude, double longitude, double scale, int width, int height)
   {
     String url_message = resources_.getString(

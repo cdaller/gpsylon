@@ -54,6 +54,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -61,6 +62,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
@@ -73,7 +75,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import org.dinopolis.gpstool.alarm.AlarmConditionManager;
@@ -90,6 +94,8 @@ import org.dinopolis.gpstool.gpsinput.GPSSimulationDataProcessor;
 import org.dinopolis.gpstool.gui.LatLongInputDialog;
 import org.dinopolis.gpstool.gui.MapKeyHandler;
 import org.dinopolis.gpstool.gui.MapMouseMode;
+import org.dinopolis.gpstool.gui.MouseMode;
+import org.dinopolis.gpstool.gui.MouseModeManager;
 import org.dinopolis.gpstool.gui.NmeaDataTextFrame;
 import org.dinopolis.gpstool.gui.StatusBar;
 import org.dinopolis.gpstool.gui.layer.DestinationLayer;
@@ -101,8 +107,10 @@ import org.dinopolis.gpstool.gui.layer.ScaleLayer;
 import org.dinopolis.gpstool.gui.layer.ShapeLayer;
 import org.dinopolis.gpstool.gui.layer.TestLayer;
 import org.dinopolis.gpstool.gui.layer.TrackLayer;
-import org.dinopolis.gpstool.projection.FlatProjection;
+import org.dinopolis.gpstool.plugin.MouseModePlugin;
+import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.WriteImagePlugin;
+import org.dinopolis.gpstool.projection.FlatProjection;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
 import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.gpstool.util.GeoMath;
@@ -118,8 +126,7 @@ import org.dinopolis.util.gui.ResourceEditorFrame;
 import org.dinopolis.util.gui.SplashScreen;
 import org.dinopolis.util.servicediscovery.RepositoryClassLoader;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
-import java.net.URL;
-import java.util.List;
+import org.dinopolis.gpstool.plugin.Plugin;
 
 //----------------------------------------------------------------------
 /**
@@ -137,10 +144,12 @@ public class GPSMap
 	Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.14-pre2";
+  public final static String GPSMAP_VERSION = "0.4.14-pre3";
   private final static String GPSMAP_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
+
+  HookManager hook_manager_;
   
       /** the layer to display the maps */
   protected MultiMapLayer map_layer_;
@@ -154,9 +163,9 @@ public class GPSMap
   protected GraticuleLayer graticule_layer_;
     
   protected MapBean map_bean_;
-//  protected MapHandler map_handler_;
 
-//  protected OpenMapFrame main_frame_;
+  protected JMenuBar menu_bar_;
+
   protected JFrame main_frame_;
 
   protected MapMouseMode map_mouse_mode_;
@@ -166,6 +175,7 @@ public class GPSMap
   protected Tachometer tacho_meter_;
 
 //  protected MouseDelegator mouse_delegator_;
+  protected MouseModeManager mouse_mode_manager_;
 
       /** the default center point */
   protected LatLonPoint current_gps_position_ = new LatLonPoint(47.06005f,15.47314f);
@@ -446,6 +456,19 @@ public class GPSMap
     map_bean_.setBackgroundColor(new Color(0,0,0));
     map_bean_.setDoubleBuffered(true);
 
+        // initialize data for plugins (PluginSupport):
+    hook_manager_ = new HookManager();
+    hook_manager_.setMapManagerHook(this);
+    hook_manager_.setMapNavigationHook(this);
+    hook_manager_.setStatusHook(this); 
+    hook_manager_.setMainFrame(main_frame_);
+    hook_manager_.setMapComponent(map_bean_);
+    hook_manager_.setPropertyChangeSupport(property_change_support_);
+    hook_manager_.setResources(resources_);
+
+        // create MouseModeManager
+    mouse_mode_manager_ = new MouseModeManager();
+
      // Set the default gps position
     double latitude = resources_.getDouble(KEY_CURRENT_GPS_POSITION_LATITUDE);
     double longitude = resources_.getDouble(KEY_CURRENT_GPS_POSITION_LONGITUDE);
@@ -467,9 +490,11 @@ public class GPSMap
     status_bar_ = new StatusBar(resources_,this);
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
     
-    map_mouse_mode_ = new MapMouseMode(map_bean_,resources_,this,this,this);
+    map_mouse_mode_ = new MapMouseMode(map_bean_);
+    map_mouse_mode_.initializePlugin(hook_manager_);
     map_bean_.addMouseListener(map_mouse_mode_);
     map_bean_.addMouseMotionListener(map_mouse_mode_);
+    mouse_mode_manager_.addMouseMode(map_mouse_mode_);
 
     graticule_layer_ = new GraticuleLayer();
     graticule_layer_.initialize(resources_);
@@ -563,9 +588,6 @@ public class GPSMap
     graticule_layer_.addLayerStatusListener(status_bar_);
     location_layer_.addLayerStatusListener(status_bar_);
 
-    
-
-
         // load maps:
     map_infos_ = loadMapInfo();
     map_layer_.addMaps(map_infos_);
@@ -574,7 +596,14 @@ public class GPSMap
 //    map_popup_menu_ = createPopupMenu();
 
         // add menu bar at the end (maybe some modules add actions to it!)
-    main_frame_.setJMenuBar(MenuFactory.createMenuBar(resources_, action_store_));
+    menu_bar_ = MenuFactory.createMenuBar(resources_, action_store_);
+    
+    initializePlugins();
+    addMouseModesToMenu();
+    map_mouse_mode_.setActive(true); // default mode
+
+    
+    main_frame_.setJMenuBar(menu_bar_);
 
 //      map_bean_.add(graticule_layer_);
 //      map_bean_.add(test_layer_);
@@ -776,6 +805,60 @@ public class GPSMap
     }
   }
 
+
+//----------------------------------------------------------------------
+/**
+ * Adds the mouse modes of the MouseModeManager to the menu bar (Menu
+ * Control/Mouse Mode).
+ *
+ */
+  protected void addMouseModesToMenu()
+  {
+        // find the menu that should contain the mouse modes (control/mouse mode):
+    JMenu control_menu = null;
+    JMenu mouse_mode_menu = null;
+    JMenu menu;
+    int menu_index = 0;
+    while((menu_index < menu_bar_.getMenuCount()) && (control_menu == null))
+    {
+      menu = menu_bar_.getMenu(menu_index);
+      if(menu.getText().equals(resources_.getString(KEY_MENU_CONTROL_LABEL)))
+      {
+        control_menu = menu;
+      }
+      menu_index++;
+    }
+    if(control_menu != null)
+    {
+      JMenuItem item;
+      menu_index = 0;
+      while((menu_index < control_menu.getItemCount()) && (mouse_mode_menu == null))
+      {
+        item = control_menu.getItem(menu_index);
+        if(item.getText().equals(resources_.getString(KEY_MENU_MOUSE_MODE_LABEL)))
+        {
+          mouse_mode_menu = (JMenu)item;
+        }
+      menu_index++;
+      }
+
+      if(mouse_mode_menu != null)
+      {
+        JMenuItem[] mouse_mode_items = mouse_mode_manager_.getMenuItems();
+        for(int item_count = 0; item_count < mouse_mode_items.length; item_count++)
+        {
+          System.out.println("Adding Mouse Mode "+mouse_mode_items[item_count] +" to menu.");
+          mouse_mode_menu.add(mouse_mode_items[item_count]);
+        }
+      }
+    }
+    
+    if((control_menu == null) || (mouse_mode_menu == null))
+    {
+      System.err.println("ERROR: Could not find 'Control/Mouse Mode' menu, no mouse modes added!");
+    }
+    
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -1114,7 +1197,6 @@ public class GPSMap
 
         // find location of my jar:
     String class_name_path = this.getClass().getName().replace('.','/') + ".class"; // TODO check under windows!
-    System.out.println("class name path: "+class_name_path);
     URL url = GPSMap.class.getClassLoader().getResource(class_name_path);
         // the resulting url looks like
         // "jar:file:/home/cdaller/gpstool/gpstool.jar!/org/dinopolis/gpstool/GPSMap.class"
@@ -1164,6 +1246,43 @@ public class GPSMap
     repository_set = null;
     service_discovery_.addClassLoader(repository_class_loader_);
   }
+
+
+//----------------------------------------------------------------------
+/**
+ * Instantiates and Initializes the plugins that are found.
+ */
+
+  protected void initializePlugins()
+  {
+        // GuiPlugins
+    Object[] plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.GuiPlugin.class);
+    GuiPlugin gui_plugin;
+    for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
+    {
+      gui_plugin = (GuiPlugin)plugins[plugins_index];
+      mouse_mode_manager_.addMouseModes(gui_plugin.getMouseModes());
+      gui_plugin.initializePlugin(hook_manager_);
+          // TODO FIXXME add main menu actions and sub menu actions of plugins!
+    }
+
+        // MouseMode Plugins:
+    plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.MouseModePlugin.class);
+    MouseModePlugin mouse_mode_plugin;
+    for(int plugins_index = 0; plugins_index < plugins.length; plugins_index++)
+    {
+      mouse_mode_plugin = (MouseModePlugin)plugins[plugins_index];
+      mouse_mode_plugin.initializePlugin(hook_manager_);
+      mouse_mode_manager_.addMouseMode(mouse_mode_plugin);
+      mouse_mode_plugin.setActive(false);
+      map_bean_.addMouseListener(mouse_mode_plugin);
+      map_bean_.addMouseMotionListener(mouse_mode_plugin);
+    }
+    
+    
+  }
+
+
   
 //----------------------------------------------------------------------
 /**
@@ -1773,6 +1892,20 @@ public class GPSMap
   }
 
 //----------------------------------------------------------------------
+/**
+ * Returns the currently used projection of the map. This projection
+ * may be used to calculate the latititude/longitude from screen
+ * coordinates and vice versa.
+ *
+ * @return the projection currently used.
+ * @see com.bbn.openmap.proj.Projection
+ */
+  public Projection getMapProjection()
+  {
+    return(map_bean_.getProjection());
+  }
+
+//----------------------------------------------------------------------
 // The MapManager Hooks
 //----------------------------------------------------------------------
 
@@ -1885,7 +2018,7 @@ public class GPSMap
 
   public void setStatusInfo(String message)
   {
-      status_bar_.setStatus(message);
+    status_bar_.setStatus(message);
   }
   
 //----------------------------------------------------------------------
@@ -1894,7 +2027,7 @@ public class GPSMap
  */
   public static void main(String[] args)
   {
-    com.bbn.openmap.util.Debug.init(); // enable openmap debug info
+        //com.bbn.openmap.util.Debug.init(); // enable openmap debug info
     new GPSMap(args);
   }
 

@@ -128,6 +128,7 @@ public interface GPSMapKeyConstants
   public static final String KEY_LOCALIZE_CLOSE_BUTTON = "localize.close_button";
   public static final String KEY_LOCALIZE_CLEAR_BUTTON = "localize.clear_button";
   public static final String KEY_LOCALIZE_PREVIEW_BUTTON = "localize.preview_button";
+  public static final String KEY_LOCALIZE_FILENAME = "localize.filename";
   public static final String KEY_LOCALIZE_MESSAGE_LATITUDE_WRONG_FORMAT = "localize.message.latitude_wrong_format";
   public static final String KEY_LOCALIZE_MESSAGE_LONGITUDE_WRONG_FORMAT = "localize.message.longitude_wrong_format";
   public static final String KEY_LOCALIZE_MESSAGE_ERROR_TITLE = "localize.message.error_title";

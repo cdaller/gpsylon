@@ -48,6 +48,7 @@ public class ReadGPX
   protected Vector routes_ = new Vector();
   protected Vector tracks_ = new Vector();
   protected Vector waypoints_ = new Vector();
+  protected SimpleDateFormat date_format_ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
   public ReadGPX()
   {
@@ -496,8 +497,7 @@ public class ReadGPX
             //TrackImpl trk = (TrackImpl)(tracks_.get(track_number_));
             //TrackpointImpl actual = (TrackpointImpl)(trk.getWaypoint(trackPoint));
 
-        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        actual_trkpt_.setDate(date_format.parse(characters_.toString(),new ParsePosition(0)));
+        actual_trkpt_.setDate(date_format_.parse(characters_.toString(),new ParsePosition(0)));
 
             //trk.addWaypoint(trackPoint,actual);
 

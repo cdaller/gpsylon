@@ -84,8 +84,10 @@ public class GarminSatelliteInfo
 //         infos.add(info);
 //       }
           // valid for etrex:
-      phase = garmin_package.getNextAsLongWord(); // fractional phase not used here
-      snr = garmin_package.getNextAsLongWord();
+      phase = (int)garmin_package.getNextAsLongWord(); // fractional phase not
+																											 // used here // 2 bytes
+																											 // or 4???
+      snr = (int)garmin_package.getNextAsLongWord(); // 2 bytes or 4???
       elevation = (float)garmin_package.getNextAsByte();
       prn = garmin_package.getNextAsByte();
 //       if(prn != 255)   // 255 -> no satellite on this channel

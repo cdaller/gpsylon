@@ -38,7 +38,7 @@ public class GarminFile
   {
     if(garmin_package.getPackageSize() != 4)
       throw new IllegalArgumentException("File Header has size != 4");
-    num_data_packages_ = garmin_package.getNextAsLongWord();
+    num_data_packages_ = (int)garmin_package.getNextAsLongWord();
     data_ = new GarminPackage(0,0);
   }
 

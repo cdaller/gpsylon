@@ -108,7 +108,7 @@ public class GarminWaypointD109 extends GarminWaypointD108
     distance_ = GarminDataConverter.getGarminFloat(buffer,42);
     state_code_ = GarminDataConverter.getGarminString(buffer,46,2).trim();
     country_code_ = GarminDataConverter.getGarminString(buffer,48,2).trim();
-    ete_ = GarminDataConverter.getGarminLong(buffer,50);
+    ete_ = GarminDataConverter.getGarminLongWord(buffer,50);
 
     // read strings
     identification_ = GarminDataConverter.getGarminString(buffer,54,51).trim();
@@ -186,7 +186,7 @@ public class GarminWaypointD109 extends GarminWaypointD108
       display_options_ = "unknown";
 
     attributes_ = 0x60;
-    symbol_type_ = GarminWaypointSymbols.getSymbolId(waypoint.getSymbolName());
+    symbol_type_ = (int)GarminWaypointSymbols.getSymbolId(waypoint.getSymbolName());
     if(symbol_type_ < 0)
       symbol_type_ = 18; // default symbol (wpt_dot)
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);

@@ -22,56 +22,52 @@
 
 package org.dinopolis.gpstool.gui;
 
-import com.bbn.openmap.MapBean;
-
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
 //import java.awt.event.MouseWheelEvent;
-
-import org.dinopolis.util.Resources;
-import org.dinopolis.util.gui.ActionStore;
-
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoint;
-
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.JComboBox;
-
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.proj.Projection;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
-import java.awt.Color;
-import java.awt.event.InputEvent;
 import java.awt.Point;
-
-import java.util.Vector;
-import java.util.Iterator;
-
-import org.dinopolis.util.Debug;
-import java.awt.event.ActionListener;
-import javax.swing.JTextField;
-import com.bbn.openmap.omGraphics.OMRect;
-import java.awt.geom.Rectangle2D;
 import java.awt.Rectangle;
-
-import org.dinopolis.gpstool.gui.DownLoadFrame;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.PreviewHook;
-import org.dinopolis.gpstool.MapNavigationHook;
-import org.dinopolis.gpstool.StatusHook;
-import org.dinopolis.gpstool.MapManagerHook;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
+import java.util.Vector;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import org.dinopolis.gpstool.GPSMap;
+import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.MapManagerHook;
+import org.dinopolis.gpstool.MapNavigationHook;
+import org.dinopolis.gpstool.PreviewHook;
+import org.dinopolis.gpstool.StatusHook;
+import org.dinopolis.gpstool.gui.DownLoadFrame;
+import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.MapRectangle;
+import org.dinopolis.util.Debug;
+import org.dinopolis.util.Resources;
+import org.dinopolis.util.gui.ActionStore;
+import org.dinopolis.util.gui.MenuFactory;
+import org.dinopolis.util.gui.SelectedButtonActionSynchronizer;
 import org.dinopolis.util.gui.SwingWorker;
-import com.bbn.openmap.event.LayerStatusEvent;
 
 /**
  * This mousemode fulfills the following:
@@ -114,11 +110,9 @@ import com.bbn.openmap.event.LayerStatusEvent;
  * @version $Revision$
  */
 
-public class MapMouseMode implements MouseListener, MouseMotionListener,
+public class MapMouseMode implements MouseMode,
             PreviewHook, GPSMapKeyConstants
 {
-
-      /** the map bean to work with */
   MapBean map_bean_;
   Resources resources_;
   MapNavigationHook map_navigation_;
@@ -160,29 +154,19 @@ public class MapMouseMode implements MouseListener, MouseMotionListener,
 				download_area_action_
                               };
   DownLoadFrame download_frame_;
+
+  boolean mode_active_ = false;  // default is not active!!!
+
+  Action mouse_mode_action_;
   
 //----------------------------------------------------------------------
 /**
  * Constructor
  */
 
-  public MapMouseMode(MapBean map_bean, Resources resources,
-                      MapNavigationHook map_navigation, StatusHook status_hook,
-		      MapManagerHook map_manager)
+  public MapMouseMode(MapBean map_bean)
   {
     map_bean_ = map_bean;
-    resources_ = resources;
-    map_navigation_ = map_navigation;
-    status_hook_ = status_hook;
-    map_manager_hook_ = map_manager;
-
-    // add actions for this layer/mouse mode:
-    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
-    action_store_.addActions(actions_);
-
-    mouse_layer_ = new MapMouseLayer();
-    enable();
-
 //     addKeyListener( new KeyAdapter {
 //         public void keyPressed(KeyEvent event)
 //         {
@@ -200,36 +184,124 @@ public class MapMouseMode implements MouseListener, MouseMotionListener,
 //         {
 //         }
 //       });
-    
   }
-
 
 //----------------------------------------------------------------------
 /**
- * enable this mouse mode
+ * Initialize the plugin and pass a PluginSupport that provides
+ * objects, the plugin may use.
+ *
+ * @param support the PluginSupport object
  */
-  
-  public void enable()
+  public void initializePlugin(PluginSupport support)
   {
-//     map_bean_.addMouseListener(this);
-//     map_bean_.addMouseMotionListener(this);
-//    map_bean_.addMouseWheelListner(this);
+    map_navigation_ = support.getMapNavigationHook();
+    status_hook_ = support.getStatusHook();
+    map_manager_hook_ = support.getMapManagerHook();
+    resources_ = support.getResources();
+
+      // add actions for this layer/mouse mode:
+    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
+    action_store_.addActions(actions_);
+
+    mouse_layer_ = new MapMouseLayer();
     map_bean_.add(mouse_layer_);
   }
 
 //----------------------------------------------------------------------
 /**
- * disable this mouse mode
+ * The application calls this method to indicate that the plugin is
+ * activated and will be used from now on. The Plugin should
+ * initialize any needed resources (files, etc.) in this method.
+ *
+ * @throws Exception if an error occurs. If this method throws an
+ * exception, the plugin will not be used by the application.
  */
-  
-  public void disable()
+
+  public void startPlugin()
   {
-//     map_bean_.removeMouseListener(this);
-//     map_bean_.removeMouseMotionListener(this);
-//    map_bean_.removeMouseWheelListener(this);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * The application calls this method to indicate that the plugin is
+ * deactivated and will not be used any more. The Plugin should
+ * release all resources (close files, etc.) in this method.
+ *
+ * @throws Exception if an error occurs.
+ */
+
+  public void stopPlugin()
+  {
     map_bean_.remove(mouse_layer_);
   }
 
+//----------------------------------------------------------------------
+/**
+ * Called by the application to switch the mouse mode on or off. If
+ * the mouse mode is switched off, it must not react on mouse events
+ * (although it might register them). This method may be used to
+ * change the mouse cursor, ...
+ *
+ * @param active if <code>true</code> the mouse mode is switched on
+ * and should react on mouse events.
+ */
+
+  public void setActive(boolean active)
+  {
+    mode_active_ = active;
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Returns if the mouse mode is active or not.
+ *
+ * @return <code>true</code> if the mouse mode is active and reacts on
+ * mouse events.
+ */
+  public boolean isActive()
+  {
+    return(mode_active_);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * The name returned here is used in the menu and/or the toolbar of
+ * the application to switch the mouse mode on or off. It should be
+ * localized.
+ *
+ * @return the name of the mouse mode.
+ */
+  public String getMouseModeName()
+  {
+    return("Map Mode");
+  }
+
+//----------------------------------------------------------------------
+/**
+ * The icon returned here is used in the menu and/or the toolbar of
+ * the application to switch the mouse mode on or off. 
+ *
+ * @return the icon of the mouse mode.
+ */
+  public Icon getMouseModeIcon()
+  {
+        // TODO create icon
+    return(null);
+  }
+
+
+//----------------------------------------------------------------------
+/**
+ * The description returned here is used in the menu and/or the toolbar of
+ * the application to switch the mouse mode on or off. 
+ *
+ * @return the description of the mouse mode.
+ */
+  public String getMouseModeDescription()
+  {
+    return("Default Mouse Mode");
+  }
 
 //----------------------------------------------------------------------
 // MouseListener Adapter
@@ -237,11 +309,13 @@ public class MapMouseMode implements MouseListener, MouseMotionListener,
 
   public void mouseClicked(MouseEvent event)
   {
+    if(!mode_active_)
+      return;
 //    System.out.println("mouseClicked: "+event.getSource());
 
     if(event.getButton() == MouseEvent.BUTTON1)
     {
-      LatLonPoint point = map_bean_.getProjection().inverse(event.getX(),event.getY());
+      LatLonPoint point = map_navigation_.getMapProjection().inverse(event.getX(),event.getY());
 
       if(event.isShiftDown())
       {
@@ -303,16 +377,22 @@ public class MapMouseMode implements MouseListener, MouseMotionListener,
 
   public void mouseEntered(MouseEvent event)
   {
+    if(!mode_active_)
+      return;
 //    System.out.println("mouseEntered: "+event.getSource());
   }
 
   public void mouseExited(MouseEvent event)
   {
+    if(!mode_active_)
+      return;
 //    System.out.println("mouseExited: "+event.getSource());
   }
 
   public void mousePressed(MouseEvent event)
   {
+    if(!mode_active_)
+      return;
     if(event.getButton() == MouseEvent.BUTTON1)
     {
       drag_start_x_ = event.getX();
@@ -329,6 +409,8 @@ public class MapMouseMode implements MouseListener, MouseMotionListener,
 
   public void mouseReleased(MouseEvent event)
   {
+    if(!mode_active_)
+      return;
         // on windows, mousereleased sets popuptrigger
     if(event.isPopupTrigger())
     {
@@ -344,6 +426,8 @@ public class MapMouseMode implements MouseListener, MouseMotionListener,
 
   public void mouseDragged(MouseEvent event)
   {
+    if(!mode_active_)
+      return;
     drag_current_x_ = event.getX();
     drag_current_y_ = event.getY();
     drag_mode_ = true;
@@ -358,6 +442,8 @@ public class MapMouseMode implements MouseListener, MouseMotionListener,
 
   public void mouseMoved(MouseEvent event)
   {
+    if(!mode_active_)
+      return;
 //    System.out.println("mouseMoved: "+event.getSource());
   }
 

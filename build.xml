@@ -55,8 +55,8 @@ Christof Dallermassl (cdaller@iicm.edu)
       <include name="tracklayer/${dist_dir}/**/*.jar" />
       <include name="gpstool/${dist_dir}/**/*.jar" />
       <include name="importexport/${dist_dir}/**/*.jar" />
-      <include name="tracklayer/${dist_dir}/**/*.jar" />
       <include name="averagepos/${dist_dir}/**/*.jar" />
+      <include name="trackchart/${dist_dir}/**/*.jar" />
     </patternset>
   </target>
   
@@ -413,6 +413,9 @@ Christof Dallermassl (cdaller@iicm.edu)
       <fileset dir="${plugin_dir}/tracklayer/${dist_dir}">
         <include name="**/*.jar"/>  
       </fileset>
+      <fileset dir="${plugin_dir}/trackchart/${dist_dir}">
+        <include name="**/*.jar"/>  
+      </fileset>
       <fileset dir="${plugin_dir}/averagepos/${dist_dir}">
         <include name="**/*.jar"/>  
       </fileset>
@@ -463,7 +466,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- compile_plugins target -->
   <target name="compile_plugins"
-    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin"> 
+    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin,compile_trackchart_plugin"> 
   </target>
 
   <!-- compile_downloadmousemode_plugin target -->
@@ -511,6 +514,11 @@ Christof Dallermassl (cdaller@iicm.edu)
     <ant dir="${plugin_dir}/tracklayer" target="compile" inheritAll="false"/>
   </target>
 
+  <!-- compile_trackchart_plugin target -->
+  <target name="compile_trackchart_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/trackchart" target="compile" inheritAll="false"/>
+  </target>
+
   <!-- compile_gpstool_plugin target -->
   <target name="compile_gpstool_plugin" depends="init"> 
     <ant dir="${plugin_dir}/gpstool" target="compile" inheritAll="false"/>
@@ -523,7 +531,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- bin_dist_plugins target -->
   <target name="bin_dist_plugins"
-    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin"> 
+    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin,bin_dist_trackchart_plugin"> 
   </target>
 
   <!-- bin_dist_downloadmousemode_plugin target -->
@@ -571,6 +579,11 @@ Christof Dallermassl (cdaller@iicm.edu)
     <ant dir="${plugin_dir}/tracklayer" target="bin_dist" inheritAll="false"/>
   </target>
 
+  <!-- bin_dist_trackchart_plugin target -->
+  <target name="bin_dist_trackchart_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/trackchart" target="bin_dist" inheritAll="false"/>
+  </target>
+
   <!-- bin_dist_gpstool_plugin target -->
   <target name="bin_dist_gpstool_plugin" depends="init"> 
     <ant dir="${plugin_dir}/gpstool" target="bin_dist" inheritAll="false"/>
@@ -583,7 +596,7 @@ Christof Dallermassl (cdaller@iicm.edu)
 
   <!-- install_plugins target -->
   <target name="install_plugins"
-    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin"> 
+    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin,install_plugin_trackchart_plugin"> 
   </target>
 
   <!-- install_downloadmousemode_plugin target -->
@@ -629,6 +642,11 @@ Christof Dallermassl (cdaller@iicm.edu)
   <!-- install_plugin_tracklayer_plugin target -->
   <target name="install_plugin_tracklayer_plugin" depends="init"> 
     <ant dir="${plugin_dir}/tracklayer" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_plugin_trackchart_plugin target -->
+  <target name="install_plugin_trackchart_plugin" depends="init"> 
+    <ant dir="${plugin_dir}/trackchart" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_plugin_gpstool_plugin target -->

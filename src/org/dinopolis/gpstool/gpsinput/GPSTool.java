@@ -33,6 +33,8 @@ import javax.swing.JFrame;
 
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
+import java.io.IOException;
+import java.util.List;
 
 //----------------------------------------------------------------------
 /**
@@ -287,36 +289,36 @@ public class GPSTool implements PropertyChangeListener
       boolean work_done = false;
       if(args.isSet("printwaypoint"))
       {
-        ((GPSGarminDataProcessor)gps_data_processor).printWaypointData();
+        List waypoints = ((GPSGarminDataProcessor)gps_data_processor).getWaypoints(0L);
+        System.out.println(waypoints);
         work_done = true;
       }
       else
         if(args.isSet("printtrack"))
         {
-          ((GPSGarminDataProcessor)gps_data_processor).printTrackData();
+          List tracks = ((GPSGarminDataProcessor)gps_data_processor).getTracks(0L);
+          System.out.println(tracks);
           work_done = true;
         }
         else
           if(args.isSet("printroute"))
           {
-            ((GPSGarminDataProcessor)gps_data_processor).printRouteData();
+            List routes = ((GPSGarminDataProcessor)gps_data_processor).getRoutes(0L);
+            System.out.println(routes);
             work_done = true;
           }
           else
             if(args.isSet("printpvt"))
             {
-              ((GPSGarminDataProcessor)gps_data_processor).printPVTData();
+              GarminPVT pvt = ((GPSGarminDataProcessor)gps_data_processor).getPVT(0L);
+              System.out.println(pvt);
               work_done = true;
             }
             else
               if(args.isSet("printdeviceinfo"))
               {
-                System.out.println("product id:"+((GPSGarminDataProcessor)gps_data_processor).getProductId());
-                System.out.println("product sw:"+((GPSGarminDataProcessor)gps_data_processor).getProductSoftware());
-                System.out.println("product name:"+((GPSGarminDataProcessor)gps_data_processor).getProductName());
-                String[] capabilities = ((GPSGarminDataProcessor)gps_data_processor).getProductCapabilities();
-                for(int count = 0; count < capabilities.length; count++)
-                  System.out.println("product cap:"+capabilities[count]);
+                System.out.println(((GPSGarminDataProcessor)gps_data_processor).getProductInfo());
+                System.out.println(((GPSGarminDataProcessor)gps_data_processor).getCapabilities());
                 work_done = true;
               }
       
@@ -327,6 +329,10 @@ public class GPSTool implements PropertyChangeListener
     catch(GPSException e)
     {
       e.printStackTrace();
+    }
+    catch(IOException ioe)
+    {
+      ioe.printStackTrace();
     }
   } // end of main ()
 }

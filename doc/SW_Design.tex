@@ -99,6 +99,7 @@ are the events and its value types listed.
       Altitude (in meters)& \classname{Float}\\
       Satellite Info & \classname{SatelliteInfo}\\
       Depth & \classname{Float}\\
+      Estimated Pos Error (EPE) & \classname{GPSPositionError}\\
       \hline
     \end{tabular}
   \end{center}
@@ -142,7 +143,7 @@ PropertyChangeListener listener = new ProperyChangeListener()
 };
 
 // register as listener for location events:
-	gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.LOCATION,listener);
+  gps_data_processor.addGPSDataChangeListener(GPSDataProcessor.LOCATION,listener);
 \end{lstlisting}
 
 A little example that demonstrates the features of this module is the
@@ -393,25 +394,21 @@ in the menu or a toolbar: name, icon, shortcut key, ...
 Additonally, a mouse mode may provide a layer that allows the mouse
 mode to draw something on the map component.
  
-\item The \interfacename{GUiPlugin} has the possibility to add one or
-more entries in the menu of the application. An example would be a
-window that provides information about memory usage or a tachometer
-that shows lots of informations from the gps device (speed, average,
-direction, etc.). A \interfacename{GuiPlugin} may use the modules from
-the GPSMap application, but cannot draw into the map component. It may
-provide one or more mouse modes, so it may react on mouse clicks on
-the map component.
+\item The \interfacename{GuiPlugin} is the most powerful plugin. It
+  has the possibility to add one or more entries in the menu of the
+  application. An example would be a window that provides information
+  about memory usage or a tachometer that shows lots of informations
+  from the gps device (speed, average, direction, etc.).
 
-\item The \classname{LayerPlugin} is the most complete plugin that has
-all possiblities of the \interfacename{GuiPlugin} but additionally
-represents a layer of the map component. So the location marker layer,
-the track layer, all those could be \classname{LayerPlugin}s (and
-probably will be one day). GPSMap uses the \classname{MapBean} class
-of the openmap library as the central map component. This class uses
-\classname{Layer} objects as layers. Unfortunately the openmap
-\classname{Layer} is not an interface, but a class, so the
-\classname{LayerPlugin} is not an interface, but a class. The layer is
-informed about changes of the projection (zoom in/out, move) in the
+Additionally, \interfacename{GuiPlugins} may provide one or more mouse
+modes to be able to react on mouse clicks on the map component. 
+
+If a \interfacename{GuiPlugin} needs to draw anything on the map
+component, it may provide a \classname{Layer}.
+GPSMap uses the \classname{MapBean} class of the openmap library as
+the central map component. This class uses \classname{Layer} objects
+as layers.  Every layer is informed about changes of the projection
+(zoom in/out, move) in the
 \methodname{projectionChanged(com.bbn.openmap.proj.Projection)}
 method. The layer may paint some map details in the
 \methodname{paint(java.awt.Graphics)} or
@@ -421,11 +418,21 @@ about projections.
 
 The \methodname{paint()} method should return as fast as possible, so
 complicated calculations should not be done in this method but in a
-background thread. \classname{org.dinopolis.gpstool.gui.BasicLayer}
-and \classname{org.dinopolis.gpstool.plugin.BasicLayerPlugin} provide
-a framework that calls a calculation method in a background thread
+background thread. The class
+\classname{org.dinopolis.gpstool.gui.BasicLayer} provides a framework
+that calls a calculation method in a background thread
 (\classname{SwingWorker}). So the developer does not need to worry
 about this!
+
+\item The \classname{MapRetrievalPlugin}: Used by the download mouse
+  mode to retrieve raster maps from various sources. The application
+  requests a raster map for a given location, size and scale. As
+  different map sources may provide only specific scales, the
+  \interfacename{MapRetrievalPlugin} has a method that has to return
+  the really used scale (may differ from the scale requested). All
+  scale values are given in mapblast units (as this was the first
+  server supported). E.g.\ 1000 is a very small scale (lots of
+  details), whereas 1000000 (one million) shows most of Europe.
 
 \end{itemize}
 

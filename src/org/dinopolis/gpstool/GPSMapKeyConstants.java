@@ -217,6 +217,7 @@ public interface GPSMapKeyConstants
   public static final String KEY_TRACK_CURRENT_TRACK_COLOR = "track.current_track.color";
   public static final String KEY_TRACK_DISPLAY_MODE = "track.display_mode";
   public static final String KEY_TRACK_LAYER_ACTIVE = "track.layer_active";
+  public static final String KEY_TRACK_ACTIVE_TRACK_IDENTIFIER = "track.active_track.identifier";
   
       /** graticule resources */
   public static final String KEY_GRATICULE_COLOR_TEN_LINES = "graticule.color.ten_lines";

@@ -315,7 +315,7 @@ public class UnitHelper
     if(value > 100.0)
       return(String.valueOf((int)Math.round(value)));
     
-    return(String.valueOf((int)(Math.round(value*10)/10)));
+    return(String.valueOf((int)(Math.round(value*10))/10.0));
   }
   
 //----------------------------------------------------------------------
@@ -418,6 +418,15 @@ public class UnitHelper
     }
     throw new IllegalStateException("Illegal Unit System");
   }
+
+	public static void main(String[] args)
+	{
+		UnitHelper uh = new UnitHelper();
+		System.out.println(uh.getValueString(50.1234));
+		System.out.println(uh.getValueString(50));
+		System.out.println(uh.getValueString(500.1234));
+		System.out.println(uh.getValueString(500));
+	}
 }
 
 

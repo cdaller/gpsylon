@@ -414,7 +414,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public List getRoutes()
     throws UnsupportedOperationException, GPSException
   {
-    if(!capabilities_.hasCapability("A200"))
+    if(!capabilities_.hasCapability("A200") && !capabilities_.hasCapability("A201"))
       throw new UnsupportedOperationException("Garmin Device does not support route transfer");
     try
     {
@@ -442,7 +442,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public List getTracks()
     throws UnsupportedOperationException, GPSException
   {
-    if(!capabilities_.hasCapability("A300"))
+    if(!capabilities_.hasCapability("A300") && !capabilities_.hasCapability("A301"))
       throw new UnsupportedOperationException("Garmin Device does not support track transfer");
     try
     {

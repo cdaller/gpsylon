@@ -1,5 +1,13 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+
+2003/11/25: fixed more bugs in dataconversion
+
+            fixed bug in reading gpx files (wrong date in trackpoints)
+   
+            added geocache and geochache_found symbols (when reading
+            waypoints) in gpx file
+
 2003/11/21: fixed bug in handling long values from garmin devices
 
             added device info window in gpstool plugin

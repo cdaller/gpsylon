@@ -44,8 +44,7 @@ import org.dinopolis.gpstool.plugin.PluginSupport;
 //----------------------------------------------------------------------
 /**
  * This plugin reads track data from a stream (ususally from a file)
- * and provides one or more tracks (lists of {@link
- * org.dinopolis.gpstool.util.geoscreen.GeoScreenTrackPoint}
+ * and provides one or more tracks (lists of {@link TrackPoint}
  * objects). This plugin reads the tracks GPSMap saves itself. That's
  * why it is not a real plugin, but always available.
  *

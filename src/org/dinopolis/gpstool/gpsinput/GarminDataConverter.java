@@ -280,7 +280,7 @@ public class GarminDataConverter
    * Converts Semicircles to Degrees.
    *
    * @param semicircles
-   @ @return degrees
+   * @return degrees
    */
   public static double convertSemicirclesToDegrees(int semicircle)
   {
@@ -292,7 +292,7 @@ public class GarminDataConverter
    * Converts Degrees to Semicircles.
    *
    * @param degrees
-   @ @return semicircles
+   * @return semicircles
    */
   public static double convertDegreesToSemicircles(double degrees)
   {

@@ -1,6 +1,6 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
-*
+ *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 
@@ -25,6 +25,8 @@ package org.dinopolis.gpstool.plugin;
 
 import javax.swing.Action;
 import org.dinopolis.gpstool.gui.MouseMode;
+import javax.swing.JMenuItem;
+import javax.swing.JMenu;
 
 //----------------------------------------------------------------------
 /**
@@ -45,34 +47,62 @@ import org.dinopolis.gpstool.gui.MouseMode;
 public interface GuiPlugin extends Plugin
 {
 
-//----------------------------------------------------------------------
-/**
- * The application provides a sub menu for every plugin that may be
- * used. The actions returned are used in the order provided and added
- * to a submenu in the "plugins" menu item. The name of the plugin is
- * used as the name of the submenu (see {@link
- * Plugin#getPluginName()}). The actions returned should provide an
- * icon and a localized name.
- *
- * @return actions that are used in a sub menu in the application or
- * <code>null</code>, if no submenus are needed.
- *
- */
-  public Action[] getSubMenuActions();
 
 //----------------------------------------------------------------------
 /**
- * The application provides a menu for every plugin that may be used
- * by the plugin. The actions returned are used in the order provided
- * and added to a menu. The name of the plugin is used as the name of
- * the submenu (see {@link Plugin#getPluginName()}). The actions
- * returned should provide an icon and a localized name.
+ * The plugin may return a JMenu object to be used in the main menu of
+ * the application and may (should) contain other menu items. The
+ * menuitems returned should provide an icon, a mnemonic key, and a
+ * localized name (and a accelerator key).
  *
- * @return actions that are used in a menu in the application or
- * <code>null</code>, if no menus are needed.
+ * @return A menu that is used in the main menu in the
+ * application or <code>null</code>, if no main menu is needed.
  *
  */
-  public Action[] getMainMenuActions();
+  public JMenu getMainMenu();
+
+//----------------------------------------------------------------------
+/**
+ * The application provides a sub menu for every plugin that may be
+ * used. The JMenuItem (or JMenu) returned is added to a submenu in
+ * the "plugins" menu item.  The menuitems returned should provide an
+ * icon, a mnemonic key, and a localized name (and a accelerator key).
+ *
+ * @return A menuitem (or a JMenu) that are used in a sub menu in the
+ * application or <code>null</code>, if no submenus are needed.
+ *
+ */
+  public JMenuItem getSubMenu();
+
+ 
+// //----------------------------------------------------------------------
+// /**
+//  * The application provides a sub menu for every plugin that may be
+//  * used. The actions returned are used in the order provided and added
+//  * to a submenu in the "plugins" menu item. The name of the plugin is
+//  * used as the name of the submenu (see {@link
+//  * Plugin#getPluginName()}). The actions returned should provide an
+//  * icon and a localized name.
+//  *
+//  * @return actions that are used in a sub menu in the application or
+//  * <code>null</code>, if no submenus are needed.
+//  *
+//  */
+//   public Action[] getSubMenuActions();
+
+// //----------------------------------------------------------------------
+// /**
+//  * The application provides a menu for every plugin that may be used
+//  * by the plugin. The actions returned are used in the order provided
+//  * and added to a menu. The name of the plugin is used as the name of
+//  * the submenu (see {@link Plugin#getPluginName()}). The actions
+//  * returned should provide an icon and a localized name.
+//  *
+//  * @return actions that are used in a menu in the application or
+//  * <code>null</code>, if no menus are needed.
+//  *
+//  */
+//   public Action[] getMainMenuActions();
 
 
 //----------------------------------------------------------------------

@@ -87,7 +87,11 @@ public interface PluginSupport
 
 //----------------------------------------------------------------------
 /**
- * Get the property_change_support.
+ * Get the property_change_support. This support may be used to
+ * register as a PropertyChangeListener, and therefore to receive
+ * ProperyChangeEvents. Use the property keys in
+ * {@link org.dinopolis.gpstool.GPSMap} as property names
+ * (<code>PROPERTY_KEY_...</code>). 
  *
  * @return the property_change_support.
  */

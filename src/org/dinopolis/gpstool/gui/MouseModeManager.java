@@ -34,6 +34,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import org.dinopolis.util.gui.SelectedButtonActionSynchronizer;
+import javax.swing.KeyStroke;
 
 //----------------------------------------------------------------------
 /**
@@ -81,8 +82,8 @@ public class MouseModeManager
 /**
  * Returns an action for the given mouse mode (using its name, icon
  * and description). When the action is executed (actionPerformed
- * method called), it calls the {@link MouseMode.setSelected(boolean)}
- * method.
+ * method called), it calls the {@link
+ * org.dinopolis.gpstool.gui.MouseMode#setActive(boolean)} method.
  *
  * @param mode the mouse mode.
  * @return menu items for all mouse modes.
@@ -103,7 +104,7 @@ public class MouseModeManager
           {
             boolean mode_active = ((Boolean)selected).booleanValue();
             mouse_mode_.setActive(mode_active);
-            System.out.println("MouseMode '"+mouse_mode_.getMouseModeName()+"' activated: "+mode_active);
+//            System.out.println("MouseMode '"+mouse_mode_.getMouseModeName()+"' activated: "+mode_active);
           }
         }
       };
@@ -144,9 +145,10 @@ public class MouseModeManager
   public JMenuItem[] getMenuItems()
   {
     JMenuItem[] menu_items = new JRadioButtonMenuItem[mouse_modes_.size()];
-    JRadioButtonMenuItem item;
+    JRadioButtonMenuItem item = null;
     MouseMode mode;
     Action action;
+    JMenuItem active_item = null;
     for(int mode_index = 0; mode_index < mouse_modes_.size(); mode_index++)
     {
 //       menu_items[mode_index] = new JRadioButtonMenuItem(mouse_modes_.getMouseModeName(),
@@ -154,6 +156,13 @@ public class MouseModeManager
       mode = (MouseMode)mouse_modes_.elementAt(mode_index);
       action = createMouseModeAction(mode);
       item = new JRadioButtonMenuItem(action);
+      String accelerator_key = mode.getMouseModeAcceleratorKey();
+      if((accelerator_key != null) && (accelerator_key.length() > 0))
+        item.setAccelerator(KeyStroke.getKeyStroke(accelerator_key));
+      char mnemonic = mode.getMouseModeMnemonic();
+      if(mnemonic == 0)
+        mnemonic = mode.getMouseModeName().charAt(0);
+      item.setMnemonic(mnemonic);
           // create a synchronizer, that keeps the selected state of
           // action and item synchronized. there is no need to keep
           // this reference, as the synchronizer is added as listener
@@ -161,8 +170,13 @@ public class MouseModeManager
       new SelectedButtonActionSynchronizer(item,action);
       menu_items[mode_index] = item;
       button_group_.add(item);
-      item.setSelected(mode.isActive()); // set active or not (the last wins :-)
+      if(mode.isActive())
+        active_item = item;
     }
+    if(active_item != null)
+      active_item.setSelected(true);
+    else
+      item.setSelected(true); // activate the last one
     return(menu_items);
   }
 }

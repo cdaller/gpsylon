@@ -31,7 +31,7 @@ import com.bbn.openmap.Layer;
 /**
  * This interface is used for all plugins that want to provide any
  * mouse handling for the application. If the mouse mode wants to draw
- * anything on the map, it may return a layer in the {@getLayer()}
+ * anything on the map, it may return a layer in the {@link #getLayer()}
  * method.
  * <p>
  * The plugins are informed about start and stop, so they may

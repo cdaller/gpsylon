@@ -74,7 +74,7 @@ public class ExtensionFileFilter extends FileFilter
        * Creates a file filter that accepts files with the given extension.
        * Example: new ExtensionFileFilter("jpg");
        *
-       * @see #addExtension
+       * @see #addExtension(java.lang.String)
        */
   public ExtensionFileFilter(String extension)
   {
@@ -88,7 +88,7 @@ public class ExtensionFileFilter extends FileFilter
        * Note that the "." before the extension is not needed. If
        * provided, it will be ignored.
        *
-       * @see #addExtension
+       * @see #addExtension(java.lang.String)
        */
   public ExtensionFileFilter(String extension, String description)
   {
@@ -104,7 +104,7 @@ public class ExtensionFileFilter extends FileFilter
        * Note that the "." before the extension is not needed and
        * will be ignored.
        *
-       * @see #addExtension
+       * @see #addExtension(java.lang.String)
        */
   public ExtensionFileFilter(String[] filters)
   {
@@ -117,7 +117,7 @@ public class ExtensionFileFilter extends FileFilter
        *
        * Note that the "." before the extension is not needed and will be ignored.
        *
-       * @see #addExtension
+       * @see #addExtension(java.lang.String)
        */
   public ExtensionFileFilter(String[] filters, String description)
   {
@@ -287,7 +287,7 @@ public class ExtensionFileFilter extends FileFilter
  * Get the auxiliary_obj.
  *
  * @return the auxiliary_obj.
- * @see #setAuxiliaryObject()
+ * @see #setAuxiliaryObject(java.lang.Object)
  */
   public Object getAuxiliaryObject() 
   {
@@ -302,9 +302,9 @@ public class ExtensionFileFilter extends FileFilter
  * used to describe files of application xyz, this value may be stored
  * as an auxiliary object. So after the file chooser dialog was
  * closed, it can be retrieved again by the {@link
- * #getAuxiliaryObject()} method to hand the file directly to
- * application xyz. Otherwise, the filter description or the filter
- * extension are the only hint that the file is a xyz-file.
+ * #getAuxiliaryObject()} method to hand the file
+ * directly to application xyz. Otherwise, the filter description or
+ * the filter extension are the only hint that the file is a xyz-file.
  *
  * @param auxiliary_obj the auxiliary_obj.
  */

@@ -31,7 +31,7 @@ import org.dinopolis.gpstool.gui.layer.track.Track;
 /**
  * This plugin reads track data from a stream (ususally from a file)
  * and provides one or more tracks (lists of {@link
- * org.dinopolis.gpstool.util.geoscreen.GeoScreenTrackPoint} objects).
+ * org.dinopolis.gpstool.gui.layer.track.TrackPoint} objects).
  *
  * @author Christof Dallermassl
  * @version $Revision$

@@ -41,9 +41,10 @@ import com.bbn.openmap.event.LayerStatusEvent;
  * coordinates). This task is done by using the
  * <code>forward(...)</code> methods of the projection passed in the
  * <code>projectionChanged()</code> method. This calculation should be
- * done in a separate task, so the {@link #paintCompontent()} method
- * terminates as fast as possible. Use a {@link
- * org.dinopolis.util.gui.SwingWorker} for this purpose.
+ * done in a separate task, so the
+ * <code>paintCompontent(java.awt.Graphics)<code> method terminates as
+ * fast as possible. Use a {@link org.dinopolis.util.gui.SwingWorker}
+ * for this purpose.
  *
  * @author Christof Dallermassl
  * @version $Revision$

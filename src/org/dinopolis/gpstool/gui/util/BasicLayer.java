@@ -41,14 +41,15 @@ import com.bbn.openmap.event.LayerStatusEvent;
  * coordinates). This task is done by using the
  * <code>forward(...)</code> methods of the projection passed in the
  * <code>projectionChanged()</code> method. This calculation should be
- * done in a separate task, so the {@link #paintCompontent()} method
+ * done in a separate task, so the {@link
+ * javax.swing.JComponent#paintComponent(java.awt.Graphics)} method
  * terminates as fast as possible. Use a {@link
- * org.dinopolis.util.gui.SwingWorker} for this purpose.
- * <p>
- * This abstract layer helps any extending classes with the handling
- * of the background thread. The programmer needs only to implement
- * the {@link doCalculation()} method and to paint the calculated
- * objects in the {@link paintComponent(Graphics)} method.
+ * org.dinopolis.util.gui.SwingWorker} for this purpose.  <p> This
+ * abstract layer helps any extending classes with the handling of the
+ * background thread. The programmer needs only to implement the
+ * {@link #doCalculation()} method and to paint the calculated objects
+ * in the {@link
+ * javax.swing.JComponent#paintComponent(java.awt.Graphics)} method.
  *
  * @author Christof Dallermassl
  * @version $Revision$

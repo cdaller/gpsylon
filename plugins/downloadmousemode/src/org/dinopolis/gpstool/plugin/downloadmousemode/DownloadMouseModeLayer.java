@@ -65,7 +65,7 @@ import org.dinopolis.util.Debug;
 import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.HTMLViewerFrame;
-import org.dinopolis.gpstool.util.ProgressListener;
+import org.dinopolis.util.ProgressListener;
 
 
 //----------------------------------------------------------------------

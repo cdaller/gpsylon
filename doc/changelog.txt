@@ -1,5 +1,11 @@
 ChangeLog for GPSMap (http://gpsmap.sourceforge.net)
 
+2003/03/31: added VTG and HTD nmea sentences to GPSNmeaDataProcessor
+            (thanks to Didier Donsez!)
+
+2003/03/28: created new subpackages in the gpsinput package: nmea and
+            garmin (for better code reading)
+
 2003/03/20: 0.4.14 released
 
 2003/03/10: Fixed problems with plugin building under windows.

@@ -79,7 +79,7 @@ public class SelectedButtonActionSynchronizer
  */
   public void itemStateChanged(ItemEvent event)
   {
-    System.out.println("XXXXX Button ItemStateChanged: "+event);
+//    System.out.println("XXXXX Button ItemStateChanged: "+event);
     AbstractButton button = (AbstractButton)event.getSource();
     Action action = getAction();
     if(action != null)
@@ -101,7 +101,7 @@ public class SelectedButtonActionSynchronizer
  */
   public void propertyChange(PropertyChangeEvent event)
   {
-    System.out.println("XXXXX Action PropertyChanged: "+event);
+//    System.out.println("XXXXX Action PropertyChanged: "+event);
     String property_name = event.getPropertyName();
     if(SELECTED.equals(property_name))
     {

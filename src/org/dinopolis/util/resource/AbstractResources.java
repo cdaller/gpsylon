@@ -444,7 +444,7 @@ public abstract class AbstractResources implements Resources
   protected void doStore()
     throws IOException, UnsupportedOperationException
   {
-    throw(new UnsupportedOperationException("storing in not "+
+    throw(new UnsupportedOperationException("storing is not "+
                                             "supported by this"+
                                             "Resources class"));
   }

@@ -242,8 +242,21 @@ public class MultiMapLayer extends Layer
           fireStatusUpdate(LayerStatusEvent.START_WORKING);
           Projection projection = getProjection();
               // find out, which images are really visible:
-          Collection visible_images = map_manager_.getAllVisibleImages(projection,
-                                                                       visible_map_scale_factor_);
+          Collection visible_images;
+          double tmp_visible_map_scale_factor = visible_map_scale_factor_;
+              // Which maps are available for the given scale (do not
+              // show maps with a scale much smaller than the scale of
+              // the used projection, as they would be very small and
+              // unreadable). Before we do not see any maps at all,
+              // display smaller maps as well:
+          do
+          {
+            visible_images = map_manager_.getAllVisibleImages(projection,
+                                                              tmp_visible_map_scale_factor);
+            tmp_visible_map_scale_factor /= 2.0;
+          }
+          while((visible_images.size() == 0) && (tmp_visible_map_scale_factor > 0.001));
+
 //          System.out.println("MultiMap: visible maps are: "+visible_images);
               // find out, which images (and which areas of them) are really visible:
           worker_visible_images_ = VisibleImage.findVisibleImages(0,projection.getWidth(),

@@ -41,6 +41,7 @@ public class GeoMath
   static final public double M_PER_RADIAN = CIRCUMFERENCE_EQUATOR / (2 * Math.PI);  
 
   static final double EPSILON = 1E-20;
+  static final double EQUAL_EPSILON = 1E-10;
 
   
 //----------------------------------------------------------------------
@@ -169,11 +170,11 @@ public class GeoMath
  *
  * @param a double
  * @param b double
- * @return true if Math.abs(a-b) <= EPSILON, false otherwise.
+ * @return true if Math.abs(a-b) <= EQUAL_EPSILON, false otherwise.
  */
   public static boolean approximatelyEqual(double a, double b)
   {
-    return(approximatelyEqual(a,b,EPSILON));
+    return(approximatelyEqual(a,b,EQUAL_EPSILON));
   }
 
 //----------------------------------------------------------------------

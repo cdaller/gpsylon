@@ -90,6 +90,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected GarminPVT result_pvt_;
   protected GarminFlashInfo result_flash_info_;
   protected BufferedImage result_screenshot_;
+  protected long result_serial_number_;
   protected GarminFile result_file_;
   protected Object waypoint_sync_request_lock_ = new Object();
   protected Object track_sync_request_lock_ = new Object();
@@ -97,6 +98,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected Object pvt_sync_request_lock_ = new Object();
   protected Object product_info_lock_ = new Object();
   protected Object screenshot_sync_request_lock_ = new Object();
+  protected Object serial_number_sync_request_lock_ = new Object();
   protected Object flash_info_sync_request_lock_ = new Object();
   protected Object file_sync_request_lock_ = new Object();
 
@@ -471,17 +473,27 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public String[] getGPSInfo()
   {
     String name = product_info_.getProductName()
-                  +" ("+product_info_.getProductId()
-                  +") V"+product_info_.getProductSoftware();
+                  +" (id="+product_info_.getProductId()
+                  +") V"+(product_info_.getProductSoftware()/100.0);
     Vector capabilities = capabilities_.getProductCapabilities();
-    StringBuffer capabilities_string = new StringBuffer();
+    StringBuffer capabilities_string = new StringBuffer("Supported Formats: ");
     for(int index=0; index < capabilities.size()-1; index++)
     {
       capabilities_string.append(capabilities.get(index)).append(", ");
     }
         // add last:
     capabilities_string.append(capabilities.get(capabilities.size()-1));
-    String[] info = new String[] {name, capabilities_string.toString()};
+		long serial_number = -1;
+		try
+		{
+			serial_number = getSerialNumber();
+		}
+		catch(GPSException e)
+		{
+			e.printStackTrace();
+		}
+		String ser_num_str = "Serial Nr. "+serial_number;
+    String[] info = new String[] {name, capabilities_string.toString(),ser_num_str};
     return(info);
   }
 
@@ -823,6 +835,30 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     }
   }
 
+
+//--------------------------------------------------------------------------------
+/**
+ * Get the serial number of the gpsdevice. This call blocks until
+ * something is received!
+ * @return serial number of the gps device
+ *
+ * @throws UnsupportedOperationException if the operation is not
+ * supported by the gps device or by the protocol used.
+ * @throws GPSException if the operation threw an exception
+ * (e.g. communication problem).
+ */
+	public long getSerialNumber()
+		throws GPSException
+	{
+    try
+    {
+      return(getSerialNumber(0L));
+    }
+    catch(IOException ioe)
+    {
+      throw new GPSException(ioe);
+    }
+	}
 
 //----------------------------------------------------------------------
 // Other methods
@@ -1382,6 +1418,31 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
 //----------------------------------------------------------------------
 /**
+ * Returns the serial number of the gps device. This method
+ * blocks until the tracks are read or the timeout (in milliseconds)
+ * is reached.
+ *
+ * @param timeout in milliseconds or 0 to wait forever.
+ * @return the serial number of the device or -1  if the timeout was reached.
+ */
+  public long getSerialNumber(long timeout)
+    throws IOException
+  {
+    synchronized(serial_number_sync_request_lock_)
+    {
+      result_serial_number_ = -1;
+      requestSerialNumber();
+      try
+      {
+        serial_number_sync_request_lock_.wait(timeout);
+      }
+      catch(InterruptedException ignore){}
+    }
+    return(result_serial_number_);
+  }
+
+//----------------------------------------------------------------------
+/**
  * Returns all available waypoints from the gps device. This method
  * blocks until the waipoints are read or the timeout (in milliseconds)
  * is reached.
@@ -1583,6 +1644,21 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 	{
 		waitTillReady();
 		sendCommandAsync(Pid_Command_Data_L001, Cmnd_Transfer_Voltage_A010);
+	}
+
+//----------------------------------------------------------------------
+/**
+ * Request the serial number from the gps device. This method is non blocking
+ * and returns immediately after the acknowledge was received.
+ */
+	public void requestSerialNumber()
+		throws IOException
+	{
+		waitTillReady();
+		if(capabilities_.hasCapability("L1"))
+			sendCommandAsync(Pid_Command_Data_L001,Cmnd_Transfer_SerialNr);
+		else
+			sendCommandAsync(Pid_Command_Data_L002,Cmnd_Transfer_SerialNr);
 	}
 
 //----------------------------------------------------------------------
@@ -1879,8 +1955,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //----------------------------------------------------------------------
 /**
  * Method called out of the thread that reads the information from the
- * gps device when route packages were sent.
- */
+ * gps device when route packages were sent. 
+ * @param routes list of route packages
+*/
   protected void fireRoutesReceived(Vector routes)
   {
         // if a snychronous call was made, notify the thread for the results
@@ -1897,6 +1974,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Method called out of the thread that reads the information from the
  * gps device when track packages were sent.
+ * @param tracks list of waypoint packages
  */
   protected void fireTracksReceived(Vector tracks)
   {
@@ -1914,6 +1992,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Method called out of the thread that reads the information from the
  * gps device when waypoint packages were sent.
+ * @param waypoints list of waypoint packages
  */
   protected void fireWaypointsReceived(List waypoints)
   {
@@ -1942,6 +2021,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Method called out of the thread that reads the information from the
  * gps device when product data package was sent.
+ * @param product package
  */
   protected void fireProductDataReceived(GarminProduct product)
   {
@@ -1954,7 +2034,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Method called out of the thread that reads the information from the
  * gps device when protocol array (capabilities) package was sent.
- */
+ * @param capabilities capabilities package
+ */ 
   protected void fireProtocolArrayReceived(GarminCapabilities capabilities)
   {
     synchronized(product_info_lock_)
@@ -1970,6 +2051,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Method called out of the thread that reads the information from the
  * gps device when PVT (position, velocity, ...) package was sent.
+ * @param pvt pvt package
  */
   protected void firePVTDataReceived(GarminPVT pvt)
   {
@@ -1996,6 +2078,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 /**
  * Method called out of the thread that reads the information from the
  * gps device when display data was sent.
+ * @param display_data the display data package
  */
   protected void fireDisplayDataReceived(GarminDisplayData display_data)
   {
@@ -2012,7 +2095,26 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 //----------------------------------------------------------------------
 /**
  * Method called out of the thread that reads the information from the
+ * gps device when serial number data was sent.
+ * @param serial_number the serial number
+ */
+  protected void fireSerialNumberReceived(long serial_number)
+  {
+    if(Debug.DEBUG)
+      Debug.println("gps_garmin","serial number received: "+serial_number);
+
+    synchronized(serial_number_sync_request_lock_)
+    {
+      result_serial_number_ = serial_number;
+      serial_number_sync_request_lock_.notify();
+    }
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Method called out of the thread that reads the information from the
  * gps device when display data was sent.
+ * @param flash_info the flash info package
  */
   protected void fireFlashInfoReceived(GarminFlashInfo flash_info)
   {
@@ -2032,6 +2134,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  * Method called out of the thread that reads the information from the gps
  * device when file not exist package was sent. Sets the
  * <code>result_file</code> to null.
+ * @param file_not_found a garmin package indicating file not found.
  */
   protected void fireFileNotFoundReceived(GarminPackage file_not_found)
   {
@@ -2509,8 +2612,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 			System.out.println("Voltage package received - not handled yet!");
 			break;
 		case Pid_Serial_Number:
-			System.out.println("Serial Number package received - not really handled yet!");
-//			System.out.println("Serial Number: "+garmin_package.getLong(0)); // ?????? correct????
+			fireSerialNumberReceived(garmin_package.getNextAsLong());
+// 			System.out.println("Serial Number package received - not really handled yet!");
+// 			System.out.println("Serial Number: "+garmin_package.getLong(0));
 			break;
     default:
       System.err.println("WARNING GPSGarminDataProcessor: unknown package id: "

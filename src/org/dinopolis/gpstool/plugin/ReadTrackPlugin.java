@@ -25,7 +25,7 @@ package org.dinopolis.gpstool.plugin;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.dinopolis.gpstool.gui.layer.track.Track;
+import org.dinopolis.gpstool.track.Track;
 
 //----------------------------------------------------------------------
 /**

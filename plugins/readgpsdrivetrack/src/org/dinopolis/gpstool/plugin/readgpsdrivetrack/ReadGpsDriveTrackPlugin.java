@@ -23,26 +23,27 @@
 
 package org.dinopolis.gpstool.plugin.readgpsdrivetrack;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import org.dinopolis.gpstool.gui.layer.track.Track;
-import org.dinopolis.gpstool.gui.layer.track.TrackPoint;
-import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.util.Resources;
-import org.dinopolis.util.Debug;
 import java.text.MessageFormat;
 import java.text.ParseException;
-import org.dinopolis.gpstool.gui.layer.TrackLayer;
-import java.util.Locale;
-import java.util.Date;
-import java.util.NoSuchElementException;
-import java.text.SimpleDateFormat;
-import java.util.StringTokenizer;
 import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+import org.dinopolis.gpstool.GPSMapKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
+import org.dinopolis.gpstool.track.Track;
+import org.dinopolis.gpstool.track.TrackImpl;
+import org.dinopolis.gpstool.track.Trackpoint;
+import org.dinopolis.gpstool.track.TrackpointImpl;
+import org.dinopolis.util.Debug;
+import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
 /**
@@ -148,10 +149,11 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
     {
       BufferedReader track_in = new BufferedReader(new InputStreamReader(in));
 
-      Track track = new Track();
+      Track track = new TrackImpl();
       StringTokenizer tokenizer;
       SimpleDateFormat date_format = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy",Locale.US);
       String line;
+      boolean new_segment = true;
       while((line = track_in.readLine()) != null)
       {
         linenumber++;
@@ -160,7 +162,11 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
           tokenizer = new StringTokenizer(line," ");
           
           float latitude = Float.parseFloat(tokenizer.nextToken());
-          if(latitude != 1001.0f)  // 1001 means invalid position
+          if(latitude == 1001.0f)  // 1001 means invalid position
+          {
+            new_segment = true;
+          }
+          else
           {
             float longitude = Float.parseFloat(tokenizer.nextToken()); 
             float altitude = Integer.parseInt(tokenizer.nextToken());
@@ -168,9 +174,14 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
             String first_date_token = tokenizer.nextToken();
             Date date = date_format.parse(line,new ParsePosition(line.indexOf(first_date_token)));
             
-                // TODO: calculate speed
-            TrackPoint info = new TrackPoint(latitude,longitude,altitude,0.0f,date);
-            track.add(info);
+            Trackpoint point = new TrackpointImpl();
+            point.setDate(date);
+            point.setLongitude(longitude);
+            point.setLatitude(latitude);
+            point.setAltitude(altitude);
+            point.setNewTrack(new_segment);
+            track.addWaypoint(point);
+            new_segment = false;
           }
         }
       }
@@ -179,6 +190,10 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
         Debug.println("read_track","finished loading gpsdrive track");
       
       track_in.close();
+      Date first_date = ((Trackpoint)track.getWaypoint(0)).getDate();
+      SimpleDateFormat track_date_format = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
+      track.setIdentification(track_date_format.format(first_date));
+      track.setComment("track created by gpsdrive");
       return(new Track[] {track});
     }
     catch(NumberFormatException nfe)

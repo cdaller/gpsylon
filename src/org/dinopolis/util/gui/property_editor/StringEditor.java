@@ -177,11 +177,11 @@ public class StringEditor extends PropertyEditorSupport
   protected void setValue()
   {
     String text = text_field_.getText();
-    if (text.length() <= 0)
-    {
-      setValue(null);
-      return;
-    }
+//     if (text.length() <= 0)
+//     {
+//       setValue(null);
+//       return;
+//     }
     setValue(text);
   }
 }

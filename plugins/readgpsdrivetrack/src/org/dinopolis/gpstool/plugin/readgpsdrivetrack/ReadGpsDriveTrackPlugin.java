@@ -76,9 +76,9 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
   public static final String KEY_READGPSDRIVETRACK_PLUGIN_VERSION = "readgpsdrivetrack.plugin.version";
   public static final String KEY_READGPSDRIVETRACK_PLUGIN_NAME = "readgpsdrivetrack.plugin.name";
   public static final String KEY_READGPSDRIVETRACK_PLUGIN_DESCRIPTION = "readgpsdrivetrack.plugin.description";
-  public static final String KEY_READGPSDRIVETRACK_FILE_DATEFORMAT  = "readgpsdrivetrack.file.dateformat ";
-  public static final String KEY_READGPSDRIVETRACK_FILE_EXTENSION  = "readgpsdrivetrack.file.extension ";
-  public static final String KEY_READGPSDRIVETRACK_FILE_DESCRIPTIVE_NAME  = "readgpsdrivetrack.file.descriptive_name ";
+  public static final String KEY_READGPSDRIVETRACK_FILE_DATEFORMAT  = "readgpsdrivetrack.file.dateformat";
+  public static final String KEY_READGPSDRIVETRACK_FILE_EXTENSION  = "readgpsdrivetrack.file.extension";
+  public static final String KEY_READGPSDRIVETRACK_FILE_DESCRIPTIVE_NAME  = "readgpsdrivetrack.file.descriptive_name";
 
   public ReadGpsDriveTrackPlugin()
   {

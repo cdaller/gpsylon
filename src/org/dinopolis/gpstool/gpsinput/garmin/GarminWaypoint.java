@@ -27,6 +27,8 @@ import java.awt.Color;
 
 //----------------------------------------------------------------------
 /**
+ * Interface representing the basic functions of Garmin waypoints.
+ *
  * @author Christof Dallermassl
  * @version $Revision$
  */

@@ -25,6 +25,9 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 //----------------------------------------------------------------------
 /**
+ * This class holds information concerning the Garmin device connected
+ * to the serial port.
+ *
  * @author Christof Dallermassl
  * @version $Revision$
  */

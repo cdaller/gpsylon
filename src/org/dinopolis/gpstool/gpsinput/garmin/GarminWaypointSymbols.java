@@ -27,6 +27,9 @@ import java.util.TreeMap;
 
 //----------------------------------------------------------------------
 /**
+ * This class contains information on all possible waypoint types due to
+ * Garmin specification.
+ *
  * @author Christof Dallermassl
  * @version $Revision$
  */

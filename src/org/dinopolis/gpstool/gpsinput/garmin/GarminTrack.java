@@ -90,8 +90,7 @@ public class GarminTrack extends GarminRoute implements GPSTrack
 
 //--------------------------------------------------------------------------------
 /**
- * Define the color of the current track. See {@link
- * GarminDaypointD108} for colors.
+ * Define the color of the current track. See {@link GarminWaypointD108} for colors.
  *
  * @param color Color of the current track.
  */

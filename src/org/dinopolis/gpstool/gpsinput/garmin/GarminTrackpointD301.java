@@ -28,6 +28,8 @@ import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 
 //----------------------------------------------------------------------
 /**
+ * This class represents packages in Garmin data format D301.
+ *
  * @author Sandra Brueckler, Stefan Feitl
  * @version $Revision$
  */
@@ -85,7 +87,7 @@ public class GarminTrackpointD301 implements GarminTrackpoint
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link GarminPackage}
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
  * @return GarminPackage representing content of data type.
  */
   public GarminPackage toGarminPackage(int package_id)

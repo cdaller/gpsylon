@@ -27,6 +27,8 @@ import org.dinopolis.gpstool.gpsinput.GPSTrack;
 
 //----------------------------------------------------------------------
 /**
+ * This class represents packages in Garmin data format D310.
+ *
  * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
  */
@@ -81,7 +83,7 @@ public class GarminTrackD310 extends GarminTrack
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link GarminPackage}.
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}.
  *
  * @param package_id the id to put in the garmin package.
  * @return GarminPackage representing content of data type.

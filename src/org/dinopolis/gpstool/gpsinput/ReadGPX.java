@@ -22,12 +22,6 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-//----------------------------------------------------------------------
-/**
- * @author Stefan Feitl
- * @version $Revision 1.3$
- */
-
 import java.io.InputStream;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -43,12 +37,22 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import org.dinopolis.util.Debug;
 
+//----------------------------------------------------------------------
+/**
+ * This class is able to read a file in GPX-Format and return the data
+ * contained in this file in an appropriate data format for the GPSTool.
+ *
+ * @author Stefan Feitl
+ * @version $Revision 1.5$
+ */
+
 public class ReadGPX 
 {
   protected Vector routes_ = new Vector();
   protected Vector tracks_ = new Vector();
   protected Vector waypoints_ = new Vector();
   protected SimpleDateFormat date_format_ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+  private ParsePosition dummy_position_ = new ParsePosition(0);
 
   public ReadGPX()
   {
@@ -187,10 +191,10 @@ public class ReadGPX
  */
     public void startElement(String uri, String localName, String qName, Attributes attributes)
     {
-          //      System.out.println("StartElement: uri="+uri+" localName="+localName+" qName="+qName+" attributes="+attributes);
+      //      System.out.println("StartElement: uri="+uri+" localName="+localName+" qName="+qName+" attributes="+attributes);
 
-          // ------ GENERAL ------
-          // Check if input-file is a GPX file
+      // ------ GENERAL ------
+      // Check if input-file is a GPX file
       if (check_gpx_ && !qName.equals("gpx"))
       {
         System.err.println("ERROR: Source file is no valid GPX file!\nPlease check the filename and try again.");
@@ -200,8 +204,8 @@ public class ReadGPX
         check_gpx_ = false;
 
 
-          // ------ ROUTES ------
-          // Beginning of a new route
+      // ------ ROUTES ------
+      // Beginning of a new route
       if (qName.equals("rte"))
       {
         is_route_ = true;
@@ -209,43 +213,43 @@ public class ReadGPX
         routes_.addElement(new RouteImpl());
       }
 
-          // Beginning of a new route point
+      // Beginning of a new route point
       if (qName.equals("rtept") && is_route_)
       {
         is_route_point_ = true;
         actual_rtept_ = new WaypointImpl();
 
-            // Set identification of actual route point to route_point_index_
-            // Identification may be given by an extra tag or even not
+	// Set identification of actual route point to route_point_index_
+	// Identification may be given by an extra tag or even not
         actual_rtept_.setIdentification(String.valueOf(route_point_index_));
 
-            // Set latitude of actual route point
+	// Set latitude of actual route point
         if (attributes.getValue("lat")!=null)
           actual_rtept_.setLatitude(new Double(attributes.getValue("lat")).doubleValue());
         else
           actual_rtept_.setLatitude(Double.NaN);
 
-            // Set longitude of actual route point
+	// Set longitude of actual route point
         if (attributes.getValue("lon")!=null)
           actual_rtept_.setLongitude(new Double(attributes.getValue("lon")).doubleValue());
         else
           actual_rtept_.setLongitude(Double.NaN);
 
-            // Set altitude of actual route point to NaN
-            // Elevation may be given by an extra tag or even not
+	// Set altitude of actual route point to NaN
+	// Elevation may be given by an extra tag or even not
         actual_rtept_.setAltitude(Double.NaN);
 
-            // Set symbol name of route point to default (wpt_dot)
+	// Set symbol name of route point to default (wpt_dot)
         actual_rtept_.setSymbolName("wpt_dot");
 
-            // Debug
+	// Debug
         if(Debug.DEBUG)
           Debug.println("readgpx"," Added Rtept: lat-"+actual_rtept_.getLatitude()+", lon-"+actual_rtept_.getLongitude());
       }
 
 
-          // ------ TRACKS ------
-          // Beginning of a new track
+      // ------ TRACKS ------
+      // Beginning of a new track
       if (qName.equals("trk"))
       {
         is_track_ = true;
@@ -253,35 +257,35 @@ public class ReadGPX
         tracks_.addElement(new TrackImpl());
       }
 
-          // Beginning of a new track segment
+      // Beginning of a new track segment
       if (qName.equals("trkseg") && is_track_)
         is_track_segment_ = true;
 
-          // Beginning of a new track point
+      // Beginning of a new track point
       if (qName.equals("trkpt") && is_track_)
       {
         is_track_point_ = true;
         actual_trkpt_ = new TrackpointImpl();
 
-            // Set identification of actual trackpoint
+	// Set identification of actual trackpoint
         if (attributes.getValue("")!=null)
           actual_trkpt_.setIdentification(attributes.getValue(""));
         else
           actual_trkpt_.setIdentification(String.valueOf(track_point_index_));
 
-            // Set latitude of actual track point
+	// Set latitude of actual track point
         if (attributes.getValue("lat")!=null)
           actual_trkpt_.setLatitude(new Double(attributes.getValue("lat")).doubleValue());
         else
           actual_trkpt_.setLatitude(Double.NaN);
 
-            // Set longitude of actual track point
+	// Set longitude of actual track point
         if (attributes.getValue("lon")!=null)
           actual_trkpt_.setLongitude(new Double(attributes.getValue("lon")).doubleValue());
         else
           actual_trkpt_.setLongitude(Double.NaN);
 
-            // Set indicator for a new track segment
+	// Set indicator for a new track segment
         if (is_track_segment_)
         {
           actual_trkpt_.setNewTrack(true);
@@ -290,55 +294,55 @@ public class ReadGPX
         else
           actual_trkpt_.setNewTrack(false);
 
-            // Set altitude of actual track point to NaN
-            // Elevation may be given by an extra tag or even not
+	// Set altitude of actual track point to NaN
+	// Elevation may be given by an extra tag or even not
         actual_trkpt_.setAltitude(Double.NaN);
 
-            // Set date of track point to null
-            // Date may be given by an extra tag or even not
+	// Set date of track point to null
+	// Date may be given by an extra tag or even not
         actual_trkpt_.setDate(null);
 
-            // Debug
+	// Debug
         if(Debug.DEBUG)
           Debug.println("readgpx"," Added Trkpt: lat="+actual_trkpt_.getLatitude()+", lon="+actual_trkpt_.getLongitude());
       }
 
-          // ------ WAYPOINTS ------
-          // Beginning of a new waypoint
+      // ------ WAYPOINTS ------
+      // Beginning of a new waypoint
       if (qName.equals("wpt"))
       {
         is_waypoint_ = true;
         actual_waypt_ = new WaypointImpl();
 
-            // Set identification of actual waypoint to null
-            // Identification may be given by an extra tag or even not
+	// Set identification of actual waypoint to null
+	// Identification may be given by an extra tag or even not
         actual_waypt_.setIdentification(null);
 
-            // Set comment of actual waypoint to null
-            // Comment may be given by an extra tag or even not
+	// Set comment of actual waypoint to null
+	// Comment may be given by an extra tag or even not
         actual_waypt_.setComment(null);
 
-            // Set latitude of actual waypoint
+	// Set latitude of actual waypoint
         if (attributes.getValue("lat")!=null)
           actual_waypt_.setLatitude(new Double(attributes.getValue("lat")).doubleValue());
         else
           actual_waypt_.setLatitude(Double.NaN);
 
-            // Set longitude of actual waypoint
+	// Set longitude of actual waypoint
         if (attributes.getValue("lon")!=null)
           actual_waypt_.setLongitude(new Double(attributes.getValue("lon")).doubleValue());
         else
           actual_waypt_.setLongitude(Double.NaN);
 
-            // Set altitude of actual waypoint to NaN
-            // Elevation may be given by an extra tag or even not
+	// Set altitude of actual waypoint to NaN
+	// Elevation may be given by an extra tag or even not
         actual_waypt_.setAltitude(Double.NaN);
 
-            // Set symbol name of waypoint to default (wpt_dot)
-            // Specific symbol name may be given by an extra tag or even not
+	// Set symbol name of waypoint to default (wpt_dot)
+	// Specific symbol name may be given by an extra tag or even not
         actual_waypt_.setSymbolName("wpt_dot");
 
-            // Debug
+	// Debug
         if(Debug.DEBUG)
           Debug.println("readgpx","Added Waypt: lat-"+actual_waypt_.getLatitude()+", lon-"+actual_waypt_.getLongitude());
       }
@@ -350,11 +354,11 @@ public class ReadGPX
  */
     public void endElement(String uri, String localName, String qName)
     {
-//      if(Debug.DEBUG)
-            //      Debug.println("readgpx","EndElement: uri="+uri+" localName="+localName+" qName="+qName);
+      //      if(Debug.DEBUG)
+      //      Debug.println("readgpx","EndElement: uri="+uri+" localName="+localName+" qName="+qName);
 
-          // ------ GENERAL ------
-          // Ending of identification of route (point) / track / waypoint
+      // ------ GENERAL ------
+      // Ending of identification of route (point) / track / waypoint
       if (qName.equals("name") && (is_route_ || is_track_ || is_waypoint_))
       {
         String chars = characters_.toString();
@@ -367,8 +371,7 @@ public class ReadGPX
           RouteImpl actual_rte = (RouteImpl)(routes_.get(route_number_));
           actual_rte.setIdentification(chars);
 
-              // Debug
-//          actual_rte = (RouteImpl)(routes_.get(route_number_));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","Rte-Name: "+actual_rte.getIdentification());
         }
@@ -376,7 +379,7 @@ public class ReadGPX
         {
           actual_rtept_.setIdentification(chars);
 
-              // Debug
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","  Rtept-Name: "+actual_rtept_.getIdentification());
         }
@@ -385,24 +388,21 @@ public class ReadGPX
           TrackImpl actual_trk = (TrackImpl)(tracks_.get(track_number_));
           actual_trk.setIdentification(chars);
 
-              // Debug
-//          actual_trk = (TrackImpl)(tracks_.get(track_number_));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","Trk-Name: "+actual_trk.getIdentification());
         }
         else if (is_waypoint_)
         {
-              //          WaypointImpl actual = (WaypointImpl)(waypoints_.get(waypoint_number_));
           actual_waypt_.setIdentification(chars);
 
-              // Debug
-              //actual = (WaypointImpl)(waypoints_.get(waypoint_number_));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","Wpt-Name: "+actual_waypt_.getIdentification());
         }
       }
 
-          // Ending of description of route (point) / track / waypoint
+      // Ending of description of route (point) / track / waypoint
       if (qName.equals("desc") && (is_route_ || is_track_ || is_waypoint_))
       {
         String chars = characters_.toString();
@@ -415,8 +415,7 @@ public class ReadGPX
           RouteImpl actual_rte = (RouteImpl)(routes_.get(route_number_));
           actual_rte.setComment(chars);
 
-              // Debug
-//          actual_rte = (RouteImpl)(routes_.get(route_number_));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","Rte-Desc: "+actual_rte.getComment());
         }
@@ -424,7 +423,7 @@ public class ReadGPX
         {
           actual_rtept_.setComment(chars);
 
-              // Debug
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","  Rtept-Desc: "+actual_rtept_.getComment());
         }
@@ -433,107 +432,82 @@ public class ReadGPX
           TrackImpl actual_trk = (TrackImpl)(tracks_.get(track_number_));
           actual_trk.setComment(chars);
 
-              // Debug
-//          actual_trk = (TrackImpl)(tracks_.get(track_number_));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","Trk-Desc: "+actual_trk.getComment());
         }
         else if (is_waypoint_)
         {
-              //          WaypointImpl actual = (WaypointImpl)(waypoints_.get(waypoint_number_));
           actual_waypt_.setComment(chars);
 
-              // Debug
-              //          actual = (WaypointImpl)(waypoints_.get(waypoint_number_));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","Wpt-Desc: "+actual_waypt_.getComment());
         }
       }
 
-          // Ending of elevation of route point / track point / waypoint
+      // Ending of elevation of route point / track point / waypoint
       if (qName.equals("ele") && ((is_route_ && is_route_point_) || (is_track_ && is_track_point_) || is_waypoint_))
       {
         if (is_route_)
         {
-              //          RouteImpl rte = (RouteImpl)(routes_.get(route_number_));
-              //          actual_rtept_ = (WaypointImpl)(rte.getWaypoint(routePoint));
           actual_rtept_.setAltitude(new Double(characters_.toString()).doubleValue());
-              //          rte.addWaypoint(routePoint,actual);
 
-              // Debug
-              //          actual = (WaypointImpl)(routes_.get(route_number_));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","  Rtept-Ele: "+actual_rtept_.getAltitude());
         }
         else if (is_track_)
         {
-              //TrackImpl trk = (TrackImpl)(tracks_.get(track_number_));
-              //TrackpointImpl actual = (TrackpointImpl)(trk.getWaypoint(trackPoint));
           actual_trkpt_.setAltitude(new Double(characters_.toString()).doubleValue());
-              //trk.addWaypoint(trackPoint,actual);
 
-              // Debug
-              //trk = (TrackImpl)(tracks_.get(track_number_));
-              //actual = (TrackpointImpl)(trk.getWaypoint(trackPoint));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx","  Trkpt-Ele: "+actual_trkpt_.getAltitude());
         }
         else if (is_waypoint_)
         {
-              //WaypointImpl actual = (WaypointImpl)(waypoints_.get(waypoint_number_));
           actual_waypt_.setAltitude(new Double(characters_.toString()).doubleValue());
-              //waypoints_.setElementAt(actual,waypoint_number_);
 
-              // Debug
-              //actual = (WaypointImpl)(waypoints_.get(waypoint_number_));
+	  // Debug
           if(Debug.DEBUG)
             Debug.println("readgpx"," Waypt-Ele: "+actual_waypt_.getAltitude());
         }
       }
 
-          // Ending of time information of track point
+      // Ending of time information of track point
       if (qName.equals("time") && (is_track_ && is_track_point_))
       {
-            //TrackImpl trk = (TrackImpl)(tracks_.get(track_number_));
-            //TrackpointImpl actual = (TrackpointImpl)(trk.getWaypoint(trackPoint));
+        actual_trkpt_.setDate(date_format_.parse(characters_.toString(),dummy_position_));
 
-        actual_trkpt_.setDate(date_format_.parse(characters_.toString(),new ParsePosition(0)));
-
-            //trk.addWaypoint(trackPoint,actual);
-
-            // Debug
-            //trk = (TrackImpl)(tracks_.get(track_number_));
-            //actual = (TrackpointImpl)(trk.getWaypoint(trackPoint));
+	// Debug
         if(Debug.DEBUG)
           Debug.println("readgpx","  Trkpt-Time: "+actual_trkpt_.getDate());
       }
 
-          // Ending of symbol name of waypoint
+      // Ending of symbol name of waypoint
       if (qName.equals("sym") && is_waypoint_)
       {
-            // WaypointImpl actual = (WaypointImpl)(waypoints_.get(waypoint_number_));
         actual_waypt_.setSymbolName(characters_.toString());
-            //waypoints_.setElementAt(actual,waypoint_number_);
 
-            // Debug
-            //actual = (WaypointImpl)(waypoints_.get(waypoint_number_));
+	// Debug
         if(Debug.DEBUG)
           Debug.println("readgpx"," Waypt-Sym: "+actual_waypt_.getSymbolName());
       }
 
-          // Remove unhandled tag data information
+      // Remove unhandled tag data information
       characters_ = null;
 
 
-          // ------ ROUTES ------
-          // Ending of a route
+      // ------ ROUTES ------
+      // Ending of a route
       if (qName.equals("rte"))
       {
         is_route_ = false;
         route_number_++;
       }
 
-          // Ending of a route point
+      // Ending of a route point
       if (qName.equals("rtept"))
       {
         ((RouteImpl)routes_.get(route_number_)).addWaypoint(actual_rtept_);
@@ -542,19 +516,19 @@ public class ReadGPX
       }
 
 
-          // ------ TRACKS ------
-          // Ending of a track
+      // ------ TRACKS ------
+      // Ending of a track
       if (qName.equals("trk"))
       {
         is_track_ = false;
         track_number_++;
       }
 
-          // Ending of a track segment
+      // Ending of a track segment
       if (qName.equals("trkseg"))
         is_track_segment_ = false;
 
-          // Ending of a track point
+      // Ending of a track point
       if (qName.equals("trkpt"))
       {
         ((TrackImpl)tracks_.get(track_number_)).addWaypoint(actual_trkpt_);
@@ -562,8 +536,8 @@ public class ReadGPX
         track_point_index_++;
       }
 
-          // ------ WAYPOINTS ------
-          // Ending of a waypoint
+      // ------ WAYPOINTS ------
+      // Ending of a waypoint
       if (qName.equals("wpt"))
       {
         waypoints_.addElement(actual_waypt_);
@@ -579,11 +553,10 @@ public class ReadGPX
     public void characters(char[] ch, int start, int length)
     {
       String chars = new String(ch,start,length).trim();
-//       if (chars.length() > 0)
-//      if(Debug.DEBUG)
+//       if (chars.length() > 0 && Debug.DEBUG)
 //         Debug.println("readgpx","characters: "+chars);
 
-          // Collect parsed values of tags
+      // Collect parsed values of tags
       if (chars.length() > 0)
       {
         if (characters_ == null)

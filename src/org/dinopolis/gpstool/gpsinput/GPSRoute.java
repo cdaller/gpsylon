@@ -29,8 +29,8 @@ import java.util.List;
 //----------------------------------------------------------------------
 /**
  * Describes a route of a gps device. A route consists only of a list
- * of {@link GPSWaypoints} and some information, how these waypoints are
- * connected (not implemented now).
+ * of {@link org.dinopolis.gpstool.gpsinput.GPSWaypoint} and some
+ * information, how these waypoints are connected (not implemented now).
  *
  * @author Christof Dallermassl
  * @version $Revision$

@@ -25,6 +25,8 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 //----------------------------------------------------------------------
 /**
+ * This class represents packages in Garmin data format D210.
+ *
  * @author Christof Dallermassl
  * @version $Revision$
  */
@@ -69,7 +71,7 @@ public class GarminRouteLinkD210
 
   //----------------------------------------------------------------------
 /**
- * Convert data type to {@link GarminPackage}
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
  * @return GarminPackage representing content of data type.
  */
   public GarminPackage toGarminPackage(int package_id)

@@ -24,10 +24,14 @@
 package org.dinopolis.gpstool.gpsinput.garmin;
 
 import java.awt.Color;
+import java.util.Map;
+import java.util.TreeMap;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 //----------------------------------------------------------------------
 /**
+ * This class represents packages in Garmin data format D108.
+ *
  * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
  */
@@ -83,23 +87,50 @@ public class GarminWaypointD108 implements GarminWaypoint
   protected final static String[] DISPLAY_OPTIONS =
     new String[] {"symbol+name","symbol","symbol+comment"};
 
-      // TODO mapping from names to values is wrong!!!!!! (see garmin specification, page 39)
-  protected final static String[] CLASS_NAMES =
-  new String[] {"user","aviation_airport","aviation_intersection", "aviation_NDB",
-                "aviation_VOR","aviation_airport_runway","aviation_airport_intersection",
-                "aviation_airport_NDB","map_point","map_area","map_intersection","map_address",
-                "map_label","map_line"};
+
+  protected static Map class_name_map_;
+
+//----------------------------------------------------------------------
+/**
+ * Static initializer.
+ */
+  static
+  {
+    class_name_map_ = new TreeMap();
+    class_name_map_.put(new Integer(0x00),"user");
+    class_name_map_.put(new Integer(0x40),"aviation_airport");
+    class_name_map_.put(new Integer(0x41),"aviation_intersection");
+    class_name_map_.put(new Integer(0x42),"aviation_NDB");
+    class_name_map_.put(new Integer(0x43),"aviation_VOR");
+    class_name_map_.put(new Integer(0x44),"aviation_airport_runway");
+    class_name_map_.put(new Integer(0x45),"aviation_airport_intersection");
+    class_name_map_.put(new Integer(0x46),"aviation_airport_NDB");
+    class_name_map_.put(new Integer(0x80),"map_point");
+    class_name_map_.put(new Integer(0x81),"map_area");
+    class_name_map_.put(new Integer(0x82),"map_intersection");
+    class_name_map_.put(new Integer(0x83),"map_address");
+    class_name_map_.put(new Integer(0x84),"map_label");
+    class_name_map_.put(new Integer(0x85),"map_line");
+  }
   
+//----------------------------------------------------------------------
+/**
+ * Default constructor
+ */
   public GarminWaypointD108()
   {
   }
 
+//----------------------------------------------------------------------
+/**
+ * Constructor using an int array buffer.
+ * @param buffer the buffer holding the information
+ */
   public GarminWaypointD108(int[] buffer)
   {
     class_type_ = GarminDataConverter.getGarminByte(buffer,2);
-    if(class_type_ < CLASS_NAMES.length)
-      class_name_ = CLASS_NAMES[class_type_];
-    else
+    class_name_ = (String)class_name_map_.get(new Integer(class_type_));
+    if(class_name_ == null)
       class_name_ = "unknown";
     color_index_ = GarminDataConverter.getGarminByte(buffer,3);
     if(color_index_ == 0xff)
@@ -137,14 +168,18 @@ public class GarminWaypointD108 implements GarminWaypoint
     offset = offset + cross_road_.length() + 1;
   }
 
+//----------------------------------------------------------------------
+/**
+ * Constructor using a GarminPackage.
+ * @param pack the package to use the data from.
+ */
   public GarminWaypointD108(GarminPackage pack)
   {
       //      System.out.println("Receiving D108: "+pack.getPackageSize());
 
     class_type_ = pack.getNextAsByte(); // 1 b
-    if(class_type_ < CLASS_NAMES.length)
-      class_name_ = CLASS_NAMES[class_type_];
-    else
+    class_name_ = (String)class_name_map_.get(new Integer(class_type_));
+    if(class_name_ == null)
       class_name_ = "unknown";
     color_index_ = pack.getNextAsByte(); // 1 b
     if(color_index_ == 0xff)
@@ -176,12 +211,16 @@ public class GarminWaypointD108 implements GarminWaypoint
     cross_road_ = pack.getNextAsString(51);
   }
 
+//----------------------------------------------------------------------
+/**
+ * Constructor using another waypoint.
+ * @param waypoint the waypoint to take the information from.
+ */
   GarminWaypointD108(GPSWaypoint waypoint)
   {
     class_type_ = 0;
-    if(class_type_ < CLASS_NAMES.length)
-      class_name_ = CLASS_NAMES[class_type_];
-    else
+    class_name_ = (String)class_name_map_.get(new Integer(class_type_));
+    if(class_name_ == null)
       class_name_ = "unknown";
     color_index_ = 0xff;
     if(color_index_ == 0xff)
@@ -229,7 +268,9 @@ public class GarminWaypointD108 implements GarminWaypoint
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link GarminPackage}
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
+ *
+ * @param package_id the id to use in the package.
  * @return GarminPackage representing content of data type.
  */
   public GarminPackage toGarminPackage(int package_id)

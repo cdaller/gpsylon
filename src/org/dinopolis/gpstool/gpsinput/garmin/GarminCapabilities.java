@@ -28,6 +28,9 @@ import java.util.Vector;
 
 //----------------------------------------------------------------------
 /**
+ * This class holds information concerning the capabilities of the
+ * Garmin device connected to the serial port.
+ *
  * @author Christof Dallermassl
  * @version $Revision$
  */

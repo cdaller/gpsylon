@@ -28,6 +28,8 @@ import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 //----------------------------------------------------------------------
 /**
+ * This class represents packages in Garmin data format D103.
+ *
  * @author Christof Dallermassl, Stefan Feitl
  * @version $Revision$
  */
@@ -119,7 +121,7 @@ public class GarminWaypointD103 implements GarminWaypoint
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link GarminPackage}
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
  * @return GarminPackage representing content of data type.
  */
   public GarminPackage toGarminPackage(int package_id)

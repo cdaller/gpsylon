@@ -25,10 +25,10 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 import org.dinopolis.gpstool.gpsinput.GPSRoute;
 
-
-
 //----------------------------------------------------------------------
 /**
+ * This class represents packages in Garmin data format D200.
+ *
  * @author Sandra Brueckler, Stefan Feitl
  * @version $Revision$
  */
@@ -55,7 +55,7 @@ public class GarminRouteD200 extends GarminRoute
 
 //----------------------------------------------------------------------
 /**
- * Convert data type to {@link GarminPackage}
+ * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPackage}
  * @return GarminPackage representing content of data type.
  */
   public GarminPackage toGarminPackage(int package_id)

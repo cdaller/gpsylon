@@ -25,6 +25,8 @@ package org.dinopolis.gpstool.gpsinput.garmin;
 
 //----------------------------------------------------------------------
 /**
+ * Interface representing the basic functions of Garmin trackpoints.
+ *
  * @author Sandra Brueckler, Stefan Feitl
  * @version $Revision$
  */

@@ -29,7 +29,8 @@ import java.util.Vector;
 
 //----------------------------------------------------------------------
 /**
- * An vector based implementation of the {@link GPSRoute}.
+ * An vector based implementation of the
+ * {@link org.dinopolis.gpstool.gpsinput.GPSRoute}.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -38,8 +39,8 @@ import java.util.Vector;
 public class GPSRouteImpl implements GPSRoute
 {
   protected Vector route_points_ = new Vector();
-  protected String identification_;
-  protected String comment_;
+  protected String identification_ = null;
+  protected String comment_ = null;
   protected Color color_;
   protected boolean display_;
 
@@ -128,8 +129,8 @@ public class GPSRouteImpl implements GPSRoute
 
 //--------------------------------------------------------------------------------
 /**
- * Define the color of the current track. See {@link
- * GarminDaypointD108} for colors.
+ * Define the color of the current track. See
+ * {@link org.dinopolis.gpstool.gpsinput.garmin.GarminWaypointD108} for colors.
  *
  * @param color Color of the current track.
  */

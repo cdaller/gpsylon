@@ -38,7 +38,7 @@ public class GarminFile
   {
     if(garmin_package.getPackageSize() != 4)
       throw new IllegalArgumentException("File Header has size != 4");
-    num_data_packages_ = garmin_package.getNextAsInt();
+    num_data_packages_ = garmin_package.getNextAsLongWord();
     data_ = new GarminPackage(0,0);
   }
 
@@ -68,20 +68,20 @@ public class GarminFile
 
 //----------------------------------------------------------------------
 /**
- * Get the next data value as int.
+ * Get the next data value as int (16bit, signed).
  * @return the next value as int
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
  */
-  public int getNextAsInt()
+  public int getNextAsSignedInt()
     throws IllegalStateException
   {
-    return(data_.getNextAsInt());
+    return(data_.getNextAsSignedInt());
   }
 
 //----------------------------------------------------------------------
 /**
- * Get the next data value as word.
+ * Get the next data value as word (16bit, unsigned).
  * @return the next value as word
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.

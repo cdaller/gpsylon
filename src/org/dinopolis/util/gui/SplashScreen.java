@@ -165,8 +165,7 @@ public class SplashScreen extends JWindow
       getContentPane().add(status_panel,BorderLayout.SOUTH);
     }
     pack();
-    Dimension screen_size =
-      Toolkit.getDefaultToolkit().getScreenSize();
+    Dimension screen_size = Toolkit.getDefaultToolkit().getScreenSize();
     Dimension label_size = getContentPane().getPreferredSize();
     setLocation(screen_size.width/2 - (label_size.width/2),
                 screen_size.height/2 - (label_size.height/2));
@@ -174,8 +173,7 @@ public class SplashScreen extends JWindow
       {
         public void mousePressed(MouseEvent e)
         {
-          setVisible(false);
-          dispose();
+          close();
         }
       });
 
@@ -183,8 +181,7 @@ public class SplashScreen extends JWindow
       {
         public void run()
         {
-          setVisible(false);
-          dispose();
+          close();
         }
       };
     final int display_millis_ = display_millis;
@@ -247,6 +244,17 @@ public class SplashScreen extends JWindow
   {
     if(progress_bar_ != null)
       progress_bar_.setValue(progress_value);
+  }
+
+
+  //----------------------------------------------------------------------
+  /**
+   * Close the splash screen and frees all resources.
+   */
+  public void close()
+  {
+    setVisible(false);
+    dispose();
   }
 
   //----------------------------------------------------------------------

@@ -83,7 +83,7 @@ public interface GPSMapKeyConstants
   public static final String KEY_FILE_LOCATION_DIR = "file.location.dir";
   public static final String KEY_FILE_LOCATION_FILENAME = "file.location.filename";
   public static final String KEY_FILE_PLUGIN_DIRS = "file.plugin.dirs";
-
+  public static final String KEY_FILE_MAP_DESCRIPTION_FILE_DETECT_CHANGES = "file.map.description_file_detect_changes";
   
       // proxy settings
   public static final String KEY_HTTP_PROXY_PREFIX = "http.proxy";

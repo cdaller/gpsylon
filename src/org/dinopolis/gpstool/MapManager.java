@@ -1,4 +1,4 @@
-/***********************************************************************
+/**********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
  *
  * Copyright (c) 2002 IICM, Graz University of Technology
@@ -22,6 +22,7 @@
 
 package org.dinopolis.gpstool;
 
+import com.bbn.openmap.proj.Projection;
 import java.awt.Frame;
 import java.awt.Point;
 import java.io.BufferedReader;
@@ -42,17 +43,15 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.Vector;
-
 import javax.swing.JOptionPane;
-
 import org.dinopolis.gpstool.event.MapsChangedEvent;
 import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.gui.util.ImageInfo;
 import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.gpstool.util.MapInfoScaleComparator;
 import org.dinopolis.util.Resources;
-
-import com.bbn.openmap.proj.Projection;
+import org.dinopolis.util.io.FileChangeDetection;
+import org.dinopolis.util.io.FileChangeListener;
 
 //----------------------------------------------------------------------
 /**
@@ -64,7 +63,7 @@ import com.bbn.openmap.proj.Projection;
  * @version $Revision$
  */
 
-public class MapManager implements MapManagerHook, GPSMapKeyConstants
+public class MapManager implements MapManagerHook, GPSMapKeyConstants, FileChangeListener
 {
 	/** in scale 1.0, mapblast images have 2817 pixels per meter */
 	public static float MAPBLAST_METERS_PER_PIXEL = 1.0f / 2817.947378f;
@@ -84,6 +83,9 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 	protected Object map_info_lock_ = new Object();
 	protected String maps_filename_;
 	protected boolean changed_ = false;
+
+  protected boolean detect_map_file_changes_;
+  protected boolean ignore_next_file_change_ = false;
 
 	//----------------------------------------------------------------------
 	/**
@@ -105,6 +107,8 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 			resources_.getString(KEY_FILE_MAP_DESCRIPTION_FILE);
 		maps_filename_ = FileUtil.getAbsolutePath(main_dir, description_filename);
 
+    detect_map_file_changes_ = resources.getBoolean(KEY_FILE_MAP_DESCRIPTION_FILE_DETECT_CHANGES);
+
 		synchronized (map_info_lock_)
 		{
 			try
@@ -116,6 +120,13 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 				ioe.printStackTrace();
 			}
 		}
+
+    if(detect_map_file_changes_)
+    {
+      FileChangeDetection change_detection = new FileChangeDetection(maps_filename_);
+      change_detection.addFileChangeListener(this);
+      change_detection.startChangeDetection();
+    }
 	}
 
 	//----------------------------------------------------------------------
@@ -164,6 +175,7 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 			new_map_filename = new_map_filename.substring(main_dir.length() + 1);
 		try
 		{
+      ignore_next_file_change_ = true;
 			map_writer = new BufferedWriter(new FileWriter(maps_filename, true));
 			// append mode
 
@@ -196,6 +208,7 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 
 			fireMapsChanged(
 				new MapsChangedEvent(this, map_info, MapsChangedEvent.MAP_ADDED));
+      ignore_next_file_change_ = true;
 		}
 		catch (IOException ioe)
 		{
@@ -640,4 +653,77 @@ public class MapManager implements MapManagerHook, GPSMapKeyConstants
 			listener.mapsChanged(event);
 		}
 	}
+
+
+	//----------------------------------------------------------------------
+	/**
+	 * FileChangeListener.fileChanged implementation. Checks for
+	 * added/removed maps in the map description file and fires the
+	 * events for them.
+	 *
+	 * @param file the file that changed
+	 */
+  public void fileChanged(File file)
+  {
+    if(ignore_next_file_change_)
+    {
+      ignore_next_file_change_ = false;
+      return;
+    }
+    System.out.println("File changed detected - reading changed map descriptions from "+file);
+
+    try
+    {
+      TreeSet new_map_infos = loadMapInfos(maps_filename_);
+          // find new maps:
+      Iterator iterator = new_map_infos.iterator();
+      MapInfo map_info;
+      synchronized(map_infos_)
+      {
+        while(iterator.hasNext())
+        {
+          map_info = (MapInfo)iterator.next();
+          if(!map_infos_.contains(map_info))
+          {
+            map_infos_.add(map_info);
+//            System.out.println("adding map "+map_info);
+            fireMapsChanged(new MapsChangedEvent(this, map_info, MapsChangedEvent.MAP_ADDED));
+          }
+        }
+            // check for maps that were removed:
+        iterator = map_infos_.iterator();
+        while(iterator.hasNext())
+        {
+          map_info = (MapInfo)iterator.next();
+//           System.out.println("checking map_info: "+map_info
+//                              +" available:"+new_map_infos.contains(map_info)
+//                              +" available orig:"+map_infos_.contains(map_info));
+          if(!new_map_infos.contains(map_info))
+          {
+            iterator.remove();
+//            System.out.println("removing map "+map_info);
+            fireMapsChanged(new MapsChangedEvent(this, map_info, MapsChangedEvent.MAP_REMOVED));
+          }
+        }
+      }
+    }
+    catch(IOException ioe)
+    {
+      ioe.printStackTrace();
+    }
+  }
+
+//   public static void main(String[] args)
+//     throws IOException
+//   {
+//     MapManager manager = new MapManager();
+//     TreeSet set = manager.loadMapInfos("/filer/cdaller/.gpsmap/maps.txt");
+//     Iterator iterator = set.iterator();
+//     while(iterator.hasNext())
+//     {
+//       MapInfo info = (MapInfo)iterator.next();
+//       System.out.println("info in set: "+info);
+//       System.out.println(set.contains(info));
+//     }
+//   }
 }

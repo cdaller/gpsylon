@@ -221,7 +221,7 @@ public class GarminDataConverter
  * @throws ArrayIndexOutOfBoundsException if the buffer size is too
  * small to hold the given data.
  */
-  public static int[]  setGarminByte(short byt, int[] buffer, int offset)
+  public static int[]  setGarminByte(int byt, int[] buffer, int offset)
   {
     buffer[offset] = (byt & 0xff);
     return(buffer);

@@ -67,23 +67,25 @@ The following targets are available:
 
 <!-- create a property holding the Class-Path for the manifest -->
     <path id="gpstool_plugin_trackchart.dist.classpath">
+      <pathelement location="${aux_dir}"/>
       <fileset dir="${lib_dir}">
         <patternset refid="gpstool_plugin_trackchart.lib.patternset"/>
       </fileset>
-      <pathelement location="${aux_dir}"/>
     </path>
 
     <pathconvert pathsep=" " dirsep="/" property="gpstool_plugin_trackchart.dist.lib.classpath"
                  refid="gpstool_plugin_trackchart.dist.classpath">
-<!--      <map from="${user.dir}/${lib_dir}" to="${lib_dir}"/> -->
+      <map from="${user.dir}${file.separator}plugins${file.separator}trackchart${file.separator}" to=""/> 
       <map from="${user.dir}${file.separator}" to=""/> 
     </pathconvert>
-<!--
+
+<!--    
     <echo>
       user dir: ${user.dir}
       path: ${gpstool_plugin_trackchart.dist.lib.classpath}
     </echo>
 -->
+
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
     <!-- properties files and the images ! -->
     <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
@@ -101,7 +103,7 @@ The following targets are available:
         </section>
       </manifest>
 
-      <fileset dir="${aux_dir}"/>
+      <fileset dir="${aux_dir}"/>  
       <fileset dir="${target_class_dir}"/>
       <fileset dir=".">
         <include name="META-INF/services/org.dinopolis.gpstool.*"/>

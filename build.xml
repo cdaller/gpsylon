@@ -37,7 +37,8 @@ Christof Dallermassl (christof@dallermassl.at)
     <patternset id="gpstool.lib.patternset">
       <include name="gnu-regexp-1.1.3.jar" />
       <include name="openmap.jar" />
-      <include name="comm.jar" />
+      <!--include name="comm.jar" /-->
+      <include name="RXTXcomm.jar" />
       <include name="hsqldb.jar" />
       <include name="mysql-connector-java-2.0.14-bin.jar" />
       <include name="pg73jdbc3.jar" />

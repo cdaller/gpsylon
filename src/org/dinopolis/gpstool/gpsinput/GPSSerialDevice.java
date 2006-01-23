@@ -27,11 +27,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
-import javax.comm.CommPortIdentifier;
-import javax.comm.SerialPort;
-import javax.comm.PortInUseException;
-import javax.comm.UnsupportedCommOperationException;
-import javax.comm.NoSuchPortException;
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
+import gnu.io.NoSuchPortException;
 
 // import gnu.io.SerialPortEventListener;
 // import gnu.io.CommPortIdentifier;

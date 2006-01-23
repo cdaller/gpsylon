@@ -24,7 +24,7 @@
 package org.dinopolis.gpstool.gpsinput;
 
 import java.util.*;
-import javax.comm.*;
+import gnu.io.*;
 
 public class SerialPortList
 {

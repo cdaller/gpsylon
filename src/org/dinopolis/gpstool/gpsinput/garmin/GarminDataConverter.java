@@ -48,7 +48,7 @@ public class GarminDataConverter
 
   static
   {
-		 TimeZone timezone = TimeZone.getTimeZone("UTC");
+		 TimeZone timezone = TimeZone.getTimeZone("Etc/UTC");
 		 Calendar garmin_zero = Calendar.getInstance(timezone);
 		 garmin_zero.set(Calendar.DAY_OF_MONTH,0);
 		 garmin_zero.set(Calendar.MONTH,0);

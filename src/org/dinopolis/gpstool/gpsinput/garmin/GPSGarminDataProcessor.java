@@ -111,6 +111,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected Object serial_number_sync_request_lock_ = new Object();
   protected Object flash_info_sync_request_lock_ = new Object();
   protected Object file_sync_request_lock_ = new Object();
+  protected final Object close_lock_ = new Object();
 
       /** Listeners for the Result Packets */
   protected Vector result_listeners_;
@@ -434,7 +435,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       read_thread_.setDaemon(true);
       read_thread_.start();
 
-      GarminProduct info = getGarminProductInfo(2000L); // needed to know the capabilities of the device
+      GarminProduct info = getGarminProductInfo(5000L); // needed to know the capabilities of the device
       if(info == null)
         throw new GPSException("Garmin device does not respond!");
 	
@@ -461,13 +462,34 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   public void close() throws GPSException
   {
-    if (gps_device_ == null)
-      throw new GPSException("no GPSDevice set!");
-    if(read_thread_ != null)
-      read_thread_.stopThread();
-    if(watch_dog_ != null)
-      watch_dog_.stopWatching();
-    gps_device_.close();
+    synchronized(close_lock_)
+    {
+      if (gps_device_ == null)
+        throw new GPSException("no GPSDevice set!");
+      
+      // interrupt ReaderThread & WatchDogThread
+      
+      if(read_thread_ != null && read_thread_.isAlive())
+        read_thread_.stopThread();
+      if(watch_dog_ != null && watch_dog_.isAlive())
+        watch_dog_.stopWatching();
+      
+      // Close the streams, so that ReaderThread & WatchDogThread don't block
+      // forever while trying to perform I/O. They MUST be set to null too.
+      // contributed by Travis Haagen
+      
+      if (in_stream_ != null) 
+      {
+        try { in_stream_.close(); } catch (IOException ignore) {;}
+        in_stream_ = null;
+      }
+      if (out_stream_ != null)
+      {
+        try { out_stream_.close(); } catch (IOException ignore) {;}
+        out_stream_ = null;
+      }
+      gps_device_.close();
+    }
   }
 
 
@@ -3058,7 +3080,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   class ReaderThread extends Thread
   {
-    boolean running_ = true;
+//    boolean running_ = true;
 
     public ReaderThread()
     {
@@ -3067,32 +3089,42 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
     public void run()
     { 
-      while(running_)
+      while(!isInterrupted())
       {
-        if(Debug.DEBUG)
-          Debug.println("gps_garmin_packet","waiting for packet...");
-        GarminPacket garmin_packet = getPacket();
-        if(garmin_packet == null)
+        try 
         {
+
           if(Debug.DEBUG)
-            Debug.println("gps_garmin_packet","invalid packet received");
-        }
-        else
+            Debug.println("gps_garmin_packet","waiting for packet...");
+          GarminPacket garmin_packet = getPacket();
+          if(garmin_packet == null)
+          {
+            if(Debug.DEBUG)
+              Debug.println("gps_garmin_packet","invalid packet received");
+          }
+          else
+          {
+            if(Debug.DEBUG)
+            {
+              Debug.println("gps_garmin_packet","packet received: "+garmin_packet.getPacketId());
+              if(Debug.isEnabled("gps_garmin_packet_detail"))
+                Debug.println("gps_garmin_packet_detail","packet details: "+garmin_packet.toString());
+            }
+            firePacketReceived(garmin_packet);
+          }
+        } catch(NullPointerException npe) 
         {
-          if(Debug.DEBUG)
-					{
-            Debug.println("gps_garmin_packet","packet received: "+garmin_packet.getPacketId());
-						if(Debug.isEnabled("gps_garmin_packet_detail"))
-							Debug.println("gps_garmin_packet_detail","packet details: "+garmin_packet.toString());
-					}
-          firePacketReceived(garmin_packet);
+          // NullPointerException may be thrown/caught when close() is called
+          if(!isInterrupted())
+            throw npe;
         }
       }
     }
 
     public void stopThread()
     {
-      running_ = false;
+//      running_ = false;
+      interrupt(); // not friendly, but otherwise zombie threads could occur (contributed by Travis Haagen)
     }
   }
 
@@ -3113,7 +3145,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   class WatchDogThread extends Thread
   {
-    boolean running_ = true;
+//    boolean running_ = true;
     boolean reset_ = false;
     int packet_id_ = 0;
     
@@ -3124,7 +3156,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
     public void startWatching()
     {
-      running_ = true;
+      if(isInterrupted())
+        return;
       packet_id_ = 0;
       try
       {
@@ -3146,7 +3179,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     
     public void run()
     { 
-      while(running_)
+      while(!isInterrupted())
       {
         reset_ = false;
         try
@@ -3174,7 +3207,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 
     public void stopWatching()
     {
-      running_ = false;
+      //running_ = false;
+      interrupt(); // not friendly, but otherwise zombie threads could occur (contributed by Travis Haagen)
     }
   }
 

@@ -371,11 +371,11 @@ public class GPSMap
             // use url (properties file may be inside jar file):
         PropertyConfigurator.configure(log_url);
       }
-      logger_ = Logger.getLogger("org.dinopolis.gpstool.GPSMap");
     }
     else
       System.err.println("WARNING: Could not find log4j configuration file: '"
                          +log_file+"' - logging disabled.");
+    logger_ = Logger.getLogger("org.dinopolis.gpstool.GPSMap");
   }
 
 
@@ -562,16 +562,16 @@ public class GPSMap
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
     
 
-    System.out.println("Plugins in the following locations are used:");
+    logger_.info("Plugins in the following locations are used:");
     List plugin_dirs = repository_class_loader_.getRepositories();
     Iterator dir_iterator = plugin_dirs.iterator();
     if(!dir_iterator.hasNext())
-      System.out.println("no directories given");
+      logger_.info("no directories given");
     else
     {
       while(dir_iterator.hasNext())
       {
-        System.out.println(dir_iterator.next());
+        logger_.info(dir_iterator.next());
       }
     }
 
@@ -1107,7 +1107,7 @@ public class GPSMap
   public void printHelp()
   {
     System.out.println("GPSMap "+GPSMAP_VERSION);
-    System.out.println("Written by Christof Dallermassl in 2002");
+    System.out.println("Written by Christof Dallermassl in 2006");
     System.out.println("email: cdaller@iicm.edu");
     System.out.println("This Programm is licenced under the GPL");
     System.out.println("Comments are welcomed!");
@@ -1419,7 +1419,7 @@ public class GPSMap
     {
       gui_plugin = (GuiPlugin)plugins[plugins_index];
       addGuiPlugin(gui_plugin);
-      System.out.println("Added Gui Plugin: " + gui_plugin.getPluginName()
+      logger_.info("Added Gui Plugin: " + gui_plugin.getPluginName()
                          + " V"+gui_plugin.getPluginVersion());
     }
 
@@ -1432,7 +1432,7 @@ public class GPSMap
     {
       mouse_mode_plugin = (MouseModePlugin)plugins[plugins_index];
       mouse_mode_plugin.initializePlugin(hook_manager_);
-      System.out.println("Added Mouse Mode Plugin: " + mouse_mode_plugin.getMouseModeName()
+      logger_.info("Added Mouse Mode Plugin: " + mouse_mode_plugin.getMouseModeName()
                          + " V"+mouse_mode_plugin.getPluginVersion());
       layer = mouse_mode_plugin.getLayer();
       if(layer != null)
@@ -2758,7 +2758,7 @@ public class GPSMap
   
     public void actionPerformed(ActionEvent event)
     {
-      System.out.println("import_gpsdrive action called");
+      logger_.debug("import_gpsdrive action called");
       String home_dir = System.getProperty("user.home");
       String gpsdrive_dir = home_dir + File.separator + ".gpsdrive";
       

@@ -143,7 +143,7 @@
           <h2>Supported GPS Devices</h2>
           <p>
             In general, all gps devices that support NMEA communication should
-            work. Garmin protocol support is built in, but not very well tested.
+            work. Garmin protocol support is built in.
           </p>
           <p>
             There were reports of the following devices to work with GPSylon:
@@ -156,8 +156,44 @@
               <li>LeadTek Gps-9543 embedded module (NMEA mode) (reported by
 									Antonio)</li>
               <li>Garmin Geko 201 (garmin mode) (reported by Frank Wilhelm)</li>
+              <li>GlobalSat Bluetooth GPS BT-338 (tested by myself)</li>
             </ul>
+            For bluetooth connection, I used the following commands under linux to
+            create a serial connection with bluetooth. First, find the id of your 
+            bluetooth device. I used <code>hcitool</code> for this:
+            <pre>
+            hcitool scan
+            output:
+            Scanning ...
+            00:0B:5D:13:91:49       BEGRZ9001001
+            00:0D:B5:30:3C:0A       BT-GPS-303C0A
+            </pre>
+            The first id is my bluetooth dongle on the pc, the second is the gps device.
+            So, with this id, we can create a virtual serial port using <code>rfcomm</code>:
+            <pre>
+            rfcomm bind /dev/ttyS50 00:0D:B5:30:3C:0A
+            </pre>
+            As rxtx does not allow <code>/dev/rfcomm0</code>, I used <code>/dev/ttyS50</code> 
+            (all ttys below 50 were already existent in my installation). A symlink from
+            ttyS50 to rfcomm0 also works!
             </p>
+            <p>
+            After this, I set some port parameter (I'm not sure, if this is really needed!):
+            <pre>
+            stty -F/dev/ttyS50 -raw -onlcr
+            </pre>
+            Now, gpstool or gpsylon can use the serial port <code>/dev/ttyS50</code> for
+            communication with the nmea bluetooth gps device.
+            </p>
+            <p>
+            After closing the application, one should release the bluetooth serial port:
+            <pre>
+            rfcomm release /dev/ttyS50
+            </pre>
+            Please note, that all these commands (except for the applicaiton start) need to 
+            be run as root!
+            </p>
+
           <a name="installation">
             <h2>Installation</h2>
             <p>

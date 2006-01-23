@@ -590,10 +590,13 @@ public class FileResources extends AbstractResources
   protected synchronized String getValue(String key)
     throws MissingResourceException
   {
-    String value = user_properties_.getProperty(key);
+    String value = System.getProperty(key); // system properties
+    if(value != null)
+      return(value);
+    value = user_properties_.getProperty(key); // user properties
     if (value != null)
       return(value);
-    return(system_bundle_.getString(key)); // the system bundle
+    return system_bundle_.getString(key); // the system bundle (default application values)
   }
 
   //----------------------------------------------------------------------

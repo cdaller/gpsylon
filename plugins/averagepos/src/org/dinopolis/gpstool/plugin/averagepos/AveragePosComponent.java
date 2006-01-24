@@ -63,6 +63,9 @@ public class AveragePosComponent extends JComponent
   protected Color position_color_ = Color.black;
   protected Color circles_color_ = Color.blue;
   
+  /**
+   * Default Constructor
+   */
   public AveragePosComponent()
   {
     super();

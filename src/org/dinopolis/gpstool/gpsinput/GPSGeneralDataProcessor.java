@@ -33,8 +33,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import org.apache.log4j.Logger;
 import org.dinopolis.util.ProgressListener;
-import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**
@@ -64,7 +65,8 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
 /** the raw data listener */
   protected Vector raw_data_listener_;  
 /** the progress listener */
-  protected Vector progress_listener_;  
+  protected Vector progress_listener_;
+  private static Logger logger_ = Logger.getLogger(GPSGeneralDataProcessor.class);
 
 //----------------------------------------------------------------------
 /**
@@ -402,9 +404,8 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
       else
         gps_data_.put(key,value);
     }
-    if(Debug.DEBUG)
-      Debug.println("GPSGeneralDataProcessor_changeData","fire event for key "
-                    +key+" oldvalue="+old_value+" new="+value);
+    if (logger_.isDebugEnabled())
+      logger_.debug("fire event for key "+key+" oldvalue="+old_value+" new="+value);
     if (property_change_support_ != null)
       property_change_support_.firePropertyChange(key,old_value,value);
   }

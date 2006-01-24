@@ -27,23 +27,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
+
+import org.apache.log4j.Logger;
+
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 import gnu.io.NoSuchPortException;
-
-// import gnu.io.SerialPortEventListener;
-// import gnu.io.CommPortIdentifier;
-// import gnu.io.SerialPort;
-// import gnu.io.PortInUseException;
-// import gnu.io.SerialPortEventListener;
-// import gnu.io.SerialPortEvent;
-// import gnu.io.UnsupportedCommOperationException;
-// import gnu.io.NoSuchPortException;
-
-import org.dinopolis.util.Debug;
-
 
 //----------------------------------------------------------------------
 /**
@@ -66,6 +57,7 @@ public class GPSSerialDevice implements GPSDevice
   protected SerialPort serial_port_;
   String serial_port_name_;
   int serial_port_speed_;
+  private static Logger logger_ = Logger.getLogger(GPSSerialDevice.class);
 
 //----------------------------------------------------------------------
 /**
@@ -117,13 +109,13 @@ public class GPSSerialDevice implements GPSDevice
 
     try
     {
-      if (Debug.DEBUG)
-        Debug.println("gpstool_serial","try to connect to port '"
+      if (logger_.isDebugEnabled())
+        logger_.debug("try to connect to port '"
                       + serial_port_name_ + "' using "+serial_port_speed_+" baud");
       CommPortIdentifier port_id = CommPortIdentifier.getPortIdentifier(serial_port_name_);
       serial_port_ = (SerialPort)port_id.open("GpsTool",2000);
-      if (Debug.DEBUG)
-        Debug.println("gpstool_serial","setting speed and serial params to 8,N,1");
+      if (logger_.isDebugEnabled())
+        logger_.debug("setting speed and serial params to 8,N,1");
       serial_port_.setSerialPortParams(serial_port_speed_,
                                      SerialPort.DATABITS_8,
                                      SerialPort.STOPBITS_1,

@@ -33,7 +33,8 @@ import java.io.OutputStreamWriter;
 import java.util.Hashtable;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import org.dinopolis.util.Debug;
+
+import org.apache.log4j.Logger;
 
 
 //----------------------------------------------------------------------
@@ -59,7 +60,8 @@ public class GPSNetworkGpsdDevice implements GPSDevice
   protected Socket gpsd_socket_;
 
   protected InputStream in_stream_;  
-  protected OutputStream out_stream_;  
+  protected OutputStream out_stream_;
+  private static Logger logger_ = Logger.getLogger(GPSNetworkGpsdDevice.class);
   
 //----------------------------------------------------------------------
 /**
@@ -105,9 +107,8 @@ public class GPSNetworkGpsdDevice implements GPSDevice
 
     try
     {
-      if (Debug.DEBUG)
-        Debug.println("gpstool_gpsd","try to connect to host "
-                      + gpsd_host_ + " port "+gpsd_port_);
+      if (logger_.isDebugEnabled())
+        logger_.debug("try to connect to host " + gpsd_host_ + " port "+gpsd_port_);
       gpsd_socket_ = new Socket(gpsd_host_,gpsd_port_);
       in_stream_ = new BufferedInputStream(gpsd_socket_.getInputStream());
       out_stream_ = new BufferedOutputStream(gpsd_socket_.getOutputStream());

@@ -34,6 +34,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
+import org.apache.log4j.Logger;
 import org.dinopolis.gpstool.gpsinput.GPSDevice;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSGeneralDataProcessor;
@@ -44,7 +46,6 @@ import org.dinopolis.gpstool.gpsinput.GPSSerialDevice;
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
 import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
-import org.dinopolis.util.Debug;
 
 //----------------------------------------------------------------------
 /**
@@ -112,6 +113,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected Object flash_info_sync_request_lock_ = new Object();
   protected Object file_sync_request_lock_ = new Object();
   protected final Object close_lock_ = new Object();
+  protected static Logger logger_ = Logger.getLogger("org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor");
+  protected static Logger logger_packet_ = Logger.getLogger("org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor.packet");
+  protected static Logger logger_packet_detail_ = Logger.getLogger("org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor.packet_detail");
+  protected static Logger logger_map_ = Logger.getLogger("org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor.map");
 
       /** Listeners for the Result Packets */
   protected Vector result_listeners_;
@@ -653,8 +658,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     for (int i=0;i<waypoints.size();i++)
     {
       GarminPacket pack=new GarminPacket();
-      if(Debug.DEBUG)
-        Debug.println("gps_garmin","Sending waypoint "+waypoints.get(i));
+      if(logger_.isDebugEnabled())
+        logger_.debug("Sending waypoint "+waypoints.get(i));
 //       GarminWaypointD108 wpt = new GarminWaypointD108((GPSWaypoint)waypoints.get(i));
 //       System.out.println("D108 waypoint:"+wpt);
 //       System.out.println("GarminPacket from waypoint: "+wpt.toGarminPacket(12));
@@ -799,8 +804,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     for (int route_count=0; route_count < routes.size(); route_count++)
     {
       GarminPacket pack=new GarminPacket();
-      if(Debug.DEBUG)
-        Debug.println("gps_garmin","Sending route "+routes.get(route_count));
+      if(logger_.isDebugEnabled())
+        logger_.debug("Sending route "+routes.get(route_count));
 
           // Route header(s)
       if (capabilities_.hasCapability("L1"))
@@ -974,8 +979,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     for (int track_count=0; track_count<tracks.size(); track_count++)
     {
       GarminPacket pack=new GarminPacket();
-      if(Debug.DEBUG)
-        Debug.println("gps_garmin","Sending track "+tracks.get(track_count));
+      if(logger_.isDebugEnabled())
+        logger_.debug("Sending track "+tracks.get(track_count));
 
           // Track header(s)
       if (capabilities_.hasCapability("L1"))
@@ -1148,8 +1153,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean sendCommand(int request, int cmd, long timeout)
     throws IOException
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin_packet","Sending request "+request+"/"+cmd);
+    if(logger_packet_.isDebugEnabled())
+      logger_packet_.debug("Sending request "+request+"/"+cmd);
     GarminPacket garmin_packet = new GarminPacket(request,2);
     garmin_packet.put(cmd);
     garmin_packet.put(0);
@@ -1168,8 +1173,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected boolean sendCommand(int request, long timeout)
     throws IOException
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin_packet","Sending request "+request);
+    if(logger_packet_.isDebugEnabled())
+      logger_packet_.debug("Sending request "+request);
     GarminPacket garmin_packet = new GarminPacket(request,0);
     putPacket(garmin_packet,timeout);
     return(send_success_);
@@ -1186,8 +1191,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void sendCommandAsync(int request, int cmd)
     throws IOException
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin_packet","Sending request async "+request+"/"+cmd);
+    if(logger_packet_.isDebugEnabled())
+      logger_packet_.debug("Sending request async "+request+"/"+cmd);
     GarminPacket garmin_packet = new GarminPacket(request,2);
     garmin_packet.put(cmd);
     garmin_packet.put(0);
@@ -1204,8 +1209,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void sendCommandAsync(int request)
     throws IOException
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin_packet","Sending request async "+request);
+    if(logger_packet_.isDebugEnabled())
+      logger_packet_.debug("Sending request async "+request);
     GarminPacket garmin_packet = new GarminPacket(request,0);
     putPacketAsync(garmin_packet);
   }
@@ -1220,13 +1225,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   {
     try
     {
-      if(Debug.DEBUG)
-			{
-        Debug.println("gps_garmin_packet","Sending packet async "+garmin_packet.getPacketId());
-				if(Debug.isEnabled("gps_garmin_packet_detail"))
-					Debug.println("gps_garmin_packet_detail","send packet details: "+garmin_packet);
-			}
-          // packet header
+      if(logger_packet_.isDebugEnabled()) 
+        logger_packet_.debug("Sending packet async "+garmin_packet.getPacketId());
+      if(logger_packet_detail_.isDebugEnabled())
+        logger_packet_detail_.debug("send packet details: "+garmin_packet);
+      // packet header
       out_stream_.write(DLE);
       out_stream_.write(garmin_packet.getPacketId());
       int packet_size = garmin_packet.getPacketSize();
@@ -1355,8 +1358,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         watch_dog_.reset();
         if (data != DLE)
         {
-          if (Debug.DEBUG) 
-            Debug.println("gps_garmin_packet","missing DLE stuffing in packet size");
+          if(logger_packet_.isDebugEnabled())
+            logger_packet_.debug("missing DLE stuffing in packet size");
           sendCommandAsync(NAK,packet_id);
           watch_dog_.stopWatching();
           return(null);
@@ -1364,8 +1367,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       }
       int packet_size = (data & 0xff);
       GarminPacket garmin_packet = new GarminPacket(packet_id, packet_size);
-      if (Debug.DEBUG) 
-        Debug.println("gps_garmin_packet","receiving packet id: "
+      if(logger_packet_.isDebugEnabled())
+        logger_packet_.debug("receiving packet id: "
                       +packet_id+" size: "+packet_size);
       
 //      System.out.println("Reading data: ");
@@ -1383,8 +1386,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
           watch_dog_.reset();
           if (data != DLE)
           {
-            if (Debug.DEBUG) 
-              Debug.println("gps_garmin_packet","missing DLE stuffing in packet data");
+            if(logger_packet_.isDebugEnabled())
+              logger_packet_.debug("missing DLE stuffing in packet data");
             sendCommandAsync(NAK,packet_id);
             watch_dog_.stopWatching();
             return(null);
@@ -1401,8 +1404,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         watch_dog_.reset();
         if (packet_checksum != DLE)
         {
-          if (Debug.DEBUG)
-            Debug.println("gps_garmin_packet","missing DLE stuffing in packet checksum");
+          if(logger_packet_.isDebugEnabled())
+            logger_packet_.debug("missing DLE stuffing in packet checksum");
           sendCommandAsync(NAK,packet_id);
           watch_dog_.stopWatching();
           return(null);
@@ -1413,8 +1416,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       int calc_checksum = garmin_packet.calcChecksum();
       if (calc_checksum != packet_checksum)
       {
-        if (Debug.DEBUG)
-          Debug.println("gps_garmin_packet","bad checksum (is "+calc_checksum
+        if(logger_packet_.isDebugEnabled())
+          logger_packet_.debug("bad checksum (is "+calc_checksum
                         +" should be "+packet_checksum);
         sendCommandAsync(NAK,packet_id);
         watch_dog_.stopWatching();
@@ -1427,21 +1430,20 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       watch_dog_.reset();
       if (dle != DLE || etx != ETX)
       {
-        if (Debug.DEBUG)
+        if(logger_packet_.isDebugEnabled()) 
         {
-          if(Debug.isEnabled("gps_garmin_packet"))
-          {
-            Debug.println("gps_garmin_packet","bad packet framing");
-            Debug.println("gps_garmin_packet","id is " + packet_id);
-            Debug.println("gps_garmin_packet","size is " + packet_size);
-            Debug.println("gps_garmin_packet","data is: ");
-            for (int i = 0; i < packet_size; i++) {
-              Debug.print("gps_garmin_packet",garmin_packet.get() + " ");
-            }
-            Debug.println("gps_garmin_packet","\nchecksum is " + packet_checksum);
-            Debug.println("gps_garmin_packet","DLE byte is " + dle);
-            Debug.println("gps_garmin_packet","ETX byte is " + etx);
+          StringBuffer debug_message = new StringBuffer();
+          debug_message.append("bad packet framing\n");
+          debug_message.append("id is " + packet_id);
+          debug_message.append("\nsize is " + packet_size);
+          debug_message.append("\ndata is: \n");
+          for (int i = 0; i < packet_size; i++) {
+            debug_message.append(garmin_packet.get() + " ");
           }
+          debug_message.append("\nchecksum is " + packet_checksum);
+          debug_message.append("\nDLE byte is " + dle);
+          debug_message.append("\nETX byte is " + etx);
+          logger_packet_.debug(debug_message.toString());
         }
         sendCommandAsync(NAK,packet_id);
         watch_dog_.stopWatching();
@@ -1804,8 +1806,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     request_packet.setNextAsLongWord(0);
     request_packet.setNextAsWord(map_area);
     request_packet.setNextAsString(filename);
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin_map","Requesting file '"+filename+"' on map area "
+    if(logger_map_.isDebugEnabled())
+      logger_map_.debug("Requesting file '"+filename+"' on map area "
                     +map_area+" with packet: "
                     +request_packet);
     synchronized(file_sync_request_lock_)
@@ -2204,8 +2206,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       result_routes_ = routes;
       route_sync_request_lock_.notify();
     }
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","Routes received: "+routes);
+    if(logger_.isDebugEnabled())
+      logger_.debug("Routes received: "+routes);
   }
   
 //----------------------------------------------------------------------
@@ -2222,8 +2224,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       result_tracks_ = tracks;
       track_sync_request_lock_.notify();
     }
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","Tracks received: "+tracks);
+    if(logger_.isDebugEnabled())
+      logger_.debug("Tracks received: "+tracks);
   }
 
 //----------------------------------------------------------------------
@@ -2240,8 +2242,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       result_waypoints_ = waypoints;
       waypoint_sync_request_lock_.notify();
     }
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","Waypoints received: "+waypoints);
+    if(logger_.isDebugEnabled())
+      logger_.debug("Waypoints received: "+waypoints);
   }
 
 //----------------------------------------------------------------------
@@ -2251,8 +2253,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void fireTransferCompleteReceived()
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","TransferComplete received");
+    if(logger_.isDebugEnabled())
+      logger_.debug("TransferComplete received");
   }
   
 //----------------------------------------------------------------------
@@ -2264,8 +2266,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   protected void fireProductDataReceived(GarminProduct product)
   {
     product_info_ = product;
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","product data received: "+product);
+    if(logger_.isDebugEnabled())
+      logger_.debug("product data received: "+product);
   }
 
 //----------------------------------------------------------------------
@@ -2281,8 +2283,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       capabilities_ = capabilities;
       product_info_lock_.notify();
     }
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","product capabilities received: "+capabilities_);
+    if(logger_.isDebugEnabled())
+      logger_.debug("product capabilities received: "+capabilities_);
   }
 
 //----------------------------------------------------------------------
@@ -2307,8 +2309,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       }
       pvt_sync_request_lock_.notify();
     }
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","pvt received: "+pvt);
+    if(logger_.isDebugEnabled())
+      logger_.debug("pvt received: "+pvt);
   }
 
   
@@ -2320,8 +2322,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void fireDisplayDataReceived(GarminDisplayData display_data)
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","display data received: "+display_data);
+    if(logger_.isDebugEnabled())
+      logger_.debug("display data received: "+display_data);
 
     synchronized(screenshot_sync_request_lock_)
     {
@@ -2338,8 +2340,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void fireSerialNumberReceived(long serial_number)
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","serial number received: "+serial_number);
+    if(logger_.isDebugEnabled())
+      logger_.debug("serial number received: "+serial_number);
 
     synchronized(serial_number_sync_request_lock_)
     {
@@ -2356,8 +2358,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void fireFlashInfoReceived(GarminFlashInfo flash_info)
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","flash info received: "+flash_info);
+    if(logger_.isDebugEnabled())
+      logger_.debug("flash info received: "+flash_info);
 
     synchronized(flash_info_sync_request_lock_)
     {
@@ -2376,8 +2378,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void fireFileNotFoundReceived(GarminPacket file_not_found)
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","file not found received: "+file_not_found);
+    if(logger_.isDebugEnabled())
+      logger_.debug("file not found received: "+file_not_found);
 
     synchronized(file_sync_request_lock_)
     {
@@ -2393,8 +2395,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
  */
   protected void fireFileReceived(GarminFile garmin_file)
   {
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","file received (maybe shortened): "
+    if(logger_.isDebugEnabled())
+      logger_.debug("file received (maybe shortened): "
                     +garmin_file);
 
     synchronized(file_sync_request_lock_)
@@ -2430,8 +2432,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         listener.receivedResult(result,packet_id);
       }
     }
-    if(Debug.DEBUG)
-      Debug.println("gps_garmin","Result received: "+result+" for packet id "+packet_id
+    if(logger_.isDebugEnabled())
+      logger_.debug("Result received: "+result+" for packet id "+packet_id
 );
   }
   
@@ -2456,8 +2458,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       int num_corrupt_packets = 0;
       GarminDisplayData display_data = new GarminDisplayData(garmin_packet);
       int height = display_data.getHeight();
-      if(Debug.DEBUG)
-        Debug.println("garmin_display_header","Reading Display Data with "+height+" lines.");
+      if(logger_.isDebugEnabled())
+        logger_.debug("Reading Display Data with "+height+" lines.");
       do
       {
         num_corrupt_packets = 0;
@@ -2579,8 +2581,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         return;
       int packet_num = garmin_packet.getWord(0); // buffer[2]+256*buffer[3];
       int packet_count = 0;
-      if(Debug.DEBUG)
-        Debug.println("gps_garmin_packet","Receiving "+packet_num+" packets from device.");
+      if(logger_packet_.isDebugEnabled())
+        logger_packet_.debug("Receiving "+packet_num+" packets from device.");
           // var to store the resulting route/track/etc.
           // I hope that packets may not be mixed (route and tracks)!
       Vector items = new Vector();
@@ -2597,13 +2599,11 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         while(next_garmin_packet == null);
 //        buffer = next_garmin_packet.getCompatibilityBuffer();
         packet_count++;
-        if(Debug.DEBUG)
-				{
-          Debug.println("gps_garmin_packet","read packet "+packet_count+" of "+packet_num);
-					if(Debug.isEnabled("gps_garmin_packet_detail"))
-						Debug.println("gps_garmin_packet_detail","packet details: "+next_garmin_packet.toString());
-				}
-				packet_id = next_garmin_packet.getPacketId();
+        if(logger_packet_.isDebugEnabled())
+          logger_packet_.debug("read packet "+packet_count+" of "+packet_num);
+        if(logger_packet_detail_.isDebugEnabled())
+          logger_packet_detail_.debug("packet details: "+next_garmin_packet.toString());
+        packet_id = next_garmin_packet.getPacketId();
         switch(packet_id)
         {
               // route header:
@@ -2662,8 +2662,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
                         ((GarminRoute)item).addWaypoint(new GarminWaypointD109(next_garmin_packet));
                       else
                         System.err.println("WARNING: unsupported garmin waypoint type!");
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin","Received Waypoint");
+          if(logger_.isDebugEnabled())
+            logger_.debug("Received Waypoint");
           break;
               // route link:
         case Pid_Rte_Link_Data_L001:
@@ -2690,14 +2690,14 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
               // create route header depending on used format:
           if(capabilities_.hasCapability("D310"))
             item = new GarminTrackD310(next_garmin_packet);
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin","Received Track Header: "+item);
+          if(logger_.isDebugEnabled())
+            logger_.debug("Received Track Header: "+item);
           break;
 
               // trackpoints
         case Pid_Trk_Data_L001:
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin","Received Track Data");
+          if(logger_.isDebugEnabled())
+            logger_.debug("Received Track Data");
           if(packet_count % 10 == 0)
             fireProgressActionProgress(GETTRACKS,packet_count);
 
@@ -2718,8 +2718,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
               // waypoint:
         case Pid_Wpt_Data_L001:
         case Pid_Wpt_Data_L002:
-//           if(Debug.DEBUG)
-//             Debug.println("gps_garmin","Received Waypoint Data");
+//           if (logger_.isDebugEnabled())
+//             logger_.debug("Received Waypoint Data");
           if(capabilities_ == null)
             return;
           if(packets_type_received == 0) // only true for first packet
@@ -2747,22 +2747,21 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
             items.add(new GarminWaypointAdapter(new GarminWaypointD109(next_garmin_packet)));
           else
             System.err.println("WARNING: unsupported garmin waypoint type!");
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin","Received Waypoint");
+          if(logger_.isDebugEnabled())
+            logger_.debug("Received Waypoint");
           break;
               // transfer complete
         case Pid_Xfer_Cmplt_L001:
 //		  case Pid_Xfer_Cmplt_L002: // same number as Pid_Xfer_Cmplt_L001
 //          GarminXferComplete xfer_complete = new GarminXferComplete(next_garmin_packet);
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin","transfer complete");
+          if(logger_.isDebugEnabled())
+            logger_.debug("transfer complete");
           transfer_complete = true;
           break;
         default:
-          System.err.println("WARNING GPSGarminDataProcessor: unknown packet id: "
-                             +packet_id);
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin","unknown packet: "+next_garmin_packet);
+          logger_.warn("WARNING GPSGarminDataProcessor: unknown packet id: " +packet_id);
+          if(logger_.isDebugEnabled())
+            logger_.debug("unknown packet: "+next_garmin_packet);
         }
       }
 	    
@@ -2817,8 +2816,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
       break;
     case Pid_File_Header:
       GarminFile garmin_file = new GarminFile(garmin_packet);
-      if(Debug.DEBUG)
-        Debug.println("gps_garmin","Pid_File_Header: "+garmin_file);
+      if(logger_.isDebugEnabled())
+        logger_.debug("Pid_File_Header: "+garmin_file);
 //      System.out.println("Garmin file header :"+garmin_file);
       packet_count = 0;
       while(packet_count < garmin_file.getDataPacketCount())
@@ -2832,10 +2831,10 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         packet_count++;
         if(next_garmin_packet.getPacketId() != Pid_File_Data)
         {
-          System.err.println("WARNING GPSGarminDataProcessor: unknown packet id: "
+          logger_.warn("WARNING GPSGarminDataProcessor: unknown packet id: "
                              +packet_id+" while waiting for File Data!");
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin","unknown packet: "+garmin_packet);
+          if(logger_.isDebugEnabled())
+            logger_.debug("unknown packet: "+garmin_packet);
         }
         garmin_file.addDataPacket(next_garmin_packet);
       } 
@@ -2880,10 +2879,9 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
 // 			System.out.println("Serial Number: "+garmin_packet.getLong(0));
 			break;
     default:
-      System.err.println("WARNING GPSGarminDataProcessor: unknown packet id: "
-                         +packet_id);
-      if(Debug.DEBUG)
-        Debug.println("gps_garmin","unknown packet: "+garmin_packet);
+      logger_.warn("WARNING GPSGarminDataProcessor: unknown packet id: " +packet_id);
+      if(logger_.isDebugEnabled())
+        logger_.debug("unknown packet: "+garmin_packet);
     }
   }
 
@@ -3094,22 +3092,20 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         try 
         {
 
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin_packet","waiting for packet...");
+          if(logger_packet_.isDebugEnabled())
+            logger_packet_.debug("waiting for packet...");
           GarminPacket garmin_packet = getPacket();
           if(garmin_packet == null)
           {
-            if(Debug.DEBUG)
-              Debug.println("gps_garmin_packet","invalid packet received");
+            if(logger_packet_.isDebugEnabled())
+              logger_packet_.debug("invalid packet received");
           }
           else
           {
-            if(Debug.DEBUG)
-            {
-              Debug.println("gps_garmin_packet","packet received: "+garmin_packet.getPacketId());
-              if(Debug.isEnabled("gps_garmin_packet_detail"))
-                Debug.println("gps_garmin_packet_detail","packet details: "+garmin_packet.toString());
-            }
+            if(logger_packet_.isDebugEnabled())
+              logger_packet_.debug("packet received: "+garmin_packet.getPacketId());
+            if(logger_packet_detail_.isDebugEnabled())
+              logger_packet_detail_.debug("packet details: "+garmin_packet.toString());
             firePacketReceived(garmin_packet);
           }
         } catch(NullPointerException npe) 
@@ -3186,13 +3182,16 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
         {
           Thread.sleep(5000);
         }
-        catch(InterruptedException ignore) {}
+        catch(InterruptedException ignore) 
+        {
+          return; // thread was stopped, so quit here
+        }
             // wait 5seconds, if we did not get any data during this
             // time, send a NAK:
         if(!reset_)
         {
-          if(Debug.DEBUG)
-            Debug.println("gps_garmin_packet","WATCHDOG sending NAK");
+          if(logger_packet_.isDebugEnabled())
+            logger_packet_.debug("WATCHDOG sending NAK");
           try
           {
             sendCommandAsync(NAK,packet_id_);

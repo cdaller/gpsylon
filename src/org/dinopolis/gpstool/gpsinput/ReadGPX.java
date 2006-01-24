@@ -30,11 +30,12 @@ import java.util.List;
 import java.util.Vector;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.log4j.Logger;
 import org.dinopolis.gpstool.track.RouteImpl;
 import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.gpstool.track.TrackpointImpl;
 import org.dinopolis.gpstool.track.WaypointImpl;
-import org.dinopolis.util.Debug;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -54,6 +55,7 @@ public class ReadGPX
   protected Vector waypoints_ = new Vector();
   protected SimpleDateFormat date_format_ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
   private ParsePosition dummy_position_ = new ParsePosition(0);
+  private static Logger logger_ = Logger.getLogger(ReadGPX.class);
 
   public ReadGPX()
   {
@@ -244,8 +246,8 @@ public class ReadGPX
         actual_rtept_.setSymbolName("wpt_dot");
 
 	// Debug
-        if(Debug.DEBUG)
-          Debug.println("readgpx"," Added Rtept: lat-"+actual_rtept_.getLatitude()+", lon-"+actual_rtept_.getLongitude());
+        if (logger_.isDebugEnabled())
+          logger_.debug(" Added Rtept: lat-"+actual_rtept_.getLatitude()+", lon-"+actual_rtept_.getLongitude());
       }
 
 
@@ -304,8 +306,8 @@ public class ReadGPX
         actual_trkpt_.setDate(null);
 
 	// Debug
-        if(Debug.DEBUG)
-          Debug.println("readgpx"," Added Trkpt: lat="+actual_trkpt_.getLatitude()+", lon="+actual_trkpt_.getLongitude());
+        if (logger_.isDebugEnabled())
+          logger_.debug(" Added Trkpt: lat="+actual_trkpt_.getLatitude()+", lon="+actual_trkpt_.getLongitude());
       }
 
       // ------ WAYPOINTS ------
@@ -344,8 +346,8 @@ public class ReadGPX
         actual_waypt_.setSymbolName("wpt_dot");
 
 	// Debug
-        if(Debug.DEBUG)
-          Debug.println("readgpx","Added Waypt: lat-"+actual_waypt_.getLatitude()+", lon-"+actual_waypt_.getLongitude());
+        if (logger_.isDebugEnabled())
+          logger_.debug("Added Waypt: lat-"+actual_waypt_.getLatitude()+", lon-"+actual_waypt_.getLongitude());
       }
     }
 
@@ -372,34 +374,30 @@ public class ReadGPX
           RouteImpl actual_rte = (RouteImpl)(routes_.get(route_number_));
           actual_rte.setIdentification(chars);
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","Rte-Name: "+actual_rte.getIdentification());
+          if (logger_.isDebugEnabled())
+            logger_.debug("Rte-Name: "+actual_rte.getIdentification());
         }
         else if (is_route_ && is_route_point_)
         {
           actual_rtept_.setIdentification(chars);
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","  Rtept-Name: "+actual_rtept_.getIdentification());
+          if (logger_.isDebugEnabled())
+            logger_.debug("  Rtept-Name: "+actual_rtept_.getIdentification());
         }
         else if (is_track_)
         {
           TrackImpl actual_trk = (TrackImpl)(tracks_.get(track_number_));
           actual_trk.setIdentification(chars);
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","Trk-Name: "+actual_trk.getIdentification());
+          if (logger_.isDebugEnabled())
+            logger_.debug("Trk-Name: "+actual_trk.getIdentification());
         }
         else if (is_waypoint_)
         {
           actual_waypt_.setIdentification(chars);
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","Wpt-Name: "+actual_waypt_.getIdentification());
+          if (logger_.isDebugEnabled())
+            logger_.debug("Wpt-Name: "+actual_waypt_.getIdentification());
         }
       }
 
@@ -416,34 +414,30 @@ public class ReadGPX
           RouteImpl actual_rte = (RouteImpl)(routes_.get(route_number_));
           actual_rte.setComment(chars);
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","Rte-Desc: "+actual_rte.getComment());
+          if (logger_.isDebugEnabled())
+            logger_.debug("Rte-Desc: "+actual_rte.getComment());
         }
         else if (is_route_ && is_route_point_)
         {
           actual_rtept_.setComment(chars);
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","  Rtept-Desc: "+actual_rtept_.getComment());
+          if (logger_.isDebugEnabled())
+            logger_.debug("  Rtept-Desc: "+actual_rtept_.getComment());
         }
         else if (is_track_)
         {
           TrackImpl actual_trk = (TrackImpl)(tracks_.get(track_number_));
           actual_trk.setComment(chars);
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","Trk-Desc: "+actual_trk.getComment());
+          if (logger_.isDebugEnabled())
+            logger_.debug("Trk-Desc: "+actual_trk.getComment());
         }
         else if (is_waypoint_)
         {
           actual_waypt_.setComment(chars);
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","Wpt-Desc: "+actual_waypt_.getComment());
+          if (logger_.isDebugEnabled())
+            logger_.debug("Wpt-Desc: "+actual_waypt_.getComment());
         }
       }
 
@@ -454,25 +448,22 @@ public class ReadGPX
         {
           actual_rtept_.setAltitude(new Double(characters_.toString()).doubleValue());
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","  Rtept-Ele: "+actual_rtept_.getAltitude());
+          if (logger_.isDebugEnabled())
+            logger_.debug("  Rtept-Ele: "+actual_rtept_.getAltitude());
         }
         else if (is_track_)
         {
           actual_trkpt_.setAltitude(new Double(characters_.toString()).doubleValue());
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx","  Trkpt-Ele: "+actual_trkpt_.getAltitude());
+          if (logger_.isDebugEnabled())
+            logger_.debug("  Trkpt-Ele: "+actual_trkpt_.getAltitude());
         }
         else if (is_waypoint_)
         {
           actual_waypt_.setAltitude(new Double(characters_.toString()).doubleValue());
 
-	  // Debug
-          if(Debug.DEBUG)
-            Debug.println("readgpx"," Waypt-Ele: "+actual_waypt_.getAltitude());
+          if (logger_.isDebugEnabled())
+            logger_.debug(" Waypt-Ele: "+actual_waypt_.getAltitude());
         }
       }
 
@@ -498,9 +489,8 @@ public class ReadGPX
 					System.err.println("illegal time/date format: '"+characters_+"'");
 				}
 
-	// Debug
-        if(Debug.DEBUG)
-          Debug.println("readgpx","  Trkpt-Time: "+actual_trkpt_.getDate());
+                if (logger_.isDebugEnabled())
+                    logger_.debug("  Trkpt-Time: "+actual_trkpt_.getDate());
       }
 
       // Ending of symbol name of waypoint
@@ -508,9 +498,8 @@ public class ReadGPX
       {
         actual_waypt_.setSymbolName(characters_.toString());
 
-	// Debug
-        if(Debug.DEBUG)
-          Debug.println("readgpx"," Waypt-Sym: "+actual_waypt_.getSymbolName());
+        if (logger_.isDebugEnabled())
+          logger_.debug(" Waypt-Sym: "+actual_waypt_.getSymbolName());
       }
 
       // Remove unhandled tag data information

@@ -30,7 +30,8 @@ import java.io.OutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Hashtable;
-import org.dinopolis.util.Debug;
+
+import org.apache.log4j.Logger;
 
 
 //----------------------------------------------------------------------
@@ -48,6 +49,7 @@ public class GPSFileDevice implements GPSDevice
   protected File file_ = null;
   protected FileInputStream inputstream_ = null;
   protected FileOutputStream outputstream_ = null;
+  private static Logger logger_ = Logger.getLogger(GPSFileDevice.class);
 
 //----------------------------------------------------------------------
 /**
@@ -68,8 +70,8 @@ public class GPSFileDevice implements GPSDevice
     if ((file_name = (String)environment.get(PATH_NAME_KEY)) == null)
       throw new GPSException("File name not found in environment!");
 
-    if (Debug.DEBUG)
-      Debug.println("gpstool_file","connect to file '" + file_name + "'.");
+    if (logger_.isDebugEnabled())
+      logger_.debug("connect to file '" + file_name + "'.");
     file_ = new File(file_name);
   }
 

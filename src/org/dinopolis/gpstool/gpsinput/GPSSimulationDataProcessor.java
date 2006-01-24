@@ -23,7 +23,7 @@
 
 package org.dinopolis.gpstool.gpsinput;
 
-import org.dinopolis.util.Debug;
+import org.apache.log4j.Logger;
 
 //----------------------------------------------------------------------
 /**
@@ -49,6 +49,7 @@ public class GPSSimulationDataProcessor extends GPSGeneralDataProcessor implemen
 
   public static final int SLEEP_TIME = 2; // every SLEEP_TIME seconds one step
   public static final int SECONDS_TO_DESTINATION = 60;
+  private static Logger logger_ = Logger.getLogger(GPSSimulationDataProcessor.class);
   
 //----------------------------------------------------------------------
 /**
@@ -199,8 +200,8 @@ public class GPSSimulationDataProcessor extends GPSGeneralDataProcessor implemen
       step_lat = step_lat * ((Math.random() * 0.4) + 0.8); // random factor 0.8-1.2
       step_long = step_long * ((Math.random() * 0.4) + 0.8); // random factor 0.8-1.2
       
-      if(Debug.DEBUG)
-        Debug.println("GPSSimulation","simulation thread diff_lat="+diff_lat
+      if (logger_.isDebugEnabled())
+        logger_.debug("simulation thread diff_lat="+diff_lat
                       +" diff_long="+diff_long
                       +" current step (lat/long)="
                       +step_lat+"/"+step_long);
@@ -221,8 +222,8 @@ public class GPSSimulationDataProcessor extends GPSGeneralDataProcessor implemen
       changeGPSData(GPSDataProcessor.LOCATION,current_position_);
       changeGPSData(GPSDataProcessor.HEADING,new Float(current_heading_));
 
-      if(Debug.DEBUG)
-        Debug.println("GPSSimulation","GPSSimulationDataProcessor: new location"+current_position_);
+      if (logger_.isDebugEnabled())
+        logger_.debug("GPSSimulationDataProcessor: new location"+current_position_);
 
       try
       {
@@ -230,8 +231,8 @@ public class GPSSimulationDataProcessor extends GPSGeneralDataProcessor implemen
       }
       catch(InterruptedException ie)
       {
-        if(Debug.DEBUG)
-          Debug.println("GPSSimulation","GPSSimulationDataProcessor: simulation thread stopped.");
+        if (logger_.isDebugEnabled())
+          logger_.debug("GPSSimulationDataProcessor: simulation thread stopped.");
         return;
       }
 

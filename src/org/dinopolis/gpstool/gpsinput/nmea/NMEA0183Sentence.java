@@ -26,7 +26,7 @@ package org.dinopolis.gpstool.gpsinput.nmea;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
-import org.dinopolis.util.Debug;
+import org.apache.log4j.Logger;
 
 //----------------------------------------------------------------------
 /**
@@ -46,6 +46,7 @@ public class NMEA0183Sentence
   protected byte checksum_ = -1;
   protected byte calculated_checksum_ = -1;
   protected Vector data_fields_ = null;
+  private static Logger logger_ = Logger.getLogger(NMEA0183Sentence.class);
   
 //----------------------------------------------------------------------
 /**
@@ -56,8 +57,8 @@ public class NMEA0183Sentence
 
   public NMEA0183Sentence(String raw_data)
   {
-    if (Debug.DEBUG)
-      Debug.print("gpstool_nmeasentence","raw data='"+raw_data+"'");
+    if (logger_.isDebugEnabled())
+      logger_.debug("raw data='"+raw_data+"'");
     int star_pos = raw_data.indexOf('*');
     if(star_pos <= 6)
       throw (new IllegalArgumentException("Invalid NMEA Sentence (no '*'): "

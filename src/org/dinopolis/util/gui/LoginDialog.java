@@ -132,7 +132,7 @@ public class LoginDialog
                                    JOptionPane.OK_CANCEL_OPTION);
 
     JDialog dialog = option_pane_.createDialog(parent_frame,title);
-    dialog.show();
+    dialog.setVisible(true);
   }
 
 //----------------------------------------------------------------------

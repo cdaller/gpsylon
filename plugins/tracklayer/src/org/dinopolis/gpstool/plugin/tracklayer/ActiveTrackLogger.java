@@ -26,10 +26,10 @@ import com.bbn.openmap.LatLonPoint;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.TrackManager;
+import org.dinopolis.gpstool.Gpsylon;
 import org.dinopolis.gpstool.track.Track;
 import org.dinopolis.gpstool.track.TrackImpl;
+import org.dinopolis.gpstool.track.TrackManager;
 import org.dinopolis.gpstool.track.Trackpoint;
 import org.dinopolis.gpstool.track.TrackpointImpl;
 import org.dinopolis.util.Debug;
@@ -129,13 +129,13 @@ public class ActiveTrackLogger implements PropertyChangeListener
       return;
     
     String name = event.getPropertyName();
-    if(name.equals(GPSMap.PROPERTY_KEY_GPS_ALTITUDE))
+    if(name.equals(Gpsylon.PROPERTY_KEY_GPS_ALTITUDE))
     {
       Float altitude = (Float)event.getNewValue();
       if(altitude != null)
         current_altitude_ = altitude.floatValue();
     }
-    if(name.equals(GPSMap.PROPERTY_KEY_GPS_LOCATION))
+    if(name.equals(Gpsylon.PROPERTY_KEY_GPS_LOCATION))
     {
       LatLonPoint tmp_point = (LatLonPoint)event.getNewValue();
 //       System.out.println("TrackLayer, propertyChange: old: "+event.getOldValue()+" new:"+

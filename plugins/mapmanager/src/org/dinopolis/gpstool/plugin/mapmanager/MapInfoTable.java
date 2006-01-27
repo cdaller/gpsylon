@@ -27,8 +27,8 @@ import java.util.Collection;
 
 import javax.swing.JTable;
 
-import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.gui.util.AngleCellRenderer;
+import org.dinopolis.gpstool.hook.MapManagerHook;
 import org.dinopolis.gpstool.util.angle.Latitude;
 import org.dinopolis.gpstool.util.angle.Longitude;
 

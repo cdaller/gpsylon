@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.dinopolis.gpstool.*;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.track.*;
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
@@ -48,7 +49,7 @@ import org.dinopolis.util.Resources;
 */
 
 public class ModifyTracksLayer extends BasicLayer
-  implements ActionListener, FocusListener,GPSMapKeyConstants
+  implements ActionListener, FocusListener,GpsylonKeyConstants
 {
 
   GeoScreenPoint mouse_drag_start_;

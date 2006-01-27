@@ -27,7 +27,7 @@ import java.awt.Container;
 
 import javax.swing.JFrame;
 
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 
 
 
@@ -39,7 +39,7 @@ import org.dinopolis.gpstool.GPSMapKeyConstants;
  * @version $Revision$
  */
 
-public class NewTrackFrame extends JFrame implements GPSMapKeyConstants
+public class NewTrackFrame extends JFrame implements GpsylonKeyConstants
 {
 
 

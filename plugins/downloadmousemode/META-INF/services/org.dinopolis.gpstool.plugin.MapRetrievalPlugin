@@ -1,9 +1,9 @@
 # all provided MapRetrievalPlugins in this package:
-org.dinopolis.gpstool.plugin.downloadmousemode.MapblastDownloader
+#org.dinopolis.gpstool.plugin.downloadmousemode.MapblastDownloader
 org.dinopolis.gpstool.plugin.downloadmousemode.ExpediaWestDownloader
 org.dinopolis.gpstool.plugin.downloadmousemode.ExpediaEastDownloader
-org.dinopolis.gpstool.plugin.downloadmousemode.MappointDownloader
-org.dinopolis.gpstool.plugin.downloadmousemode.MappointUSADownloader
+#org.dinopolis.gpstool.plugin.downloadmousemode.MappointDownloader
+#org.dinopolis.gpstool.plugin.downloadmousemode.MappointUSADownloader
 org.dinopolis.gpstool.plugin.downloadmousemode.Custom1Downloader
 # end of file
 

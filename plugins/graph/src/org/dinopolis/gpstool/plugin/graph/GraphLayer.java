@@ -29,7 +29,6 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
-import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.track.*;

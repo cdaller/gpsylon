@@ -37,7 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.gui.util.AngleJTextField;
 import org.dinopolis.gpstool.gui.util.PluginCellRenderer;
 import org.dinopolis.gpstool.plugin.MapRetrievalPlugin;
@@ -51,7 +51,7 @@ import org.dinopolis.util.Resources;
  * @version $Revision$
  */
 
-public class DownloadFrame extends JFrame implements GPSMapKeyConstants
+public class DownloadFrame extends JFrame implements GpsylonKeyConstants
 {
 
   Resources resources_;
@@ -110,41 +110,41 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
     
     center_panel.setLayout(new GridLayout(8,2));
 
-    center_panel.add(new JLabel(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_LATITUDE)));
+    center_panel.add(new JLabel(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_LATITUDE)));
     center_panel.add(latitude_text_ = new AngleJTextField());
-    center_panel.add(new JLabel(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_LONGITUDE)));
+    center_panel.add(new JLabel(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_LONGITUDE)));
     center_panel.add(longitude_text_ = new AngleJTextField());
     center_panel.add(new JLabel(resources_.getString(DownloadMouseModeLayer.KEY_LOCALIZE_MAP_SERVER)));
     center_panel.add(mapserver_box_ = new JComboBox(available_mapservers));
     mapserver_box_.setSelectedItem(default_mapserver);
     mapserver_box_.setRenderer(new PluginCellRenderer());
-    center_panel.add(new JLabel(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_SCALE)));
+    center_panel.add(new JLabel(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_SCALE)));
     center_panel.add(scale_box_ = new JComboBox(available_scales_));
     scale_box_.setSelectedItem(DEFAULT_SCALE);
 
-    center_panel.add(new JLabel(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_LOAD_PROGRESS)
-                       + " " + resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_MAPS)));
+    center_panel.add(new JLabel(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_LOAD_PROGRESS)
+                       + " " + resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_MAPS)));
     center_panel.add(progress_bar_images_ = new JProgressBar());
 
-    center_panel.add(new JLabel(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_LOAD_PROGRESS)
-                       + " " + resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_BYTES)));
+    center_panel.add(new JLabel(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_LOAD_PROGRESS)
+                       + " " + resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_BYTES)));
     center_panel.add(progress_bar_bytes_ = new JProgressBar());
 
-    center_panel.add(new JLabel(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_INFO)));
+    center_panel.add(new JLabel(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_INFO)));
     center_panel.add(info_label_ = new JLabel());
 
         // set valid angle formats for latitude and longitude:
     latitude_text_.clearValidAngleFormats();
     latitude_text_.addValidAngleFormats(
-      resources_.getStringArray(GPSMapKeyConstants.KEY_ANGLE_FORMAT_VALID_FORMATS));
+      resources_.getStringArray(GpsylonKeyConstants.KEY_ANGLE_FORMAT_VALID_FORMATS));
     longitude_text_.clearValidAngleFormats();
     longitude_text_.addValidAngleFormats(
-      resources_.getStringArray(GPSMapKeyConstants.KEY_ANGLE_FORMAT_VALID_FORMATS));
+      resources_.getStringArray(GpsylonKeyConstants.KEY_ANGLE_FORMAT_VALID_FORMATS));
         // set angle format for textfields:
     try
     {
-      latitude_text_.setPrintFormat(resources_.getString(GPSMapKeyConstants.KEY_ANGLE_FORMAT_LATLON));
-      longitude_text_.setPrintFormat(resources_.getString(GPSMapKeyConstants.KEY_ANGLE_FORMAT_LATLON));
+      latitude_text_.setPrintFormat(resources_.getString(GpsylonKeyConstants.KEY_ANGLE_FORMAT_LATLON));
+      longitude_text_.setPrintFormat(resources_.getString(GpsylonKeyConstants.KEY_ANGLE_FORMAT_LATLON));
     }
     catch(IllegalArgumentException e)
     {
@@ -162,8 +162,8 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
     mapserver_box_.setActionCommand(COMMAND_DOWNLOAD_MAPSERVER);
     mapserver_box_.addActionListener(action_listener);
 
-    setDownloadCoordinates(resources.getDouble(GPSMapKeyConstants.KEY_CURRENT_MAP_POSITION_LATITUDE),
-                           resources.getDouble(GPSMapKeyConstants.KEY_CURRENT_MAP_POSITION_LONGITUDE));
+    setDownloadCoordinates(resources.getDouble(GpsylonKeyConstants.KEY_CURRENT_MAP_POSITION_LATITUDE),
+                           resources.getDouble(GpsylonKeyConstants.KEY_CURRENT_MAP_POSITION_LONGITUDE));
     
     JButton download_button = new JButton(resources_.getString(DownloadMouseModeLayer.KEY_LOCALIZE_DOWNLOAD_BUTTON));
     download_button.setActionCommand(COMMAND_DOWNLOAD_DOWNLOAD);
@@ -173,7 +173,7 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
 //      preview_button.setActionCommand(COMMAND_DOWNLOAD_PREVIEW);
 //      preview_button.addActionListener(this);
     
-    final JButton close_button = new JButton(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_CLOSE_BUTTON));
+    final JButton close_button = new JButton(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_CLOSE_BUTTON));
     close_button.setActionCommand(COMMAND_DOWNLOAD_CLOSE);
     close_button.addActionListener(action_listener);
     
@@ -267,7 +267,7 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
     Angle angle = latitude_text_.getAngle();
     if(angle == null)
       throw new ParseException(
-        resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_MESSAGE_LATITUDE_OR_LONGITUDE_WRONG_FORMAT),0);
+        resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_MESSAGE_LATITUDE_OR_LONGITUDE_WRONG_FORMAT),0);
 
     return(angle.degrees());
   }
@@ -286,7 +286,7 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
     Angle angle = longitude_text_.getAngle();
     if(angle == null)
       throw new ParseException(
-        resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_MESSAGE_LONGITUDE_WRONG_FORMAT),0);
+        resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_MESSAGE_LONGITUDE_WRONG_FORMAT),0);
 
     return(angle.degrees());
   }
@@ -304,8 +304,8 @@ public class DownloadFrame extends JFrame implements GPSMapKeyConstants
     if((latitude_text_.getAngle() == null) || (longitude_text_.getAngle() == null))
     {
       JOptionPane.showMessageDialog(this,
-        resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_MESSAGE_LATITUDE_OR_LONGITUDE_WRONG_FORMAT),
-        resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
+        resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_MESSAGE_LATITUDE_OR_LONGITUDE_WRONG_FORMAT),
+        resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
         JOptionPane.ERROR_MESSAGE);
       return(false);
     }

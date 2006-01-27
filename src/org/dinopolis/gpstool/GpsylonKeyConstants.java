@@ -31,7 +31,7 @@ package org.dinopolis.gpstool;
  */
 
 
-public interface GPSMapKeyConstants  
+public interface GpsylonKeyConstants  
 {
 
       // gps device settings
@@ -153,6 +153,7 @@ public interface GPSMapKeyConstants
   public static final String KEY_LOCALIZE_MESSAGE_ERROR_TITLE = "localize.message.error_title";
   public static final String KEY_LOCALIZE_MESSAGE_INFO_TITLE = "localize.message.info_title";
   public static final String KEY_LOCALIZE_MESSAGE_FILE_NOT_FOUND_MESSAGE = "localize.message.file_not_found_message";
+  public static final String KEY_LOCALIZE_MESSAGE_HINT_DOWNLOAD_MAPS = "localize.message.hint_download_maps";
   public static final String KEY_LOCALIZE_LOAD_SHAPE_DIALOG_TITLE = "localize.load_shape.dialog_title";
   public static final String KEY_LOCALIZE_LOAD_LOCATION_DIALOG_TITLE = "localize.load_location.dialog_title";
   public static final String KEY_LOCALIZE_LOAD_PROGRESS = "localize.load_progress";

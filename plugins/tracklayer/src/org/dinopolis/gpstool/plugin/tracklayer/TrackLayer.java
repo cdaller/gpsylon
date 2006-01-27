@@ -29,8 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.TrackManager;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.event.TrackChangedEvent;
 import org.dinopolis.gpstool.event.TrackChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
@@ -154,7 +153,7 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
       track = (Track)track_iterator.next();
       if(Debug.DEBUG)
         Debug.println("trackplugin_paint","painting track "+track.getIdentification());
-      if(track.getIdentification().equals(resources_.getString(GPSMapKeyConstants.KEY_TRACK_ACTIVE_TRACK_IDENTIFIER)))
+      if(track.getIdentification().equals(resources_.getString(GpsylonKeyConstants.KEY_TRACK_ACTIVE_TRACK_IDENTIFIER)))
       {
         g2.setStroke(active_track_line_stroke_);
         g2.setColor(active_track_color_);

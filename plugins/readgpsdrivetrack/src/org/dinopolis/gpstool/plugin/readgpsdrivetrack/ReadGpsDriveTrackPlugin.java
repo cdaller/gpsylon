@@ -28,8 +28,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
 import org.dinopolis.gpstool.track.*;
@@ -47,7 +47,7 @@ import org.dinopolis.util.*;
  * @version $Revision$
  */
 
-public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConstants
+public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GpsylonKeyConstants
 {
 
   Resources resources_;
@@ -56,7 +56,7 @@ public class ReadGpsDriveTrackPlugin implements ReadTrackPlugin, GPSMapKeyConsta
 	private final static String RESOURCE_BUNDLE_NAME = "ReadGpsDriveTrackPlugin";
 
 	/** the name of the directory containing the resources */
-	private final static String USER_RESOURCE_DIR_NAME = GPSMap.USER_RESOURCE_DIR_NAME;
+	private final static String USER_RESOURCE_DIR_NAME = Gpsylon.USER_RESOURCE_DIR_NAME;
 
       // resource keys:
   public static final String KEY_READGPSDRIVETRACK_PLUGIN_IDENTIFIER = "readgpsdrivetrack.plugin.identifier";

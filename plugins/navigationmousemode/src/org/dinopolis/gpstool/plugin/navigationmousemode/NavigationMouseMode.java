@@ -29,8 +29,8 @@ import java.awt.event.*;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapNavigationHook;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.util.Resources;
@@ -80,9 +80,9 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
     map_navigation_hook_ = support.getMapNavigationHook();
     component_ = support.getMapComponent();
     Resources resources = support.getResources();
-    ImageIcon zoom_in = (ImageIcon)resources.getIcon(GPSMapKeyConstants.KEY_CURSOR_ZOOM_IN_ICON);
-    ImageIcon zoom_out = (ImageIcon)resources.getIcon(GPSMapKeyConstants.KEY_CURSOR_ZOOM_OUT_ICON);
-    ImageIcon pan = (ImageIcon)resources.getIcon(GPSMapKeyConstants.KEY_CURSOR_PAN_ICON);
+    ImageIcon zoom_in = (ImageIcon)resources.getIcon(GpsylonKeyConstants.KEY_CURSOR_ZOOM_IN_ICON);
+    ImageIcon zoom_out = (ImageIcon)resources.getIcon(GpsylonKeyConstants.KEY_CURSOR_ZOOM_OUT_ICON);
+    ImageIcon pan = (ImageIcon)resources.getIcon(GpsylonKeyConstants.KEY_CURSOR_PAN_ICON);
     Toolkit toolkit = component_.getToolkit();
     zoom_out_cursor_ = toolkit.createCustomCursor(zoom_out.getImage(),new Point(5,4),"zoom out");
     zoom_in_cursor_ = toolkit.createCustomCursor(zoom_in.getImage(),new Point(5,4),"zoom in");

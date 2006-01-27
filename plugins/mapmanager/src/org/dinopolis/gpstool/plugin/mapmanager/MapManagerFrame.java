@@ -29,8 +29,8 @@ import java.awt.Container;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapManagerHook;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
+import org.dinopolis.gpstool.hook.MapManagerHook;
 import org.dinopolis.util.Resources;
 
 
@@ -43,7 +43,7 @@ import org.dinopolis.util.Resources;
  * @version $Revision$
  */
 
-public class MapManagerFrame extends JFrame implements GPSMapKeyConstants
+public class MapManagerFrame extends JFrame implements GpsylonKeyConstants
 {
   MapInfoTable map_info_table_;
   

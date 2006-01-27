@@ -30,8 +30,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.*;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Debug;
@@ -85,12 +85,12 @@ public class AveragePosFrame extends JFrame implements PropertyChangeListener, A
     average_pos_component_ = new AveragePosComponent();
     content_pane.add(average_pos_component_,BorderLayout.CENTER);
     
-    JButton close_button = new JButton(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_CLOSE_BUTTON));
+    JButton close_button = new JButton(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_CLOSE_BUTTON));
     close_button.setActionCommand(COMMAND_CLOSE);
     close_button.addActionListener(this);
     south_panel.add(close_button);
     
-    JButton clear_button = new JButton(resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_CLEAR_BUTTON));
+    JButton clear_button = new JButton(resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_CLEAR_BUTTON));
     clear_button.setActionCommand(COMMAND_CLEAR);
     clear_button.addActionListener(this);
     south_panel.add(clear_button);
@@ -160,7 +160,7 @@ public class AveragePosFrame extends JFrame implements PropertyChangeListener, A
   public void propertyChange(PropertyChangeEvent event)
   {
     String name = event.getPropertyName();
-    if(name.equals(GPSMap.PROPERTY_KEY_GPS_ALTITUDE))
+    if(name.equals(Gpsylon.PROPERTY_KEY_GPS_ALTITUDE))
     {
       Float altitude = (Float)event.getNewValue();
       if(altitude != null)
@@ -168,7 +168,7 @@ public class AveragePosFrame extends JFrame implements PropertyChangeListener, A
 //       if(altitude != null)
 //         current_altitude_ = altitude.floatValue();
     }
-    if(name.equals(GPSMap.PROPERTY_KEY_GPS_LOCATION))
+    if(name.equals(Gpsylon.PROPERTY_KEY_GPS_LOCATION))
     {
       LatLonPoint tmp_point = (LatLonPoint)event.getNewValue();
 //       System.out.println("TrackLayer, propertyChange: old: "+event.getOldValue()+" new:"+

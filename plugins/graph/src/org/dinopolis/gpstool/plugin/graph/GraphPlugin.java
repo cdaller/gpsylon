@@ -30,11 +30,11 @@ import java.util.MissingResourceException;
 
 import javax.swing.*;
 
-import org.dinopolis.gpstool.MapNavigationHook;
-import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gui.MouseMode;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.track.TrackManager;
 import org.dinopolis.gpstool.track.Trackpoint;
 import org.dinopolis.util.*;
 import org.dinopolis.util.gui.ActionStore;
@@ -66,7 +66,7 @@ public class GraphPlugin implements GuiPlugin
 	protected JMenu frame_menu_;
 	/** the resources of the graph plugin */
 	protected Resources resources_;
-	/** the resources of the GPSMap application */
+	/** the resources of the GPSylon application */
 	protected Resources application_resources_;
 
 //	protected TrackChooser track_chooser_;

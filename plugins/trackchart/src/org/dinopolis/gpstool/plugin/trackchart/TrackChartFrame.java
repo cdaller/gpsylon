@@ -34,10 +34,10 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.TrackManager;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.gui.util.TrackListComboBoxModel;
 import org.dinopolis.gpstool.track.Track;
+import org.dinopolis.gpstool.track.TrackManager;
 import org.dinopolis.gpstool.track.Trackpoint;
 import org.dinopolis.gpstool.util.GeoMath;
 import org.dinopolis.gpstool.util.UnitHelper;
@@ -90,7 +90,7 @@ public class TrackChartFrame extends JFrame implements ActionListener
       chart_panel_.setMouseZoomable(true,false);
 
       JPanel north_panel = new JPanel(new FlowLayout());
-      north_panel.add(new JLabel(application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_TRACK)),
+      north_panel.add(new JLabel(application_resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_TRACK)),
                       BorderLayout.NORTH);
       track_box_ = new JComboBox(new TrackListComboBoxModel(track_manager));
       track_box_.addActionListener(this);
@@ -139,12 +139,12 @@ public class TrackChartFrame extends JFrame implements ActionListener
     }
       
     XYSeriesCollection data = new XYSeriesCollection(xy_series);
-    String chart_title = application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_TRACK)
+    String chart_title = application_resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_TRACK)
                          + " '" + track.getIdentification() +"' - "+
-                         application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_ALTITUDE);
-    String title_distance =  application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_DISTANCE)
+                         application_resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_ALTITUDE);
+    String title_distance =  application_resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_DISTANCE)
                              + " ["+unit_helper_.getDistanceUnit()+"]";
-    String title_altitude =  application_resources_.getString(GPSMapKeyConstants.KEY_LOCALIZE_ALTITUDE)
+    String title_altitude =  application_resources_.getString(GpsylonKeyConstants.KEY_LOCALIZE_ALTITUDE)
                               + " ["+unit_helper_.getAltitudeUnit()+"]";
     JFreeChart chart = 
       ChartFactory.createLineXYChart(chart_title, title_distance, title_altitude,

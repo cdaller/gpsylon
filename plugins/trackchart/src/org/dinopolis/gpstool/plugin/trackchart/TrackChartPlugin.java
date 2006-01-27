@@ -28,11 +28,11 @@ import java.util.MissingResourceException;
 
 import javax.swing.*;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.TrackManager;
+import org.dinopolis.gpstool.Gpsylon;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.track.TrackManager;
 import org.dinopolis.util.*;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
@@ -55,7 +55,7 @@ public class TrackChartPlugin implements GuiPlugin
 	protected JMenuItem plugin_menu_item_;
 	/** the resources of the track plugin */
 	protected Resources resources_;
-	/** the resources of the GPSMap application */
+	/** the resources of the GPSylon application */
 	protected Resources application_resources_;
 	/** the action store */
 	protected ActionStore action_store_;
@@ -78,7 +78,7 @@ public class TrackChartPlugin implements GuiPlugin
 	private final static String RESOURCE_BUNDLE_NAME = "TrackChartPlugin";
 
 	/** the name of the directory containing the resources */
-	private final static String USER_RESOURCE_DIR_NAME = GPSMap.USER_RESOURCE_DIR_NAME;
+	private final static String USER_RESOURCE_DIR_NAME = Gpsylon.USER_RESOURCE_DIR_NAME;
 
 	public static final String TRACKCHART_ACTION_STORE_ID = RESOURCE_BUNDLE_NAME;
 

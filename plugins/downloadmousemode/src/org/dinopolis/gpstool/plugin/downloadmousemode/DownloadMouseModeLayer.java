@@ -34,6 +34,9 @@ import javax.swing.JOptionPane;
 import org.dinopolis.gpstool.*;
 import org.dinopolis.gpstool.gui.util.AngleJTextField;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
+import org.dinopolis.gpstool.hook.MapManagerHook;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
+import org.dinopolis.gpstool.map.MapInfo;
 import org.dinopolis.gpstool.plugin.MapRetrievalPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.FileUtil;
@@ -63,7 +66,7 @@ import com.bbn.openmap.proj.Projection;
  */
 
 public class DownloadMouseModeLayer extends BasicLayer
-  implements ActionListener, FocusListener, GPSMapKeyConstants, ProgressListener
+  implements ActionListener, FocusListener, GpsylonKeyConstants, ProgressListener
 {
 
   GeoScreenPoint mouse_drag_start_;
@@ -108,7 +111,7 @@ public class DownloadMouseModeLayer extends BasicLayer
   private final static String RESOURCE_BUNDLE_NAME = "DownloadMouseMode";
 
       /** the name of the directory containing the resources */
-  private final static String USER_RESOURCE_DIR_NAME = GPSMap.USER_RESOURCE_DIR_NAME;
+  private final static String USER_RESOURCE_DIR_NAME = Gpsylon.USER_RESOURCE_DIR_NAME;
 
       // properties keys:
   public static final String KEY_LOCALIZE_DOWNLOADFRAME_TITLE = "localize.downloadframe_title";
@@ -155,7 +158,7 @@ public class DownloadMouseModeLayer extends BasicLayer
 
     try
     {
-          // prevent any "old" values in the gpsmap resources to confuse
+          // prevent any "old" values in the gpssylon resources to confuse
           // this plugin:
       application_resources_.unset("download.map.url.choice");
     }
@@ -387,7 +390,7 @@ public class DownloadMouseModeLayer extends BasicLayer
   public void downloadMap(MapRectangle map_rectangle)
   {
     if(Debug.DEBUG)
-      Debug.println("GPSMap_downloadmap","try to download map lat:"+map_rectangle.getLatitude()
+      Debug.println("GPSmap_downloadmap","try to download map lat:"+map_rectangle.getLatitude()
                     +" long:"+map_rectangle.getLongitude()
                     +" scale="+map_rectangle.getScale());
 
@@ -773,7 +776,7 @@ public class DownloadMouseModeLayer extends BasicLayer
 
     public DownloadThread(DownloadInfoQueue queue)
     {
-      super("gpsmap download thread");
+      super("gpsylon download thread");
       setDaemon(true);
       queue_ = queue;
     }

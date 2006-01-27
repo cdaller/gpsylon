@@ -28,8 +28,7 @@ import java.util.MissingResourceException;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.TrackManager;
+import org.dinopolis.gpstool.Gpsylon;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
@@ -55,7 +54,7 @@ public class TrackPlugin implements GuiPlugin
 	protected JMenuItem load_tracks_menu_item_;
 	/** the resources of the track plugin */
 	protected Resources resources_;
-	/** the resources of the GPSMap application */
+	/** the resources of the GPSylon application */
 	protected Resources application_resources_;
 	/** the action store */
 	protected ActionStore action_store_;
@@ -92,7 +91,7 @@ public class TrackPlugin implements GuiPlugin
 	private final static String RESOURCE_BUNDLE_NAME = "TrackPlugin";
 
 	/** the name of the directory containing the resources */
-	private final static String USER_RESOURCE_DIR_NAME = GPSMap.USER_RESOURCE_DIR_NAME;
+	private final static String USER_RESOURCE_DIR_NAME = Gpsylon.USER_RESOURCE_DIR_NAME;
 
 	public static final String TRACK_ACTION_STORE_ID = RESOURCE_BUNDLE_NAME;
 
@@ -119,7 +118,7 @@ public class TrackPlugin implements GuiPlugin
 
     try
     {
-          // prevent any "old" values in the gpsmap resources to confuse
+          // prevent any "old" values in the gpsylon resources to confuse
           // this plugin:
       application_resources_.unset(TrackLayer.KEY_TRACK_LAYER_ACTIVE);
     }
@@ -1031,11 +1030,11 @@ public class TrackPlugin implements GuiPlugin
 //       super(ACTION_LOAD_TRACK);
 //             // find all available track reader plugins:
 //             // (do not use a string here, so the compiler checks for typos)
-//       Object[] plugins = GPSMap.service_discovery_.getServices(
+//       Object[] plugins = Gpsylon.service_discovery_.getServices(
 //         org.dinopolis.gpstool.plugin.ReadTrackPlugin.class);
-//           // add ReadGPSMapTrackPlugin by hand:
+//           // add ReadGpsylonTrackPlugin by hand:
 //       plugins_ = new Object[plugins.length + 1];
-//       plugins_[0] = new ReadGPSMapTrackPlugin();
+//       plugins_[0] = new ReadGpsylonTrackPlugin();
 //       System.arraycopy(plugins,0,plugins_,1,plugins.length);
       
 //       if(Debug.DEBUG)
@@ -1127,7 +1126,7 @@ public class TrackPlugin implements GuiPlugin
 //         if(!display_track_)
 //         {
 //               // enable "display track", otherwise we do not see the new loaded tracks!
-//           Action action = action_store_.getAction(GPSMap.ACTION_DISPLAY_TRACK_MODE);
+//           Action action = action_store_.getAction(Gpsylon.ACTION_DISPLAY_TRACK_MODE);
 //           if(action != null)
 //             action.putValue(MenuFactory.SELECTED, new Boolean(true));
 //           display_track_ = true;

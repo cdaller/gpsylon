@@ -23,7 +23,7 @@
 
 
 package org.dinopolis.gpstool.plugin.mapmanager;
-import org.dinopolis.gpstool.MapInfo;
+import org.dinopolis.gpstool.map.MapInfo;
 
 /**
  * Helper interface for all table like classes that hold MapInfo objects in

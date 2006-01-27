@@ -24,8 +24,8 @@
 
 package org.dinopolis.gpstool.plugin.mapmanager;
 
-import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.gui.util.TableSorter;
+import org.dinopolis.gpstool.map.MapInfo;
 
 /**
  * This class sorts the map info table.

@@ -38,11 +38,11 @@ import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.TrackManager;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.gui.MouseMode;
-import org.dinopolis.gpstool.track.ReadGPSMapTrackPlugin;
+import org.dinopolis.gpstool.track.ReadGpsylonTrackPlugin;
+import org.dinopolis.gpstool.track.TrackManager;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
@@ -84,7 +84,7 @@ public class ImportExportPlugin implements GuiPlugin
 	private final static String RESOURCE_BUNDLE_NAME = "ImportExportPlugin";
 
 	/** the name of the directory containing the resources */
-	private final static String USER_RESOURCE_DIR_NAME = GPSMap.USER_RESOURCE_DIR_NAME;
+	private final static String USER_RESOURCE_DIR_NAME = Gpsylon.USER_RESOURCE_DIR_NAME;
 
 	public static final String TRACK_ACTION_STORE_ID = RESOURCE_BUNDLE_NAME;
 
@@ -366,9 +366,9 @@ public class ImportExportPlugin implements GuiPlugin
           // (do not use a string here, so the compiler checks for typos)
       Object[] plugins = service_discovery_.getServices(
         org.dinopolis.gpstool.plugin.ReadTrackPlugin.class);
-          // add ReadGPSMapTrackPlugin by hand:
+          // add ReadGpsylonTrackPlugin by hand:
       plugins_ = new Object[plugins.length + 1];
-      plugins_[0] = new ReadGPSMapTrackPlugin();
+      plugins_[0] = new ReadGpsylonTrackPlugin();
       System.arraycopy(plugins,0,plugins_,1,plugins.length);
    
       if(Debug.DEBUG)
@@ -400,8 +400,8 @@ public class ImportExportPlugin implements GuiPlugin
         track_file_chooser_.setMultiSelectionEnabled(true);
         track_file_chooser_.setFileHidingEnabled(false);
         String tracks_dirname = FileUtil.getAbsolutePath(
-          application_resources_.getString(GPSMapKeyConstants.KEY_FILE_MAINDIR),
-          application_resources_.getString(GPSMapKeyConstants.KEY_FILE_TRACK_DIR));
+          application_resources_.getString(GpsylonKeyConstants.KEY_FILE_MAINDIR),
+          application_resources_.getString(GpsylonKeyConstants.KEY_FILE_TRACK_DIR));
         track_file_chooser_.setCurrentDirectory(new File(tracks_dirname));
 
             // use all ReadTrackPlugin plugins to build extension file filters:

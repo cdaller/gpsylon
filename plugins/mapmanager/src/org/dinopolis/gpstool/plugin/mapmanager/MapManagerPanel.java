@@ -27,8 +27,8 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapManagerHook;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
+import org.dinopolis.gpstool.hook.MapManagerHook;
 import org.dinopolis.util.Resources;
 
 
@@ -41,7 +41,7 @@ import org.dinopolis.util.Resources;
  * @version $Revision$
  */
 
-public class MapManagerPanel extends JPanel implements GPSMapKeyConstants
+public class MapManagerPanel extends JPanel implements GpsylonKeyConstants
 {
 
   MapInfoTable map_info_table_;

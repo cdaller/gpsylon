@@ -29,9 +29,8 @@ import java.util.*;
 
 import javax.swing.*;
 
-import org.dinopolis.gpstool.MapNavigationHook;
-import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gui.MouseMode;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.track.*;
@@ -62,7 +61,7 @@ public class ModifyTracksPlugin implements GuiPlugin//,ListSelectionListener
 	protected JMenu frame_menu_;
 	/** the resources of the track plugin */
 	protected Resources resources_;
-	/** the resources of the GPSMap application */
+	/** the resources of the GPSylon application */
 	protected Resources application_resources_;
 
 //	protected TrackChooser track_chooser_;

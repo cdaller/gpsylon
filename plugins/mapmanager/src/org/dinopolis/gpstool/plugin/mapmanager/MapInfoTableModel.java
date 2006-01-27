@@ -28,9 +28,9 @@ import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.dinopolis.gpstool.MapInfo;
 import org.dinopolis.gpstool.event.MapsChangedEvent;
 import org.dinopolis.gpstool.event.MapsChangedListener;
+import org.dinopolis.gpstool.map.MapInfo;
 import org.dinopolis.gpstool.util.angle.Latitude;
 import org.dinopolis.gpstool.util.angle.Longitude;
 

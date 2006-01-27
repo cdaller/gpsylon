@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.gpsinput.ReadGPX;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
+import org.dinopolis.gpstool.gpx.ReadGPX;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
 import org.dinopolis.gpstool.track.Track;
@@ -50,7 +50,7 @@ import java.util.List;
  * @version $Revision$
  */
 
-public class ReadGPXPlugin extends ReadGPX implements ReadTrackPlugin, GPSMapKeyConstants 
+public class ReadGPXPlugin extends ReadGPX implements ReadTrackPlugin, GpsylonKeyConstants 
 {
 
   Resources resources_;
@@ -59,7 +59,7 @@ public class ReadGPXPlugin extends ReadGPX implements ReadTrackPlugin, GPSMapKey
 	private final static String RESOURCE_BUNDLE_NAME = "ReadGPXPlugin";
 
 	/** the name of the directory containing the resources */
-	private final static String USER_RESOURCE_DIR_NAME = GPSMap.USER_RESOURCE_DIR_NAME;
+	private final static String USER_RESOURCE_DIR_NAME = Gpsylon.USER_RESOURCE_DIR_NAME;
 
       // resource keys:
   public static final String KEY_READGPX_PLUGIN_IDENTIFIER = "readgpx.plugin.identifier";

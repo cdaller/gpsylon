@@ -28,9 +28,9 @@ import java.util.Vector;
 
 import javax.swing.Icon;
 
-import org.dinopolis.gpstool.MapInfo;
-import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.gui.MouseMode;
+import org.dinopolis.gpstool.hook.MapManagerHook;
+import org.dinopolis.gpstool.map.MapInfo;
 import org.dinopolis.util.Resources;
 
 import com.bbn.openmap.LatLonPoint;

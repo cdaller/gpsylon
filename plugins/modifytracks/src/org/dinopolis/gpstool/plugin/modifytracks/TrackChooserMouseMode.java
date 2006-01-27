@@ -26,8 +26,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
 
-import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gui.MouseMode;
+import org.dinopolis.gpstool.track.TrackManager;
 import org.dinopolis.gpstool.track.Trackpoint;
 import org.dinopolis.util.Resources;
 

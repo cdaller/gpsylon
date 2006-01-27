@@ -31,12 +31,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import org.dinopolis.gpstool.MapInfo;
-import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.event.MapsChangedEvent;
 import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.gui.util.ImageInfo;
+import org.dinopolis.gpstool.hook.MapManagerHook;
+import org.dinopolis.gpstool.map.MapInfo;
 
 
 

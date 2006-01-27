@@ -1,6 +1,22 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
-2005/01/23: changed from javax.comm to gnu.io, due to a new incompatible
+2006/01/26: Lots of refactoring: 
+              Moved the GPSTool application out of the gpsinput package.
+              
+              Renamed application class from GPSMap to Gpsylon.
+              
+              Moved helper classes from org.dinopolis.gpstool package to 
+              subpackages. Ony the applications stayed there.
+            
+            Made separate jars for utils, gpsinput (communication with gps 
+            devices), gpstool (command line application), gpsylon (moving map
+            application).
+            
+            Renamed the resource files from ~/.gpsmap/GPSMap.properties to
+            ~/.gpsylon/Gpsylon.properties - on upgrade please copy your 
+            private settings to the new location/name.
+
+2006/01/23: changed from javax.comm to gnu.io, due to a new incompatible
             java commapi from sun.
             
             changed the garmin's thread stop: threads are now interrupted

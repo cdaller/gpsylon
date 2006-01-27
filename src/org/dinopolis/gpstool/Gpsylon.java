@@ -22,9 +22,6 @@
 
 package org.dinopolis.gpstool;
 
-//import org.dinopolis.gpstool.alarm.AlarmConditionManager;
-//import org.dinopolis.gpstool.gui.MapKeyHandler;
-//import org.dinopolis.gpstool.gui.layer.TrackLayer;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
@@ -95,13 +92,20 @@ import org.dinopolis.gpstool.gui.layer.MultiMapLayer;
 import org.dinopolis.gpstool.gui.layer.PositionLayer;
 import org.dinopolis.gpstool.gui.layer.ScaleLayer;
 import org.dinopolis.gpstool.gui.layer.ShapeLayer;
+import org.dinopolis.gpstool.hook.HookManager;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
+import org.dinopolis.gpstool.hook.StatusHook;
+import org.dinopolis.gpstool.map.MapInfo;
+import org.dinopolis.gpstool.map.MapManager;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.MouseModePlugin;
 import org.dinopolis.gpstool.plugin.WriteImagePlugin;
 import org.dinopolis.gpstool.projection.FlatProjection;
+import org.dinopolis.gpstool.track.TrackManagerImpl;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
 import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.gpstool.util.GeoMath;
+import org.dinopolis.gpstool.util.Positionable;
 import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.ResourceManager;
@@ -126,13 +130,13 @@ import org.dinopolis.util.servicediscovery.ServiceDiscovery;
  * @version $Revision$
  */
 
-public class GPSMap
-  implements PropertyChangeListener, GPSMapKeyConstants, 
+public class Gpsylon
+  implements PropertyChangeListener, GpsylonKeyConstants, 
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSMAP_VERSION = "0.4.15-pre10";
-  private final static String GPSMAP_CVS_VERSION = "$Revision$";
+  public final static String GPSYLON_VERSION = "0.5";
+  private final static String GPSYLON_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
 
@@ -191,23 +195,26 @@ public class GPSMap
   private GPSDataProcessor gps_data_processor_;
 
       /** the identifier used in the action store */
-  public final static String ACTION_STORE_ID = "GPSMap";
+  public final static String ACTION_STORE_ID = "Gpsylon";
 
       /** the name of the resource file */
-  private final static String RESOURCE_BOUNDLE_NAME = "GPSMap";
+  private final static String RESOURCE_BOUNDLE_NAME = "Gpsylon";
 
       /** the name of the directory containing the resources */
-  public final static String USER_RESOURCE_DIR_NAME = ".gpsmap";
+  public final static String USER_RESOURCE_DIR_NAME = ".gpsylon";
 
       /** the action store */
   private ActionStore action_store_;
 
       /** the log4j logger */
-  public static Logger logger_;
+  private static Logger logger_;
+  private static Logger logger_plugin_;
+  private static Logger logger_connection_;
+  private static Logger logger_gpsdata_;
 
   protected boolean simulation_mode_ = false;
 
-      /** print warning to restart GPSMap if gps properties were changed */
+      /** print warning to restart GPSylon if gps properties were changed */
   protected boolean print_gps_device_properties_warning_ = false;
   
       /** the service discoverer (for plugin functionality) */
@@ -351,13 +358,13 @@ public class GPSMap
 
 
 //----------------------------------------------------------------------
-// The GPSMap class
+// The Gpsylon class
 //----------------------------------------------------------------------
 
   static
   {
     String log_file = "log4j.properties"; // searched in classpath (auxiliary directory!)
-    URL log_url = org.dinopolis.gpstool.GPSMap.class.getResource("/" + log_file);
+    URL log_url = org.dinopolis.gpstool.Gpsylon.class.getResource("/" + log_file);
 //    System.out.println("Log4j configuration url: "+log_url);
     if(log_url != null)
     {
@@ -375,7 +382,10 @@ public class GPSMap
     else
       System.err.println("WARNING: Could not find log4j configuration file: '"
                          +log_file+"' - logging disabled.");
-    logger_ = Logger.getLogger("org.dinopolis.gpstool.GPSMap");
+    logger_ = Logger.getLogger(Gpsylon.class);
+    logger_plugin_ = Logger.getLogger(Gpsylon.class+".connection");
+    logger_connection_ = Logger.getLogger(Gpsylon.class+".plugin");
+    logger_gpsdata_ = Logger.getLogger(Gpsylon.class+".gpsdata");
   }
 
 
@@ -384,7 +394,7 @@ public class GPSMap
 /**
  * Empty Constructor
  */
-  public GPSMap()
+  public Gpsylon()
   {
     this(new String[]{});
   }
@@ -396,10 +406,10 @@ public class GPSMap
  *
  * @param args command line argument (see printHelp for details)
  */
-  public GPSMap(String[] args)
+  public Gpsylon(String[] args)
   {
 
-    System.out.println("GPSylon V"+GPSMAP_VERSION);
+    System.out.println("GPSylon V"+GPSYLON_VERSION);
     System.out.println("by Christof Dallermassl (christof@dallermassl.at)");
     System.out.println("latest version at: http://gpsmap.sourceforge.net");
     System.out.println("using");
@@ -415,7 +425,7 @@ public class GPSMap
     loadResources();
     int splash_progress = 0;
     int splash_max_progress = resources_.getInt(KEY_SPLASH_MAX_PROGRESS,splash_progress);
-    SplashScreen splash_screen = new SplashScreen(resources_.getIcon(KEY_SPLASH_IMAGE),-1,
+    SplashScreen splash_screen = new SplashScreen(resources_.getIcon(KEY_SPLASH_IMAGE),30000,
                                                   0,splash_max_progress);
     
     setLocale();
@@ -470,7 +480,7 @@ public class GPSMap
         // Create a Swing frame.  The OpenMapFrame knows how to use
         // the MapHandler to locate and place certain objects.
 //    main_frame_ = new OpenMapFrame("GPS Map");
-    main_frame_ = new JFrame("GPSylon V"+GPSMAP_VERSION);
+    main_frame_ = new JFrame("GPSylon V"+GPSYLON_VERSION);
         // Size the frame appropriately
     main_frame_.setSize(640, 480);
     
@@ -738,7 +748,7 @@ public class GPSMap
     try 
     {
       resources_ =
-        ResourceManager.getResources(GPSMap.class,
+        ResourceManager.getResources(Gpsylon.class,
                                      RESOURCE_BOUNDLE_NAME,
                                      USER_RESOURCE_DIR_NAME,
                                      Locale.getDefault());
@@ -1106,14 +1116,14 @@ public class GPSMap
 
   public void printHelp()
   {
-    System.out.println("GPSMap "+GPSMAP_VERSION);
+    System.out.println("GPSylon "+GPSYLON_VERSION);
     System.out.println("Written by Christof Dallermassl in 2006");
-    System.out.println("email: cdaller@iicm.edu");
+    System.out.println("email: christof@dallermassl.at");
     System.out.println("This Programm is licenced under the GPL");
     System.out.println("Comments are welcomed!");
     System.out.println("");
     System.out.println("Usage:");
-    System.out.println("GPSMap [options]");
+    System.out.println("Gpsylon [options]");
     System.out.println();
     System.out.println("Available Options:");
     System.out.println("--help, -h: this screen");
@@ -1135,7 +1145,7 @@ public class GPSMap
     System.out.println("If you want to switch between previously setup serial/file/gpsd settings,");
     System.out.println("you can do this by the use of the --file, --serial, --gpsd switches.");
     System.out.println("");
-    System.out.println("The given commandline options are overwriting the settings in the property file (~/.gpsmap/GPSMap.properties) and are stored there at termination of the program.");
+    System.out.println("The given commandline options are overwriting the settings in the property file (~/.gpsylon/Gpsylon.properties) and are stored there at termination of the program.");
     System.out.println();
     System.out.println("Have fun!");
   }
@@ -1152,7 +1162,7 @@ public class GPSMap
 
   public void propertyChange(PropertyChangeEvent event)
   {
-    Logger.getLogger("org.dinopolis.gpstool.GPSMap.propertychange")
+    Logger.getLogger(Gpsylon.class + ".propertychange")
       .debug("property change event: "
              +event.getPropertyName()+"="+event.getNewValue()
              +" from "+event.getSource());
@@ -1204,8 +1214,8 @@ public class GPSMap
                                             old_gps_pos,new_gps_pos);
         new_event.setPropagationId(event.getPropagationId());
 
-        Logger.getLogger("org.dinopolis.gpstool.GPSMap.gpsdata")
-          .debug("gps event: position old="
+        if(logger_gpsdata_.isDebugEnabled())
+          logger_gpsdata_.debug("gps event: position old="
                         +old_gps_pos+", new="+new_gps_pos);
 //         if(Debug.DEBUG)
 //           Debug.println("GPSMap_GPSdata","gps event: position old="
@@ -1216,8 +1226,8 @@ public class GPSMap
         new_event = new PropertyChangeEvent(this,event.getPropertyName(),
                                             event.getOldValue(),event.getNewValue());
         new_event.setPropagationId(event.getPropagationId());
-        Logger.getLogger("org.dinopolis.gpstool.GPSMap.gpsdata")
-          .debug("gps event: '"+event.getPropertyName()+"': old="
+        if(logger_gpsdata_.isDebugEnabled())
+          logger_gpsdata_.debug("gps event: '"+event.getPropertyName()+"': old="
                       +event.getOldValue()+" new="+event.getNewValue());
 //         Debug.println("GPSMap_GPSdata","gps event: '"+event.getPropertyName()+"': old="
 //                       +event.getOldValue()+" new="+event.getNewValue());
@@ -1241,9 +1251,7 @@ public class GPSMap
       if(destination != null)
       {
         destination_position_ = new LatLonPoint(destination);
-
-
-        Logger.getLogger("org.dinopolis.gpstool.GPSMap_Destination")
+        Logger.getLogger(Gpsylon.class + ".destination")
           .debug("new destination: "+event.getNewValue());
 //         if(Debug.DEBUG)
 //           Debug.println("GPSMap_Destination","new destination: "+event.getNewValue());
@@ -1319,9 +1327,9 @@ public class GPSMap
 
         // find location of my jar:
     String class_name_path = this.getClass().getName().replace('.','/') + ".class"; // TODO check under windows!
-    URL url = GPSMap.class.getClassLoader().getResource(class_name_path);
+    URL url = Gpsylon.class.getClassLoader().getResource(class_name_path);
         // the resulting url looks like
-        // "jar:file:/home/cdaller/gpstool/gpstool.jar!/org/dinopolis/gpstool/GPSMap.class"
+        // "jar:file:/home/cdaller/gpstool/gpstool.jar!/org/dinopolis/gpstool/Gpsylon.class"
     if(url.getProtocol().startsWith("jar"))
     {
       String url_path = url.getPath();
@@ -1330,18 +1338,18 @@ public class GPSMap
       int protocol_end = url_path.indexOf(':');
       String dir_name = url_path.substring(protocol_end+1,dir_name_end);
 
-			try
-			{
-					// fix escaped characters from url (e.g. spaces) in dirname:
-				dir_name = URLDecoder.decode(dir_name,"UTF-8");
-			}
-			catch(UnsupportedEncodingException uee)
-			{
-				uee.printStackTrace();
-			}
-
-      Logger.getLogger("org.dinopolis.gpstool.GPSMap.plugin")
-        .debug("URL of my class :"+url+", dir of jar is "+dir_name);
+      try
+      {
+        // fix escaped characters from url (e.g. spaces) in dirname:
+        dir_name = URLDecoder.decode(dir_name,"UTF-8");
+      }
+      catch(UnsupportedEncodingException uee)
+      {
+        uee.printStackTrace();
+      }
+      
+      if(logger_plugin_.isDebugEnabled())
+        logger_plugin_.debug("URL of my class :"+url+", dir of jar is "+dir_name);
 //       if(Debug.DEBUG)
 //         Debug.println("plugin","URL of my class :"+url+", dir of jar is "+dir_name);
       repository = FileUtil.getAbsolutePath(dir_name,STD_PLUGINS_DIR_NAME);
@@ -1367,8 +1375,8 @@ public class GPSMap
     }
           // adding default plugin dir:
     repository_class_loader_.addRepository(repository);
-    Logger.getLogger("org.dinopolis.gpstool.GPSMap.plugin")
-      .debug("Adding default plugin dir: "+repository);
+    if(logger_plugin_.isDebugEnabled())
+      logger_plugin_.debug("Adding default plugin dir: "+repository);
 //     if(Debug.DEBUG)
 //       Debug.println("plugin","Adding default plugin dir: "+repository);
     repository_set.add(repository);
@@ -1381,15 +1389,15 @@ public class GPSMap
       repository = FileUtil.getAbsolutePath(resources_.getString(KEY_FILE_MAINDIR),repository);
       if(repository_set.contains(repository))
       {
-        Logger.getLogger("org.dinopolis.gpstool.GPSMap.plugin")
-          .debug("Ignoring duplicate plugin/service repository: "+repository);
+        if(logger_plugin_.isDebugEnabled())
+          logger_plugin_.debug("Ignoring duplicate plugin/service repository: "+repository);
 //         if(Debug.DEBUG)
 //           Debug.println("plugin","Ignoring duplicate plugin/service repository: "+repository);
       }
       else
       {
-        Logger.getLogger("org.dinopolis.gpstool.GPSMap.plugin")
-          .debug("Adding repository for plugin/service jars: "+repository);
+        if(logger_plugin_.isDebugEnabled())
+          logger_plugin_.debug("Adding repository for plugin/service jars: "+repository);
 //         if(Debug.DEBUG)
 //           Debug.println("plugin","Adding repository for plugin/service jars: "+repository);
         repository_set.add(repository);
@@ -1654,8 +1662,8 @@ public class GPSMap
       
       if(simulation_mode_)
       {
-        Logger.getLogger("org.dinopolis.gpstool.GPSMap.connection")
-          .debug("create new simulation processor");
+        if(logger_connection_.isDebugEnabled())
+          logger_connection_.debug("create new simulation processor");
 //         if(Debug.DEBUG)
 //           Debug.println("GPSMap_GPSConnection","create new simulation processor");
         gps_data_processor_ = new GPSSimulationDataProcessor();
@@ -1678,8 +1686,8 @@ public class GPSMap
           boolean ignore_checksum = resources_.getBoolean(KEY_GPS_DEVICE_NMEA_IGNORE_CHECKSUM);
           ((GPSNmeaDataProcessor)gps_data_processor_).setIgnoreInvalidChecksum(ignore_checksum);
           gps_data_processor_.setGPSDevice(gps_device);
-          Logger.getLogger("org.dinopolis.gpstool.GPSMap.connection")
-            .debug("connecting to gpsfile: " +filename);
+          if(logger_connection_.isDebugEnabled())
+            logger_connection_.debug("connecting to gpsfile: " +filename);
 //           if(Debug.DEBUG)
 //             Debug.println("GPSMap_GPSConnection","connecting to gpsfile: "
 //                           +filename);
@@ -1693,8 +1701,8 @@ public class GPSMap
 
             if(gps_protocol.equals(VALUE_KEY_DEVICE_PROTOCOL_NMEA))
             {
-              Logger.getLogger("org.dinopolis.gpstool.GPSMap.connection")
-                .debug("connecting to nmea device");
+              if(logger_connection_.isDebugEnabled())
+                logger_connection_.debug("connecting to nmea device");
 //               if(Debug.DEBUG)
 //                 Debug.println("GPSMap_GPSConnection","connecting to nmea device");
               gps_data_processor_ = new GPSNmeaDataProcessor();
@@ -1713,8 +1721,8 @@ public class GPSMap
             }
             else
             {
-              Logger.getLogger("org.dinopolis.gpstool.GPSMap.connection")
-                .debug("connecting to garmin device");
+              if(logger_connection_.isDebugEnabled())
+                logger_connection_.debug("connecting to garmin device");
 //               if(Debug.DEBUG)
 //                 Debug.println("GPSMap_GPSConnection","connecting to garmin device");
               gps_data_processor_ = new GPSGarminDataProcessor();
@@ -1735,8 +1743,8 @@ public class GPSMap
 
             gps_device.init(environment);
             gps_data_processor_.setGPSDevice(gps_device);
-              Logger.getLogger("org.dinopolis.gpstool.GPSMap.connection")
-                .debug("connecting to gpsdevice on port "
+            if(logger_connection_.isDebugEnabled())
+              logger_connection_.debug("connecting to gpsdevice on port "
                             +serial_port_name +" at "+serial_port_speed+" baud");
 //             if(Debug.DEBUG)
 //               Debug.println("GPSMap_GPSConnection","connecting to gpsdevice on port "
@@ -1764,8 +1772,8 @@ public class GPSMap
             
               gps_device.init(environment);
               gps_data_processor_.setGPSDevice(gps_device);
-              Logger.getLogger("org.dinopolis.gpstool.GPSMap.connection")
-                .debug("connecting to gpsdevice on host "
+              if(logger_connection_.isDebugEnabled())
+                logger_connection_.debug("connecting to gpsdevice on host "
                               +gpsd_hostname+":"+gpsd_port);
 //               if(Debug.DEBUG)
 //                 Debug.println("GPSMap_GPSConnection","connecting to gpsdevice on host "
@@ -2209,7 +2217,7 @@ public class GPSMap
   public static void main(String[] args)
   {
         //com.bbn.openmap.util.Debug.init(); // enable openmap debug info
-    new GPSMap(args);
+    new Gpsylon(args);
   }
 
       //----------------------------------------------------------------------
@@ -2289,7 +2297,7 @@ public class GPSMap
   
     public void propertyChange(PropertyChangeEvent event)
     {
-      if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_HEADING))
+      if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_HEADING))
       {
         use_gps_heading_ = true; // gps receiver sends heading, so use it from now on!
 //	System.out.println("GPS device provides heading, using it.");
@@ -2298,7 +2306,7 @@ public class GPSMap
                                                     event.getNewValue());
         return;
       }
-      if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_SPEED))
+      if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_SPEED))
       {
             // alternative method to calculate distance, little less
             // accurate than using the location!:
@@ -2320,7 +2328,7 @@ public class GPSMap
                                                     event.getNewValue());
         return;
       }
-      if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_LOCATION))
+      if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_LOCATION))
       {
         long new_time = System.currentTimeMillis();
         long time_diff = new_time - old_time_;
@@ -2719,7 +2727,7 @@ public class GPSMap
     {
 //      System.out.println("simulation mode action called");
       simulation_mode_ = !simulation_mode_;
-      Action action = action_store_.getAction(GPSMap.ACTION_SIMULATION_MODE);
+      Action action = action_store_.getAction(Gpsylon.ACTION_SIMULATION_MODE);
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(simulation_mode_));
 
@@ -2873,7 +2881,7 @@ public class GPSMap
     public void actionPerformed(ActionEvent event)
     {
 //      System.out.println("simulation mode action called");
-      Action action = action_store_.getAction(GPSMap.ACTION_SET_SCALE);
+      Action action = action_store_.getAction(Gpsylon.ACTION_SET_SCALE);
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(simulation_mode_));
 
@@ -2908,8 +2916,8 @@ public class GPSMap
       plugins_ = service_discovery_.getServices(
         org.dinopolis.gpstool.plugin.WriteImagePlugin.class);
       
-      Logger.getLogger("org.dinopolis.gpstool.GPSMap.plugin")
-        .debug("plugins for writing image detected: "+Debug.objectToString(plugins_));
+      if(logger_plugin_.isDebugEnabled())
+        logger_plugin_.debug("plugins for writing image detected: "+Debug.objectToString(plugins_));
 //       if(Debug.DEBUG)
 //         Debug.println("plugin","plugins for writing image detected: "+Debug.objectToString(plugins_));
           // disable action, if no plugins found:

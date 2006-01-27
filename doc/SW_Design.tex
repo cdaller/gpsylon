@@ -38,7 +38,7 @@
 
 This document describes the rough design of the modules in the
 \packagename{org.dinopolis.gpstool} package and the modules of the
-\classname{GPSMap} application.
+\classname{GPSylon} application.
 
 \end{abstract}
 
@@ -55,7 +55,7 @@ This document describes the rough design of the modules in the
 
 This section describes the modules contained in the
 \packagename{org.dinopolis.gpstool} package and explains the structure
-of the \classname{GPSMap} application.
+of the \classname{GPSylon} application.
 
 %######################################################################
 \subsection{GPS Data Sources}
@@ -155,39 +155,39 @@ the whole module.
 
 
 %######################################################################
-\subsection{GPSMap Application}
+\subsection{GPSylon Application}
 \label{SoftwareDesignOfTheGpstoolPackage-GpsmapApplication}
 
-GPSMap is the main application of the \packagename{org.dinopolis.gpstool}
+GPSylon is the main application of the \packagename{org.dinopolis.gpstool}
 package. It is a moving map application that is able to show the
 current position on maps that may be downloaded from the internet, a
 track of the positions in the past, location markers for points of
 interest, etc.
 
-GPSMap uses some parts of the open source
+GPSylon uses some parts of the open source
 \externalref{openmap}{http://openmap.bbn.com} framework. Although the
 openmap framework provides a lot of functionality, some was not reused
 but re-implemented to keep the dependencies to the library low.
 
-Nevertheless, GPSMap uses openmap's \classname{MapBean} class as its
+Nevertheless, GPSylon uses openmap's \classname{MapBean} class as its
 central component. A MapBean consists of layers that hold geographic
 information to be drawn for a specific area and scale. 
 
-The main class of the GPSMap application is
-\classname{org.dinopolis.gpstool.GPSMap}.
+The main class of the GPSylon application is
+\classname{org.dinopolis.gpstool.GPSylon}.
 
 %----------------------------------------------------------------------
 %----------------------------------------------------------------------
 \subsubsection{Resources}
 \label{SoftwareDesignOfTheGpstoolPackage-Resources}
 
-GPSMap reads some command line parameters, but most if the
+GPSylon reads some command line parameters, but most if the
 configuration is read from a properties file
-(\texttt{GPSMap.properties}). This file must be in the classpath of
+(\texttt{Gpsylon.properties}). This file must be in the classpath of
 the application and is read via the
 \classname{org.dinopolis.util.Resources} class. Any changes of the
 configuration are saved into a file into the directory
-\texttt{.gpsmap} under the user' home directory. Not all resources can
+\texttt{.gpsylon} under the user' home directory. Not all resources can
 be edited via the ``Preferences'' dialog, so if you are missing some
 screws to turn, try the file itself.
 
@@ -237,7 +237,7 @@ documentation of the projections of the openmap framework.
 \subsubsection{Layers}
 \label{SoftwareDesignOfTheGpstoolPackage-Layers}
 
-GPSMap organizes its data in layers that are administered by a
+GPSylon organizes its data in layers that are administered by a
 \classname{com.bbn.openmap.MapBean}. Whenever the projection changes
 (scale or center is changed), the map bean informs all layers about
 this change (\methodname{projectionChanged} method). The layers have
@@ -247,7 +247,7 @@ time, this is usually done in a different task by a
 \classname{SwingWorker}. As soon as the calculation is done, the data
 is painted on the screen (\methodname{paintComponent} method).
 
-The usage of background tasks also explains the behavior of GPSMap,
+The usage of background tasks also explains the behavior of GPSylon,
 that after panning the map, other elements (in other layers) are drawn
 slightly later at their correct position.
 
@@ -271,8 +271,8 @@ given.
 The map layer is probably the most important layer at the moment. It
 displays raster maps that were previously downloaded form expedia or
 mapblast and stored locally on the hard disk (directory
-\path{<home>/.gpsmap/maps}). The informations about the files is kept
-in the file \path{<home>/.gpsmap/maps.txt} (name of file,
+\path{<home>/.gpsylon/maps}). The informations about the files is kept
+in the file \path{<home>/.gpsylon/maps.txt} (name of file,
 latitude/longitude of center of map, scale of map (in mapblast style),
 height/width of image). In this file, relative and absolute paths are
 accepted for maps.
@@ -349,7 +349,7 @@ utility.
 \section{Plugins}
 \label{SoftwareDesignOfTheGpstoolPackage-Plugins}
 
-The GPSMap application supports different kinds of plugins. These
+The GPSylon application supports different kinds of plugins. These
 plugins extend the functionality of the application. As there is a
 clearly and quite simple interface for plugins, the developement is
 quite simple and possible without the need to read and understand the
@@ -366,7 +366,7 @@ plugin developement is given.
 \subsection{Types of Plugins}
 \label{SoftwareDesignOfTheGpstoolPackage-TypesOfPlugins}
 
-GPSMap supports different kinds of plugins for different
+GPSylon supports different kinds of plugins for different
 purposes. Some are very special for a very small task (like saving the
 content of the map component to a file (screenshot)), others are very
 general and influence the functionaltiy in a wider way (like adding a
@@ -383,7 +383,7 @@ files.
 \item The \interfacename{WriteImagePlugin} is used to save a
 ``screenshot'' from the map component to a file.
 
-\item The \interfacename{MouseModePlugin}: GPSMap supports different
+\item The \interfacename{MouseModePlugin}: GPSylon supports different
 mouse modes that react on mouse activities from the user (click, drag,
 etc.). The user may switch a mouse mode on or off (and there is always
 only one mouse mode active). An example for a mouse mode is navigation
@@ -405,7 +405,7 @@ modes to be able to react on mouse clicks on the map component.
 
 If a \interfacename{GuiPlugin} needs to draw anything on the map
 component, it may provide a \classname{Layer}.
-GPSMap uses the \classname{MapBean} class of the openmap library as
+GPSylon uses the \classname{MapBean} class of the openmap library as
 the central map component. This class uses \classname{Layer} objects
 as layers.  Every layer is informed about changes of the projection
 (zoom in/out, move) in the
@@ -443,7 +443,7 @@ plugin downloader to find the latest version of a plugin.
 
 All plugins are instatiated and then initialized with a
 \interfacename{PluginSupport} object that provides interfaces for all
-important modules and componentes of GPSMap.
+important modules and componentes of GPSylon.
 
 Please see the javadoc documentation of the plugin interfaces and
 classes for further details.

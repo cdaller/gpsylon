@@ -8,7 +8,7 @@
   <property name="lib_dir" value="lib/java"/>
   <property name="dinopolis_classes" value="../../classes"/>
   <property name="plugin_install_dir" value="./../"/>
-  <property name="plugin_install_home_dir" value="${user.home}/.gpsmap/plugins"/>
+  <property name="plugin_install_home_dir" value="${user.home}/.gpsylon/plugins"/>
 
 <!-- patternset of gpstool files needed to compile the distribution (used by the common_compile_dist) -->
   

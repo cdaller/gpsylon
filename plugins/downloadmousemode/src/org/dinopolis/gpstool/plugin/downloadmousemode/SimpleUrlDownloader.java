@@ -32,8 +32,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.Locale;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapInfo;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
+import org.dinopolis.gpstool.map.MapInfo;
 import org.dinopolis.gpstool.plugin.MapRetrievalPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.util.ProgressListener;
@@ -217,12 +217,12 @@ public abstract class SimpleUrlDownloader implements MapRetrievalPlugin
       URLConnection connection = url.openConnection();
 
           // set proxy authentication if necessary:
-      if(resources_.getBoolean(GPSMapKeyConstants.KEY_HTTP_PROXY_AUTHENTICATION_USE))
+      if(resources_.getBoolean(GpsylonKeyConstants.KEY_HTTP_PROXY_AUTHENTICATION_USE))
       {
         String proxy_userid =
-          resources_.getString(GPSMapKeyConstants.KEY_HTTP_PROXY_AUTHENTICATION_USERNAME);
+          resources_.getString(GpsylonKeyConstants.KEY_HTTP_PROXY_AUTHENTICATION_USERNAME);
         String proxy_password =
-          resources_.getString(GPSMapKeyConstants.KEY_HTTP_PROXY_AUTHENTICATION_PASSWORD);
+          resources_.getString(GpsylonKeyConstants.KEY_HTTP_PROXY_AUTHENTICATION_PASSWORD);
         String auth_string = proxy_userid +":" + proxy_password;
 
         auth_string = "Basic " + new sun.misc.BASE64Encoder().encode(auth_string.getBytes());

@@ -41,9 +41,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.dinopolis.gpstool.MapInfo;
-import org.dinopolis.gpstool.MapManagerHook;
 import org.dinopolis.gpstool.gui.MouseMode;
+import org.dinopolis.gpstool.hook.MapManagerHook;
+import org.dinopolis.gpstool.map.MapInfo;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.util.Debug;
@@ -75,7 +75,7 @@ public class MapManagerPlugin implements GuiPlugin, ListSelectionListener
 	protected JMenuItem frame_menu_item_;
 	/** the resources of the map manager plugin */
 	protected Resources resources_;
-	/** the resources of the GPSMap application */
+	/** the resources of the GPSylon application */
 	protected Resources application_resources_;
 	/** the action store */
 	protected ActionStore action_store_;

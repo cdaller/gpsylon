@@ -22,7 +22,7 @@
  ***********************************************************************/
 
 
-package org.dinopolis.gpstool.gpsinput;
+package org.dinopolis.gpstool;
 
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -49,16 +49,29 @@ import javax.imageio.ImageIO;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ParseErrorException;
+import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
+import org.dinopolis.gpstool.gpsinput.GPSDevice;
+import org.dinopolis.gpstool.gpsinput.GPSException;
+import org.dinopolis.gpstool.gpsinput.GPSFileDevice;
+import org.dinopolis.gpstool.gpsinput.GPSPosition;
+import org.dinopolis.gpstool.gpsinput.GPSRawDataFileLogger;
+import org.dinopolis.gpstool.gpsinput.GPSRawDataListener;
+import org.dinopolis.gpstool.gpsinput.GPSRoute;
+import org.dinopolis.gpstool.gpsinput.GPSSerialDevice;
+import org.dinopolis.gpstool.gpsinput.GPSTrack;
+import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
+import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
 import org.dinopolis.gpstool.gpsinput.garmin.GPSGarminDataProcessor;
 import org.dinopolis.gpstool.gpsinput.nmea.GPSNmeaDataProcessor;
 import org.dinopolis.gpstool.gpsinput.sirf.GPSSirfDataProcessor;
+import org.dinopolis.gpstool.gpx.ReadGPX;
 import org.dinopolis.util.ProgressListener;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
 
 //----------------------------------------------------------------------
 /**
- * Demo application to show the usage of this package (read and
+ * Demo application to show the usage of the org.dinopolis.gpstool.gpsinput package (read and
  * interpret gps data from various devices (serial, file, ...).  <p>
  * It uses a velocity (http://jakarta.apache.org/velocity) template to
  * print the downloaded tracks, routes, and waypoints. See the help

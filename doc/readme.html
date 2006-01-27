@@ -25,16 +25,16 @@
       <li><a href="http://www.sourceforge.net/projects/gpsmap">GPSylon project page at Sourceforge</a></li>
       <li><a
           href="https://sourceforge.net/mailarchive/forum.php?forum_id=12596">Mailing List Archive</a></li>
-
-
     </ul>
 
     <p>
       The dinopolis gpstool package is an open source (LGPL) Java GPS
-      application.  It consists of different modules that may be used as a
+      application. It consists of different modules that may be used as a
       programmer's framework or as an application. The main application is
-      <a href="#general_description">GPSylon</a>. A smaller command line tool is
-      <a href="#gpstool">GPSTool</a>.
+      <a href="#general_description">GPSylon</a>. A smaller command line tool (demonstration of the 
+      gpsinput library) is named <a href="#gpstool">GPSTool</a>. The library that is used
+      to communicate with the gps device can be used independently and is provided as a 
+      separate jar file (since version 0.5).
     </p>
 
     <a name="news">
@@ -50,41 +50,41 @@
 
    <p>
     GPSylon is able to show maps downloaded from the 
+    <!-- 
     <a href="http://www.mapblast.com">mapblast</a>
     or 
+     -->
     <a href="http://www.expedia.com">expedia</a>
     map servers. It may connect
-    to
-    a gps device and track your position on 
+    to a gps device and track your position on 
     the maps. At the moment, it is able to read gpsdata in the NMEA
     standard from a serial gps device, a file or a gps daemon across a
     network (available at the 
     <a href="http://freshmeat.net/projects/gpsd/">gpsd project page</a>).
    </p>
           
-          <p>
-          The main feature is the display of various maps. GPSylon allows the
-          user to navigate around like in a digital atlas. It shows maps of
-          different scales, so missing maps of one scale do not result in a
-          black screen, but show the next larger scale. See <a
-          href=" screenshots.html#diffscales">the screenshot section</a> for an
-        image. 
-      </p>
+   <p>
+   The main feature is the display of various maps. GPSylon allows the
+   user to navigate around like in a digital atlas. It shows maps of
+   different scales, so missing maps of one scale do not result in a
+   black screen, but show the next larger scale. See <a
+   href=" screenshots.html#diffscales">the screenshot section</a> for an
+   image. 
+   </p>
       
-      <p>
-        It allows the download of a single map or for a given location or for multiple
-        maps in a given rectangular area from mapblast or expedia map
-	servers. In the download mouse mode the user may choose a single map or
-	by dragging a rectangle with the mouse, the user may choose to download
-	maps for a larger area. This functionality allows the user to download
-	maps in a given scale for a larger area. Please only download maps you
-	need and be careful not to download thousands of maps, as the map
-	providers will discontinue their service when it is misused! 
-      </p>
+   <p>It allows the download of a single map or for a given location or
+for multiple maps in a given rectangular area from mapblast or expedia
+map servers. In the download mouse mode the user may choose a single map
+or by dragging a rectangle with the mouse, the user may choose to
+download maps for a larger area. This functionality allows the user to
+download maps in a given scale for a larger area. Please only download
+maps you need and be careful not to download thousands of maps, as the
+map providers will discontinue their service when it is misused!
+</p>
 
       <p>
-        It uses the open source library <a href="http://openmap.bbn.com">openmap</a> for various cartographic
-        things.   
+        It uses the open source library <a href="http://openmap.bbn.com">openmap</a> 
+        for various cartographic things.   
       </p>
 
       <h3>Features</h3>
@@ -202,21 +202,28 @@
 
               <ul>
                 <li>
-                  Java in Version 1.4 is needed. It can be obtained from 
+                  Java in Version 1.4 (or better) is needed. It can be obtained from 
                   <a href="http://java.sun.com">Sun's Website</a>. Development is
-                  currently done with version 1.4.1, but 1.4.0 should also work. Version
-                  1.3 does NOT work!
+                  currently done with version 1.5, but 1.4 should also work. Version
+                  1.3 will NOT work!
                 </li>
                 <li>
                   Java Communications API is needed, if you want to access a serial gps
                   device directly (if the gps daemon is used or NMEA data is read from a
-                  file, this is not necessary). For Windows use the package provided from
+                  file, this is not necessary). Sun released a new API just recently (only
+                  for Windows and Linux), so the decision was made to stick to the packages
+                  from <a href="http://www.rxtx.org">RXTX</a>. Use the 2.1 version of
+                  the libraries (with the gnu.io package name), NOT the javax.comm packages.
+
+                  <!-- 
+                  For Windows use the package provided from
                   Sun at
                   <a href="http://java.sun.com/products/javacomm/index.html">the comm-api
                     webpage</a>. For Linux I used the package provided at 
                   <a href="http://www.rxtx.org">RXTX</a>. I used the version that uses
                   javax.comm, not the one using gnu.io (to stay compatible with Sun's
                   naming). 
+                  -->
                   <p>
                     Jan van Haarst reported that 
                     <a href="http://www.brianpoe.com/comfoolery/">comfoolery</a>

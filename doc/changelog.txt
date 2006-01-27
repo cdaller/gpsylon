@@ -1,11 +1,11 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
 2006/01/26: Lots of refactoring: 
-              Moved the GPSTool application out of the gpsinput package.
+            - Moved the GPSTool application out of the gpsinput package.
               
-              Renamed application class from GPSMap to Gpsylon.
+            - Renamed application class from GPSMap to Gpsylon.
               
-              Moved helper classes from org.dinopolis.gpstool package to 
+            - Moved helper classes from org.dinopolis.gpstool package to 
               subpackages. Ony the applications stayed there.
             
             Made separate jars for utils, gpsinput (communication with gps 
@@ -15,6 +15,8 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
             Renamed the resource files from ~/.gpsmap/GPSMap.properties to
             ~/.gpsylon/Gpsylon.properties - on upgrade please copy your 
             private settings to the new location/name.
+            
+            Default world map (from gpsdrive) as top level map.
 
 2006/01/23: changed from javax.comm to gnu.io, due to a new incompatible
             java commapi from sun.

@@ -363,6 +363,10 @@ public class GPSRouteImpl implements GPSRoute
 //     route_points_.add(link_type); // FIXXME: maybe not clever to mix route points and links!
 //   }
 
+  /**
+   * Returns debug info.
+   * @see java.lang.Object#toString()
+   */
   public String toString()
   {
     StringBuffer buf = new StringBuffer();

@@ -434,7 +434,23 @@ public class GarminWaypointD102 implements GarminWaypoint
   {
     throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
   }
+  
+//----------------------------------------------------------------------
+  /**
+   * @see org.dinopolis.gpstool.gpsinput.garmin.GarminWaypoint#setSymbolName(java.lang.String)
+   */
+  public void setSymbolName(String name) throws UnsupportedOperationException
+  {
+    symbol_ = GarminWaypointSymbols.getSymbolId(name);
+    if(symbol_ < 0)
+      symbol_ = 18; // default symbol (wpt_dot)
+    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
+  }
  
+  /**
+   * Return debug info
+   * @see java.lang.Object#toString()
+   */
   public String toString()
   {
     StringBuffer buffer = new StringBuffer();

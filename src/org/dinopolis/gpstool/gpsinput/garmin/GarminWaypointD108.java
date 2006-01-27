@@ -632,7 +632,22 @@ public class GarminWaypointD108 implements GarminWaypoint
   {
     throw new UnsupportedOperationException("Link Identification not supported");
   }
+  
+  /**
+   * @see org.dinopolis.gpstool.gpsinput.garmin.GarminWaypoint#setSymbolName(java.lang.String)
+   */
+  public void setSymbolName(String name) throws UnsupportedOperationException
+  {
+    symbol_type_ = GarminWaypointSymbols.getSymbolId(name);
+    if(symbol_type_ < 0)
+      symbol_type_ = 18; // default symbol (wpt_dot)
+    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
+  }
 
+  /**
+   * Return debug info.
+   * @see java.lang.Object#toString()
+   */
   public String toString()
   {
     StringBuffer buffer = new StringBuffer();

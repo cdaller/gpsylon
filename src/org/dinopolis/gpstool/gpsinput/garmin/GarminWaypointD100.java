@@ -427,6 +427,11 @@ public class GarminWaypointD100 implements GarminWaypoint
     throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
  
+//----------------------------------------------------------------------
+  /**
+   * Print debug info.
+   * @see java.lang.Object#toString()
+   */
   public String toString()
   {
     StringBuffer buffer = new StringBuffer();
@@ -437,5 +442,14 @@ public class GarminWaypointD100 implements GarminWaypoint
     buffer.append("comment=").append(comment_);
     buffer.append("]");
     return(buffer.toString());
+  }
+
+//----------------------------------------------------------------------
+/**
+ * @see org.dinopolis.gpstool.gpsinput.garmin.GarminWaypoint#setSymbolName(java.lang.String)
+ */
+  public void setSymbolName(String name) throws UnsupportedOperationException
+  {
+    throw new UnsupportedOperationException("Operation not supported by Waypoint D100");
   }
 }

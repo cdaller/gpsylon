@@ -39,6 +39,10 @@ public class GarminWaypointAdapter implements GPSWaypoint
 {
   protected GarminWaypoint waypoint_;
   
+  /**
+   * Constructro with a garmin waypoint.
+   * @param waypoint the waypoint.
+   */
   public GarminWaypointAdapter(GarminWaypoint waypoint)
   {
     waypoint_ = waypoint;
@@ -179,9 +183,20 @@ public class GarminWaypointAdapter implements GPSWaypoint
     return(waypoint_.getSymbolName());
   }
 
+//----------------------------------------------------------------------
   public String toString()
   {
     return("GarminWaypointAdapter [waypoint="+waypoint_.toString()+"]");
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Sets the symbold name of the waypoint.
+ * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#setSymbolName(java.lang.String)
+ */
+  public void setSymbolName(String name)
+  {
+    waypoint_.setSymbolName(name);
   }
 }
 

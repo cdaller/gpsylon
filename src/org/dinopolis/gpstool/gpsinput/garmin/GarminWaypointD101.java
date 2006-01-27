@@ -62,6 +62,10 @@ public class GarminWaypointD101 implements GarminWaypoint
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
   }
 
+  /**
+   * Constructor using the data from the garmin packet. 
+   * @param pack the packet.
+   */
   public GarminWaypointD101(GarminPacket pack)
   {
     identification_ = pack.getNextAsString(6).trim();
@@ -74,6 +78,10 @@ public class GarminWaypointD101 implements GarminWaypoint
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
   }
 
+  /**
+   * Constructor using the data from the given waypoint.
+   * @param waypoint the waypoint.
+   */
   public GarminWaypointD101(GPSWaypoint waypoint)
   {
     String tmp;
@@ -454,5 +462,16 @@ public class GarminWaypointD101 implements GarminWaypoint
     buffer.append("comment=").append(comment_);
     buffer.append("]");
     return(buffer.toString());
+  }
+
+  /**
+   * @see org.dinopolis.gpstool.gpsinput.garmin.GarminWaypoint#setSymbolName(java.lang.String)
+   */
+  public void setSymbolName(String name) throws UnsupportedOperationException
+  {
+    symbol_ = (short)GarminWaypointSymbols.getSymbolId(name);
+    if(symbol_ < 0)
+      symbol_ = 18; // default symbol (wpt_dot)
+    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
   }
 }

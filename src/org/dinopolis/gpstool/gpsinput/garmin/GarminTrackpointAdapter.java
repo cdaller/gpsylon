@@ -226,6 +226,16 @@ public class GarminTrackpointAdapter implements GPSTrackpoint
     return(null);
   }
 
+//----------------------------------------------------------------------
+/**
+ * Does nothing, as Garmin Trackpoints do not support symbols of trackpoints.
+ * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#setSymbolName(java.lang.String)
+ */
+  public void setSymbolName(String name)
+  {
+    return;
+  }
+
 }
 
 

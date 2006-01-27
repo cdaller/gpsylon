@@ -328,6 +328,16 @@ public interface GarminWaypoint
  */
   public String getLinkIdentification()
     throws UnsupportedOperationException;
+//----------------------------------------------------------------------
+  /**
+   * Set the Waypoint Symbol Name
+   *
+   * @param name Waypoint Symbol Name or "unknown" if unknown.
+   * @throws UnsupportedOperationException
+   */
+    public void setSymbolName(String name)
+      throws UnsupportedOperationException;
+
 }
 
 

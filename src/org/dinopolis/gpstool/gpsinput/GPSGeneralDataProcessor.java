@@ -484,7 +484,7 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
  * @param listener the listener to be added.
  * @exception IllegalArgumentException if <code>listener</code> is
  * <code>null</code>.
- * @see org.dinopolis.gpstool.util.ProgressListener
+ * @see ProgressListener
  */
   public void addProgressListener(ProgressListener listener)
     throws IllegalArgumentException
@@ -507,7 +507,7 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
  * @param listener the listener to be added.
  * @exception IllegalArgumentException if <code>listener</code> is
  * <code>null</code>.
- * @see org.dinopolis.gpstool.util.ProgressListener
+ * @see ProgressListener
  */
   public void removeProgressListener(ProgressListener listener)
     throws IllegalArgumentException

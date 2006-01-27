@@ -125,6 +125,16 @@ public interface GPSWaypoint
  * symbol was set or is not supported.
  */
   public String getSymbolName();
+  
+//----------------------------------------------------------------------
+/**
+ * Sets the name of the symbol of the waypoint. The names are taken from the garmin 
+ * specification and are listed in {@link
+ * org.dinopolis.gpstool.gpsinput.garmin.GarminWaypointSymbols} at the
+ * moment.
+ * @param name the name of the symbol of the waypoint.
+ */
+  public void setSymbolName(String name);
 }
 
 

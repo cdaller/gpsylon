@@ -188,7 +188,7 @@ public interface GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Get a list of waypoints from the gps device.
- * @return a list of <code>GPSWaypoint</code> objects.
+ * @return a list of {@link GPSWaypoint} objects.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.
@@ -216,7 +216,7 @@ public interface GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Get a list of routes from the gps device.
- * @return a list of <code>GPSRoute</code> objects.
+ * @return a list of {@link GPSRoute} objects.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.
@@ -244,7 +244,7 @@ public interface GPSDataProcessor
 //--------------------------------------------------------------------------------
 /**
  * Get a list of tracks from the gps device.
- * @return a list of <code>GPSTrack</code> objects.
+ * @return a list of {@link GPSTrack} objects.
  *
  * @throws UnsupportedOperationException if the operation is not
  * supported by the gps device or by the protocol used.

@@ -20,7 +20,7 @@
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
-package org.dinopolis.gpstool.gpsinput;
+package org.dinopolis.gpstool.gpx;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -28,14 +28,19 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Vector;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
-import org.dinopolis.gpstool.track.RouteImpl;
-import org.dinopolis.gpstool.track.TrackImpl;
-import org.dinopolis.gpstool.track.TrackpointImpl;
-import org.dinopolis.gpstool.track.WaypointImpl;
+import org.dinopolis.gpstool.gpsinput.GPSRoute;
+import org.dinopolis.gpstool.gpsinput.GPSRouteImpl;
+import org.dinopolis.gpstool.gpsinput.GPSTrack;
+import org.dinopolis.gpstool.gpsinput.GPSTrackImpl;
+import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
+import org.dinopolis.gpstool.gpsinput.GPSTrackpointImpl;
+import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
+import org.dinopolis.gpstool.gpsinput.GPSWaypointImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -173,19 +178,19 @@ public class ReadGPX
 
     protected int route_number_ = 0;
     protected int route_point_index_ = 0;
-    protected WaypointImpl actual_rtept_;
+    protected GPSWaypoint actual_rtept_;
     protected boolean is_route_ = false;
     protected boolean is_route_point_ = false;
 
     protected int track_number_ = 0;
     protected int track_point_index_ = 0;
-    protected TrackpointImpl actual_trkpt_;
+    protected GPSTrackpoint actual_trkpt_;
     protected boolean is_track_ = false;
     protected boolean is_track_point_ = false;
     protected boolean is_track_segment_ = false;
 
     protected int waypoint_number_ = 0;
-    protected WaypointImpl actual_waypt_;
+    protected GPSWaypoint actual_waypt_;
     protected boolean is_waypoint_ = false;
 
 //----------------------------------------------------------------------
@@ -213,14 +218,14 @@ public class ReadGPX
       {
         is_route_ = true;
         route_point_index_ = 0;
-        routes_.addElement(new RouteImpl());
+        routes_.addElement(new GPSRouteImpl());
       }
 
       // Beginning of a new route point
       if (qName.equals("rtept") && is_route_)
       {
         is_route_point_ = true;
-        actual_rtept_ = new WaypointImpl();
+        actual_rtept_ = new GPSWaypointImpl();
 
 	// Set identification of actual route point to route_point_index_
 	// Identification may be given by an extra tag or even not
@@ -257,7 +262,7 @@ public class ReadGPX
       {
         is_track_ = true;
         track_point_index_ = 0;
-        tracks_.addElement(new TrackImpl());
+        tracks_.addElement(new GPSTrackImpl());
       }
 
       // Beginning of a new track segment
@@ -268,7 +273,7 @@ public class ReadGPX
       if (qName.equals("trkpt") && is_track_)
       {
         is_track_point_ = true;
-        actual_trkpt_ = new TrackpointImpl();
+        actual_trkpt_ = new GPSTrackpointImpl();
 
 	// Set identification of actual trackpoint
         if (attributes.getValue("")!=null)
@@ -315,7 +320,7 @@ public class ReadGPX
       if (qName.equals("wpt"))
       {
         is_waypoint_ = true;
-        actual_waypt_ = new WaypointImpl();
+        actual_waypt_ = new GPSWaypointImpl();
 
 	// Set identification of actual waypoint to null
 	// Identification may be given by an extra tag or even not
@@ -371,7 +376,7 @@ public class ReadGPX
 
         if (is_route_ && !is_route_point_)
         {
-          RouteImpl actual_rte = (RouteImpl)(routes_.get(route_number_));
+          GPSRoute actual_rte = (GPSRoute)(routes_.get(route_number_));
           actual_rte.setIdentification(chars);
 
           if (logger_.isDebugEnabled())
@@ -386,7 +391,7 @@ public class ReadGPX
         }
         else if (is_track_)
         {
-          TrackImpl actual_trk = (TrackImpl)(tracks_.get(track_number_));
+          GPSTrack actual_trk = (GPSTrack)(tracks_.get(track_number_));
           actual_trk.setIdentification(chars);
 
           if (logger_.isDebugEnabled())
@@ -411,7 +416,7 @@ public class ReadGPX
 
         if (is_route_ && !is_route_point_)
         {
-          RouteImpl actual_rte = (RouteImpl)(routes_.get(route_number_));
+          GPSRoute actual_rte = (GPSRoute)(routes_.get(route_number_));
           actual_rte.setComment(chars);
 
           if (logger_.isDebugEnabled())
@@ -426,7 +431,7 @@ public class ReadGPX
         }
         else if (is_track_)
         {
-          TrackImpl actual_trk = (TrackImpl)(tracks_.get(track_number_));
+          GPSTrack actual_trk = (GPSTrack)(tracks_.get(track_number_));
           actual_trk.setComment(chars);
 
           if (logger_.isDebugEnabled())
@@ -517,7 +522,7 @@ public class ReadGPX
       // Ending of a route point
       if (qName.equals("rtept"))
       {
-        ((RouteImpl)routes_.get(route_number_)).addWaypoint(actual_rtept_);
+        ((GPSRoute)routes_.get(route_number_)).addWaypoint(actual_rtept_);
         is_route_point_ = false;
         route_point_index_++;
       }
@@ -538,7 +543,7 @@ public class ReadGPX
       // Ending of a track point
       if (qName.equals("trkpt"))
       {
-        ((TrackImpl)tracks_.get(track_number_)).addWaypoint(actual_trkpt_);
+        ((GPSTrack)tracks_.get(track_number_)).addWaypoint(actual_trkpt_);
         is_track_point_ = false;
         track_point_index_++;
       }

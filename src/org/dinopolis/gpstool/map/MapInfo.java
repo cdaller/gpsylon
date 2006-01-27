@@ -20,15 +20,17 @@
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
-package org.dinopolis.gpstool;
+package org.dinopolis.gpstool.map;
 
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.lang.ref.SoftReference;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import org.dinopolis.util.Debug;
+import org.apache.log4j.Logger;
 
 import com.bbn.openmap.LatLonPoint;
 
@@ -46,10 +48,28 @@ public class MapInfo implements Comparable
   protected LatLonPoint center_;
   protected float scale_;
   protected String filename_;
+  protected URL image_url_;
   protected int width_;
   protected int height_;
   protected SoftReference image_ref_;
-  
+  protected static URL BASE_URL; 
+  private static Logger logger_ = Logger.getLogger(MapInfo.class);
+
+//----------------------------------------------------------------------
+  /**
+   * Static initializer
+   */
+  static 
+  {
+    try
+    {
+      BASE_URL = new URL("file:/");
+    }
+    catch (MalformedURLException exc)
+    {
+      exc.printStackTrace();
+    }
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -76,10 +96,36 @@ public class MapInfo implements Comparable
  * Constructor
  */
 
+  public MapInfo(URL image_url, double latitude, double longitude, float scale,
+                 int image_width, int image_height)
+  {
+    this(image_url,new LatLonPoint((float)latitude,(float)longitude),scale,image_width,image_height);
+  }
+
+//----------------------------------------------------------------------
+/**
+ * Constructor
+ */
+
   public MapInfo(String filename, LatLonPoint center, float scale,
                  int image_width, int image_height)
   {
     filename_ = filename;
+    center_ = center;
+    scale_ = scale;
+    width_ = image_width;
+    height_ = image_height;
+  }
+
+//----------------------------------------------------------------------
+  /**
+   * Constructor
+   */
+
+  public MapInfo(URL image_url, LatLonPoint center, float scale,
+                 int image_width, int image_height)
+  {
+    image_url_ = image_url;
     center_ = center;
     scale_ = scale;
     width_ = image_width;
@@ -265,7 +311,7 @@ public class MapInfo implements Comparable
 /**
  * Get the image.
  *
- * @return the image.
+ * @return the image or null if the image is not found.
  */
   public Image getImage() 
   {
@@ -278,9 +324,8 @@ public class MapInfo implements Comparable
     
     if(image == null) // image was garbage collected, so reload the image:
     {
-      if(Debug.DEBUG)
-        Debug.println("GPSMap_MapInfo","image "+getFilename()
-                      +" will be loaded (weak reference worked).");
+      if(logger_.isDebugEnabled())
+        logger_.debug("image "+getFilename() + " will be loaded (weak reference worked).");
       image_ref_ = new SoftReference(loadImage());
       image = (Image)image_ref_.get();  
     }
@@ -296,18 +341,19 @@ public class MapInfo implements Comparable
   protected Image loadImage()
   {
 //    image_ = Toolkit.getDefaultToolkit().getImage(filename_);
-
-    ImageIcon image_icon = new ImageIcon(filename_);
+    ImageIcon image_icon;
+    if(image_url_ != null)
+      image_icon = new ImageIcon(image_url_);
+    else
+      image_icon = new ImageIcon(filename_);
     int status = image_icon.getImageLoadStatus();
     if (status == MediaTracker.ERRORED)
-      System.err.println("ERROR: Could not load image '"+filename_+"'");
+      logger_.error("ERROR: Could not load image '"+filename_+"'");
     
     Image image = image_icon.getImage();
     
-    if(Debug.DEBUG && Debug.isEnabled("MultipleImagePanel_loadimage"))
-    {
-      Debug.println("Image '"+filename_+"' loaded.");
-    }
+    if(logger_.isDebugEnabled())
+        logger_.debug("Image '"+filename_+"' loaded.");
     return(image);
   }
 

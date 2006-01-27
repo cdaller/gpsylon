@@ -21,14 +21,16 @@
  ***********************************************************************/
 
 
-package org.dinopolis.gpstool;
+package org.dinopolis.gpstool.hook;
 
 import java.awt.Component;
 import java.awt.Frame;
 import java.beans.PropertyChangeSupport;
+
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.gui.MouseModeManager;
 import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.track.TrackManager;
 import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
@@ -60,6 +62,9 @@ public class HookManager implements PluginSupport
   UnitHelper unit_helper_;
   MouseModeManager mouse_mode_manager_;
   
+  /**
+   * Default Constructor
+   */
   public HookManager()
   {
   }
@@ -82,7 +87,7 @@ public class HookManager implements PluginSupport
  *
  * @param map_manager_hook the map_manager_hook.
  */
-  protected void setMapManagerHook(MapManagerHook map_manager_hook) 
+  public void setMapManagerHook(MapManagerHook map_manager_hook) 
   {
     map_manager_hook_ = map_manager_hook;
   }
@@ -104,7 +109,7 @@ public class HookManager implements PluginSupport
  *
  * @param map_navigation_hook the map_navigation_hook_.
  */
-  protected void setMapNavigationHook(MapNavigationHook map_navigation_hook) 
+  public void setMapNavigationHook(MapNavigationHook map_navigation_hook) 
   {
     map_navigation_hook_ = map_navigation_hook;
   }
@@ -126,7 +131,7 @@ public class HookManager implements PluginSupport
  *
  * @param status_hook the status_hook.
  */
-  protected void setStatusHook(StatusHook status_hook) 
+  public void setStatusHook(StatusHook status_hook) 
   {
     status_hook_ = status_hook;
   }
@@ -149,7 +154,7 @@ public class HookManager implements PluginSupport
  *
  * @param main_frame the main_frame.
  */
-  protected void setMainFrame(Frame main_frame) 
+  public void setMainFrame(Frame main_frame) 
   {
     main_frame_ = main_frame;
   }
@@ -171,7 +176,7 @@ public class HookManager implements PluginSupport
  *
  * @return the map component.
  */
-  protected void setMapComponent(Component component)
+  public void setMapComponent(Component component)
   {
     component_ = component;
   }
@@ -193,7 +198,7 @@ public class HookManager implements PluginSupport
  *
  * @param property_change_support the property_change_support.
  */
-  protected void setPropertyChangeSupport(PropertyChangeSupport property_change_support) 
+  public void setPropertyChangeSupport(PropertyChangeSupport property_change_support) 
   {
     property_change_support_ = property_change_support;
   }
@@ -216,7 +221,7 @@ public class HookManager implements PluginSupport
  *
  * @param resources the resources
  */
-  protected void setResources(Resources resources)
+  public void setResources(Resources resources)
   {
     resources_ = resources;
   }
@@ -238,7 +243,7 @@ public class HookManager implements PluginSupport
  *
  * @param track_manager the trackmanager
  */
-  protected void setTrackManager(TrackManager track_manager)
+  public void setTrackManager(TrackManager track_manager)
   {
     track_manager_ = track_manager;
   }
@@ -267,7 +272,7 @@ public class HookManager implements PluginSupport
  *
  * @param processor the gps data processor
  */
-  protected void setGPSDataProcessor(GPSDataProcessor processor)
+  public void setGPSDataProcessor(GPSDataProcessor processor)
   {
     gps_data_processor_ = processor;
   }
@@ -289,7 +294,7 @@ public class HookManager implements PluginSupport
  *
  * @param service_discovery the service discovery.
  */
-  protected void setServiceDiscovery(ServiceDiscovery service_discovery)
+  public void setServiceDiscovery(ServiceDiscovery service_discovery)
   {
     service_discovery_ = service_discovery;
   }
@@ -300,7 +305,7 @@ public class HookManager implements PluginSupport
  *
  * @param unit_helper the unit helper
  */
-  protected void setUnitHelper(UnitHelper unit_helper)
+  public void setUnitHelper(UnitHelper unit_helper)
   {
     unit_helper_ = unit_helper;
   }
@@ -324,7 +329,7 @@ public class HookManager implements PluginSupport
  *
  * @param mouse_mode_manager the mouse mode manager
  */
-  protected void setMouseModeManager(MouseModeManager mouse_mode_manager)
+  public void setMouseModeManager(MouseModeManager mouse_mode_manager)
   {
     mouse_mode_manager_ = mouse_mode_manager;
   }

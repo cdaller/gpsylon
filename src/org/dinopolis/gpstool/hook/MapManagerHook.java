@@ -20,13 +20,14 @@
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
-package org.dinopolis.gpstool;
+package org.dinopolis.gpstool.hook;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
 import org.dinopolis.gpstool.event.MapsChangedListener;
+import org.dinopolis.gpstool.map.MapInfo;
 
 import com.bbn.openmap.proj.Projection;
 

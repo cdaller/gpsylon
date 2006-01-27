@@ -352,11 +352,11 @@ public class JDBCLocationMarkerSource implements LocationMarkerSource
   {
 //     JDBCLocationMarkerSource source =
 //       new JDBCLocationMarkerSource("org.hsqldb.jdbcDriver",
-//                                    "jdbc:hsqldb:/filer/cdaller/.gpsmap/marker/testdb","sa","");
+//                                    "jdbc:hsqldb:/filer/cdaller/.gpsylon/marker/testdb","sa","");
 //     try
 //     {
 //       JDBCUtil util = new JDBCUtil("org.hsqldb.jdbcDriver",
-//                                    "jdbc:hsqldb:/filer/cdaller/.gpsmap/marker/testdb","sa","");
+//                                    "jdbc:hsqldb:/filer/cdaller/.gpsylon/marker/testdb","sa","");
 //       util.createLocationMarkerDatabase();
 //       System.out.println("using marker db now");
 //       source.open();

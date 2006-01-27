@@ -34,7 +34,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.gui.util.AngleJTextField;
 import org.dinopolis.gpstool.util.angle.Angle;
 import org.dinopolis.gpstool.util.angle.AngleFormat;
@@ -51,7 +51,7 @@ import org.dinopolis.util.Resources;
  * @version $Revision$
  */
 
-public class LatLongInputDialog extends JDialog implements GPSMapKeyConstants
+public class LatLongInputDialog extends JDialog implements GpsylonKeyConstants
 {
 
   Resources resources_;

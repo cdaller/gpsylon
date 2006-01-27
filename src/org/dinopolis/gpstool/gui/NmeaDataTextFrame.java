@@ -23,7 +23,7 @@
 package org.dinopolis.gpstool.gui;
 
 import org.dinopolis.util.Resources;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -51,7 +51,7 @@ import org.dinopolis.gpstool.gpsinput.GPSRawDataListener;
  */
 
 public class NmeaDataTextFrame extends JFrame
-  implements ActionListener, GPSMapKeyConstants, GPSRawDataListener
+  implements ActionListener, GpsylonKeyConstants, GPSRawDataListener
 {
 
   Resources resources_;

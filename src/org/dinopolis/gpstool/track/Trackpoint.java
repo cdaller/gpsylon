@@ -36,7 +36,7 @@ import org.dinopolis.gpstool.gpsinput.GPSTrackpoint;
  * @version $Revision$
  */
 
-public interface Trackpoint extends Waypoint,GPSTrackpoint
+public interface Trackpoint extends Waypoint, GPSTrackpoint
 {
 
 }

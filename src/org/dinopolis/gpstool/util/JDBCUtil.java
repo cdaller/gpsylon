@@ -355,7 +355,7 @@ public class JDBCUtil
   public static void main(String[] args)
   {
     String jdbc_driver = "org.hsqldb.jdbcDriver";
-    String jdbc_url =  "jdbc:hsqldb:/filer/cdaller/.gpsmap/marker/testdb";
+    String jdbc_url =  "jdbc:hsqldb:/filer/cdaller/.gpsylon/marker/testdb";
     String jdbc_username =  "sa";
     String jdbc_password =  "";
     

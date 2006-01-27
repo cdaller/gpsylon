@@ -38,8 +38,8 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.LatLonPoint;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
@@ -56,7 +56,7 @@ import java.awt.event.MouseMotionListener;
  */
 
 public class DestinationLayer extends Layer
-  implements PropertyChangeListener, GPSMapKeyConstants,
+  implements PropertyChangeListener, GpsylonKeyConstants,
              MouseListener, MouseMotionListener
 {
 
@@ -94,9 +94,9 @@ public class DestinationLayer extends Layer
   {
     if(destination_position_ == null)
       return;
-    float distance = GPSMap.calculateDistance(current_position_,destination_position_);
+    float distance = Gpsylon.calculateDistance(current_position_,destination_position_);
     if(property_change_support_ != null)
-      property_change_support_.firePropertyChange(GPSMap.PROPERTY_KEY_ROUTE_DESTINATION_DISTANCE,
+      property_change_support_.firePropertyChange(Gpsylon.PROPERTY_KEY_ROUTE_DESTINATION_DISTANCE,
                                                   null,
                                                   new Float(distance));
   }
@@ -125,7 +125,7 @@ public class DestinationLayer extends Layer
 
   public void propertyChange(PropertyChangeEvent event)
   {
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_LOCATION))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_LOCATION))
     {
       LatLonPoint tmp_point = (LatLonPoint)event.getNewValue();
       if(tmp_point != null)
@@ -138,7 +138,7 @@ public class DestinationLayer extends Layer
       return;
     }
     
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_ROUTE_DESTINATION))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_ROUTE_DESTINATION))
     {
       LatLonPoint tmp_point = (LatLonPoint)event.getNewValue();
       if(tmp_point != null)
@@ -179,7 +179,7 @@ public class DestinationLayer extends Layer
                         +" old: " + old_destination);
 
         if(property_change_support_ != null)
-          property_change_support_.firePropertyChange(GPSMap.PROPERTY_KEY_ROUTE_DESTINATION,
+          property_change_support_.firePropertyChange(Gpsylon.PROPERTY_KEY_ROUTE_DESTINATION,
                                                       old_destination,
                                                       destination_position_);
             // repaint my drawing area

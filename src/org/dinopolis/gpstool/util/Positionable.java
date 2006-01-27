@@ -1,7 +1,7 @@
 /***********************************************************************
  * @(#)$RCSfile$   $Revision$$Date$
  *
- * Copyright (c) 2003 IICM, Graz University of Technology
+ * Copyright (c) 2002 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -20,62 +20,32 @@
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
+package org.dinopolis.gpstool.util;
 
-package org.dinopolis.gpstool.gui.util;
-
-import javax.swing.ComboBoxModel;
-
-import org.dinopolis.gpstool.track.TrackManager;
-
-
+import com.bbn.openmap.LatLonPoint;
 
 //----------------------------------------------------------------------
 /**
- * A list model to be used when tracks are displayed.
- *
+ * This interface is used to obtain the current gps position.
+ * 
  * @author Christof Dallermassl
  * @version $Revision$
  */
 
-public class TrackListComboBoxModel extends TrackListModel implements ComboBoxModel
+public interface Positionable
 {
-  Object selected_;
-  
-//----------------------------------------------------------------------
-/**
- * Constructor taking a track manager to read the track information from.
- *
- * @param track_manager the track manager to get the track information from.
- */
-  public TrackListComboBoxModel(TrackManager track_manager)
-  {
-    super(track_manager);
-  }
 
 //----------------------------------------------------------------------
 /**
- * Return the selected item
+ * Returns the current gps position
  *
- * @return the selected item
+ * @return the current gps position
  */
-  public Object getSelectedItem()
-  {
-    return(selected_);
-  }
 
-//----------------------------------------------------------------------
-/**
- * Set the selected item
- *
- * @param item the selected item
- */
-  public void setSelectedItem(Object item)
-  {
-    selected_ = item;
-  }
+  public LatLonPoint getCurrentGPSPosition();
 
-  
 }
+
 
 
 

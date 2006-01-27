@@ -31,8 +31,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
@@ -48,7 +48,7 @@ import org.dinopolis.util.gui.MenuFactory;
  */
 
 public class ShapeLayer extends com.bbn.openmap.layer.shape.MultiShapeLayer
-  implements GPSMapKeyConstants
+  implements GpsylonKeyConstants
 {
   boolean layer_active_ = true;
 
@@ -74,7 +74,7 @@ public class ShapeLayer extends com.bbn.openmap.layer.shape.MultiShapeLayer
     
     
     resources_ = resources;
-    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
+    action_store_ = ActionStore.getStore(Gpsylon.ACTION_STORE_ID);
     action_store_.addActions(actions_);
     setDoubleBuffered(true);
   }
@@ -135,7 +135,7 @@ public class ShapeLayer extends com.bbn.openmap.layer.shape.MultiShapeLayer
 
     public ShapeLayerActivateAction()
     {
-      super(GPSMap.ACTION_SHAPE_LAYER_ACTIVATE);
+      super(Gpsylon.ACTION_SHAPE_LAYER_ACTIVATE);
       putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
     }
 
@@ -150,7 +150,7 @@ public class ShapeLayer extends com.bbn.openmap.layer.shape.MultiShapeLayer
     public void actionPerformed(ActionEvent event)
     {
       layer_active_ = !layer_active_;
-      Action action = action_store_.getAction(GPSMap.ACTION_SHAPE_LAYER_ACTIVATE);
+      Action action = action_store_.getAction(Gpsylon.ACTION_SHAPE_LAYER_ACTIVATE);
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
       repaint();
@@ -172,7 +172,7 @@ public class ShapeLayer extends com.bbn.openmap.layer.shape.MultiShapeLayer
 
     public LoadShapeAction()
     {
-      super(GPSMap.ACTION_LOAD_SHAPE);
+      super(Gpsylon.ACTION_LOAD_SHAPE);
     }
 
         //----------------------------------------------------------------------

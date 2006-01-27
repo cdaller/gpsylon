@@ -61,10 +61,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapNavigationHook;
-import org.dinopolis.gpstool.Positionable;
+import org.apache.log4j.Logger;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.gui.layer.location.FileLocationMarkerSource;
 import org.dinopolis.gpstool.gui.layer.location.JDBCLocationMarkerSource;
 import org.dinopolis.gpstool.gui.layer.location.LocationMarker;
@@ -75,12 +74,14 @@ import org.dinopolis.gpstool.gui.layer.location.LocationMarkerSource;
 import org.dinopolis.gpstool.gui.layer.location.LocationMarkerSourceException;
 import org.dinopolis.gpstool.gui.layer.location.SearchLocationMarkerFrame;
 import org.dinopolis.gpstool.gui.layer.location.SelectCategoryFrame;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
 import org.dinopolis.gpstool.util.FeedBack;
 import org.dinopolis.gpstool.util.FileUtil;
 import org.dinopolis.gpstool.util.GeoExtent;
 import org.dinopolis.gpstool.util.GeonetDataConverter;
 import org.dinopolis.gpstool.util.JDBCUtil;
+import org.dinopolis.gpstool.util.Positionable;
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenList;
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenPoint;
 import org.dinopolis.util.Debug;
@@ -110,7 +111,7 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  */
 
 public class LocationLayer extends Layer
-  implements GPSMapKeyConstants, PropertyChangeListener, MouseListener
+  implements GpsylonKeyConstants, PropertyChangeListener, MouseListener
 {
   boolean layer_active_ = true;
 
@@ -176,6 +177,8 @@ public class LocationLayer extends Layer
   double[] level_of_detail_scales_;
 
   float old_scale_ = -1.0f;
+  
+  private static Logger logger_ = Logger.getLogger(LocationLayer.class);
   
 //----------------------------------------------------------------------
 /**
@@ -256,11 +259,11 @@ public class LocationLayer extends Layer
                            new ExportLocationAction(),
                            new ImportLocationAction(),
                            new DatabaseManagerAction(),
-                           new LevelOfDetailChangeAction(GPSMap.ACTION_LEVEL_OF_DETAIL_INCREASE,1),
-                           new LevelOfDetailChangeAction(GPSMap.ACTION_LEVEL_OF_DETAIL_DECREASE,-1),
+                           new LevelOfDetailChangeAction(Gpsylon.ACTION_LEVEL_OF_DETAIL_INCREASE,1),
+                           new LevelOfDetailChangeAction(Gpsylon.ACTION_LEVEL_OF_DETAIL_DECREASE,-1),
                            new SearchMarkerAction(),
                            new ShowMarkerNamesAction()};
-    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
+    action_store_ = ActionStore.getStore(Gpsylon.ACTION_STORE_ID);
     action_store_.addActions(actions_);
 
     categories_ = LocationMarkerCategory.getCategories();
@@ -450,7 +453,7 @@ public class LocationLayer extends Layer
           }
           catch(SQLException e)
           {
-            System.err.println("WARNING: could not open the database: "+e.getMessage());
+            logger_.warn("WARNING: could not open the database: "+e.getMessage());
           }
           if(!could_open || !jdbc_util.tableExists("MARKERS"))
           {
@@ -463,8 +466,8 @@ public class LocationLayer extends Layer
             if(result ==  JOptionPane.YES_OPTION)
             {
               java.net.URL url = resources_.getURL(KEY_LOCATION_MARKER_DB_CREATE_DB_SCRIPT_URL);
-              System.out.println("Database does not exist, creating it...");
-              System.out.println("using the script at URL "+url);
+              logger_.info("Database does not exist, creating it...");
+              logger_.info("using the script at URL "+url);
 
               Reader reader = new InputStreamReader(url.openStream());
               if(!jdbc_driver.equals("org.hsqldb.jdbcDriver"))
@@ -516,7 +519,7 @@ public class LocationLayer extends Layer
           {
             if(resources_.getBoolean(KEY_LOCATION_MARKER_DB_OPTIMIZE_DB_ON_START))
             {
-              System.out.println("try to optimize database...");
+              logger_.info("try to optimize database...");
               JDialog dialog = new JDialog(dialog_owner_frame_,resources_.getString(KEY_LOCALIZE_MESSAGE_INFO_TITLE),false);
               dialog.getContentPane().add(new JLabel(resources_.getString(KEY_LOCALIZE_MESSAGE_OPTIMIZE_DATABASE_MESSAGE)));
               dialog.pack();
@@ -538,7 +541,7 @@ public class LocationLayer extends Layer
         }
         catch(Exception e)
         {
-          System.err.println("ERROR: orruced during testing/creating the location marker database:");
+          logger_.error("ERROR: orruced during testing/creating the location marker database:");
           e.printStackTrace();
         }
         default_source = new JDBCLocationMarkerSource(jdbc_driver,jdbc_url,
@@ -555,7 +558,7 @@ public class LocationLayer extends Layer
         File dir = new File(dirname);
         if(!dir.isDirectory())
         {
-          System.err.println("Directory '"+dirname+"' does not exist, creating it.");
+          logger_.error("Directory '"+dirname+"' does not exist, creating it.");
           dir.mkdirs();
         }
 
@@ -573,9 +576,9 @@ public class LocationLayer extends Layer
     {
       if(lmse.getCause() instanceof FileNotFoundException)
       {
-        System.err.println("WARNING: Location Marker file could not be found: "
-                           +lmse.getCause().getMessage());
-        System.err.println(" - create a location marker to create the file.");
+        logger_.warn("WARNING: Location Marker file could not be found: "
+                           +lmse.getCause().getMessage() +
+                     " - create a location marker to create the file.");
       }
       else
             // TODO: open window and inform about error!
@@ -744,7 +747,7 @@ public class LocationLayer extends Layer
     {
       synchronized(search_result_marker_lock_)
       {
-        System.out.println("Drawing search result: "+search_result_marker_);
+        logger_.debug("Drawing search result: "+search_result_marker_);
         paintLocationMarkerSymbol(g2,search_result_marker_);
         paintLocationMarkerName(g2,search_result_marker_);
       }
@@ -786,12 +789,12 @@ public class LocationLayer extends Layer
     }
     catch(UnsupportedOperationException uoe)
     {
-      System.err.println("ERROR: the LocationMarkerSource set for writing does not support write-operations! Will not try it again!");
+      logger_.error("ERROR: the LocationMarkerSource set for writing does not support write-operations! Will not try it again!");
       location_target_ = null;
     }
     catch(LocationMarkerSourceException lmse)
     {
-      System.err.println("ERROR: the LocationMarkerSource set for writing has thrown an exception: "+lmse.getMessage());
+      logger_.error("ERROR: the LocationMarkerSource set for writing has thrown an exception: "+lmse.getMessage());
       lmse.getCause().printStackTrace();
     }
   }
@@ -1096,9 +1099,8 @@ public class LocationLayer extends Layer
           }
           catch(LocationMarkerSourceException lmse)
           {
-            System.err.println("ERROR: LocationMarkerSource threw an exception: "
-                               +lmse.getMessage());
-            lmse.getCause().printStackTrace();
+            logger_.error("ERROR: LocationMarkerSource threw an exception: "
+                               +lmse.getMessage(),lmse.getCause());
           }
           
           return(null);
@@ -1385,7 +1387,7 @@ public class LocationLayer extends Layer
 
     public LocationLayerActivateAction()
     {
-      super(GPSMap.ACTION_LOCATION_LAYER_ACTIVATE);
+      super(Gpsylon.ACTION_LOCATION_LAYER_ACTIVATE);
       putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
     }
 
@@ -1426,7 +1428,7 @@ public class LocationLayer extends Layer
 
     public SetMarkerGPSPositionAction()
     {
-      super(GPSMap.ACTION_SET_MARKER_GPS_POS);
+      super(Gpsylon.ACTION_SET_MARKER_GPS_POS);
     }
 
         //----------------------------------------------------------------------
@@ -1502,7 +1504,7 @@ public class LocationLayer extends Layer
 
     public LoadLocationAction()
     {
-      super(GPSMap.ACTION_LOAD_LOCATION_MARKER);
+      super(Gpsylon.ACTION_LOAD_LOCATION_MARKER);
     }
 
 //----------------------------------------------------------------------
@@ -1583,7 +1585,7 @@ public class LocationLayer extends Layer
 
     public ImportLocationAction()
     {
-      super(GPSMap.ACTION_IMPORT_LOCATION_MARKER);
+      super(Gpsylon.ACTION_IMPORT_LOCATION_MARKER);
     }
 
 //----------------------------------------------------------------------
@@ -1634,7 +1636,7 @@ public class LocationLayer extends Layer
                 {
                   in_stream = new ZipInputStream(new FileInputStream(chosen_files[count]));
                   ZipEntry entry = ((ZipInputStream)in_stream).getNextEntry();
-                  System.out.println("Reading zip entry: "+entry.getName());
+                  logger_.info("Reading zip entry: "+entry.getName());
                 }
                 else
                   in_stream = new FileInputStream(chosen_files[count]);
@@ -1716,7 +1718,7 @@ public class LocationLayer extends Layer
         feedback_dialog_.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       }
       feedback_label_.setText(message+" " + resources_.getString(KEY_LOCALIZE_MESSAGE_LINES_READ_MESSAGE));
-      System.out.println(message+" " + resources_.getString(KEY_LOCALIZE_MESSAGE_LINES_READ_MESSAGE));
+      logger_.info(message+" " + resources_.getString(KEY_LOCALIZE_MESSAGE_LINES_READ_MESSAGE));
     }
   }
 
@@ -1735,7 +1737,7 @@ public class LocationLayer extends Layer
 
     public ExportLocationAction()
     {
-      super(GPSMap.ACTION_EXPORT_LOCATION_MARKER);
+      super(Gpsylon.ACTION_EXPORT_LOCATION_MARKER);
     }
 
 //----------------------------------------------------------------------
@@ -1811,7 +1813,7 @@ public class LocationLayer extends Layer
 
     public ShowMarkerNamesAction()
     {
-      super(GPSMap.ACTION_SHOW_MARKER_NAMES);
+      super(Gpsylon.ACTION_SHOW_MARKER_NAMES);
       putValue(MenuFactory.SELECTED, new Boolean(show_names_));
     }
 
@@ -1848,7 +1850,7 @@ public class LocationLayer extends Layer
 
     public SelectMarkerCategoriesAction()
     {
-      super(GPSMap.ACTION_SELECT_MARKER_CATEGORIES);
+      super(Gpsylon.ACTION_SELECT_MARKER_CATEGORIES);
     }
 
 //----------------------------------------------------------------------
@@ -1918,7 +1920,7 @@ public class LocationLayer extends Layer
 
     public SearchMarkerAction()
     {
-      super(GPSMap.ACTION_SEARCH_MARKER);
+      super(Gpsylon.ACTION_SEARCH_MARKER);
     }
 
 //----------------------------------------------------------------------
@@ -1939,8 +1941,7 @@ public class LocationLayer extends Layer
               if(event.getActionCommand().equals(SearchLocationMarkerFrame.COMMAND_GOTO))
               {
 //                System.out.println("OK or APPLY");
-                System.out.println("selected marker: "
-                                   +search_frame_.getSelectedLocationMarker());
+                logger_.debug("selected marker: " + search_frame_.getSelectedLocationMarker());
                 synchronized(search_result_marker_lock_)
                 {
                   search_result_marker_ = search_frame_.getSelectedLocationMarker();
@@ -1999,7 +2000,7 @@ public class LocationLayer extends Layer
 
     public DatabaseManagerAction()
     {
-      super(GPSMap.ACTION_DATABASE_MANAGER);
+      super(Gpsylon.ACTION_DATABASE_MANAGER);
     }
 
 //----------------------------------------------------------------------

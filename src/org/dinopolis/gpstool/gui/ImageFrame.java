@@ -40,7 +40,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.plugin.WriteImagePlugin;
 import org.dinopolis.gpstool.util.ExtensionFileFilter;
 import org.dinopolis.util.Debug;
@@ -58,7 +58,7 @@ import org.dinopolis.util.servicediscovery.ServiceDiscovery;
  */
 
 public class ImageFrame extends JFrame
-  implements ActionListener, GPSMapKeyConstants
+  implements ActionListener, GpsylonKeyConstants
 {
   Resources resources_;
   public static final String COMMAND_CLOSE = "close";

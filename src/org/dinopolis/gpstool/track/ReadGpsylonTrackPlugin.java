@@ -33,7 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.NoSuchElementException;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
 import org.dinopolis.util.Debug;
@@ -43,20 +43,20 @@ import org.dinopolis.util.Resources;
 /**
  * This plugin reads track data from a stream (ususally from a file)
  * and provides one or more tracks (lists of {@link Trackpoint}
- * objects). This plugin reads the tracks GPSMap saves itself. That's
+ * objects). This plugin reads the tracks Gpsylon saves itself. That's
  * why it is not a real plugin, but always available.
  *
  * @author Christof Dallermassl
  * @version $Revision$
  */
 
-public class ReadGPSMapTrackPlugin implements ReadTrackPlugin, GPSMapKeyConstants
+public class ReadGpsylonTrackPlugin implements ReadTrackPlugin, GpsylonKeyConstants
 {
 
   Resources resources_;
   public final static String TRACK_FORMAT_DEFINITION_IN_FILE_PREFIX = "# Format: ";
   
-  public ReadGPSMapTrackPlugin()
+  public ReadGpsylonTrackPlugin()
   {
   }
 

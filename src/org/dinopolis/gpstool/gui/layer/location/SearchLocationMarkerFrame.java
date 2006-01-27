@@ -34,7 +34,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
@@ -49,7 +49,7 @@ import org.dinopolis.util.Resources;
  */
 
 public class SearchLocationMarkerFrame extends JFrame
-  implements GPSMapKeyConstants, MouseListener
+  implements GpsylonKeyConstants, MouseListener
 {
   LocationMarkerSearchPanel search_panel_;
   Resources resources_;

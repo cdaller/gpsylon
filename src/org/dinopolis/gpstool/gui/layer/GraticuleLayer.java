@@ -35,8 +35,8 @@ import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.util.GeoExtent;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
@@ -63,7 +63,7 @@ import com.bbn.openmap.proj.Projection;
  */
 
 public class GraticuleLayer extends Layer
-  implements GPSMapKeyConstants, PropertyChangeListener
+  implements GpsylonKeyConstants, PropertyChangeListener
 {
   boolean layer_active_ = false;
 
@@ -117,7 +117,7 @@ public class GraticuleLayer extends Layer
 
     layer_active_ = resources_.getBoolean(KEY_GRATICULE_LAYER_ACTIVE);
     
-    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
+    action_store_ = ActionStore.getStore(Gpsylon.ACTION_STORE_ID);
       /** the Actions */
     Action[] actions_ = { new GraticuleLayerActivateAction()};
     action_store_.addActions(actions_);
@@ -340,7 +340,7 @@ public class GraticuleLayer extends Layer
       {
         tmp_point = projection.forward(text_south,longitude);
         OMText text = new OMText((int)tmp_point.getX()+3,projection.getHeight()-10,
-                                 String.valueOf((int)longitude)+"°",
+                                 String.valueOf((int)longitude)+"?",
                                  font_,OMText.JUSTIFY_LEFT);
         text.setLinePaint(color);
         list.add(text);
@@ -380,7 +380,7 @@ public class GraticuleLayer extends Layer
       if(draw_text_)
       {
         tmp_point = projection.forward(latitude,text_west);
-        OMText text = new OMText(5,(int)tmp_point.getY(),String.valueOf((int)latitude)+"°",
+        OMText text = new OMText(5,(int)tmp_point.getY(),String.valueOf((int)latitude)+"?",
                                  font_,OMText.JUSTIFY_LEFT);
         text.setLinePaint(color);
         list.add(text);
@@ -487,7 +487,7 @@ public class GraticuleLayer extends Layer
 
     public GraticuleLayerActivateAction()
     {
-      super(GPSMap.ACTION_GRATICULE_LAYER_ACTIVATE);
+      super(Gpsylon.ACTION_GRATICULE_LAYER_ACTIVATE);
       putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
     }
 
@@ -502,7 +502,7 @@ public class GraticuleLayer extends Layer
     public void actionPerformed(ActionEvent event)
     {
       layer_active_ = !layer_active_;
-      Action action = action_store_.getAction(GPSMap.ACTION_GRATICULE_LAYER_ACTIVATE);
+      Action action = action_store_.getAction(Gpsylon.ACTION_GRATICULE_LAYER_ACTIVATE);
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
       resources_.setBoolean(KEY_GRATICULE_LAYER_ACTIVE,layer_active_);

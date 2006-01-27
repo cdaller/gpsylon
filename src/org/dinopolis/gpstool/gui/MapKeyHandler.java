@@ -25,7 +25,7 @@ package org.dinopolis.gpstool.gui;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import org.dinopolis.gpstool.MapNavigationHook;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
 
 //----------------------------------------------------------------------
 /**

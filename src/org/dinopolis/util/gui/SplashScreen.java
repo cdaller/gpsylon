@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -147,7 +148,8 @@ public class SplashScreen extends JWindow
    *
    * @param label the label to display.
    * @param display_millis the amount of milliseconds to display the
-   * banner.
+   * banner, if negative, the splash screen is not deactivated 
+   * automatically.
    * @param progress_min_value the min value for the progress bar.
    * @param progress_max_value the max value for the progress bar.
    */
@@ -203,6 +205,8 @@ public class SplashScreen extends JWindow
             }
           }
       };
+
+      
       Thread splash = new Thread(waiter, "SplashThread");
       splash.setDaemon(true);
       splash.start();

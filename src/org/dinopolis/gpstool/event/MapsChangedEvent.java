@@ -22,13 +22,15 @@
 
 package org.dinopolis.gpstool.event;
 
+import org.dinopolis.gpstool.map.MapInfo;
+
 //----------------------------------------------------------------------
 /**
  * 
  *
  * @author Christof Dallermassl
  * @version $Revision$
- */import org.dinopolis.gpstool.MapInfo;
+ */
 
 public class MapsChangedEvent
 {

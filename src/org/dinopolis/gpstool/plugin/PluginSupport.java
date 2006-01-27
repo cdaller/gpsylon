@@ -26,12 +26,12 @@ package org.dinopolis.gpstool.plugin;
 import java.awt.Component;
 import java.awt.Frame;
 import java.beans.PropertyChangeSupport;
-import org.dinopolis.gpstool.MapManagerHook;
-import org.dinopolis.gpstool.MapNavigationHook;
-import org.dinopolis.gpstool.StatusHook;
-import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.gui.MouseModeManager;
+import org.dinopolis.gpstool.hook.MapManagerHook;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
+import org.dinopolis.gpstool.hook.StatusHook;
+import org.dinopolis.gpstool.track.TrackManager;
 import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.servicediscovery.ServiceDiscovery;
@@ -95,7 +95,7 @@ public interface PluginSupport
  * Get the property_change_support. This support may be used to
  * register as a PropertyChangeListener, and therefore to receive
  * ProperyChangeEvents. Use the property keys in
- * {@link org.dinopolis.gpstool.GPSMap} as property names
+ * {@link org.dinopolis.gpstool.Gpsylon} as property names
  * (<code>PROPERTY_KEY_...</code>). 
  *
  * @return the property_change_support.

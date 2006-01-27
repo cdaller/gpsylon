@@ -31,8 +31,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
@@ -52,7 +52,7 @@ import com.bbn.openmap.proj.Projection;
  */
 
 public class TestLayer extends Layer
-  implements GPSMapKeyConstants
+  implements GpsylonKeyConstants
 {
 
   boolean layer_active_ = false;
@@ -74,7 +74,7 @@ public class TestLayer extends Layer
   public TestLayer(Resources resources)
   {
     resources_ = resources;
-    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
+    action_store_ = ActionStore.getStore(Gpsylon.ACTION_STORE_ID);
     action_store_.addActions(actions_);
     setDoubleBuffered(true);
   }
@@ -156,7 +156,7 @@ public class TestLayer extends Layer
 
     public TestLayerActivateAction()
     {
-      super(GPSMap.ACTION_TEST_LAYER_ACTIVATE);
+      super(Gpsylon.ACTION_TEST_LAYER_ACTIVATE);
       putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
     }
 
@@ -171,7 +171,7 @@ public class TestLayer extends Layer
     public void actionPerformed(ActionEvent event)
     {
       layer_active_ = !layer_active_;
-      Action action = action_store_.getAction(GPSMap.ACTION_TEST_LAYER_ACTIVATE);
+      Action action = action_store_.getAction(Gpsylon.ACTION_TEST_LAYER_ACTIVATE);
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
       repaint();

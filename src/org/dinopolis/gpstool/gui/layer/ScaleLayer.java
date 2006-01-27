@@ -37,8 +37,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.projection.FlatProjection;
 import org.dinopolis.util.Debug;
@@ -57,7 +57,7 @@ import org.dinopolis.util.gui.MenuFactory;
  */
 
 public class ScaleLayer extends Layer
-  implements GPSMapKeyConstants, PropertyChangeListener
+  implements GpsylonKeyConstants, PropertyChangeListener
 {
 
   boolean layer_active_ = true;
@@ -122,7 +122,7 @@ public class ScaleLayer extends Layer
     aimed_length_ = resources_.getInt(KEY_SCALE_RULE_AIMED_LENGTH);
     layer_active_ = resources_.getBoolean(KEY_SCALE_LAYER_ACTIVE);
 
-    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
+    action_store_ = ActionStore.getStore(Gpsylon.ACTION_STORE_ID);
     Action[] actions_ = { new ScaleLayerActivateAction()};
     action_store_.addActions(actions_);
     setDoubleBuffered(true);
@@ -332,7 +332,7 @@ public class ScaleLayer extends Layer
 
     public ScaleLayerActivateAction()
     {
-      super(GPSMap.ACTION_SCALE_LAYER_ACTIVATE);
+      super(Gpsylon.ACTION_SCALE_LAYER_ACTIVATE);
       putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
     }
 
@@ -347,7 +347,7 @@ public class ScaleLayer extends Layer
     public void actionPerformed(ActionEvent event)
     {
       layer_active_ = !layer_active_;
-      Action action = action_store_.getAction(GPSMap.ACTION_SCALE_LAYER_ACTIVATE);
+      Action action = action_store_.getAction(Gpsylon.ACTION_SCALE_LAYER_ACTIVATE);
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
        resources_.setBoolean(KEY_SCALE_LAYER_ACTIVE,layer_active_);

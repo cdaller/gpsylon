@@ -41,7 +41,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
@@ -51,7 +51,7 @@ import org.dinopolis.util.Resources;
  */
 
 public class SelectCategoryFrame
-  extends JFrame implements GPSMapKeyConstants, ActionListener
+  extends JFrame implements GpsylonKeyConstants, ActionListener
 {
   Resources resources_;
 

@@ -26,7 +26,7 @@ package org.dinopolis.gpstool.gui.util;
 import java.awt.Rectangle;
 import java.awt.Image;
 
-import org.dinopolis.gpstool.MapInfo;
+import org.dinopolis.gpstool.map.MapInfo;
 
 //----------------------------------------------------------------------
 /**

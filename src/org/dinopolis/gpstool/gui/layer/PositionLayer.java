@@ -43,9 +43,9 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapNavigationHook;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
@@ -67,7 +67,7 @@ import com.bbn.openmap.proj.Projection;
  */
 
 public class PositionLayer extends Layer
-  implements PropertyChangeListener, GPSMapKeyConstants,
+  implements PropertyChangeListener, GpsylonKeyConstants,
              MouseListener, MouseMotionListener
 {
 
@@ -144,7 +144,7 @@ public class PositionLayer extends Layer
 
     Action[] actions_ = { new FollowMeModeAction(),
                           new PositionLayerActivateAction()};
-    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
+    action_store_ = ActionStore.getStore(Gpsylon.ACTION_STORE_ID);
     action_store_.addActions(actions_);
     
     setDoubleBuffered(true);
@@ -194,7 +194,7 @@ public class PositionLayer extends Layer
   {
     if(!layer_active_)
       return;
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_LOCATION))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_LOCATION))
     {
       LatLonPoint tmp_point = (LatLonPoint)event.getNewValue();
       if(tmp_point != null)
@@ -206,7 +206,7 @@ public class PositionLayer extends Layer
       return;
     }
     
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_CURRENT_HEADING))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_CURRENT_HEADING))
     {
       Float tmp_heading = (Float)event.getNewValue();
       if(tmp_heading != null)
@@ -370,7 +370,7 @@ public class PositionLayer extends Layer
                         +" old: " + old_pos);
 
         if(property_change_support_ != null)
-          property_change_support_.firePropertyChange(GPSMap.PROPERTY_KEY_GPS_LOCATION,
+          property_change_support_.firePropertyChange(Gpsylon.PROPERTY_KEY_GPS_LOCATION,
                                                       old_pos,
                                                       current_position_);
         setNewCurrentPosition(current_position_);
@@ -730,7 +730,7 @@ public class PositionLayer extends Layer
 
     public FollowMeModeAction()
     {
-      super(GPSMap.ACTION_FOLLOW_ME_MODE);
+      super(Gpsylon.ACTION_FOLLOW_ME_MODE);
       putValue(MenuFactory.SELECTED, new Boolean(follow_me_mode_));
     }
 
@@ -748,7 +748,7 @@ public class PositionLayer extends Layer
       
       resources_.setBoolean(KEY_POSITION_FOLLOW_ME_MODE,follow_me_mode_); // fixes bug #626309
       
-      Action action = action_store_.getAction(GPSMap.ACTION_FOLLOW_ME_MODE);
+      Action action = action_store_.getAction(Gpsylon.ACTION_FOLLOW_ME_MODE);
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(follow_me_mode_));
       
@@ -776,7 +776,7 @@ public class PositionLayer extends Layer
 
     public PositionLayerActivateAction()
     {
-      super(GPSMap.ACTION_POSITION_LAYER_ACTIVATE);
+      super(Gpsylon.ACTION_POSITION_LAYER_ACTIVATE);
       putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
     }
 
@@ -791,7 +791,7 @@ public class PositionLayer extends Layer
     public void actionPerformed(ActionEvent event)
     {
       layer_active_ = !layer_active_;
-      Action action = action_store_.getAction(GPSMap.ACTION_POSITION_LAYER_ACTIVATE);
+      Action action = action_store_.getAction(Gpsylon.ACTION_POSITION_LAYER_ACTIVATE);
       if(action != null)
         action.putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
       repaint();

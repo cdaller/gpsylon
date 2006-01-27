@@ -24,7 +24,7 @@ package org.dinopolis.gpstool.util;
 
 import java.util.Comparator;
 
-import org.dinopolis.gpstool.MapInfo;
+import org.dinopolis.gpstool.map.MapInfo;
 
 //----------------------------------------------------------------------
 /**

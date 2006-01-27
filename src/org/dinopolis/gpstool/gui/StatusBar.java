@@ -37,11 +37,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JToolBar;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapNavigationHook;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.gpsinput.GPSPositionError;
 import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
+import org.dinopolis.gpstool.hook.MapNavigationHook;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.UnitHelper;
 import org.dinopolis.util.Resources;
@@ -55,7 +55,7 @@ import org.dinopolis.util.Resources;
  */
 
 public class StatusBar extends JToolBar implements PropertyChangeListener, ActionListener,
-                   GPSMapKeyConstants, LayerStatusListener
+                   GpsylonKeyConstants, LayerStatusListener
 {
   protected JButton latitude_;
   protected JButton longitude_;
@@ -175,7 +175,7 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
 
   public void propertyChange(PropertyChangeEvent event)
   {
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_LOCATION))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_LOCATION))
     {
       LatLonPoint tmp_point = (LatLonPoint)event.getNewValue();
       if(tmp_point != null)
@@ -186,7 +186,7 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
       return;
     }
     
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_CURRENT_HEADING))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_CURRENT_HEADING))
     {
       Float tmp_heading = (Float)event.getNewValue();
       if(tmp_heading != null)
@@ -196,7 +196,7 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
       return;
     }
 
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_CURRENT_SPEED))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_CURRENT_SPEED))
     {
       Float tmp_speed = (Float)event.getNewValue();
       if(tmp_speed != null)
@@ -206,7 +206,7 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
       return;
     }
 
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_TOTAL_DISTANCE))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_TOTAL_DISTANCE))
     {
       Float tmp_distance = (Float)event.getNewValue();
       if(tmp_distance != null)
@@ -216,7 +216,7 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
       return;
     }
 
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_ROUTE_DESTINATION_DISTANCE))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_ROUTE_DESTINATION_DISTANCE))
     {
       Float tmp_distance = (Float)event.getNewValue();
       if(tmp_distance != null)
@@ -226,13 +226,13 @@ public class StatusBar extends JToolBar implements PropertyChangeListener, Actio
       return;
     }
 
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_SATELLITE_INFO))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_SATELLITE_INFO))
     {
       satellite_activity_.setSatelliteInfos((SatelliteInfo[])event.getNewValue());
       return;
     }
 
-    if(event.getPropertyName().equals(GPSMap.PROPERTY_KEY_GPS_POS_ERROR))
+    if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_POS_ERROR))
     {
       satellite_activity_.setPositionError((GPSPositionError)event.getNewValue());
       return;

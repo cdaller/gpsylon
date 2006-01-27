@@ -26,7 +26,7 @@ package org.dinopolis.gpstool.gui.layer.location;
 import javax.swing.ImageIcon;
 
 import org.dinopolis.util.Resources;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import java.lang.Comparable;
 
 //----------------------------------------------------------------------
@@ -37,7 +37,7 @@ import java.lang.Comparable;
  * @version $Revision$
  */
 
-public class LocationMarkerCategory implements GPSMapKeyConstants, Comparable
+public class LocationMarkerCategory implements GpsylonKeyConstants, Comparable
 {
 
   protected String name_;

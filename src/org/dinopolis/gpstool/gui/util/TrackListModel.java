@@ -29,9 +29,9 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.dinopolis.gpstool.TrackManager;
 import org.dinopolis.gpstool.event.TrackChangedEvent;
 import org.dinopolis.gpstool.event.TrackChangedListener;
+import org.dinopolis.gpstool.track.TrackManager;
 
 //----------------------------------------------------------------------
 /**

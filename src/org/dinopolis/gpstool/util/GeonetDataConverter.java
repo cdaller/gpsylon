@@ -176,10 +176,10 @@ public class GeonetDataConverter
 
 //----------------------------------------------------------------------
 /**
- * Converts the geonet category name to GPSMap category names.
+ * Converts the geonet category name to Gpsylon category names.
  *
  * @param geonet_cat_name
- * @return GPSMap category name
+ * @return Gpsylon category name
  */
   public String convertGeonetCategoryName(String geonet_cat_name)
   {
@@ -332,7 +332,7 @@ public class GeonetDataConverter
 //----------------------------------------------------------------------
 /**
  * Inserts the content of the geonet file into the given location
- * marker source. It translates the category keys so they match GPSMap
+ * marker source. It translates the category keys so they match Gpsylon
  * categories.
  *
  * @param target the location marker source to insert the data.
@@ -550,7 +550,7 @@ public class GeonetDataConverter
     
     String filename = args[0];
     String jdbc_driver = "org.hsqldb.jdbcDriver";
-    String jdbc_url =  "jdbc:hsqldb:/filer/cdaller/.gpsmap/marker/geonet_db";
+    String jdbc_url =  "jdbc:hsqldb:/filer/cdaller/.gpsylon/marker/geonet_db";
     String jdbc_username =  "sa";
     String jdbc_password =  "";
 

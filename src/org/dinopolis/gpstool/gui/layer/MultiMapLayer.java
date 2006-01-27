@@ -31,6 +31,7 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.proj.Projection;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -42,13 +43,13 @@ import java.util.TreeSet;
 import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.dinopolis.gpstool.GPSMap;
-import org.dinopolis.gpstool.GPSMapKeyConstants;
-import org.dinopolis.gpstool.MapManagerHook;
+import org.dinopolis.gpstool.Gpsylon;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.event.MapsChangedEvent;
 import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.gui.util.ImageInfo;
 import org.dinopolis.gpstool.gui.util.VisibleImage;
+import org.dinopolis.gpstool.hook.MapManagerHook;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.MapInfoScaleComparator;
 import org.dinopolis.util.Debug;
@@ -67,7 +68,7 @@ import org.dinopolis.util.gui.SwingWorker;
  */
 
 public class MultiMapLayer extends Layer
-  implements GPSMapKeyConstants, MapsChangedListener
+  implements GpsylonKeyConstants, MapsChangedListener
 {
   protected Set map_infos_;
     
@@ -120,7 +121,7 @@ public class MultiMapLayer extends Layer
     
         /** the Actions */
     Action[] actions_ = { new MultiMapLayerActivateAction()};
-    action_store_ = ActionStore.getStore(GPSMap.ACTION_STORE_ID);
+    action_store_ = ActionStore.getStore(Gpsylon.ACTION_STORE_ID);
     action_store_.addActions(actions_);
 
   }
@@ -313,6 +314,7 @@ public class MultiMapLayer extends Layer
 
     old_clip_rect = g2.getClipBounds(old_clip_rect);
     
+    Image image;
     if(visible_images_ != null)
     {
       Iterator image_iterator = visible_images_.iterator();
@@ -326,20 +328,23 @@ public class MultiMapLayer extends Layer
                     visible_image.getVisibleRectangleWidth(),
                     visible_image.getVisibleRectangleHeight());
 //        System.out.println("Drawing image: "+visible_image);
-
-        if(scale_factor < 1e-4)
-        { // just print image
-          g2.drawImage(visible_image.getImage(),
-                       (int)visible_image.getX(),(int)visible_image.getY(),
-                       this);
-        }
-        else // print scaled version of image
+        image = visible_image.getImage();
+        if(image != null)
         {
-          g2.drawImage(visible_image.getImage(),
-                       (int)visible_image.getX(),(int)visible_image.getY(),
-                       (int)(visible_image.getWidth()),
-                       (int)(visible_image.getHeight()),
-                       this);
+          if(scale_factor < 1e-4)
+          { // just print image
+            g2.drawImage(image,
+                (int)visible_image.getX(),(int)visible_image.getY(),
+                this);
+          }
+          else // print scaled version of image
+          {
+            g2.drawImage(image,
+                (int)visible_image.getX(),(int)visible_image.getY(),
+                (int)(visible_image.getWidth()),
+                (int)(visible_image.getHeight()),
+                this);
+          }
         }
         g2.setClip(old_clip_rect);  // reset to previous cliprect
       }
@@ -429,7 +434,7 @@ public class MultiMapLayer extends Layer
 
     public MultiMapLayerActivateAction()
     {
-      super(GPSMap.ACTION_MAP_LAYER_ACTIVATE);
+      super(Gpsylon.ACTION_MAP_LAYER_ACTIVATE);
       putValue(MenuFactory.SELECTED, new Boolean(layer_active_));
     }
 

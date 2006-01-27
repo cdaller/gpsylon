@@ -38,7 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
-import org.dinopolis.gpstool.GPSMapKeyConstants;
+import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.util.geoscreen.GeoScreenList;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.gui.SwingWorker;
@@ -55,7 +55,7 @@ import org.dinopolis.util.gui.SwingWorker;
  */
 
 public class LocationMarkerSearchPanel extends JPanel
-  implements ActionListener, GPSMapKeyConstants  //, MouseListener
+  implements ActionListener, GpsylonKeyConstants  //, MouseListener
 {
 
   JTextField enter_field_;

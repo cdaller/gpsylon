@@ -1,13 +1,18 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>
-      GPSMap/GPSylon - an Open Source Java GPS Map Application/Framework.
+      GPSylon - an Open Source Java GPS Map Application/Framework.
     </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="screen"  href="gpsylon.css" />
   </head>
 
   <body>
-    <h1>GPSylon (former GPSMap)</h1>
-
+    <div id="wrapper">
+    <h1>GPSylon</h1>
+    <div id="menu">
+    <h2>Menu</h2>
     <ul>
       <li><a href="#news">Latest News</a></li>
       <li><a href="#general_description">General Description</a></li>
@@ -26,7 +31,8 @@
       <li><a
           href="https://sourceforge.net/mailarchive/forum.php?forum_id=12596">Mailing List Archive</a></li>
     </ul>
-
+    </div>
+    <div id="content">
     <p>
       The dinopolis gpstool package is an open source (LGPL) Java GPS
       application. It consists of different modules that may be used as a
@@ -37,15 +43,19 @@
       separate jar file (since version 0.5).
     </p>
 
-    <a name="news">
+    <a name="news"></a>
       <h2>News</h2>
       <p>
-        2003/05/12:<br>
-        As the name GPSMap is already used by several other projects/products, the main
+        2006/02/01: Finally, separated the gpsinput library from the rest, redesign
+        of homepage (css'ed it). New version released. No new features, just a
+        little code cleanup.
+      </p>
+      <p>
+        2003/05/12: As the name GPSMap is already used by several other projects/products, the main
         application is renamed to GPSylon.<br>
       </p>
 
-    <a name="general_description">
+    <a name="general_description"></a>
       <h2>Short Description of GPSylon</h2>
 
    <p>
@@ -68,7 +78,7 @@
    user to navigate around like in a digital atlas. It shows maps of
    different scales, so missing maps of one scale do not result in a
    black screen, but show the next larger scale. See <a
-   href=" screenshots.html#diffscales">the screenshot section</a> for an
+   href="screenshots.html#diffscales">the screenshot section</a> for an
    image. 
    </p>
       
@@ -133,13 +143,13 @@ map providers will discontinue their service when it is misused!
           configuration details).</li>
       </ul>
 
-      <a name="screenshots">
+      <a name="screenshots"></a>
         <h2>Screenshots</h2>
         <p>
           Screenshots can be found <a href="screenshots.html">here</a>.
         </p>
 
-        <a name="supported_devices">
+        <a name="supported_devices"></a>
           <h2>Supported GPS Devices</h2>
           <p>
             In general, all gps devices that support NMEA communication should
@@ -173,7 +183,7 @@ map providers will discontinue their service when it is misused!
             <pre>
             rfcomm bind /dev/ttyS50 00:0D:B5:30:3C:0A
             </pre>
-            As rxtx does not allow <code>/dev/rfcomm0</code>, I used <code>/dev/ttyS50</code> 
+            As rxtx does not allow <code>/dev/rfcomm0</code> as serial device, I used <code>/dev/ttyS50</code> 
             (all ttys below 50 were already existent in my installation). A symlink from
             ttyS50 to rfcomm0 also works!
             </p>
@@ -182,7 +192,7 @@ map providers will discontinue their service when it is misused!
             <pre>
             stty -F/dev/ttyS50 -raw -onlcr
             </pre>
-            Now, gpstool or gpsylon can use the serial port <code>/dev/ttyS50</code> for
+            Now, GPSTool or GPSylon can use the serial port <code>/dev/ttyS50</code> for
             communication with the nmea bluetooth gps device.
             </p>
             <p>
@@ -190,11 +200,11 @@ map providers will discontinue their service when it is misused!
             <pre>
             rfcomm release /dev/ttyS50
             </pre>
-            Please note, that all these commands (except for the applicaiton start) need to 
-            be run as root!
+            Please note, that all these commands (except for the application start)
+            need to be run as root!
             </p>
 
-          <a name="installation">
+          <a name="installation"></a>
             <h2>Installation</h2>
             <p>
               No installation of GPSylon itself is needed. Nevertheless, some dependencies
@@ -233,7 +243,7 @@ map providers will discontinue their service when it is misused!
                   </p>
               </ul>
             </p>
-            <a name="installation_database">
+            <a name="installation_database"></a>
             <h3>Database for Location Markers</h3>
             <p>
               GPSylon is able to store and retrieve location markers from
@@ -297,7 +307,7 @@ map providers will discontinue their service when it is misused!
         configuration (install database, create a gpsmap database, create user
         and user rights, ...)
        </p>
-            <a name="run_gpsmap">
+            <a name="run_gpsmap"></a>
               <h2>Run GPSylon</h2>
               <p>
                 To start GPSylon, <a href="https://sourceforge.net/project/showfiles.php?group_id=64816">download</a> the gpstool-archive, unpack it and call<br> 
@@ -335,7 +345,7 @@ map providers will discontinue their service when it is misused!
 	      excessively, as the companies that provide the maps do not like
 	      that and will stop their service if it is misused!</li>
 	      </ul>
-	      <a name="plugins">
+	      <a name="plugins"></a>
 	       <h2>Plugins</h2>
 	       <p>
 	       GPSylon supports plugins of various kinds. The plugin-jars
@@ -344,19 +354,19 @@ map providers will discontinue their service when it is misused!
 	       <code>[home]/.gpsylon/plugins</code> and in the
 	       <code>plugins</code> directory of the applicaton are used. 
 	       </p>
-              <a name="download">
+              <a name="download"></a>
                 <h2>Download</h2>
                 Please download the latest distribution of GPSylon at the 
                 <a href="http://sourceforge.net/project/showfiles.php?group_id=64816">download 
                   page on sourceforge</a>.
-                <a name="status">
+                <a name="status"></a>
             <h2>Status</h2>
             <p>
              GPSylon is in beta-status. It runs quite stable, but many features
              are
              not implemented yet.
             </p>
-            <a name="todo">
+            <a name="todo"></a>
              <h2>To Do List</h2>
              <p>
               urgent:
@@ -489,7 +499,7 @@ map providers will discontinue their service when it is misused!
                </ul>
               </p>
 
-              <a name="compile">
+              <a name="compile"></a>
                <h2>
                 Compile Source Distribution
                </h2>
@@ -504,7 +514,7 @@ map providers will discontinue their service when it is misused!
                  gives all ant-tasks.
                </p>
 
-               <a name="gpstool">
+               <a name="gpstool"></a>
                 <h2>
                  Commandline tool GPSTool
                 </h2>
@@ -549,7 +559,7 @@ map providers will discontinue their service when it is misused!
                   </ul>
                 </p>
 
-                <a name="license">
+                <a name="license"></a>
                  <h2>
                   License
                  </h2>
@@ -575,6 +585,7 @@ map providers will discontinue their service when it is misused!
                   independent from the openmap library and may
                   therefore be used under the LGPL license.
                  </p>
+   <div id="footer">
                  <p>
                   Please report any comments, bugfixes, ...
                   to 
@@ -583,9 +594,11 @@ map providers will discontinue their service when it is misused!
                     Dallermassl</a>
                   </address>
                  </p>
-                 <A href="http://sourceforge.net">
-
-                  <IMG src="http://sourceforge.net/sflogo.php?group_id=64816&amp;type=5" width="210" height="62" border="0" alt="SourceForge Logo">
-                 </A>
+                 <a href="http://sourceforge.net">
+                  <img src="http://sourceforge.net/sflogo.php?group_id=64816&amp;type=5" width="210" height="62" border="0" alt="SourceForge Logo">
+                 </a>
+      </div>
+    </div>
+  </div>
  </body>
 </html>

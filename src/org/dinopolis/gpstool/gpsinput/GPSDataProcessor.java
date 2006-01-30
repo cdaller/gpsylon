@@ -53,7 +53,7 @@ import org.dinopolis.util.ProgressListener;
  * <p>
  
  * Other classes may register as {@link
- * org.dinopolis.gpstool.util.ProgressListener} to be informed about
+ * ProgressListener} to be informed about
  * progress in up/downloading routes/tracks/waypoints. The following
  * actions are supported:
  * <ul>
@@ -389,7 +389,7 @@ public interface GPSDataProcessor
  * @param listener the listener to be added.
  * @exception IllegalArgumentException if <code>listener</code> is
  * <code>null</code>.
- * @see org.dinopolis.gpstool.util.ProgressListener
+ * @see ProgressListener
  */
   public void addProgressListener(ProgressListener listener)
     throws IllegalArgumentException;
@@ -402,7 +402,7 @@ public interface GPSDataProcessor
  * @param listener the listener to be added.
  * @exception IllegalArgumentException if <code>listener</code> is
  * <code>null</code>.
- * @see org.dinopolis.gpstool.util.ProgressListener
+ * @see ProgressListener
  */
   public void removeProgressListener(ProgressListener listener)
     throws IllegalArgumentException;

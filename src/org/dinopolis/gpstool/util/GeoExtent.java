@@ -202,8 +202,8 @@ public class GeoExtent
  * @param lat1 the latitude of the start point of the line.
  * @param lon1 the longitude of the start point of the line.
  * @param lat2 the latitude of the end point of the line.
- * @param lon1 the longitude of the end point of the line.
- * @return true, if the given line intersects one of the lines (N,W) to (N,E),
+ * @param lon2 the longitude of the end point of the line.
+ * @return <code>true</code>, if the given line intersects one of the lines (N,W) to (N,E),
  * (N,E) to (S,E), (S,E) to (S,W) or (S,W) to (N,W).
  */
   public boolean intersectsLine(double lat1, double lon1, double lat2, double lon2)

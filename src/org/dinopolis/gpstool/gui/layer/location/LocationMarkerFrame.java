@@ -272,7 +272,7 @@ public class LocationMarkerFrame extends JDialog implements GpsylonKeyConstants
 /**
  * Sets the name of the location marker.
  *
- * @return name the name of the location marker.
+ * @param name the name of the location marker.
  */
   public void setMarkerName(String name)
   {

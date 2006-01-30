@@ -46,10 +46,18 @@ public class GarminWaypointD101 implements GarminWaypoint
 
   protected final static byte WAYPOINT_TYPE = 101;
 
+  /**
+   * Default Constructor
+   */
   public GarminWaypointD101()
   {
   }
 
+  /**
+   * Constructor using a garmin packet as int array.
+   * 
+   * @param buffer the int array holding the information
+   */
   public GarminWaypointD101(int[] buffer)
   {
     identification_ = GarminDataConverter.getGarminString(buffer,2,6).trim();
@@ -102,6 +110,7 @@ public class GarminWaypointD101 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
+ * @param packet_id the packet id.
  * @return GarminPacket representing content of data type.
  */
   public GarminPacket toGarminPacket(int packet_id)
@@ -179,6 +188,8 @@ public class GarminWaypointD101 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Set the Longitude (degrees)
+ * 
+ * @param longitude the longitude
  */
   public void setLongitude(double longitude)
   {
@@ -199,6 +210,8 @@ public class GarminWaypointD101 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Set the Latitude (degrees)
+ * 
+ * @param latitude the latitude
  */
   public void setLatitude(double latitude)
   {
@@ -219,6 +232,8 @@ public class GarminWaypointD101 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Set the Identification String
+ * 
+ * @param identification the identification
  */
   public void setIdentification(String identification)
   {
@@ -239,6 +254,8 @@ public class GarminWaypointD101 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Set the Comment String
+ * 
+ * @param comment the comment
  */
   public void setComment(String comment)
   {
@@ -321,7 +338,7 @@ public class GarminWaypointD101 implements GarminWaypoint
 /**
  * Set the Altitude (metres).  A value of 1.0e25 means the parameter is unsupported or unknown.
  *
- * @return Altitude (metres)
+ * @param altitude the Altitude (metres)
  * @throws UnsupportedOperationException
  */
   public void setAltitude(float altitude) throws UnsupportedOperationException

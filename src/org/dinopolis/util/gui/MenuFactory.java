@@ -495,7 +495,6 @@ public class MenuFactory
    * @param menu_name the name(s) of the menu.
    * @param resources the resource file to read the required resources
    * from. 
-   * @return the bound action or null if no action was found.
    */
  
   protected static void initializeMenu(JMenu menu, 

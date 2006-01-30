@@ -39,7 +39,7 @@ import org.dinopolis.util.ProgressListener;
  *
  * @author Christof Dallermassl
  * @version $Revision$
- * @see org.dinopolis.gpstool.util.ProgressListener
+ * @see ProgressListener
  */
 
 public class ProgressFrame extends JFrame implements ProgressListener
@@ -80,12 +80,6 @@ public class ProgressFrame extends JFrame implements ProgressListener
     content_pane.add(progress_bar_);
     pack();
   }
-
-  public void setTitle(String title)
-  {
-    setTitle(title);
-  }
-
 
 //----------------------------------------------------------------------
 /**

@@ -174,7 +174,7 @@ public class HookManager implements PluginSupport
 /**
  * Set the map component
  *
- * @return the map component.
+ * @param component the map component.
  */
   public void setMapComponent(Component component)
   {

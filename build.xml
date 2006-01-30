@@ -511,6 +511,7 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="gpstool-${release_version}.jar"/>
         <include name="gpsinput-${release_version}.jar"/>
         <include name="dinopolis-util-${release_version}.jar"/>
+        <include name="readme.txt"/>
       </fileset>
     </copy>
 

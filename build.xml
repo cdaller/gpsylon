@@ -494,7 +494,6 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="META-INF/services/org.dinopolis.gpstool.*"/>
         <include name="readme.txt"/>
       </fileset>
-      <patternset refid="gpsylon."/>
     </jar>
   </target>
 
@@ -522,7 +521,9 @@ Christof Dallermassl (christof@dallermassl.at)
     </copy>
 
     <copy todir="${dist_dir}/${doc_dir}">
-      <fileset dir="${doc_dir}"/>
+      <fileset dir="${doc_dir}">
+        <exclude name="images/*.psd"/>
+      </fileset>
     </copy>
 
     <!-- create directory with the name using the release number -->
@@ -674,7 +675,7 @@ Christof Dallermassl (christof@dallermassl.at)
   <target name="upload_sourceforge_web" depends="init">
     <exec dir="${doc_dir}/" executable="/bin/sh">
       <arg value="-c"/>
-      <arg value='tar cvf - *.html *.pdf changelog.txt images/*.png | ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; tar xf -)"'/>
+      <arg value='tar cvf - *.html *.pdf *.css changelog.txt images/*.png images/*.gif | ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; tar xf -)"'/>
     </exec>
   </target>
 

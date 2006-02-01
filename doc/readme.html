@@ -21,16 +21,16 @@ google_ad_height = 90;
 google_ad_format = "728x90_as";
 google_ad_type = "text";
 google_ad_channel ="";
-google_color_border = "6699CC";
-google_color_bg = "003366";
-google_color_link = "FFFFFF";
-google_color_url = "AECCEB";
-google_color_text = "AECCEB";
+google_color_border = "316ba4";  // orig: 6699cc
+google_color_bg = "719ecb";      // orig: 003366
+google_color_link = "1f5b96";    // orig: ffffff
+google_color_url = "284766";     // orig: aecceb
+google_color_text = "ffffff";    // orig: aecceb
 //--></script>
 <script type="text/javascript"
   src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
-    </div>
+    </div> <!-- googleads -->
     <div id="menu">
     <h2>Menu</h2>
     <ul>
@@ -56,7 +56,7 @@ google_color_text = "AECCEB";
         </a>
        </li>
     </ul>
-    </div>
+    </div> <!-- menu -->
     <div id="content">
     <p>
       The dinopolis gpstool package is an open source (LGPL) Java GPS
@@ -552,9 +552,12 @@ map providers will discontinue their service when it is misused!
                  GPSTool is a small command line application that demonstrates
                  the usage of the classes to read data from a gps device. The
                  main class is
-                 <code>org.dinopolis.gpstool.gpsinput.GPSTool</code>
+                 <code>org.dinopolis.gpstool.GPSTool</code>
                  and it may
-                 be started using the provided gpstool.jar file. Use "--help"
+                 be started using the provided gpstool-&lt;version&gt;.jar file 
+                 (execute in a command window <code>java -jar gpsylon-&lt;version&gt;.jar</code> 
+                 - double click does not make 
+                 much sense, as it is a commandline application). Use "--help"
                  to see all commandline switches.<br>
                   The following features are implemented in GPSTool:
                   <ul>
@@ -623,12 +626,10 @@ map providers will discontinue their service when it is misused!
                     Dallermassl</a>
                   </address>
                  </p>
-                 <div id="sflogo">
-                 <a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=64816&amp;type=4" width="125" height="37" border="0" alt="SourceForge.net Logo" />
+                 <a id="sflogo" href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=64816&amp;type=4" width="125" height="37" border="0" alt="SourceForge.net Logo" />
                  </a>
-                 </div>
-      </div>
-    </div>
-  </div>
+      </div> <!-- footer -->
+    </div> <!-- content -->
+  </div> <!-- wraper -->
  </body>
 </html>

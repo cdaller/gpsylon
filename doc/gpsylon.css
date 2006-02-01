@@ -26,7 +26,11 @@ a:active {
   margin: 0 auto;  /* centers content */
   position: relative;
   text-align: left; /* resets text align */
-  width: 710px;
+  width: 728px;
+}
+
+#googleads {
+	margin-bottom: 1em;
 }
 
 /*** Header Components ********************************************************/

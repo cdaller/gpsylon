@@ -152,7 +152,7 @@ Christof Dallermassl (christof@dallermassl.at)
 
       - upload_sourceforge_dist: uploads the source and the binary distribution to
                   the sourceforge server.
-      - upload_sourceforge_web: uploads the web pages to the sourceforge server.
+      - upload_web: uploads the web pages to the web server.
 
       - install_plugins: installs the plugins and all needed libraries into the
                   '${plugin_install_dir}' directory.
@@ -673,14 +673,16 @@ Christof Dallermassl (christof@dallermassl.at)
   <!-- ======================================== -->
 
   <!-- upload webpages target -->
-  <target name="upload_sourceforge_web" depends="init">
+  <target name="upload_web" depends="init">
     <exec dir="${doc_dir}/" executable="/bin/sh">
       <arg value="-c"/>
-      <arg value='tar cvf - *.html *.pdf *.css changelog.txt images/*.png images/*.gif | ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; tar xf -)"'/>
+      <!--arg value='tar cvf - *.html *.pdf *.css changelog.txt images/*.png images/*.gif | ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; tar xf -)"'/-->
+      <arg value='tar cvf - *.html *.pdf *.css changelog.txt images/*.png images/*.gif | ssh www.tegmento.org "(cd /var/www/gpsylon/ ; tar xf -)"'/>
     </exec>
     <exec dir="${doc_dir}/" executable="/bin/sh">
       <arg value="-c"/>
-      <arg value='ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; chmod 644 *.html *.pdf *.css *.txt images/*.png images/*.gif)"'/>
+      <!--arg value='ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; chmod 644 *.html *.pdf *.css *.txt images/*.png images/*.gif)"'/-->
+      <arg value='ssh -l cdaller www.tegmento.org "(cd /var/www/gpsylon/ ; chmod 644 *.html *.pdf *.css *.txt images/*.png images/*.gif)"'/>
     </exec>
   </target>
 

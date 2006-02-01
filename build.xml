@@ -678,6 +678,10 @@ Christof Dallermassl (christof@dallermassl.at)
       <arg value="-c"/>
       <arg value='tar cvf - *.html *.pdf *.css changelog.txt images/*.png images/*.gif | ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; tar xf -)"'/>
     </exec>
+    <exec dir="${doc_dir}/" executable="/bin/sh">
+      <arg value="-c"/>
+      <arg value='ssh -l cdaller gpsmap.sourceforge.net "(cd gpsmap/htdocs/ ; chmod 644 *.html *.pdf *.css *.txt images/*.png images/*.gif)"'/>
+    </exec>
   </target>
 
 

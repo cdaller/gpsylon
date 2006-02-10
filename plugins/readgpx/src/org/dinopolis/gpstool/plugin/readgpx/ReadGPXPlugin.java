@@ -25,14 +25,17 @@ package org.dinopolis.gpstool.plugin.readgpx;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import org.dinopolis.gpstool.Gpsylon;
 import org.dinopolis.gpstool.GpsylonKeyConstants;
+import org.dinopolis.gpstool.gpsinput.GPSTrack;
 import org.dinopolis.gpstool.gpx.ReadGPX;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
 import org.dinopolis.gpstool.track.Track;
+import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
@@ -156,7 +159,13 @@ public class ReadGPXPlugin extends ReadGPX implements ReadTrackPlugin, GpsylonKe
   {
     super.parseInputStream(in);
     List tracks = getTracks();
-    Track[] track_array = (Track[])tracks.toArray(new Track[0]);
+    // convert from GPSTrack list to Track array:
+    Track[] track_array = new Track[tracks.size()];
+    for(int index = 0; index < tracks.size(); ++index) 
+    {
+      track_array[index] = new TrackImpl((GPSTrack) tracks.get(index));
+    }
+    
 //     for(int index = 0; index < track_array.length; index++)
 //     {
 //       System.out.println("ReadGPXPlugin.getTracks: "+track_array[index].getIdentification());

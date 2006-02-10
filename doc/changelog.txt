@@ -1,5 +1,7 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/02/10: Fixed reading of gpx tracks. Version 0.5.1 released.
+
 2006/01/26: Lots of refactoring: 
             - Moved the GPSTool application out of the gpsinput package.
               

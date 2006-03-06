@@ -563,7 +563,7 @@ public class Gpsylon
     splash_screen.setStatus("Set default projection",splash_progress+=5);
     Projection projection = new FlatProjection(current_map_position_,
                                                (float)resources_.getDouble(KEY_MAP_SCALE),0,0);
-    map_bean_.setProjection(projection);
+    setMapProjection(projection);
 
     main_frame_.getContentPane().add(map_bean_,BorderLayout.CENTER);
 

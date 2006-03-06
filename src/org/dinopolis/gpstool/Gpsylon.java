@@ -2145,7 +2145,7 @@ public class Gpsylon
                                 (int)(proj.getHeight() * (0.5f + factor_y)));
 //    System.out.println("new Center:"+center_xy);
     LatLonPoint new_center = proj.inverse(center_xy);
-    setMapCenter((double)new_center.getLatitude(),(double)new_center.getLongitude());
+    setMapCenter(new_center.getLatitude(), new_center.getLongitude());
   }
 
 //----------------------------------------------------------------------
@@ -2161,6 +2161,21 @@ public class Gpsylon
   {
     return(map_bean_.getProjection());
   }
+  
+//----------------------------------------------------------------------
+  /**
+   * Sets the projection of the map. This projection
+   * is used to calculate the latititude/longitude from screen
+   * coordinates and vice versa.
+   *
+   * @param projection the projection that should be used from now on.
+   * @see com.bbn.openmap.proj.Projection
+   */
+  public void setMapProjection(Projection projection) 
+  {
+    map_bean_.setProjection(projection);
+  }
+
 
 //----------------------------------------------------------------------
 // The MapManager Hooks

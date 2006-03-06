@@ -86,6 +86,17 @@ public interface MapNavigationHook
  * @see com.bbn.openmap.proj.Projection
  */
   public Projection getMapProjection();
+  
+//----------------------------------------------------------------------
+  /**
+   * Sets the projection of the map. This projection
+   * is used to calculate the latititude/longitude from screen
+   * coordinates and vice versa.
+   *
+   * @param projection the projection that should be used from now on.
+   * @see com.bbn.openmap.proj.Projection
+   */
+  public void setMapProjection(Projection projection);
 
 }
 

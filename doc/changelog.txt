@@ -1,5 +1,8 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/03/06: Allow to set a different projection from a plugin.
+
+
 2006/02/10: Fixed reading of gpx tracks. Version 0.5.1 released.
 
 2006/01/26: Lots of refactoring: 

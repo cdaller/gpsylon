@@ -1,5 +1,10 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/03/13: ScaleLayer does not depend on the FlatProjection anymore.
+            Thanks to Samuel Benz!
+            This should really allow to set different Projections without
+            any problems now! Time to add other map types (like gpsdrive does)
+
 2006/03/06: Allow to set a different projection from a plugin.
 
 

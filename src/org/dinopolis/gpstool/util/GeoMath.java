@@ -35,10 +35,14 @@ package org.dinopolis.gpstool.util;
 
 public class GeoMath  
 {
-  static final public double RADIUS_EQUATOR = 6378137;  // equatorial radius in m
-  static final public double CIRCUMFERENCE_EQUATOR = RADIUS_EQUATOR * 2 * Math.PI;  // equatorial circumference in m
-  static final public double M_PER_DEGREE = CIRCUMFERENCE_EQUATOR / 360.0;  
-  static final public double M_PER_RADIAN = CIRCUMFERENCE_EQUATOR / (2 * Math.PI);  
+  /** earth radius at equator in meters */
+  public static final double RADIUS_EQUATOR = 6378137;  // equatorial radius in m
+  /** circumference of earth at equator in meters */
+  public static final double CIRCUMFERENCE_EQUATOR = RADIUS_EQUATOR * 2 * Math.PI;  // equatorial circumference in m
+  /** meters per degree at equator */
+  public static final double M_PER_DEGREE = CIRCUMFERENCE_EQUATOR / 360.0;  
+  /** meters per radian at equator */
+  public static final double M_PER_RADIAN = CIRCUMFERENCE_EQUATOR / (2 * Math.PI);  
 
   static final double EPSILON = 1E-20;
   static final double EQUAL_EPSILON = 1E-10;
@@ -55,7 +59,7 @@ public class GeoMath
  * @return the distance in meters.
  */
   public static double distance(double latitude1, double longitude1,
-                                             double latitude2, double longitude2)
+                                double latitude2, double longitude2)
   {
     double distance_deg = distanceDegrees(latitude1,longitude1,
                                           latitude2,longitude2);

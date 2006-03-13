@@ -1,7 +1,7 @@
 /*
  * Geotools - OpenSource mapping toolkit
  * (C) 2002, Centre for Computational Geography
- * (C) 2001, Institut de Recherche pour le Développement
+ * (C) 2001, Institut de Recherche pour le Developpement
  *
  *    This library is free software; you can redistribute it and/or
  *    modify it under the terms of the GNU Lesser General Public
@@ -22,8 +22,8 @@
  *     UNITED KINGDOM: James Macgill
  *             mailto:j.macgill@geog.leeds.ac.uk
  *
- *     FRANCE: Surveillance de l'Environnement Assistée par Satellite
- *             Institut de Recherche pour le Développement / US-Espace
+ *     FRANCE: Surveillance de l'Environnement Assistee par Satellite
+ *             Institut de Recherche pour le Developpement / US-Espace
  *             mailto:seasnet@teledetection.fr
  *
  *     CANADA: Observatoire du Saint-Laurent
@@ -85,7 +85,7 @@ public final class XMath
     }
     
     /**
-     * Compute the hypotenuse (<code>sqrt(x²+y²)</code>).
+     * Compute the hypotenuse (<code>sqrt(x?+y?)</code>).
      */
     public static double hypot(final double x, final double y) {
         return Math.sqrt(x*x + y*y);

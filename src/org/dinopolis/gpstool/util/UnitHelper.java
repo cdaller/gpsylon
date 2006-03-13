@@ -303,7 +303,7 @@ public class UnitHelper
 
 
 //----------------------------------------------------------------------
-/* Converts the given number to a string. The number of digits after
+/** Converts the given number to a string. The number of digits after
  * the comma depends on the value (no digits if higher than 100.0, one
  * digit if less than 100.0).
  *
@@ -419,14 +419,14 @@ public class UnitHelper
     throw new IllegalStateException("Illegal Unit System");
   }
 
-	public static void main(String[] args)
-	{
-		UnitHelper uh = new UnitHelper();
-		System.out.println(uh.getValueString(50.1234));
-		System.out.println(uh.getValueString(50));
-		System.out.println(uh.getValueString(500.1234));
-		System.out.println(uh.getValueString(500));
-	}
+//	public static void main(String[] args)
+//	{
+//		UnitHelper uh = new UnitHelper();
+//		System.out.println(uh.getValueString(50.1234));
+//		System.out.println(uh.getValueString(50));
+//		System.out.println(uh.getValueString(500.1234));
+//		System.out.println(uh.getValueString(500));
+//	}
 }
 
 

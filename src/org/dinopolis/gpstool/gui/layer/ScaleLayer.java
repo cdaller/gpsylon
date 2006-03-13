@@ -22,29 +22,33 @@
 
 package org.dinopolis.gpstool.gui.layer;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.proj.Projection;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+
 import org.dinopolis.gpstool.Gpsylon;
 import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.projection.FlatProjection;
+import org.dinopolis.gpstool.util.GeoMath;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
 import org.dinopolis.util.gui.MenuFactory;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.proj.Projection;
 
 
 //----------------------------------------------------------------------
@@ -232,6 +236,48 @@ public class ScaleLayer extends Layer
     rule_length_ = rule_length;
     repaintChangedArea(); 
   }
+  
+  //----------------------------------------------------------------------
+  /**
+   * Calculates the distance in meter of two LatLonPoint.
+   *
+   * @param point1 LatLonPoint
+   * @param point2 LatLonPoint
+   * @return The distance in meter between the two points
+   */  
+    public static double calculateDistance(LatLonPoint point1, LatLonPoint point2)
+    {
+      return(GeoMath.distance(point1.getLatitude(),point1.getLongitude(),point2.getLatitude(),point2.getLongitude()));   
+    }
+    
+//  //----------------------------------------------------------------------
+//  /**
+//   * Calculates the distance in meter of two lat/lon points in RADIAN.
+//   * See: http://openmap.bbn.com/mailArchives/openmap-users/2002-03/0665.html
+//   *
+//   * @param lat1 Latitude of the first point in RADIAN
+//   * @param lon1 Longitude of the first point in RADIAN
+//   * @param lat2 Latitude of the second point in RADIAN
+//   * @param lon2 Longitude of the second point in RADIAN
+//   * @return The distance in meter between the two points
+//   */  
+//    public static double calculateDistance(double lat1, double lon1, double lat2,double lon2)
+//    {
+//      double dlon = lon2 - lon1; // difference in longitude
+//      double dlat = lat2 - lat1; // difference in latitude
+//  
+//      double a = (Math.sin(dlat/2.0)* Math.sin(dlat/2.0)) +
+//                   (Math.cos(lat1) * Math.cos(lat2) *
+//                    Math.sin(dlon/2.0) * Math.sin(dlon/2.0));
+//  
+//      double c = 2.0 * Math.asin(Math.sqrt(a));
+//  
+//      //  private final static double R = 6367000:
+//      double R = FlatProjection.calcEarthRadius(lat1/(180/Math.PI));
+//      //  return ( (R / 1.852) * c); // Final distance is in nautical miles.
+//      return (R * c); // Final distance is in meter.
+//    }
+  
 
 
 //----------------------------------------------------------------------
@@ -240,6 +286,8 @@ public class ScaleLayer extends Layer
  * to match the aimed length of the rule best. At the moment an O(n)
  * algorithm is implemented (searches the whole list of available
  * scale values).
+ * Thanks to Samuel Benz for helping to get rid of the dependency to 
+ * FlatProjection!
  */
   protected void calculateScaleRule()
   {
@@ -248,13 +296,20 @@ public class ScaleLayer extends Layer
     double best_rule = 0.0f;
     double rule;
     double best_rule_length = 0.0f;
-    double min_diff = 100*aimed_length_;
+    double min_diff = 100 * aimed_length_;
     double diff;
+    
+
+    // find out, how long are 100 pixels:
+    LatLonPoint upperleftpoint = getProjection().inverse(0,0);
+    LatLonPoint deltapoint = getProjection().inverse(100,0);
+    double distance = calculateDistance(upperleftpoint,deltapoint);
+    double pixels_per_meter = getProjection().getScale() / (distance/100);
     for (int count=0; count < valid_scales_.length; count++)
     {
       rule = valid_scales_[count];
       scale_rule_length = rule / getProjection().getScale()
-                          * FlatProjection.PIXELFACT
+                          * pixels_per_meter
                           / plugin_support_.getUnitHelper().getDistanceOrSpeedFactor();
 //      System.out.println("checking scale: "+rule +"for scale:"+getProjection().getScale());
       diff = Math.abs(scale_rule_length - aimed_length_);

@@ -166,7 +166,8 @@ Christof Dallermassl (christof@dallermassl.at)
       destdir="${target_class_dir}"
       classpathref="compile_util_classpath"
       debug="on"
-      deprecation="on">
+      deprecation="on"
+      encoding="ISO-8859-1">
       <classpath id="compile_util_classpath">
         <fileset dir="${basedir}/${lib_dir}">
           <include name="gnu-regexp-1.1.3.jar" />

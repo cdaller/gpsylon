@@ -340,7 +340,7 @@ public class GraticuleLayer extends Layer
       {
         tmp_point = projection.forward(text_south,longitude);
         OMText text = new OMText((int)tmp_point.getX()+3,projection.getHeight()-10,
-                                 String.valueOf((int)longitude)+"?",
+                                 String.valueOf((int)longitude)+"°",
                                  font_,OMText.JUSTIFY_LEFT);
         text.setLinePaint(color);
         list.add(text);
@@ -380,7 +380,7 @@ public class GraticuleLayer extends Layer
       if(draw_text_)
       {
         tmp_point = projection.forward(latitude,text_west);
-        OMText text = new OMText(5,(int)tmp_point.getY(),String.valueOf((int)latitude)+"?",
+        OMText text = new OMText(5,(int)tmp_point.getY(),String.valueOf((int)latitude)+"°",
                                  font_,OMText.JUSTIFY_LEFT);
         text.setLinePaint(color);
         list.add(text);

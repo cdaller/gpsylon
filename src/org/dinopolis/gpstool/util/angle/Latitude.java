@@ -24,7 +24,7 @@
 /*
  * Geotools - OpenSource mapping toolkit
  * (C) 2002, Centre for Computational Geography
- * (C) 2001, Institut de Recherche pour le D?veloppement
+ * (C) 2001, Institut de Recherche pour le Developpement
  * (C) 1999, Fisheries and Oceans Canada
  *
  *    This library is free software; you can redistribute it and/or
@@ -46,8 +46,8 @@
  *     UNITED KINGDOM: James Macgill
  *             mailto:j.macgill@geog.leeds.ac.uk
  *
- *     FRANCE: Surveillance de l'Environnement Assist?e par Satellite
- *             Institut de Recherche pour le D?veloppement / US-Espace
+ *     FRANCE: Surveillance de l'Environnement Assistee par Satellite
+ *             Institut de Recherche pour le Developpement / US-Espace
  *             mailto:seasnet@teledetection.fr
  *
  *     CANADA: Observatoire du Saint-Laurent

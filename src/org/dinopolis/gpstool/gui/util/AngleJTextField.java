@@ -43,7 +43,7 @@ import org.dinopolis.gpstool.util.angle.Longitude;
  * locale is a comma, the validity is also checked with the dot
  * replaced by the comma. So in case of comma as a decimal separator,
  * "123.34" would also be accepted. The default angle formats are
- * "DD°MM'SS", DD°MM'SS, DD.ddddd°, DD°MM.mmmm'.
+ * "DD?MM'SS", DD?MM'SS, DD.ddddd?, DD?MM.mmmm'.
  * 
  * @author Christof Dallermassl
  * @version $Revision$

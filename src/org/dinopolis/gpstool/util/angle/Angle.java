@@ -23,7 +23,7 @@
 /*
  * Geotools - OpenSource mapping toolkit
  * (C) 2002, Centre for Computational Geography
- * (C) 2001, Institut de Recherche pour le D?veloppement
+ * (C) 2001, Institut de Recherche pour le Developpement
  * (C) 1999, Fisheries and Oceans Canada
  *
  *    This library is free software; you can redistribute it and/or
@@ -45,8 +45,8 @@
  *     UNITED KINGDOM: James Macgill
  *             mailto:j.macgill@geog.leeds.ac.uk
  *
- *     FRANCE: Surveillance de l'Environnement Assist?e par Satellite
- *             Institut de Recherche pour le D?veloppement / US-Espace
+ *     FRANCE: Surveillance de l'Environnement Assistee par Satellite
+ *             Institut de Recherche pour le Developpement / US-Espace
  *             mailto:seasnet@teledetection.fr
  *
  *     CANADA: Observatoire du Saint-Laurent
@@ -126,7 +126,7 @@ public class Angle implements Comparable, Serializable {
      * Constructs a newly allocated <code>Angle</code> object that
      * represents the angle value represented by the string.   The
      * string should represents an angle in either fractional degrees
-     * (e.g. 45.5°) or degrees with minutes and seconds (e.g. 45°30').
+     * (e.g. 45.5?) or degrees with minutes and seconds (e.g. 45?30').
      *
      * @param  string A string to be converted to an <code>Angle</code>.
      * @throws NumberFormatException if the string does not contain a parsable angle.
@@ -213,7 +213,7 @@ public class Angle implements Comparable, Serializable {
                 return angleFormat;
             }
         }
-        final Format newFormat = new AngleFormat("D°MM.m'", Locale.US);
+        final Format newFormat = new AngleFormat("D?MM.m'", Locale.US);
         format = new SoftReference(newFormat);
         return newFormat;
     }

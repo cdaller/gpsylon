@@ -9,7 +9,7 @@
 /*
  * Geotools - OpenSource mapping toolkit
  * (C) 2002, Centre for Computational Geography
- * (C) 2001, Institut de Recherche pour le D?veloppement
+ * (C) 2001, Institut de Recherche pour le Developpement
  * (C) 1999, Fisheries and Oceans Canada
  *
  *    This library is free software; you can redistribute it and/or
@@ -31,8 +31,8 @@
  *     UNITED KINGDOM: James Macgill
  *             mailto:j.macgill@geog.leeds.ac.uk
  *
- *     FRANCE: Surveillance de l'Environnement Assist?e par Satellite
- *             Institut de Recherche pour le D?veloppement / US-Espace
+ *     FRANCE: Surveillance de l'Environnement Assistee par Satellite
+ *             Institut de Recherche pour le Developpement / US-Espace
  *             mailto:seasnet@teledetection.fr
  *
  *     CANADA: Observatoire du Saint-Laurent
@@ -66,13 +66,13 @@ import java.io.ObjectInputStream;
  * containing any characters, with a special meaning for the following characters:
  *
  * <blockquote><table cellpadding="3">
- *     <tr><td><code>D</code></td><td>  The integer part of degrees</td></tr>
- *     <tr><td><code>d</code></td><td>  The fractional part of degrees</td></tr>
- *     <tr><td><code>M</code></td><td>  The integer part of minutes</td></tr>
- *     <tr><td><code>m</code></td><td>  The fractional part of minutes</td></tr>
- *     <tr><td><code>S</code></td><td>  The integer part of seconds</td></tr>
- *     <tr><td><code>s</code></td><td>  The fractional part of seconds</td></tr>
- *     <tr><td><code>.</code></td><td>  The decimal separator</td></tr>
+ *     <tr><td><code>D</code></td><td>??The integer part of degrees</td></tr>
+ *     <tr><td><code>d</code></td><td>??The fractional part of degrees</td></tr>
+ *     <tr><td><code>M</code></td><td>??The integer part of minutes</td></tr>
+ *     <tr><td><code>m</code></td><td>??The fractional part of minutes</td></tr>
+ *     <tr><td><code>S</code></td><td>??The integer part of seconds</td></tr>
+ *     <tr><td><code>s</code></td><td>??The fractional part of seconds</td></tr>
+ *     <tr><td><code>.</code></td><td>??The decimal separator</td></tr>
  * </table></blockquote>
  * <br>
  * Upper-case letters <code>D</code>, <code>M</code> and <code>S</code> are for the integer
@@ -98,8 +98,8 @@ import java.io.ObjectInputStream;
  *
  * <blockquote><table cellpadding="3">
  * <tr><th>Pattern                </th>  <th>Example   </th></tr>
- * <tr><td><code>DD°MM'SS" </code></td>  <td>48°30'00" </td></tr>
- * <tr><td><code>DD°MM'    </code></td>  <td>48°30'    </td></tr>
+ * <tr><td><code>DD?MM'SS" </code></td>  <td>48?30'00" </td></tr>
+ * <tr><td><code>DD?MM'    </code></td>  <td>48?30'    </td></tr>
  * <tr><td><code>DD.ddd    </code></td>  <td>48.500    </td></tr>
  * <tr><td><code>DDMM      </code></td>  <td>4830      </td></tr>
  * <tr><td><code>DDMMSS    </code></td>  <td>483000    </td></tr>
@@ -210,7 +210,7 @@ public class AngleFormat extends Format {
      * suite des degrees, minutes et secondes (<code>suffix0..2</code>).
      * Ces champs doivent ?tre <code>null</code> s'il n'y a rien ? ins?rer.
      */
-    private String prefix=null, suffix0="°", suffix1="'", suffix2="\"";
+    private String prefix=null, suffix0="?", suffix1="'", suffix2="\"";
    
     /***
      * Indique s'il faut utiliser le s?parateur d?cimal pour s?parer la partie
@@ -287,7 +287,7 @@ public class AngleFormat extends Format {
      */
     private void setSuffix(final int index, String s) {
         switch (index) {
-            case  PREFIX_FIELD:  prefix=s; s="°";  // fall through
+            case  PREFIX_FIELD:  prefix=s; s="?";  // fall through
             case DEGREES_FIELD: suffix0=s; s="'";  // fall through
             case MINUTES_FIELD: suffix1=s; s="\""; // fall through
             case SECONDS_FIELD: suffix2=s;         // fall through
@@ -299,7 +299,7 @@ public class AngleFormat extends Format {
      * the current default locale and a default pattern.
      */
     public AngleFormat() {
-        this("D°MM.m'");
+        this("D?MM.m'");
     }
    
     /***
@@ -750,7 +750,7 @@ public class AngleFormat extends Format {
      * Ignore le suffix d'un nombre. Cette m?thode est appell?e par la m?thode
      * {@link #parse} pour savoir quel champs il vient de lire. Par exemple si
      * l'on vient de lire les degrees dans "48?12'", alors cette m?thode extraira
-     * le "°" et retournera 0 pour indiquer que l'on vient de lire des degrees.
+     * le "?" et retournera 0 pour indiquer que l'on vient de lire des degrees.
      *
      * Cette m?thode se chargera d'ignorer les espaces qui pr?c?dent le suffix.
      * Elle tentera ensuite de d'abord interpr?ter le suffix selon les symboles
@@ -806,7 +806,7 @@ public class AngleFormat extends Format {
         }
         while (Character.isSpaceChar(c=source.charAt(start++)));
         switch (c) {
-            case '°' : pos.setIndex(start); return DEGREES_FIELD;
+            case '?' : pos.setIndex(start); return DEGREES_FIELD;
             case '\'': pos.setIndex(start); return MINUTES_FIELD;
             case '"' : pos.setIndex(start); return SECONDS_FIELD;
             default  : return SYMBOLS.length; // Unknow field.

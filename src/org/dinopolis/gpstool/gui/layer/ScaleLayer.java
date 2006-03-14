@@ -245,40 +245,10 @@ public class ScaleLayer extends Layer
    * @param point2 LatLonPoint
    * @return The distance in meter between the two points
    */  
-    public static double calculateDistance(LatLonPoint point1, LatLonPoint point2)
-    {
-      return(GeoMath.distance(point1.getLatitude(),point1.getLongitude(),point2.getLatitude(),point2.getLongitude()));   
-    }
-    
-//  //----------------------------------------------------------------------
-//  /**
-//   * Calculates the distance in meter of two lat/lon points in RADIAN.
-//   * See: http://openmap.bbn.com/mailArchives/openmap-users/2002-03/0665.html
-//   *
-//   * @param lat1 Latitude of the first point in RADIAN
-//   * @param lon1 Longitude of the first point in RADIAN
-//   * @param lat2 Latitude of the second point in RADIAN
-//   * @param lon2 Longitude of the second point in RADIAN
-//   * @return The distance in meter between the two points
-//   */  
-//    public static double calculateDistance(double lat1, double lon1, double lat2,double lon2)
-//    {
-//      double dlon = lon2 - lon1; // difference in longitude
-//      double dlat = lat2 - lat1; // difference in latitude
-//  
-//      double a = (Math.sin(dlat/2.0)* Math.sin(dlat/2.0)) +
-//                   (Math.cos(lat1) * Math.cos(lat2) *
-//                    Math.sin(dlon/2.0) * Math.sin(dlon/2.0));
-//  
-//      double c = 2.0 * Math.asin(Math.sqrt(a));
-//  
-//      //  private final static double R = 6367000:
-//      double R = FlatProjection.calcEarthRadius(lat1/(180/Math.PI));
-//      //  return ( (R / 1.852) * c); // Final distance is in nautical miles.
-//      return (R * c); // Final distance is in meter.
-//    }
-  
-
+  public static double calculateDistance(LatLonPoint point1, LatLonPoint point2)
+  {
+    return(GeoMath.distance(point1.getLatitude(),point1.getLongitude(),point2.getLatitude(),point2.getLongitude()));   
+  }
 
 //----------------------------------------------------------------------
 /**

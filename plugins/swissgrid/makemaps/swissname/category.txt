@@ -1,0 +1,14 @@
+Andere
+Berg; Grat
+Flurnaen
+Fluss
+Gasthof; Hütte
+Gletscher
+Historisches Objekt
+Infrastrukrur
+Pass
+Region
+See
+Siedlung; Gebäude
+Verkehrsnetz
+Wald

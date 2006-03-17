@@ -9,8 +9,8 @@
   <property name="dist_dir" value="dist"/>
   <property name="lib_dir" value="lib/java"/>
   <property name="aux_dir" value="auxiliary"/>
-  <property name="dinopolis_classes" value="./../gpstool/classes"/>
-  <property name="dinopolis_lib_dir" value="./../gpstool/lib/java"/>
+  <property name="dinopolis_classes" value="./../../classes"/>
+  <property name="dinopolis_lib_dir" value="./../../lib/java"/>
   <property name="plugin_install_dir" value="../"/>
   <property name="plugin_install_home_dir" value="${user.home}/.gpsylon/plugins"/>
 
@@ -135,7 +135,7 @@ The following targets are available:
     <tar longfile="gnu"
       basedir="${basedir}"
       destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
-      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,COPYING,makemaps/**,META-INF/**,doc/**"
+      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,makemaps/**,META-INF/**"
       excludes="*CVS*"
       compression="gzip"/>
   </target>
@@ -146,7 +146,7 @@ The following targets are available:
     <javac srcdir="src"
            destdir="${target_class_dir}"
            classpathref="gpstool_plugin_swissgrid_class_path">
-       <classpath id="gpstool_plugin_swissgrid_class_path">
+  	 <classpath id="gpstool_plugin_swissgrid_class_path">
 <!-- no other libraries needed
         <fileset dir="lib/java">
           <patternset refid="gpstool_plugin_swissgrid.lib.patternset"/>

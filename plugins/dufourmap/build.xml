@@ -1,0 +1,214 @@
+
+<project name="org.dinopolis.gpstool.plugin.dufourmap" default="help" basedir=".">
+
+  <property name="release_version" value="1.0"/>
+  <property name="dist_name" value="gpstool_plugin_dufourmap"/>
+  <property name="target_class_dir" value="classes"/>
+  <property name="source_dir" value="src"/>
+  <property name="dist_dir" value="dist"/>
+  <property name="lib_dir" value="lib/java"/>
+  <property name="aux_dir" value="auxiliary"/>
+  <property name="dinopolis_classes" value="./../../classes"/>
+  <property name="dinopolis_lib_dir" value="./../../lib/java"/>
+  <property name="plugin_install_dir" value="../"/>
+  <property name="plugin_install_home_dir" value="${user.home}/.gpsylon/plugins"/>
+
+<!-- patternset of gpstool files needed to compile the distribution (used by the common_compile_dist) -->
+  
+  <patternset id="compile.files">
+    <include name="org/dinopolis/gpstool/plugin/dufourmap/*.java"/>
+  </patternset>
+
+<!-- patternset including all required library jar files (other than dinopolis classes) -->
+  <patternset id="gpstool_plugin_dufourmap.lib.patternset">
+  </patternset>
+
+<!-- patternset including all required dinoplis library jar files -->
+  <patternset id="gpstool_plugin_dufourmap.dinopolis_lib.patternset">
+    <include name="openmap.jar"/>
+  </patternset>
+
+
+<!-- targets -->
+ 
+  <target name="help">
+    <echo>
+The following targets are available:
+ - help: shows all available targets of this build.xml file
+ - compile: compiles a distribution
+ - clean: deletes the ${target_class_dir} directory.
+ - clean_dist: deletes the ${dist_dir} directory.
+ - bin_dist: creates a tar.gz file in the dist directory that contains all
+      needed files (plugin jar and libraries).
+ - src_dist: creates a tar.gz file in the dist directory that contains all
+      needed source files (plugin jar and libraries).
+ - install_plugin: installs the plugins and all needed libraries into the
+      '${plugin_install_dir} directory.
+ - install_plugin_home: installs the plugins and all needed libraries into the
+      '${plugin_install_home_dir} directory.
+ - clean_old_plugins: removes the old versions of this plugin in the plugins
+      directory '${plugin_install_dir}. 
+ - clean_old_plugins_home: removes the old versions of this plugin in the plugins
+      directory '${plugin_install_home_dir}. 
+    </echo>
+  </target>
+
+
+<!-- make a binary distribution: includes documentation and jars.
+   In order to run the gpstool out of the binary distribution first unzip and
+   untar the distribution, switch to the gpstool directory and invoke the gpstool:
+   java -jar gpstool.jar 
+-->
+  <target name="bin_dist" depends="compile">
+    <tstamp/> <!-- needed for ${TODAY} -->
+
+    <mkdir dir="${dist_dir}"/>
+
+<!-- create a property holding the Class-Path for the manifest -->
+    <path id="gpstool_plugin_dufourmap.dist.classpath">
+<!-- no other libraries needed: 
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool_plugin_mapmanager.lib.patternset"/>
+      </fileset>
+-->
+      <pathelement location="${aux_dir}"/>
+    </path>
+
+    <pathconvert pathsep=" " dirsep="/" property="gpstool_plugin_dufourmap.dist.lib.classpath"
+                 refid="gpstool_plugin_dufourmap.dist.classpath">
+<!--      <map from="${user.dir}/${lib_dir}" to="${lib_dir}"/> -->
+      <map from="${user.dir}${file.separator}" to=""/> 
+    </pathconvert>
+<!--
+    <echo>
+      user dir: ${user.dir}
+      path: ${gpstool_plugin_dufourmap.dist.lib.classpath}
+    </echo>
+-->
+    <!-- build the jar file: Don't forget the MANIFEST.MF the -->
+    <!-- properties files and the images ! -->
+    <jar jarfile="${dist_dir}/${dist_name}-${release_version}.jar">
+      <!-- make the MANIFEST.MF file -->
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Class-Path" value="${gpstool_plugin_dufourmap.dist.lib.classpath}" />
+        <section name="common">
+          <attribute name="Specification-Title" value="Dufourmap Plugin for GPSTool" />
+          <attribute name="Specification-Version" value="${release_version}" />
+          <attribute name="Specification-Vendor" value="Samuel Benz" />
+          <attribute name="Implementation-Title" value="Dufourmap Plugin for GPSTool" />
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Vendor" value="Samuel Benz" />
+        </section>
+      </manifest>
+
+      <fileset dir="${aux_dir}"/>
+      <fileset dir="${target_class_dir}"/>
+      <fileset dir=".">
+        <include name="META-INF/services/org.dinopolis.gpstool.*"/>
+        <include name="${aux_dir}/**"/>
+      </fileset>
+    </jar>
+
+<!-- no other libraries needed
+    <copy todir="${dist_dir}/${lib_dir}">
+      <fileset dir="${lib_dir}">
+        <patternset refid="gpstool_plugin_dufourmap.lib.patternset"/>
+      </fileset>
+    </copy>
+-->
+    <tar longfile="gnu"
+      tarfile="${dist_dir}/${dist_name}_bin-${release_version}.tar"
+      basedir="${dist_dir}"           
+      includes="${dist_name}-${release_version}.jar,${lib_dir}/**"/>
+    <gzip zipfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz" 
+      src="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
+    <delete file="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
+  </target>
+
+
+<!-- src_dist target -->
+  <target name="src_dist" depends="clean,compile"> 
+    <mkdir dir="${dist_dir}"/>
+    <tar longfile="gnu"
+      basedir="${basedir}"
+      destfile="${dist_dir}/${dist_name}_src-${release_version}.tar.gz"
+      includes="${source_dir}/**,${lib_dir}/**,${doc_dir}/**,${aux_dir}/**,build.xml,META-INF/**"
+      excludes="*CVS*"
+      compression="gzip"/>
+  </target>
+  
+<!-- compile target -->
+  <target name="compile">
+    <mkdir dir="${target_class_dir}"/>
+    <javac srcdir="src"
+           destdir="${target_class_dir}"
+           classpathref="gpstool_plugin_dufourmap_class_path">
+       <classpath id="gpstool_plugin_dufourmap_class_path">
+<!-- no other libraries needed
+        <fileset dir="lib/java">
+          <patternset refid="gpstool_plugin_dufourmap.lib.patternset"/>
+        </fileset>
+-->
+<!-- dinopolis libraries: -->
+        <fileset dir="${dinopolis_lib_dir}">
+          <patternset refid="gpstool_plugin_dufourmap.dinopolis_lib.patternset"/>
+        </fileset>
+        <pathelement path="${dinopolis_classes}"/>
+        <pathelement location="${aux_dir}"/>
+      </classpath>
+      <patternset refid="compile.files"/>
+    </javac>         
+  </target>       
+  
+<!-- clean_all target -->
+  <target name="clean_all" depends="clean,clean_dist">
+  </target>
+
+<!-- clean target -->
+  <target name="clean" depends="">
+    <delete dir="${target_class_dir}"/>
+  </target>
+
+<!-- clean_dist target -->
+  <target name="clean_dist" depends="">
+    <delete dir="${dist_dir}"/>
+  </target>
+
+<!-- install plugin target -->
+  <target name="install_plugin" depends="clean_dist,bin_dist,clean_old_plugins">
+    <copy todir="${plugin_install_dir}">
+      <fileset dir="${dist_dir}">
+        <exclude name="*.tar.gz"/>
+      </fileset>
+    </copy>
+  </target>
+
+<!-- install plugin home target -->
+  <target name="install_plugin_home" depends="clean_dist,bin_dist,clean_old_plugins_home">
+    <copy todir="${plugin_install_home_dir}">
+      <fileset dir="${dist_dir}">
+        <exclude name="*.tar.gz"/>
+      </fileset>
+    </copy>
+  </target>
+
+<!-- delete old versions of plugin target -->
+  <target name="clean_old_plugins">
+    <delete>
+     <fileset dir="${plugin_install_dir}">
+       <include name="${dist_name}*.jar"/>
+     </fileset>
+    </delete>
+  </target>
+
+<!-- delete old versions of plugin in home dirtarget -->
+  <target name="clean_old_plugins_home">
+    <delete>
+     <fileset dir="${plugin_install_home}">
+       <include name="${dist_name}*.jar"/>
+     </fileset>
+    </delete>
+  </target>
+
+</project>

@@ -13,6 +13,7 @@
 	<classpathentry output="plugins/readgpx/classes" kind="src" path="plugins/readgpx/auxiliary"/>
 	<classpathentry output="plugins/readtop50ovl/classes" kind="src" path="plugins/readtop50ovl/auxiliary"/>
 	<classpathentry output="plugins/swissgrid/classes" kind="src" path="plugins/swissgrid/auxiliary"/>
+	<classpathentry output="plugins/dufourmap/classes" kind="src" path="plugins/dufourmap/auxiliary"/>
 	<classpathentry output="plugins/trackchart/classes" kind="src" path="plugins/trackchart/auxiliary"/>
 	<classpathentry output="plugins/tracklayer/classes" kind="src" path="plugins/tracklayer/auxiliary"/>
 	<classpathentry kind="src" path="auxiliary"/>
@@ -32,6 +33,7 @@
 	<classpathentry output="plugins/readtop50ovl/classes" kind="src" path="plugins/readtop50ovl/src"/>
 	<classpathentry output="plugins/simpledemo/classes" kind="src" path="plugins/simpledemo/src"/>
 	<classpathentry output="plugins/swissgrid/classes" kind="src" path="plugins/swissgrid/src"/>
+	<classpathentry output="plugins/dufourmap/classes" kind="src" path="plugins/dufourmap/src"/>
 	<classpathentry output="plugins/trackchart/classes" kind="src" path="plugins/trackchart/src"/>
 	<classpathentry output="plugins/tracklayer/classes" kind="src" path="plugins/tracklayer/src"/>
 	<classpathentry output="plugins/writerasterimage/classes" kind="src" path="plugins/writerasterimage/src"/>

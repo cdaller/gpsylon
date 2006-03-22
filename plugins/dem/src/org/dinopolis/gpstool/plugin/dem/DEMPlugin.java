@@ -55,7 +55,7 @@ import com.bbn.openmap.Layer;
  * tested with DHM25 from Swisstopo.
  * 
  * The planned release V1.0 should be able to visualise different images like
- * surface shading, exposition, slope angle, all directly rendered from DEM
+ * surface shading, slope angle, aspect, all directly rendered from DEM
  * 
  * @author Samuel Benz
  * @version $Revision$

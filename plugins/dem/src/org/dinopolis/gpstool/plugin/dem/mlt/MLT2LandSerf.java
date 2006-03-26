@@ -25,6 +25,7 @@ package org.dinopolis.gpstool.plugin.dem.mlt;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -47,7 +48,8 @@ import jwo.landserf.structure.RasterMap;
 
 //----------------------------------------------------------------------
 /**
- * Class for testing LandSerf with SwissTopo MLT DEM files
+ * A kind of a api, for integration LandSerf in gpsylon.
+ * Currently for Swiss mlt dhm files
  * 
  * @author Samuel Benz
  * @version $Revision$
@@ -58,24 +60,33 @@ public class MLT2LandSerf
 
 	GUIFrame  gisFrame;
 	RasterMap raster;
+	String raster_id;
+	String tmpPath = System.getProperty("java.io.tmpdir");
 	MLT mlt;
 	
     //------------------- Constructor -------------------
-    public MLT2LandSerf(String filename)
-    {
- 
-        initRaster(filename);
-        
-    	/* Das Tool funktioniert bestens; die Bildausgabe jedoch nur mit GUIFrame.
-    	   Mit einem SimpleGISFrame, hat keine graphicspane und somit kann auch kein Bild
-    	   erzeugt werden. Methoden wie writeFile oder DispThread funktionieren daher nicht!
-    	   
-    	   Fazit: Bild generierung nur mit aufwendigem GUI möglich -> unbrauchbar für gpsylon?
-    	*/
+    public MLT2LandSerf()
+    {   
         gisFrame = new GUIFrame("MLT2LandSerf");
-        gisFrame.addRaster(raster,GISFrame.PRIMARY);
     }
  
+	//----------------------------------------------------------------------
+	/**
+	 * Add a RasterMap to a LandSerf GUIFrame
+	 * 
+	 * @param raster_ A RasterMap object for adding to the GUIFrame
+	 */    
+    public void addRaster(RasterMap raster_){
+    	gisFrame.addRaster(raster_,GISFrame.PRIMARY);	
+    }
+    
+	//----------------------------------------------------------------------
+	/**
+	 * Caculates the slope angle from primary raster with a SurfParamThread from LandSerf
+	 * 
+	 * see: http://www.soi.city.ac.uk/~jwo/landserf/landserf220/doc/programming/chapter4.html
+	 * 
+	 */
     public void calculateSlope(){
     	SurfParam param = new SurfParam(gisFrame,2);
         SurfParamThread slope = new SurfParamThread(gisFrame,param);
@@ -93,9 +104,17 @@ public class MLT2LandSerf
         }
     }
 
+	//----------------------------------------------------------------------
+	/**
+	 * Relief shading with primary spatial objects and optional secondary raster
+	 * with a DispThread from LandSerf
+	 * 
+	 * see: http://www.soi.city.ac.uk/~jwo/landserf/landserf220/doc/programming/chapter4.html
+	 *
+	 */
     public void calculateRelief(){
         // DispThread int type 2==Raster 3==Relief
-        // Thread nötig da nur exportiert wird was amn sieht! addRaster macht diesen aber noch nicht sichtbar! 
+        // Thread nötig da nur exportiert wird was man sieht! addRaster macht diesen aber noch nicht sichtbar! 
         LSThread pdthread = new  DispThread(gisFrame,3);
   
         pdthread.setDaemon(true);
@@ -108,7 +127,14 @@ public class MLT2LandSerf
         }
     }
     
-    private void initRaster(String filename){
+	//----------------------------------------------------------------------
+	/**
+	 * Creating a RasterMap Object from a MLT file and setting a unique ID.
+	 *
+	 * @param filename Filename from the MLT DEM file
+	 * @return a RasterMap object for using in LandSerf
+	 */
+    public RasterMap createRaster(String filename){
     	
     	mlt = new MLT(filename);
     	raster = new RasterMap(mlt.getHeight(),mlt.getWidth(),new Footprint(0,0,mlt.getResloution(),mlt.getResloution()));
@@ -123,7 +149,7 @@ public class MLT2LandSerf
         }         
                 
         // Add some simple metadata.
-        Header header = new Header("MLT2LandSerf");
+        Header header = new Header(filename);
         header.setNotes("from MLT2LandSerf.class: " + filename);
         raster.setHeader(header);
         
@@ -131,33 +157,81 @@ public class MLT2LandSerf
         float min = raster.getMinAttribute();
         float max = raster.getMaxAttribute();
         raster.setColourTable(ColourTable.getPresetColourTable(ColourTable.IMHOF_L3,min,max));
+   
+        // setting unique ID
+        setRasterID(createRasterID(filename));
+        
+        return raster;
     }
     
+	//----------------------------------------------------------------------
+	/**
+	 * Creating a unique Id from filename to identify the created images
+	 * 
+	 * @param instring filename with path
+	 * @return unique id for image creating/loading
+	 */
+    public static String createRasterID(String instring){
+    	// TODO: besserer hash verwenden MD5? (abs() nicht eindeutig)
+    	String rasterID = new Integer(Math.abs(instring.hashCode())).toString();
+    	return "landserf_" + rasterID;
+    }
+    
+	//----------------------------------------------------------------------
+	/**
+	 * Save the RasterMap to disc. Useful for testing
+	 *
+	 * Filename: java.io.tempdir + rasterID + srf
+	 * 
+	 */
     public void writeSrfFile(){
-        LandSerfIO.write(raster,"mlt2lanserf.srf");
+        LandSerfIO.write(raster,tmpPath + "/" + getRasterID() + ".srf");
         //LandSerfIO.write(gisFrame.getRaster1(),"/home/benz/raster1.srf");
         //LandSerfIO.write(gisFrame.getRaster2(),"/home/benz/slope.srf");
     }
 
+	//----------------------------------------------------------------------
+	/**
+	 * Export the graphics pane from GUIFrame to an png image and save this to disc.
+	 * Filename: java.io.tempdir + rasterID + png
+	 * 
+	 * TODO: fix LandSerf bug. border pixel are exported white
+	 * 
+	 */
     public void writeImage(){
         // Achtung: Diese Methode ist statisch obschon sie nicht statisch aufgerufen werden kann!!
         RasterMap DummyRaster = new RasterMap();
-        DummyRaster.writeFile("/tmp/raster.png", FileHandler.IMAGE, gisFrame);	
+        DummyRaster.writeFile(tmpPath + "/" + getRasterID() + ".png", FileHandler.IMAGE, gisFrame);	
     }
     
+	//----------------------------------------------------------------------
+	/**
+	 * Save the image to disc an load them from disc.
+	 * LandSerf does not support exporting image objects directly!
+	 * 
+	 * Filename: java.io.tempdir + rasterID + png
+	 * 
+	 * @return image Load the image from disc
+	 */
     public Image getImage(){
     	writeImage();
     	Image image = null;
         try {
             // Read from a file
-            File file = new File("/tmp/raster.png");
+            File file = new File(tmpPath + "/" + getRasterID() + ".png");
             image = ImageIO.read(file);
         } catch (IOException e) {
-        	System.err.println("Error: could not get Image /tmp/raster.png");
+        	System.err.println("Error: could not get Image " + tmpPath + "/" + getRasterID() + ".png");
         }
     	return image;	
     }
     
+	//----------------------------------------------------------------------
+	/**
+	 * Show the generated image in a grpahics pane.
+	 * Useful for testing debbuging
+	 * 
+	 */
     public void showImage(){
     	Image image = getImage();    
         // Use a label to display the image
@@ -168,28 +242,75 @@ public class MLT2LandSerf
         frame.setVisible(true);
     }
     
+	//----------------------------------------------------------------------
+	/**
+	 * Set the rasterID
+	 * 
+	 * @param raster_id_ the unique raster ID string
+	 */
+    private void setRasterID(String raster_id_){
+    	raster_id = raster_id_;
+    }
+    
+	//----------------------------------------------------------------------
+	/**
+	 * Get the rasterID
+	 * 
+	 * @return raster_id the unique raster ID string
+	 */
+    public String getRasterID(){
+    	return raster_id;
+    }
+
+
+	//----------------------------------------------------------------------
+	/**
+	 * Clear all pre generated dem images
+	 * \rm -f java.io.tmpdir + "landserf_*"
+	 * 
+	 */
+    public static void clearDEMCache(){
+    	File dir = new File("/tmp");
+    	
+        File[] files = dir.listFiles();
+        
+        for(int i=0;i<files.length;i++){
+        	if(files[i].toString().matches(".*landserf_.*")){
+        		//System.out.println(files[i].toString());
+        		files[i].delete();
+        	}
+        }
+    }
+
     
     public static void main(String[] args)
     {
-    	if (args.length > 0 && args.length < 2) {
-    		String filename = args[0];
-    		MLT2LandSerf api = new MLT2LandSerf(filename);
-            api.calculateSlope();
-            api.calculateRelief();
-            
-            api.writeImage();
-    		//api.showImage();
-            
-            //api.gisFrame.setSize(800,600);
-            //api.gisFrame.setVisible(true); 
+
+    	MLT2LandSerf.clearDEMCache();
     	
-            api.gisFrame.dispose();
-            
-            System.exit(0);
-    		
-    	}else{
-    		System.out.println("\nUse MLT2LandSerf.class FileName");
-    	}
+		MLT2LandSerf api = new MLT2LandSerf();
+		
+		String[] maps = {"/opt/map/data/dhm25/MM1091.MLT","/opt/map/data/dhm25/MM1191.MLT"};
+		//String[] maps = {"/home/benz/ch1000.mlt"};
+		String tmpPath = System.getProperty("java.io.tmpdir");
+		
+		for(int i=0;i < maps.length;i++){
+			boolean exists = new File(tmpPath + "/" + MLT2LandSerf.createRasterID(maps[i]) + ".png").exists();
+			if(!exists){
+				api.addRaster(api.createRaster(maps[i]));
+				api.calculateSlope();
+				api.calculateRelief();
+        
+				api.writeImage();
+				//api.showImage();
+			}
+		}
+		
+        //api.gisFrame.setSize(800,600);
+        //api.gisFrame.setVisible(true); 
+	
+        api.gisFrame.dispose();
+        System.exit(0);
+		
     }
-    
 }

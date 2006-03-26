@@ -51,11 +51,14 @@ import com.bbn.openmap.Layer;
 /**
  * Plugin for DEM (digital elevation model) visualisation 
  * 
- * Currently possible is only the display from pre-generated images (V0.5),
- * tested with DHM25 from Swisstopo.
+ * Currently possible is only creating images with LandSerf, but only with DEM data from Siwss DHM (mlt format)
+ * The images, like surface shading, slope angle and aspect, are all directly rendered from DEM with LandSerf
+ * see: http://www.soi.city.ac.uk/~jwo/landserf/
  * 
- * The planned release V1.0 should be able to visualise different images like
- * surface shading, slope angle, aspect, all directly rendered from DEM
+ * Future release should be able to visualise different DEM data, like the one from SRTM.
+ * 
+ * TODO: add GUI for LandSerf parameterisation
+ * TODO: using other DEM data like SRTM
  * 
  * @author Samuel Benz
  * @version $Revision$
@@ -135,7 +138,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 * @throws Exception if an error occurs. If this method throws an
 	 * exception, the plugin will not be used by the application.
 	 */
-
 	public void startPlugin() throws Exception
 	{
 		
@@ -149,7 +151,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-
 	public void stopPlugin() throws Exception
 	{
 
@@ -162,7 +163,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 *
 	 * @return The id of the plugin.
 	 */
-
 	public String getPluginIdentifier()
 	{
 		return ("DEM Plugin");
@@ -175,7 +175,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 *
 	 * @return The version of the plugin.
 	 */
-
 	public float getPluginVersion()
 	{
 		return ((float) resources_.getDouble(KEY_DEM_PLUGIN_VERSION));
@@ -189,7 +188,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 *
 	 * @return The name of the plugin.
 	 */
-
 	public String getPluginName()
 	{
 		return (resources_.getString(KEY_DEM_PLUGIN_NAME));
@@ -204,7 +202,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 *
 	 * @return The description of the plugin.
 	 */
-
 	public String getPluginDescription()
 	{
 		return (resources_.getString(KEY_DEM_PLUGIN_DESCRIPTION));
@@ -278,7 +275,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 * @return the layer the plugin wants to paint into.
 	 * @see com.bbn.openmap.Layer
 	 */
-
 	public Layer getLayer()
 	{
 		if (layer_ == null)
@@ -327,7 +323,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	/**
 	 * Loads the resource file, or exits on a MissingResourceException.
 	 */
-
 	void loadResources()
 	{
 		try
@@ -356,7 +351,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 * Updates the locations according to the values set within the
 	 * resource file. 
 	 */
-
 	protected void updateWindowLocation()
 	{
 		
@@ -400,9 +394,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 		
 	}
 	
-	
-	
-	
 	//----------------------------------------------------------------------
 	// inner classes
 	//----------------------------------------------------------------------
@@ -411,7 +402,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	/**
 	 * The Action for switching a layer on or off
 	 */
-
 	class DEMFrameAction extends AbstractAction
 	{
 
@@ -424,7 +414,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 		/**
 		 * The Default Constructor.
 		 */
-
 		public DEMFrameAction()
 		{
 			super(ACTION_DEM_DEM_FRAME);
@@ -436,14 +425,10 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 		 * 
 		 * @param event the action event
 		 */
-
 		public void actionPerformed(ActionEvent event)
 		{
 		}
 	}
-
-
-
 
 	public void propertyChange(PropertyChangeEvent event) {
 	    if (event.getSource() == resources_)

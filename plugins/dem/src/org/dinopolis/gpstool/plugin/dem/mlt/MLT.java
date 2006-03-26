@@ -146,9 +146,9 @@ public class MLT {
 	 * Loads a MLT File
 	 * 
 	 */
-	protected void loadMLT() {	
-		//int[] heights = (int[])Array.newInstance(int.class, this.height_*this.width_);
-		int[] heights = (int[])Array.newInstance(int.class, 800*800);
+	private void loadMLT() {	
+
+		// some default values (DHM25)
 		int width = 701;
 		int height = 481;
 		int resolution = 25;
@@ -160,11 +160,11 @@ public class MLT {
 				String line = inStream.readLine();
 				//System.out.println(line);
 				if (line.startsWith("MASCHENWEITE")){
-					//System.out.println(line);
+					// System.out.println(line);
 					// TODO: Parse Maschenweite
 				}
 				if (line.startsWith("MATRIXDIMENSIONEN")){
-					//System.out.println(line);
+					// System.out.println(line);
 					// TODO: Parse Matrixdimension
 				}
 				if (line.startsWith("ENDHEADER")) {
@@ -174,6 +174,8 @@ public class MLT {
 			this.setWidth(width);
 			this.setHeight(height);
 			this.setResolution(resolution);
+			
+			int[] heights = (int[])Array.newInstance(int.class, this.height_*this.width_);			
 			
 			String[] Elevation = null;
 			int counter = 0;

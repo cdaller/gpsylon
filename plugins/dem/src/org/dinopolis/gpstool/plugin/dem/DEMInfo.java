@@ -42,7 +42,6 @@ import com.bbn.openmap.LatLonPoint;
 //----------------------------------------------------------------------
 /**
  * Holds the information about dem map (image) 
- * This class can load or create images for the requested location
  * 
  * @author Samuel Benz
  * @version $Revision$
@@ -50,6 +49,8 @@ import com.bbn.openmap.LatLonPoint;
 
 public class DEMInfo extends MapInfo {
 
+	String tmpPath = System.getProperty("java.io.tmpdir");
+	
 	public DEMInfo() {
 		super();
 	}
@@ -72,22 +73,15 @@ public class DEMInfo extends MapInfo {
 	 */
 	protected Image loadImage() {
 
-		// Version 1.0 Tests with LandSerf (mlt.txt)
-		// TESTING ONLY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		/*MLT2LandSerf api = new MLT2LandSerf(filename_);
-        api.calculateSlope();
-        api.calculateRelief();
-        Image image = api.getImage();
-        */
-        
-		// Version 0.5 old style with pre crated images (dhm.txt)
-		ImageIcon image_icon = new ImageIcon(filename_);
+		String dem_image = tmpPath + "/" + MLT2LandSerf.createRasterID(filename_) + ".png";
+		ImageIcon image_icon = new ImageIcon(dem_image);
 		int status = image_icon.getImageLoadStatus();
 		if (status == MediaTracker.ERRORED)
-			System.err.println("ERROR: Could not load image '" + filename_ + "'");
+			System.err.println("ERROR: Could not load image '" + dem_image + "'");
 
+//		Image image = image_icon.getImage();
 		Image image = makeColorTransparent(image_icon.getImage(),Color.white);
-        
+		
 		return (image);
 	}
 	

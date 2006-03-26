@@ -28,11 +28,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
 import org.dinopolis.gpstool.hook.MapManagerHook;
+import org.dinopolis.gpstool.plugin.dem.mlt.MLT2LandSerf;
 import org.dinopolis.gpstool.event.MapsChangedEvent;
 import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
@@ -45,7 +47,9 @@ import com.bbn.openmap.proj.Projection;
 
 // ----------------------------------------------------------------------
 /**
- * This layer displays a DEM Image and is based on MultiMapLayer
+ * This layer display and create the DEM images and is based on MultiMapLayer
+ * 
+ * The DEM images will be created during the caluculateVisibleImage method with LandSerf
  * 
  * @author Samuel Benz
  * @version $Revision$
@@ -61,7 +65,10 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 	Rectangle old_clip_rect = new Rectangle();
 
 	SwingWorker swing_worker_;
-	MapManagerHook dem_manager_;  
+	MapManagerHook dem_manager_;
+	
+	MLT2LandSerf landserf_;
+	String tmpPath = System.getProperty("java.io.tmpdir");
 	
 	double visible_map_scale_factor_ = 1.0/1.67;
 	double max_visible_map_scale = 1000000;
@@ -78,11 +85,12 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 	/**
 	 * Initializes this layer with the given plugin support.
 	 * 
-	 * @param dhm_manager A special MapManager instance for DHM
+	 * @param dem_manager a special MapManager instance for DHM
 	 */
 	public void initialize(MapManagerHook dem_manager) {
 		dem_manager_ = dem_manager;
 		dem_manager_.addMapsChangedListener(this);
+		landserf_ = new MLT2LandSerf();
 		
 	}
 	
@@ -114,6 +122,7 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 	    float oldalphaValue;
 	    int compositeRule = AlphaComposite.SRC_OVER;
 	    
+	    // setting map opaqueness
 	    alphaValue = 0.7f;
 	    
 	    AlphaComposite ac;
@@ -164,9 +173,9 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 
 	
 	/**
-	 * Finds all dem maps that are visible at the moment, sets them via the
-	 * setVisibleImages method and calls repaint. Uses a SwingWorker for the
-	 * timeconsuming task.
+	 * Finds all dem maps that are visible at the moment and create the missing one,
+	 * sets them via the setVisibleImages method and calls repaint. 
+	 * Uses a SwingWorker for thetimeconsuming task.
 	 */
 	protected void calculateVisibleImages() {
 		if (!layer_active_)
@@ -203,6 +212,24 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 						worker_empty_rectangles_);
 				// System.out.println("Visible images:
 				// "+worker_visible_images_);
+				
+				if (worker_visible_images_ != null) {
+					Iterator image_iterator = worker_visible_images_.iterator();
+					while (image_iterator.hasNext()) {
+						ImageInfo visible_image = (ImageInfo) image_iterator.next();
+						String filename_ = visible_image.getMapInfo().getFilename();
+						boolean exists = new File(tmpPath + "/" + MLT2LandSerf.createRasterID(filename_) + ".png").exists();
+						if(!exists){
+							landserf_.addRaster(landserf_.createRaster(filename_));
+							// TODO: set different LandSerf parameter
+							landserf_.calculateSlope();
+							landserf_.calculateRelief();
+			        
+							landserf_.writeImage();
+						}
+					}
+				}
+
 				return (null);
 			}
 

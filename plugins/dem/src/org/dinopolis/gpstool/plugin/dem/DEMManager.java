@@ -43,7 +43,9 @@ import org.dinopolis.util.io.FileChangeDetection;
 
 //----------------------------------------------------------------------
 /**
- * Loads and hold information about DEM maps (based on MapManager)
+ * DEMManager extends the MapManager basically for setting the mlt.txt
+ * 
+ * TODO: Check MapManager to include possibility fot setting an other map description file
  * 
  * @author Samuel Benz
  * @version $Revision$

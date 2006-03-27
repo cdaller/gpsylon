@@ -22,6 +22,10 @@
 
 package org.dinopolis.gpstool.plugin.dem.mlt;
 
+import gnu.regexp.RE;
+import gnu.regexp.REException;
+import gnu.regexp.REMatch;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -160,12 +164,29 @@ public class MLT {
 				String line = inStream.readLine();
 				//System.out.println(line);
 				if (line.startsWith("MASCHENWEITE")){
-					// System.out.println(line);
-					// TODO: Parse Maschenweite
+					//System.out.println(line);
+				    try {
+						RE res_exp = new RE("\\d+");
+						REMatch res_match = res_exp.getMatch(line);
+						resolution = new Integer(res_match.toString()).intValue();
+						//System.out.println(resolution);
+					} catch (REException e) {
+
+						e.printStackTrace();
+					}
 				}
 				if (line.startsWith("MATRIXDIMENSIONEN")){
-					// System.out.println(line);
-					// TODO: Parse Matrixdimension
+					//System.out.println(line);
+				    try {
+						RE dim_exp = new RE("\\d+");
+						REMatch[] dim_match = dim_exp.getAllMatches(line);
+						width = new Integer(dim_match[0].toString()).intValue();
+						height = new Integer(dim_match[1].toString()).intValue();
+						//System.out.println(width + " " + height);
+					} catch (REException e) {
+
+						e.printStackTrace();
+					}
 				}
 				if (line.startsWith("ENDHEADER")) {
 					break;
@@ -175,7 +196,9 @@ public class MLT {
 			this.setHeight(height);
 			this.setResolution(resolution);
 			
-			int[] heights = (int[])Array.newInstance(int.class, this.height_*this.width_);			
+			//int[] heights = (int[])Array.newInstance(int.class, this.height_*this.width_);
+			// some mlt matrix are larger than height*width !!!
+			int[] heights = (int[])Array.newInstance(int.class, 800*800);
 			
 			String[] Elevation = null;
 			int counter = 0;

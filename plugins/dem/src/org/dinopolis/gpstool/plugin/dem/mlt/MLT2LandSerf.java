@@ -290,8 +290,8 @@ public class MLT2LandSerf
     	
 		MLT2LandSerf api = new MLT2LandSerf();
 		
-		String[] maps = {"/opt/map/data/dhm25/MM1091.MLT","/opt/map/data/dhm25/MM1191.MLT"};
-		//String[] maps = {"/home/benz/ch1000.mlt"};
+		//String[] maps = {"/opt/map/data/dhm25/MM1091.MLT","/opt/map/data/dhm25/MM1191.MLT"};
+		String[] maps = {"/opt/map/data/dhm25/ch1000.mlt"};
 		String tmpPath = System.getProperty("java.io.tmpdir");
 		
 		for(int i=0;i < maps.length;i++){

@@ -25,8 +25,9 @@ package org.dinopolis.gpstool.plugin.dem.mlt;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -61,7 +62,7 @@ public class MLT2LandSerf
 	GUIFrame  gisFrame;
 	RasterMap raster;
 	String raster_id;
-	String tmpPath = System.getProperty("java.io.tmpdir");
+	static String tmpPath = System.getProperty("java.io.tmpdir");
 	MLT mlt;
 	
     //------------------- Constructor -------------------
@@ -102,6 +103,21 @@ public class MLT2LandSerf
             System.err.println("Error: thread interrupted.");
             return;
         }
+        
+        ColourTable col = new ColourTable();
+        col.addContinuousColourRule((float) 0.0,255,255,255);
+        col.addContinuousColourRule((float) 29.9,255,255,255);
+        col.addContinuousColourRule((float) 30.0,255,255,100);
+        col.addContinuousColourRule((float) 34.9,255,255,100);
+        col.addContinuousColourRule((float) 35.0,255,149,155);
+        col.addContinuousColourRule((float) 39.9,255,149,155);
+        col.addContinuousColourRule((float) 40.0,201,154,255);
+        col.addContinuousColourRule((float) 44.9,201,154,255);
+        col.addContinuousColourRule((float) 45.0,210,213,210);
+        col.addContinuousColourRule((float) 90.0,210,213,210);
+        gisFrame.getRaster2().setColourTable(col);
+        
+        //gisFrame.getRaster2().setColourTable(ColourTable.getPresetColourTable(ColourTable.SLOPE,0,90));
     }
 
 	//----------------------------------------------------------------------
@@ -115,8 +131,14 @@ public class MLT2LandSerf
     public void calculateRelief(){
         // DispThread int type 2==Raster 3==Relief
         // Thread nötig da nur exportiert wird was man sieht! addRaster macht diesen aber noch nicht sichtbar! 
-        LSThread pdthread = new  DispThread(gisFrame,3);
+    	
+    	// display only slope raster2
+    	gisFrame.setRaster1(gisFrame.getRaster2());
+        LSThread pdthread = new  DispThread(gisFrame,2);
   
+        // display slope raster2 with relief from raster1
+        // LSThread pdthread = new  DispThread(gisFrame,3);
+        
         pdthread.setDaemon(true);
         pdthread.start();
         try {
@@ -166,15 +188,24 @@ public class MLT2LandSerf
     
 	//----------------------------------------------------------------------
 	/**
-	 * Creating a unique Id from filename to identify the created images
+	 * Creating a MD5 hash from filename to identify the created images
 	 * 
 	 * @param instring filename with path
 	 * @return unique id for image creating/loading
 	 */
     public static String createRasterID(String instring){
-    	// TODO: besserer hash verwenden MD5? (abs() nicht eindeutig)
-    	String rasterID = new Integer(Math.abs(instring.hashCode())).toString();
-    	return "landserf_" + rasterID;
+    	StringBuffer ID = new StringBuffer();
+    	ID.append("landserf_");
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte digest[] = md.digest(instring.getBytes());
+			for (int i=0;i<digest.length;i++)
+				ID.append(Integer.toHexString( digest[i]&0xff));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+    	return ID.toString();
     }
     
 	//----------------------------------------------------------------------
@@ -270,7 +301,7 @@ public class MLT2LandSerf
 	 * 
 	 */
     public static void clearDEMCache(){
-    	File dir = new File("/tmp");
+    	File dir = new File(tmpPath);
     	
         File[] files = dir.listFiles();
         

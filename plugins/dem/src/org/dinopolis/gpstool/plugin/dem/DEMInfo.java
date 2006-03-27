@@ -48,8 +48,6 @@ import com.bbn.openmap.LatLonPoint;
  */
 
 public class DEMInfo extends MapInfo {
-
-	String tmpPath = System.getProperty("java.io.tmpdir");
 	
 	public DEMInfo() {
 		super();
@@ -73,7 +71,7 @@ public class DEMInfo extends MapInfo {
 	 */
 	protected Image loadImage() {
 
-		String dem_image = tmpPath + "/" + MLT2LandSerf.createRasterID(filename_) + ".png";
+		String dem_image = MLT2LandSerf.tmpPath + "/" + MLT2LandSerf.createRasterID(filename_) + ".png";
 		ImageIcon image_icon = new ImageIcon(dem_image);
 		int status = image_icon.getImageLoadStatus();
 		if (status == MediaTracker.ERRORED)

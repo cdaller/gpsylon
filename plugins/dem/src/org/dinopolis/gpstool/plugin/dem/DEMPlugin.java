@@ -57,7 +57,6 @@ import com.bbn.openmap.Layer;
  * 
  * Future release should be able to visualise different DEM data, like the one from SRTM.
  * 
- * TODO: add GUI for LandSerf parameterisation
  * TODO: using other DEM data like SRTM
  * 
  * @author Samuel Benz

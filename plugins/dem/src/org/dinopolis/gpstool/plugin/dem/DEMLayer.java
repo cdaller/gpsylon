@@ -68,7 +68,6 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 	MapManagerHook dem_manager_;
 	
 	MLT2LandSerf landserf_;
-	String tmpPath = System.getProperty("java.io.tmpdir");
 	
 	double visible_map_scale_factor_ = 1.0/1.67;
 	double max_visible_map_scale = 1000000;
@@ -218,13 +217,12 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 					while (image_iterator.hasNext()) {
 						ImageInfo visible_image = (ImageInfo) image_iterator.next();
 						String filename_ = visible_image.getMapInfo().getFilename();
-						boolean exists = new File(tmpPath + "/" + MLT2LandSerf.createRasterID(filename_) + ".png").exists();
+						boolean exists = new File(MLT2LandSerf.tmpPath + "/" + MLT2LandSerf.createRasterID(filename_) + ".png").exists();
 						if(!exists){
 							landserf_.addRaster(landserf_.createRaster(filename_));
-							// TODO: set different LandSerf parameter
-							landserf_.calculateSlope();
-							landserf_.calculateRelief();
-			        
+							// TODO: gui for setting different LandSerf parameter
+							landserf_.calculateSlope(MLT2LandSerf.AVALANCHE);
+							landserf_.calculateRelief(MLT2LandSerf.PLAIN);
 							landserf_.writeImage();
 						}
 					}

@@ -62,8 +62,20 @@ public class MLT2LandSerf
 	GUIFrame  gisFrame;
 	RasterMap raster;
 	String raster_id;
-	static String tmpPath = System.getProperty("java.io.tmpdir");
 	MLT mlt;
+	
+	/* tmp dir for image creation */
+	public static String tmpPath = System.getProperty("java.io.tmpdir");
+	/* calculate slope aspect */
+	final public static int ASPECT = 1;
+	/* calculate slope angle */
+	final public static int SLOPE = 2;
+	/* caculate slope angle with special color */
+	final public static int AVALANCHE = 3;
+	/* display without relief shading */
+	final public static int PLAIN = 4;
+	/* display with relief shading */
+	final public static int RELIEF = 5;
 	
     //------------------- Constructor -------------------
     public MLT2LandSerf()
@@ -89,7 +101,24 @@ public class MLT2LandSerf
 	 * 
 	 */
     public void calculateSlope(){
-    	SurfParam param = new SurfParam(gisFrame,2);
+    	calculateSlope(MLT2LandSerf.SLOPE);
+    }
+    
+	//----------------------------------------------------------------------
+	/**
+	 * Caculates the slope angle or aspect from primary raster with a SurfParamThread from LandSerf
+	 * 
+	 * see: http://www.soi.city.ac.uk/~jwo/landserf/landserf220/doc/programming/chapter4.html
+	 * 
+	 */
+    public void calculateSlope(int type){
+    	
+    	SurfParam param;
+    	if(type == MLT2LandSerf.ASPECT){
+    		param = new SurfParam(gisFrame,3);
+    	}else{
+    		param = new SurfParam(gisFrame,2);
+    	}
         SurfParamThread slope = new SurfParamThread(gisFrame,param);
         
         slope.setDaemon(true);
@@ -104,20 +133,24 @@ public class MLT2LandSerf
             return;
         }
         
-        ColourTable col = new ColourTable();
-        col.addContinuousColourRule((float) 0.0,255,255,255);
-        col.addContinuousColourRule((float) 29.9,255,255,255);
-        col.addContinuousColourRule((float) 30.0,255,255,100);
-        col.addContinuousColourRule((float) 34.9,255,255,100);
-        col.addContinuousColourRule((float) 35.0,255,149,155);
-        col.addContinuousColourRule((float) 39.9,255,149,155);
-        col.addContinuousColourRule((float) 40.0,201,154,255);
-        col.addContinuousColourRule((float) 44.9,201,154,255);
-        col.addContinuousColourRule((float) 45.0,210,213,210);
-        col.addContinuousColourRule((float) 90.0,210,213,210);
-        gisFrame.getRaster2().setColourTable(col);
-        
-        //gisFrame.getRaster2().setColourTable(ColourTable.getPresetColourTable(ColourTable.SLOPE,0,90));
+        if(type == MLT2LandSerf.AVALANCHE){
+        	ColourTable col = new ColourTable();
+        	col.addContinuousColourRule((float) 0.0,255,255,255);
+        	col.addContinuousColourRule((float) 29.9,255,255,255);
+        	col.addContinuousColourRule((float) 30.0,255,255,100);
+        	col.addContinuousColourRule((float) 34.9,255,255,100);
+        	col.addContinuousColourRule((float) 35.0,255,149,155);
+        	col.addContinuousColourRule((float) 39.9,255,149,155);
+        	col.addContinuousColourRule((float) 40.0,201,154,255);
+        	col.addContinuousColourRule((float) 44.9,201,154,255);
+        	col.addContinuousColourRule((float) 45.0,210,213,210);
+        	col.addContinuousColourRule((float) 90.0,210,213,210);
+        	gisFrame.getRaster2().setColourTable(col);
+        }else if(type == MLT2LandSerf.ASPECT){
+        	gisFrame.getRaster2().setColourTable(ColourTable.getPresetColourTable(ColourTable.ASPECT,0,360));
+        }else{
+        	gisFrame.getRaster2().setColourTable(ColourTable.getPresetColourTable(ColourTable.SLOPE,0,90));
+        }
     }
 
 	//----------------------------------------------------------------------
@@ -129,16 +162,33 @@ public class MLT2LandSerf
 	 *
 	 */
     public void calculateRelief(){
+    	calculateRelief(MLT2LandSerf.RELIEF);
+    }
+    
+	//----------------------------------------------------------------------
+	/**
+	 * Relief shading with primary spatial objects and optional secondary raster
+	 * with a DispThread from LandSerf
+	 * 
+	 * see: http://www.soi.city.ac.uk/~jwo/landserf/landserf220/doc/programming/chapter4.html
+	 *
+	 */
+    public void calculateRelief(int type){
         // DispThread int type 2==Raster 3==Relief
         // Thread nötig da nur exportiert wird was man sieht! addRaster macht diesen aber noch nicht sichtbar! 
+    	LSThread pdthread;
     	
-    	// display only slope raster2
-    	gisFrame.setRaster1(gisFrame.getRaster2());
-        LSThread pdthread = new  DispThread(gisFrame,2);
-  
-        // display slope raster2 with relief from raster1
-        // LSThread pdthread = new  DispThread(gisFrame,3);
-        
+    	if(type == MLT2LandSerf.PLAIN){
+    		// display only slope raster2
+    		gisFrame.setRaster1(gisFrame.getRaster2());
+    		pdthread = new  DispThread(gisFrame,2);
+    	}else if(type == MLT2LandSerf.RELIEF){
+    		// display slope raster2 with relief from raster1
+    		pdthread = new  DispThread(gisFrame,3);
+    	}else{
+    		pdthread = new  DispThread(gisFrame,3);
+    	}
+    		
         pdthread.setDaemon(true);
         pdthread.start();
         try {
@@ -191,7 +241,7 @@ public class MLT2LandSerf
 	 * Creating a MD5 hash from filename to identify the created images
 	 * 
 	 * @param instring filename with path
-	 * @return unique id for image creating/loading
+	 * @return MD5 hash for image creating/loading
 	 */
     public static String createRasterID(String instring){
     	StringBuffer ID = new StringBuffer();
@@ -216,9 +266,9 @@ public class MLT2LandSerf
 	 * 
 	 */
     public void writeSrfFile(){
-        LandSerfIO.write(raster,tmpPath + "/" + getRasterID() + ".srf");
-        //LandSerfIO.write(gisFrame.getRaster1(),"/home/benz/raster1.srf");
-        //LandSerfIO.write(gisFrame.getRaster2(),"/home/benz/slope.srf");
+        LandSerfIO.write(raster,MLT2LandSerf.tmpPath + "/" + getRasterID() + ".srf");
+        //LandSerfIO.write(gisFrame.getRaster1(),MLT2LandSerf.tmpPath + "/raster1.srf");
+        //LandSerfIO.write(gisFrame.getRaster2(),MLT2LandSerf.tmpPath + "/raster2.srf");
     }
 
 	//----------------------------------------------------------------------
@@ -232,7 +282,7 @@ public class MLT2LandSerf
     public void writeImage(){
         // Achtung: Diese Methode ist statisch obschon sie nicht statisch aufgerufen werden kann!!
         RasterMap DummyRaster = new RasterMap();
-        DummyRaster.writeFile(tmpPath + "/" + getRasterID() + ".png", FileHandler.IMAGE, gisFrame);	
+        DummyRaster.writeFile(MLT2LandSerf.tmpPath + "/" + getRasterID() + ".png", FileHandler.IMAGE, gisFrame);	
     }
     
 	//----------------------------------------------------------------------
@@ -249,10 +299,10 @@ public class MLT2LandSerf
     	Image image = null;
         try {
             // Read from a file
-            File file = new File(tmpPath + "/" + getRasterID() + ".png");
+            File file = new File(MLT2LandSerf.tmpPath + "/" + getRasterID() + ".png");
             image = ImageIO.read(file);
         } catch (IOException e) {
-        	System.err.println("Error: could not get Image " + tmpPath + "/" + getRasterID() + ".png");
+        	System.err.println("Error: could not get Image " + MLT2LandSerf.tmpPath + "/" + getRasterID() + ".png");
         }
     	return image;	
     }
@@ -301,7 +351,7 @@ public class MLT2LandSerf
 	 * 
 	 */
     public static void clearDEMCache(){
-    	File dir = new File(tmpPath);
+    	File dir = new File(MLT2LandSerf.tmpPath);
     	
         File[] files = dir.listFiles();
         
@@ -321,18 +371,18 @@ public class MLT2LandSerf
     	
 		MLT2LandSerf api = new MLT2LandSerf();
 		
-		//String[] maps = {"/opt/map/data/dhm25/MM1091.MLT","/opt/map/data/dhm25/MM1191.MLT"};
-		String[] maps = {"/opt/map/data/dhm25/ch1000.mlt"};
-		String tmpPath = System.getProperty("java.io.tmpdir");
+		String[] maps = {"/opt/map/data/dhm25/MM1091.MLT","/opt/map/data/dhm25/MM1191.MLT"};
+		//String[] maps = {"/opt/map/data/dhm25/ch1000.mlt"};
 		
 		for(int i=0;i < maps.length;i++){
-			boolean exists = new File(tmpPath + "/" + MLT2LandSerf.createRasterID(maps[i]) + ".png").exists();
+			boolean exists = new File(MLT2LandSerf.tmpPath + "/" + MLT2LandSerf.createRasterID(maps[i]) + ".png").exists();
 			if(!exists){
 				api.addRaster(api.createRaster(maps[i]));
-				api.calculateSlope();
-				api.calculateRelief();
+				api.calculateSlope(MLT2LandSerf.AVALANCHE);
+				api.calculateRelief(MLT2LandSerf.PLAIN);
         
 				api.writeImage();
+				//api.writeSrfFile();
 				//api.showImage();
 			}
 		}

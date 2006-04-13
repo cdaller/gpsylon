@@ -32,7 +32,7 @@ import org.dinopolis.util.ProgressListener;
 //----------------------------------------------------------------------
 /**
  * All classes implementing this interface are interpreting data from
- * a GPSDevice (serial gps-receivier, file containing gps data, ...)
+ * a GPSDevice (serial gps-receiver, file containing gps data, ...)
  * and provide this information in a uniform way. So an NMEA-processor
  * interprets NMEA sentences, while a Garmin-Processor understands the
  * garmin protocol.

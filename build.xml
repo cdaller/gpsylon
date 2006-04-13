@@ -26,6 +26,10 @@ Christof Dallermassl (christof@dallermassl.at)
     <property name="http_proxy_host" value="129.27.153.1"/>
     <property name="http_proxy_port" value="3128"/>
     <property name="use_http_proxy" value="no"/>
+    <property name="java_source_version" value="1.4"/>
+    <property name="java_target_version" value="1.4"/>
+    <property name="java_encoding" value="ISO-8859-1"/>
+    <property name="java_deprecation" value="on"/>
     <tstamp/> <!-- needed for ${TODAY} -->
     
     <!-- create or not create a property, depending on the value of use_http_proxy -->
@@ -167,14 +171,18 @@ Christof Dallermassl (christof@dallermassl.at)
       classpathref="compile_util_classpath"
       debug="on"
       deprecation="on"
-      encoding="ISO-8859-1">
+      source="${java_source_version}" 
+      target="${java_target_version}"
+      encoding="${java_encoding}"
+      >
       <classpath id="compile_util_classpath">
         <fileset dir="${basedir}/${lib_dir}">
           <include name="gnu-regexp-1.1.3.jar" />
           <include name="log4j-1.2.8.jar" />
         </fileset>
       </classpath>
-      <patternset refid="compile.util-files"/> </javac>
+      <patternset refid="compile.util-files"/> 
+    </javac>
   </target>
 
   <!-- compile_gpsinput target -->
@@ -183,7 +191,11 @@ Christof Dallermassl (christof@dallermassl.at)
            destdir="${target_class_dir}"
            classpathref="compile_gpsinput-classpath"
            debug="on"
-           deprecation="on">
+           deprecation="${java_deprecation}"
+           source="${java_source_version}" 
+           target="${java_target_version}"
+           encoding="${java_encoding}"
+      >
       <classpath id="compile_gpsinput-classpath">
         <fileset dir="${basedir}/${lib_dir}">
           <include name="log4j-1.2.8.jar"/>
@@ -204,7 +216,11 @@ Christof Dallermassl (christof@dallermassl.at)
            destdir="${target_class_dir}"
            classpathref="compile_gpstool-classpath"
            debug="on"
-           deprecation="on">
+           deprecation="${java_deprecation}"
+           source="${java_source_version}" 
+           target="${java_target_version}"
+           encoding="${java_encoding}"
+      >
       <classpath id="compile_gpstool-classpath">
         <fileset dir="${basedir}/${lib_dir}">
           <include name="log4j-1.2.8.jar"/>
@@ -227,7 +243,11 @@ Christof Dallermassl (christof@dallermassl.at)
       destdir="${target_class_dir}"
       classpathref="compile_gpsylon_classpath"
       debug="on"
-			deprecation="on">
+			deprecation="${java_deprecation}"
+      source="${java_source_version}" 
+      target="${java_target_version}"
+      encoding="${java_encoding}"
+      >
       <classpath id="compile_gpsylon_classpath">
         <fileset dir="${basedir}/${lib_dir}">
           <include name="**/*.jar"/>

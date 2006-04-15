@@ -22,8 +22,8 @@
 <!-- patternset including all required library jar files (other than dinopolis classes) -->
   <patternset id="gpstool_plugin_dem.lib.patternset">
   	<include name="alloy.jar"/>
-  	<include name="utils.jar"/>
-  	<include name="landserf220.jar"/>
+  	<include name="jwo-landserf-utils.jar"/>
+  	<include name="jwo-landserf220.jar"/>
   </patternset>
 
 <!-- patternset including all required dinoplis library jar files -->
@@ -179,8 +179,7 @@ The following targets are available:
   <target name="install_plugin" depends="clean_dist,bin_dist,clean_old_plugins">
     <copy todir="${plugin_install_dir}">
       <fileset dir="${dist_dir}">
-        <!-- <exclude name="*.tar.gz"/> -->
-        <include name="${dist_name}*.jar"/>
+        <exclude name="*.tar.gz"/>
       </fileset>
     </copy>
   </target>

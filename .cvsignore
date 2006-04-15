@@ -4,3 +4,7 @@ javadoc
 plugins/*/classes
 plugins/lib
 
+dinopolis-*.jar
+gpsinput-*.jar
+gpstool-*.jar
+gpsylon-*.jar

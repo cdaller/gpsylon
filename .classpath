@@ -58,7 +58,7 @@
 	<classpathentry kind="lib" path="plugins/writesvgimage/lib/java/batik-xml.jar"/>
 	<classpathentry kind="lib" path="lib/java/RXTXcomm.jar"/>
 	<classpathentry kind="lib" path="plugins/dem/lib/java/alloy.jar"/>
-	<classpathentry kind="lib" path="plugins/dem/lib/java/landserf220.jar"/>
-	<classpathentry kind="lib" path="plugins/dem/lib/java/utils.jar"/>
+	<classpathentry kind="lib" path="plugins/dem/lib/java/jwo-landserf220.jar"/>
+	<classpathentry kind="lib" path="plugins/dem/lib/java/jwo-landserf-utils.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

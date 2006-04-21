@@ -148,7 +148,6 @@ import java.util.Vector;
  *
  * @author Christof Dallermassl
  * @version $Revision$
- * @hw.release-javadoc
  */
 
 public class Tokenizer 

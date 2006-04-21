@@ -230,6 +230,7 @@ public class DownloadMouseModeLayer extends BasicLayer
 //----------------------------------------------------------------------
 /**
  * Paint layer objects.
+ * @param g the graphics object
  */
   public void paintComponent(Graphics g)
   {
@@ -409,8 +410,8 @@ public class DownloadMouseModeLayer extends BasicLayer
         // final filename cannot be determined at this moment. It will
         // be created from the download thread.
     MapInfo map_info = new MapInfo(dirname,
-                                   (double)map_rectangle.getLatitude(),
-                                   (double)map_rectangle.getLongitude(),
+                                   map_rectangle.getLatitude(),
+                                   map_rectangle.getLongitude(),
                                    map_rectangle.getScale(),
                                    (int)map_rectangle.getWidth(),
                                    (int)map_rectangle.getHeight());
@@ -471,7 +472,7 @@ public class DownloadMouseModeLayer extends BasicLayer
     Object source = event.getSource();
     if(source instanceof AngleJTextField)
     {
-      AngleJTextField angle = (AngleJTextField)source;
+      //AngleJTextField angle = (AngleJTextField)source;
 //           // opening a modal dialog in the focusLost method is not a
 //           // good idea, so we do it in an extra thread:
 //       SwingUtilities.invokeLater(new Runnable()
@@ -772,6 +773,7 @@ public class DownloadMouseModeLayer extends BasicLayer
 //----------------------------------------------------------------------
 /**
  * Constructor
+ * @param queue the queue to use
  */
 
     public DownloadThread(DownloadInfoQueue queue)
@@ -1033,6 +1035,7 @@ public class DownloadMouseModeLayer extends BasicLayer
 //-----------------------------------------------------------------------
 /**
  * Adds an Object to the Queue.
+ * @param obj the object to add to the queue
  */
     public synchronized void put(Object obj)
     {
@@ -1045,7 +1048,8 @@ public class DownloadMouseModeLayer extends BasicLayer
 
 //-----------------------------------------------------------------------
 /**
- * Constructor
+ * Returns and removes the first object from the queue.
+ * @return the first object of the queue.
  */
     public synchronized Object get()
     {

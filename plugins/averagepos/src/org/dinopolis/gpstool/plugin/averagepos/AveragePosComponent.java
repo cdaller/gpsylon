@@ -129,8 +129,8 @@ public class AveragePosComponent extends JComponent
       positions = new Vector(positions_);
     }
 
-    if(positions == null)
-      return;
+//    if(positions == null)
+//      return;
 
     int width = getWidth();
     int height = getHeight();
@@ -157,8 +157,8 @@ public class AveragePosComponent extends JComponent
     g.setColor(circles_color_);
     for(int index=0; index < circles_radius_.length; index++)
     {
-      circle_height_2 = (int)((double)circles_radius_[index] * vert_pixel_per_degree/VERTICAL_METER_PER_DEGREE);
-      circle_width_2 = (int)((double)circles_radius_[index] * horiz_pixel_per_degree/horiz_meter_per_degree);
+      circle_height_2 = (int)(circles_radius_[index] * vert_pixel_per_degree/VERTICAL_METER_PER_DEGREE);
+      circle_width_2 = (int)(circles_radius_[index] * horiz_pixel_per_degree/horiz_meter_per_degree);
       if((circle_width_2 > 10) && (circle_height_2) > 10)
       {
         g.drawOval(width_2-circle_width_2,height_2-circle_height_2,circle_width_2*2,circle_height_2*2);

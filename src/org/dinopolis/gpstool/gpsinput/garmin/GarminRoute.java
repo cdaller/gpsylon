@@ -28,9 +28,7 @@ import org.dinopolis.gpstool.gpsinput.GPSRouteImpl;
 
 //----------------------------------------------------------------------
 /**
- * At the moment, the same as the GPSRouteImpl. The only exception is
- * that it accepts GarminWaypoints as well and converts them to
- * GPSWaypoints by using the {@link GarminWaypointAdapter}.
+ * At the moment, the same as the GPSRouteImpl.
  *
  * @author Christof Dallermassl
  * @version $Revision$
@@ -38,15 +36,5 @@ import org.dinopolis.gpstool.gpsinput.GPSRouteImpl;
 
 public class GarminRoute extends GPSRouteImpl
 {
-//--------------------------------------------------------------------------------
-/**
- * Add a garmin waypoint at the end of the list.
- * @param routepoint The routepoint to add.
- */
-  public void addWaypoint(GarminWaypoint routepoint)
-  {
-        // adopts the GarminWaypoint to a GPSWaypoint
-    super.addWaypoint(new GarminWaypointAdapter(routepoint));
-  }
-  
+
 }

@@ -36,7 +36,7 @@ import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
  * @version $Revision$
  */
 
-public class GarminWaypointD108 implements GarminWaypoint
+public class GarminWaypointD108 extends GarminWaypointBase
 {
   public int class_type_;
   public String class_name_;
@@ -44,17 +44,11 @@ public class GarminWaypointD108 implements GarminWaypoint
   public String display_options_;
   public short attributes_;
   public int symbol_type_;
-  public String symbol_name_;
   public byte[] subclass_ = new byte[18];
-  public double latitude_;
-  public double longitude_;
-  public float altitude_;
   public float depth_;
   public float distance_;
   public String state_code_ = "";
   public String country_code_ = "";
-  public String identification_ = "";
-  public String comment_ = "";
   public String facility_ = "";
   public String city_ = "";
   public String address_ = "";
@@ -65,28 +59,8 @@ public class GarminWaypointD108 implements GarminWaypoint
 
   protected final static byte WAYPOINT_TYPE = 108;
   
-  protected final static Color[] COLORS =
-  new Color[] {Color.black,            // black
-	       new Color(0x80,0,0),    // dark red
-               new Color(0,0x80,0),    // dark green
-               new Color(0x80,0x80,0), // dark yellow
-               new Color(0,0,0x80),    // dark blue
-               new Color(0x80,0x80,0), // dark magenta
-               new Color(0,0x80,0x80), // dark cyan
-               Color.lightGray,        // light gray
-               Color.darkGray,         // dark gray
-               Color.red,              // red
-               Color.green,            // green
-	       Color.yellow,           // yellow
-               Color.blue,             // blue
-               Color.magenta,          // magenta
-               Color.cyan,             // cyan
-               Color.white};           // white
-  protected final static int DEFAULT_COLOR_INDEX = 15;
-
   protected final static String[] DISPLAY_OPTIONS =
     new String[] {"symbol+name","symbol","symbol+comment"};
-
 
   protected static Map class_name_map_;
 
@@ -291,7 +265,7 @@ public class GarminWaypointD108 implements GarminWaypoint
     pack.setNextAsByteArray(subclass_);
     pack.setNextAsSemicircleDegrees(latitude_);
     pack.setNextAsSemicircleDegrees(longitude_);
-    pack.setNextAsFloat(altitude_);
+    pack.setNextAsFloat((float)altitude_);
     pack.setNextAsFloat(depth_);
     pack.setNextAsFloat(distance_);
     pack.setNextAsString(state_code_,2,false);
@@ -371,109 +345,8 @@ public class GarminWaypointD108 implements GarminWaypoint
   {
     return(attributes_);
   }
-
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Symbol Type
- *
- * @return Waypoint Symbol Type
- */
-  public String getSymbolName()
-  {
-    return(symbol_name_);
-  }
 	
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Symbol Type
- *
- * @return Waypoint Symbol Type
- */
-  public int getSymbolType()
-  {
-    return(symbol_type_);
-  }
 
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Subclass
- *
- * @return Waypoint Subclass
- * @throws UnsupportedOperationException
- */
-  public byte[] getSubclass() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Subclass not supported");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Latitude (degrees)
- *
- * @return Latitude (degrees)
- */
-  public double getLatitude()
-  {
-    return(latitude_);
-  }
-	
-//----------------------------------------------------------------------
-/**
- * Set the Latitude (degrees)
- * @param latitude the latitutude
- *
- */
-  public void setLatitude(double latitude)
-  {
-    latitude_ = latitude;
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Longitude (degrees)
- *
- * @return Longitude (degrees)
- */
-  public double getLongitude()
-  {
-    return(longitude_);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Set the Longitude (degrees)
- *
- * @param longitude the longitude
- */
-  public void setLongitude(double longitude)
-  {
-    longitude_ = longitude;
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Altitude (metres).  A value of 1.0e25 means the parameter
- * is unsupported or unknown.
- *
- * @return Altitude (metres)
- */
-  public float getAltitude()
-  {
-    return(altitude_);
-  }
-	
-//----------------------------------------------------------------------
-/**
- * Set the Altitude (metres).  A value of 1.0e25 means the parameter
- * is unsupported or unknown.
- *
- * @param altitude the altitude
- */
-  public void setAltitude(float altitude)
-  {
-    altitude_ = altitude;
-  }
-	
 //----------------------------------------------------------------------
 /**
  * Get the Depth (metres). A value of 1.0e25 means the parameter is
@@ -522,62 +395,6 @@ public class GarminWaypointD108 implements GarminWaypoint
 
 //----------------------------------------------------------------------
 /**
- * Get the Estimated Time Enroute
- *
- * @return ETE
- * @throws UnsupportedOperationException
- */
-  public long getEstimatedTimeEnroute() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Estimated Time En Route not supported");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Identification String
- *
- * @return Identification String
- */
-  public String getIdentification()
-  {
-    return(identification_);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Set the Identification String
- *
- * @param identification the id of the waypoint
- */
-  public void setIdentification(String identification)
-  {
-    identification_ = identification;
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Comment String
- *
- * @return Comment String
- */
-  public String getComment()
-  {
-    return(comment_);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Set the Comment String
- *
- * @param comment
- */
-  public void setComment(String comment)
-  {
-    comment_ = comment;
-  }
-
-//----------------------------------------------------------------------
-/**
  * Get the Facility String
  *
  * @return Facility String
@@ -618,60 +435,5 @@ public class GarminWaypointD108 implements GarminWaypoint
   public String getCrossroad()
   {
     return(cross_road_);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Link Identification String
- *
- * @return Link Identification String
- * @throws UnsupportedOperationException
- */
-  public String getLinkIdentification()
-    throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Link Identification not supported");
-  }
-  
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.garmin.GarminWaypoint#setSymbolName(java.lang.String)
-   */
-  public void setSymbolName(String name) throws UnsupportedOperationException
-  {
-    symbol_type_ = GarminWaypointSymbols.getSymbolId(name);
-    if(symbol_type_ < 0)
-      symbol_type_ = 18; // default symbol (wpt_dot)
-    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-  }
-
-  /**
-   * Return debug info.
-   * @see java.lang.Object#toString()
-   */
-  public String toString()
-  {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append("GarminWaypoint[");
-    buffer.append("identification=").append(identification_).append(", ");
-    buffer.append("type=").append(WAYPOINT_TYPE).append(", ");
-    buffer.append("class_name=").append(class_name_).append(", ");
-    buffer.append("color=").append(color_).append(", ");
-    buffer.append("display_options=").append(display_options_).append(", ");
-    buffer.append("attributes=").append(attributes_).append(", ");
-    buffer.append("symbol_type=").append(symbol_type_).append(", ");
-    buffer.append("symbol_name=").append(symbol_name_).append(", ");
-    buffer.append("lat=").append(latitude_).append(", ");
-    buffer.append("lon=").append(longitude_).append(", ");
-    buffer.append("alt=").append(altitude_).append(", ");
-    buffer.append("depth=").append(depth_).append(", ");
-    buffer.append("distance=").append(distance_).append(", ");
-    buffer.append("state_code=").append(state_code_).append(", ");
-    buffer.append("country_code=").append(country_code_).append(", ");
-    buffer.append("facility=").append(facility_).append(", ");
-    buffer.append("city=").append(city_).append(", ");
-    buffer.append("address=").append(address_).append(", ");
-    buffer.append("cross_road=").append(cross_road_);
-    buffer.append("]");
-    return(buffer.toString());
   }
 }

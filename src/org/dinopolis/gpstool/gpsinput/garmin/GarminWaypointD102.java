@@ -30,26 +30,28 @@ import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 /**
  * This class represents packets in Garmin data format D102.
  *
- * @author Stefan Feitl
+ * @author Christof Dallermassl / Marc Rechte
  * @version $Revision$
  */
 
-public class GarminWaypointD102 implements GarminWaypoint
+public class GarminWaypointD102 extends GarminWaypointBase
 {
   protected long symbol_;
-  protected String symbol_name_;
-  protected double latitude_;
-  protected double longitude_;
-  protected String identification_ = "";
-  protected String comment_ = "";
   protected float distance_;
 
   protected final static byte WAYPOINT_TYPE = 102;
 
+  /**
+   * Default Constructor 
+   */
   public GarminWaypointD102()
   {
   }
 
+  /**
+   * Constructor from a byte buffer
+   * @param buffer the buffer
+   */
   public GarminWaypointD102(int[] buffer)
   {
     identification_ = GarminDataConverter.getGarminString(buffer,2,6).trim();
@@ -62,6 +64,10 @@ public class GarminWaypointD102 implements GarminWaypoint
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
   }
 
+  /**
+   * Constructor from a garmin packet
+   * @param pack the packet
+   */
   public GarminWaypointD102(GarminPacket pack)
   {
     identification_ = pack.getNextAsString(6).trim();
@@ -74,6 +80,10 @@ public class GarminWaypointD102 implements GarminWaypoint
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
   }
 
+  /**
+   * Copy Constructor
+   * @param waypoint the other waypoint
+   */
   public GarminWaypointD102(GPSWaypoint waypoint)
   {
     identification_ = waypoint.getIdentification();
@@ -90,11 +100,11 @@ public class GarminWaypointD102 implements GarminWaypoint
 //----------------------------------------------------------------------
 /**
  * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
+ * @param packet_id the packet id
  * @return GarminPacket representing content of data type.
  */
   public GarminPacket toGarminPacket(int packet_id)
   {
-    int pos = identification_.length();
     int data_length = 6 + 4 + 4 + 4 + 40 + 4 + 4;
     GarminPacket pack = new GarminPacket(packet_id,data_length);
     pack.setNextAsString(identification_,6,false);
@@ -116,353 +126,5 @@ public class GarminWaypointD102 implements GarminWaypoint
   public byte getType()
   {
     return(WAYPOINT_TYPE);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Display Options
- *
- * @return Waypoint Display Options
- * @throws UnsupportedOperationException
- */
-  public String getDisplayOptions() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Symbol Name
- *
- * @return Waypoint Symbol Name
- */
-  public String getSymbolName()
-  {
-    return(symbol_name_);
-  }
-	
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Symbol Type
- *
- * @return Waypoint Symbol Type
- */
-  public int getSymbolType()
-  {
-    return((int)symbol_); // should be long!
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Longitude (degrees)
- *
- * @return Longitude (degrees)
- */
-  public double getLongitude()
-  {
-    return(longitude_);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Set the Longitude (degrees)
- */
-  public void setLongitude(double longitude)
-  {
-    longitude_ = longitude;
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Latitude (degrees)
- *
- * @return Latitude (degrees)
- */
-  public double getLatitude()
-  {
-    return(latitude_);
-  }
-
-//----------------------------------------------------------------------
-/**
- * Set the Latitude (degrees)
- */
-  public void setLatitude(double latitude)
-  {
-    latitude_ = latitude;
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Identification String
- *
- * @return Identification String
- */
-  public String getIdentification()
-  {
-    return(identification_);
-  }
-	
-//----------------------------------------------------------------------
-/**
- * Set the Identification String
- */
-  public void setIdentification(String identification)
-  {
-    identification_ = identification;
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Comment String
- *
- * @return Comment String
- */
-  public String getComment()
-  {
-    return(comment_);
-  }
-	
-//----------------------------------------------------------------------
-/**
- * Set the Comment String
- */
-  public void setComment(String comment)
-  {
-    comment_ = comment;
-  }
-	
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Class Type
- *
- * @return Waypoint Class Type
- * @throws UnsupportedOperationException
- */
-  public int getClassType() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Class Name
- *
- * @return Waypoint Class Name
- * @throws UnsupportedOperationException
- */
-  public String getClassName() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
- 
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Color
- *
- * @return Waypoint Color
- * @throws UnsupportedOperationException
- */
-  public Color getColor() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Attributes
- *
- * @return Waypoint Attributes
- * @throws UnsupportedOperationException
- */
-  public short getAttributes() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D101");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Waypoint Subclass
- *
- * @return Waypoint Subclass
- * @throws UnsupportedOperationException
- */
-  public byte[] getSubclass() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-	
-//----------------------------------------------------------------------
-/**
- * Get the Altitude (metres).  A value of 1.0e25 means the parameter is unsupported or unknown.
- *
- * @return Altitude (metres)
- * @throws UnsupportedOperationException
- */
-  public float getAltitude() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-	
-//----------------------------------------------------------------------
-/**
- * Set the Altitude (metres).  A value of 1.0e25 means the parameter is unsupported or unknown.
- *
- * @throws UnsupportedOperationException
- */
-  public void setAltitude(float altitude) throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Depth (metres). A value of 1.0e25 means the parameter is unsupported or unknown.
- *
- * @return Depth (metres)
- * @throws UnsupportedOperationException
- */
-  public float getDepth() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Distance (metres). A value of 1.0e25 means the parameter is unsupported or unknown.
- *
- * @return Distance (metres)
- * @throws UnsupportedOperationException
- */
-  public float getDistance() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the State Code
- *
- * @return State Code
- * @throws UnsupportedOperationException
- */
-  public String getStateCode() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Country Code
- *
- * @return Country Code
- * @throws UnsupportedOperationException
- */
-  public String getCountryCode() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Estimated Time Enroute
- *
- * @return ETE
- * @throws UnsupportedOperationException
- */
-  public long getEstimatedTimeEnroute() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Facility String
- *
- * @return Facility String
- * @throws UnsupportedOperationException
- */
-  public String getFacility() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the City String
- *
- * @return City String
- * @throws UnsupportedOperationException
- */
-  public String getCity() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Address String
- *
- * @return Address String
- * @throws UnsupportedOperationException
- */
-  public String getAddress() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Crossroad String
- *
- * @return Crossroad String
- * @throws UnsupportedOperationException
- */
-  public String getCrossroad() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-
-//----------------------------------------------------------------------
-/**
- * Get the Link Identification String
- *
- * @return Link Identification String
- * @throws UnsupportedOperationException
- */
-  public String getLinkIdentification() throws UnsupportedOperationException
-  {
-    throw new UnsupportedOperationException("Operation not supported by Waypoint D102");
-  }
-  
-//----------------------------------------------------------------------
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.garmin.GarminWaypoint#setSymbolName(java.lang.String)
-   */
-  public void setSymbolName(String name) throws UnsupportedOperationException
-  {
-    symbol_ = GarminWaypointSymbols.getSymbolId(name);
-    if(symbol_ < 0)
-      symbol_ = 18; // default symbol (wpt_dot)
-    symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_);
-  }
- 
-  /**
-   * Return debug info
-   * @see java.lang.Object#toString()
-   */
-  public String toString()
-  {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append("GarminWaypoint[");
-    buffer.append("identification=").append(identification_).append(", ");
-    buffer.append("type=").append(WAYPOINT_TYPE).append(", ");
-    buffer.append("symbol_type=").append(symbol_).append(", ");
-    buffer.append("symbol_name=").append(symbol_name_).append(", ");
-    buffer.append("lat=").append(latitude_).append(", ");
-    buffer.append("lon=").append(longitude_).append(", ");
-    buffer.append("comment=").append(comment_);
-    buffer.append("]");
-    return(buffer.toString());
-  }
-}
+  }  
+ }

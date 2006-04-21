@@ -102,8 +102,8 @@ public interface GarminWaypoint
  * @return Waypoint Symbol Type
  * @throws UnsupportedOperationException
  */
-  public int getSymbolType()
-    throws UnsupportedOperationException;
+//  public int getSymbolType()
+//    throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
 /**
@@ -173,7 +173,7 @@ public interface GarminWaypoint
  * @return Altitude (metres)
  * @throws UnsupportedOperationException
  */
-  public float getAltitude()
+  public double getAltitude()
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------
@@ -184,7 +184,7 @@ public interface GarminWaypoint
  * @param altitude the altitude in meters. 
  * @throws UnsupportedOperationException
  */
-  public void setAltitude(float altitude)
+  public void setAltitude(double altitude)
     throws UnsupportedOperationException;
 
 //----------------------------------------------------------------------

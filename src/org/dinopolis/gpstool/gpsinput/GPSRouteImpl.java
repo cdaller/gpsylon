@@ -52,6 +52,9 @@ public class GPSRouteImpl implements GPSRoute
   protected double min_altitude_ = Double.MAX_VALUE;
   protected double max_altitude_ = Double.MIN_VALUE;
 
+  /**
+   * Default Constructor 
+   */
   public GPSRouteImpl()
   {
   }

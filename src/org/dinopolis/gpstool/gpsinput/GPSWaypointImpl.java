@@ -25,16 +25,29 @@ package org.dinopolis.gpstool.gpsinput;
 /**
  * Simple Implementation of the interface.
  *
- * @author cdaller
+ * @author Christof Dallermassl / Marc Recht?
  */
-public class GPSWaypointImpl implements GPSWaypoint
+public class GPSWaypointImpl extends GPSPoint implements GPSWaypoint, Cloneable
 {
   protected String identification_;
   protected String comment_;
-  protected double latitude_;
-  protected double longitude_;
-  protected double altitude_;
   protected String symbol_name_;
+  
+//----------------------------------------------------------------------
+  /**
+   * Clone itself.
+   * @return the clone.
+   */
+    public Object clone()
+    {
+      Object o = null;
+        try
+      {
+            o = super.clone();
+        }
+        catch (CloneNotSupportedException e) {}
+      return(o);
+    }
 
   /**
    * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#getIdentification()
@@ -68,61 +81,6 @@ public class GPSWaypointImpl implements GPSWaypoint
     comment_ = comment;
   }
 
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#getLatitude()
-   */
-  public double getLatitude()
-  {
-    return latitude_;
-  }
-
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#setLatitude(double)
-   */
-  public void setLatitude(double latitude)
-  {
-    latitude_ = latitude;
-  }
-
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#getLongitude()
-   */
-  public double getLongitude()
-  {
-    return  longitude_;
-  }
-
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#setLongitude(double)
-   */
-  public void setLongitude(double longitude)
-  {
-    longitude_ = longitude;
-  }
-
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#getAltitude()
-   */
-  public double getAltitude()
-  {
-    return altitude_;
-  }
-
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#setAltitude(double)
-   */
-  public void setAltitude(double altitude)
-  {
-    altitude_ = altitude;
-  }
-
-  /**
-   * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#hasValidAltitude()
-   */
-  public boolean hasValidAltitude()
-  {
-    return Double.isNaN(getAltitude());
-  }
 
   /**
    * @see org.dinopolis.gpstool.gpsinput.GPSWaypoint#getSymbolName()
@@ -139,5 +97,21 @@ public class GPSWaypointImpl implements GPSWaypoint
   {
     symbol_name_ = name;
   }
+  
+//----------------------------------------------------------------------
+  /**
+   * Converts the waypoint data to a readable string
+   */
+    public String toString()
+    {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("GPSWaypoint[");
+      buffer.append("identification=").append(identification_).append(", ");
+      buffer.append(super.toString());
+      buffer.append(", comment=").append(comment_);
+      buffer.append(", symbol=").append(symbol_name_);
+      buffer.append("]");
+      return(buffer.toString());
+    }
 
 }

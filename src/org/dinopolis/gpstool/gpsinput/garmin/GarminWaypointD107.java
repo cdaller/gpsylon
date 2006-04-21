@@ -51,10 +51,17 @@ public class GarminWaypointD107 extends GarminWaypointD103
   protected final static int DEFAULT_COLOR_INDEX = 0;
 
 
+  /**
+   * Default constructor 
+   */
   public GarminWaypointD107()
   {
   }
 
+  /**
+   * Constructor from a byte buffer
+   * @param buffer the buffer
+   */
   public GarminWaypointD107(int[] buffer)
   {
     identification_ = GarminDataConverter.getGarminString(buffer,2,6).trim();
@@ -65,8 +72,7 @@ public class GarminWaypointD107 extends GarminWaypointD103
     symbol_ = GarminDataConverter.getGarminByte(buffer,60);
     symbol_type_ = SYMBOL_TYPE[symbol_];
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-    display_ = GarminDataConverter.getGarminByte(buffer,61);
-    display_options_ = DISPLAY_OPTIONS[display_];
+    display_option_ = GarminDataConverter.getGarminByte(buffer,61);
     distance_ = GarminDataConverter.getGarminFloat(buffer,62);
     color_index_ = GarminDataConverter.getGarminByte(buffer,63);
     if(color_index_ == 0xff)
@@ -74,6 +80,10 @@ public class GarminWaypointD107 extends GarminWaypointD103
     color_ = COLORS[color_index_];
   }
 
+  /**
+   * Constructor from a garmin packet
+   * @param pack the packet
+   */
   public GarminWaypointD107(GarminPacket pack)
   {
     identification_ = pack.getNextAsString(6).trim();
@@ -84,8 +94,7 @@ public class GarminWaypointD107 extends GarminWaypointD103
     symbol_ = pack.getNextAsByte();
     symbol_type_ = SYMBOL_TYPE[symbol_];
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-    display_ = pack.getNextAsByte();
-    display_options_ = DISPLAY_OPTIONS[display_];
+    display_option_ = pack.getNextAsByte();
     distance_ = pack.getNextAsFloat();
     color_index_ = pack.getNextAsByte();
     if(color_index_ == 0xff)
@@ -93,6 +102,10 @@ public class GarminWaypointD107 extends GarminWaypointD103
     color_ = COLORS[color_index_];
   }
 
+  /**
+   * Copy Constructor
+   * @param waypoint the other waypoint
+   */
   public GarminWaypointD107(GPSWaypoint waypoint)
   {
     String tmp;
@@ -117,8 +130,7 @@ public class GarminWaypointD107 extends GarminWaypointD103
     symbol_ = val;
 
     symbol_name_ = GarminWaypointSymbols.getSymbolName(symbol_type_);
-    display_ = 0;
-    display_options_ = DISPLAY_OPTIONS[display_];
+    display_option_ = 0;
     distance_ = 0f;
     color_index_ = 0xff;
     if(color_index_ == 0xff)
@@ -129,6 +141,7 @@ public class GarminWaypointD107 extends GarminWaypointD103
 //----------------------------------------------------------------------
 /**
  * Convert data type to {@link org.dinopolis.gpstool.gpsinput.garmin.GarminPacket}
+ * @param packet_id the packet id
  * @return GarminPacket representing content of data type.
  */
   public GarminPacket toGarminPacket(int packet_id)
@@ -142,7 +155,7 @@ public class GarminWaypointD107 extends GarminWaypointD103
     pack.setNextAsLongWord(0); // unused
     pack.setNextAsString(comment_,40,false);
     pack.setNextAsByte(symbol_);
-    pack.setNextAsByte(display_);
+    pack.setNextAsByte(display_option_);
     pack.setNextAsFloat(distance_);
     pack.setNextAsByte(color_index_);
 
@@ -158,22 +171,5 @@ public class GarminWaypointD107 extends GarminWaypointD103
   public Color getColor()
   {
     return(color_);
-  }
- 
-  public String toString()
-  {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append("GarminWaypoint[");
-    buffer.append("identification=").append(identification_).append(", ");
-    buffer.append("type=").append(WAYPOINT_TYPE).append(", ");
-    buffer.append("display_options=").append(display_options_).append(", ");
-    buffer.append("symbol_type=").append(symbol_type_).append(", ");
-    buffer.append("symbol_name=").append(symbol_name_).append(", ");
-    buffer.append("lat=").append(latitude_).append(", ");
-    buffer.append("lon=").append(longitude_).append(", ");
-    buffer.append("comment=").append(comment_).append(", ");
-    buffer.append("color=").append(color_);
-    buffer.append("]");
-    return(buffer.toString());
   }
 }

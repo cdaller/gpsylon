@@ -12,7 +12,7 @@ Christof Dallermassl (christof@dallermassl.at)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.5.2pre1"/>
+    <property name="release_version" value="0.5.2cvs20060421"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib${file.separator}java"/>
@@ -462,9 +462,14 @@ Christof Dallermassl (christof@dallermassl.at)
       
       <fileset dir="${target_class_dir}">
         <include name="org/dinopolis/gpstool/GPSTool.class"/>
+        <include name="org/dinopolis/gpstool/GPSTool$*.class"/>
         <include name="org/dinopolis/gpstool/gpx/ReadGPX.class"/>
       </fileset>
-    </jar>
+
+      <fileset dir="${aux_dir}">
+        <include name="log4j.properties"/>
+      </fileset>
+</jar>
   </target>
 
   <!-- jar_gpsylon target -->

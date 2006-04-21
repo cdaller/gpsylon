@@ -183,6 +183,20 @@ class GarminPacket
       for (int i=0; i < value.length; i++)
 	  data_[put_index_++] = value[i];
   }
+  
+//----------------------------------------------------------------------
+  /**
+   * Checks there are more bytes to read.
+   * @throws IllegalStateException on a try to read more bytes than were
+   * added before.
+   * Added by MR
+   */
+  public void checkGet() 
+  throws IllegalStateException
+  {
+    if(get_index_ >= put_index_)
+      throw new IllegalStateException("Not enough data available in packet");
+  }
 
 //----------------------------------------------------------------------
 /**
@@ -194,8 +208,7 @@ class GarminPacket
   public short get()
     throws IllegalStateException
   {
-    if(get_index_ >= put_index_)
-      throw new IllegalStateException("Not enough data available in packet");
+    checkGet();
     return((short)data_[get_index_++]);
   }
 
@@ -430,6 +443,7 @@ class GarminPacket
   public boolean getNextAsBoolean()
     throws IllegalStateException
   {
+    checkGet();
     boolean value = GarminDataConverter.getGarminBoolean(data_,get_index_);
     get_index_++;
     return(value);
@@ -456,6 +470,7 @@ class GarminPacket
   public short getNextAsByte()
     throws IllegalStateException
   {
+    checkGet();
     int value = GarminDataConverter.getGarminByte(data_,get_index_);
     get_index_++;
     return((short)value);
@@ -484,6 +499,7 @@ class GarminPacket
   public int getNextAsInt()
     throws IllegalStateException
   {
+    checkGet();
     return(getNextAsSignedInt());
   }
 
@@ -510,6 +526,7 @@ class GarminPacket
   public int getNextAsSignedInt()
     throws IllegalStateException
   {
+    checkGet();
     int value = GarminDataConverter.getGarminSignedInt(data_,get_index_);
     get_index_ += 2;
     return(value);
@@ -537,6 +554,7 @@ class GarminPacket
   public int getNextAsUnsignedInt()
     throws IllegalStateException
   {
+    checkGet();
     int value = GarminDataConverter.getGarminUnsignedInt(data_,get_index_);
     get_index_ += 2;
     return(value);
@@ -564,6 +582,7 @@ class GarminPacket
   public int getNextAsWord()
     throws IllegalStateException
   {
+    checkGet();
     return(getNextAsUnsignedInt());
   }
 
@@ -588,6 +607,7 @@ class GarminPacket
   public float getNextAsFloat()
     throws IllegalStateException
   {
+    checkGet();
     float value = GarminDataConverter.getGarminFloat(data_,get_index_);
     get_index_ += 4;
     return(value);
@@ -616,7 +636,8 @@ class GarminPacket
   public long getNextAsLong()
     throws IllegalStateException
   {
-		return(getNextAsUnsignedLong());
+    checkGet();
+    return(getNextAsUnsignedLong());
   }
 
 //----------------------------------------------------------------------
@@ -641,7 +662,8 @@ class GarminPacket
   public long getNextAsLongWord()
     throws IllegalStateException
   {
-		return(getNextAsUnsignedLong());
+    checkGet();
+    return(getNextAsUnsignedLong());
   }
 
 //----------------------------------------------------------------------
@@ -664,6 +686,7 @@ class GarminPacket
   public long getNextAsUnsignedLong()
     throws IllegalStateException
   {
+    checkGet();
     long value = GarminDataConverter.getGarminUnsignedLong(data_,get_index_);
     get_index_ += 4;
     return(value);
@@ -690,6 +713,7 @@ class GarminPacket
   public long getNextAsSignedLong()
     throws IllegalStateException
   {
+    checkGet();
     long value = GarminDataConverter.getGarminSignedLong(data_,get_index_);
     get_index_ += 4;
     return(value);
@@ -716,6 +740,7 @@ class GarminPacket
   public double getNextAsDouble()
     throws IllegalStateException
   {
+    checkGet();
     double value = GarminDataConverter.getGarminDouble(data_,get_index_);
     get_index_ += 8;
     return(value);
@@ -735,6 +760,7 @@ class GarminPacket
 //----------------------------------------------------------------------
 /**
  * Get the next data values as byte array.
+ * @param length the length of the array
  * @return the next values as byte array
  * @throws IllegalStateException on a try to read more bytes than were
  * added before.
@@ -742,6 +768,7 @@ class GarminPacket
   public byte[] getNextAsByteArray(int length)
     throws IllegalStateException
   {
+    checkGet();
     byte[] value=new byte[length];
     value = GarminDataConverter.getGarminByteArray(data_,get_index_,length);
     get_index_ += length;
@@ -769,6 +796,7 @@ class GarminPacket
   public String getNextAsString()
     throws IllegalStateException
   {
+    checkGet();
     String value = GarminDataConverter.getGarminString(data_,get_index_);
     get_index_ += value.length()+1; // length + zero termination
     return(value);
@@ -817,6 +845,7 @@ class GarminPacket
   public String getNextAsString(int max_length)
     throws IllegalStateException
   {
+    checkGet();
     String value = GarminDataConverter.getGarminString(data_,get_index_,max_length);
     get_index_ += value.length();
     return(value);
@@ -832,6 +861,7 @@ class GarminPacket
   public double getNextAsSemicircleDegrees()
     throws IllegalStateException
   {
+    checkGet();
     double value = GarminDataConverter.getGarminSemicircleDegrees(data_,get_index_);
     get_index_ += 4;
     return(value);
@@ -858,6 +888,7 @@ class GarminPacket
   public double getNextAsRadiantDegrees()
     throws IllegalStateException
   {
+    checkGet();
     double value = GarminDataConverter.getGarminRadiantDegrees(data_,get_index_);
     get_index_ += 8;
     return(value);
@@ -956,7 +987,6 @@ class GarminPacket
 //     System.out.println(gp.getNextAsString());
 
 		GarminPacket gp = new GarminPacket(69,84);
-    int value;
     for(int index = 0; index < gp.getPacketSize(); index++)
     {
       gp.put(index);

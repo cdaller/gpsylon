@@ -49,7 +49,7 @@ public class GarminFile
 
   public void addDataPacket(GarminPacket garmin_packet)
   {
-    int packet_num = garmin_packet.get();
+    // MR comment line: int packet_num = garmin_packet.get();
     data_.appendData(garmin_packet,1); // append all except first byte
   }
 

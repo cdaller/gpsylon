@@ -1,5 +1,7 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/04/21: Changed class hierarchy of Waypoints, fixed watchdog for garmin protocol
+
 2006/03/13: ScaleLayer does not depend on the FlatProjection anymore.
             Thanks to Samuel Benz!
             This should really allow to set different Projections without

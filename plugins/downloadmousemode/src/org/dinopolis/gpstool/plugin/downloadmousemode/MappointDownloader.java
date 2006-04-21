@@ -455,7 +455,6 @@ public class MappointDownloader implements MapRetrievalPlugin
   }
 
   protected String[] getSessionIDandPN(Map web_response)
-    throws IOException
   {
         // finding session_PN and session_ID from hidden fields in html page:
     String content = (String)web_response.get("Content");

@@ -27,4 +27,4 @@ PRG="$0"
 PRGDIR=`dirname "$PRG"`
 
 #echo "PRGDIR is $PRGDIR"
-$JAVA -jar $PRGDIR/gpsylon-0.5.2pre1.jar
+$JAVA -jar $PRGDIR/gpsylon-0.5.2cvs20060421.jar

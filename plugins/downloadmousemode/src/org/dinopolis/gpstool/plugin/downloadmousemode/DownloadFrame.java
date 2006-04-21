@@ -85,10 +85,11 @@ public class DownloadFrame extends JFrame implements GpsylonKeyConstants
 /**
  * Constructor using the current map position as download position
  *
- * @param resources the resources
- * @param map_manager the hook to add new maps to
- * @param preview_hook the PreviewHook able to display a preview for
- * the map to download.
+ * @param resources the resources the resources
+ * @param action_listener the action listener
+ * @param focus_listener  the focus listener
+ * @param available_mapservers all available map server plugin
+ * @param default_mapserver  the default map server plugin to use
  */
 
   public DownloadFrame(Resources resources, ActionListener action_listener,

@@ -37,9 +37,13 @@ public class DownloadMapCalculator
 
       /** in scale 1.0, mapblast images have 2817 pixels per meter */
   public static final double MAPBLAST_METERS_PER_PIXEL = 1.0f/2817.947378f;
+  /** the radius at the equator of the earth in meters */
   public static final double EARTH_EQUATORIAL_RADIUS_M = 6378137;
+  /** the radius from north to south in meters */
   public static final double EARTH_POLAR_RADIUS_M = 6356752.3;
+  /** vertical meters per degree */
   public static final double VERTICAL_METER_PER_DEGREE = EARTH_POLAR_RADIUS_M * 2 * Math.PI / 360.0;
+  /** the overlap factor the maps should overlap */
   public static final double OVERLAP_FACTOR = 0.98;
 
       /** the scale of the image (mapblast scales are used here) */
@@ -68,10 +72,11 @@ public class DownloadMapCalculator
   }
 
 //----------------------------------------------------------------------
-/**
- * 
- * 
- */
+  /**
+   * Set the center of the download area
+   * @param latitude the latitude
+   * @param longitude the longitude
+   */
   public void setDownloadCenter(float latitude, float longitude)
   {
     area_mode_ = false;
@@ -80,10 +85,13 @@ public class DownloadMapCalculator
   }
 
 //----------------------------------------------------------------------
-/**
- * 
- * 
- */
+  /**
+   * Set download area with the given coordinates.
+   * @param north north
+   * @param west west
+   * @param south south
+   * @param east east
+   */
   public void setDownloadArea(float north, float west, float south, float east)
   {
     area_mode_ = true;

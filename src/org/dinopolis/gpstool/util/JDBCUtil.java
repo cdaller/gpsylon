@@ -88,10 +88,26 @@ public class JDBCUtil
     debug_ = debug;
   }
   
+  /**
+   * Opens the connection to the database.
+   * @throws ClassNotFoundException if the jdbc driver class was not found!
+   * @throws SQLException if an sql error occurs.
+   */
   public void open()
     throws ClassNotFoundException, SQLException
   {
-      Class.forName(driver_name_);
+      try
+      {
+        Class.forName(driver_name_).newInstance();
+      }
+      catch (InstantiationException exc)
+      {
+        exc.printStackTrace();
+      }
+      catch (IllegalAccessException exc)
+      {
+        exc.printStackTrace();
+      }
           // Connect to the database
       db_connection_ = DriverManager.getConnection(jdbc_url_,username_,password_);
       db_statement_ = db_connection_.createStatement();
@@ -100,6 +116,10 @@ public class JDBCUtil
   public void close()
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     db_connection_.close();
   }
 
@@ -114,6 +134,10 @@ public class JDBCUtil
   public Vector getTables()
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     DatabaseMetaData db_meta_data = db_connection_.getMetaData();
     ResultSet rs;
     Vector tables = new Vector();
@@ -135,6 +159,10 @@ public class JDBCUtil
   public boolean tableExists(String tablename)
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     Vector tables = getTables();
     Iterator iterator = tables.iterator();
     tablename = tablename.toLowerCase();
@@ -159,6 +187,10 @@ public class JDBCUtil
   public void executeSQLFile(String filename)
     throws SQLException, FileNotFoundException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     executeSQL(new FileReader(filename));
   }
   
@@ -175,6 +207,10 @@ public class JDBCUtil
   public void executeSQL(Reader sql_reader)
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     try
     {
       BufferedReader reader = new BufferedReader(sql_reader);
@@ -252,6 +288,10 @@ public class JDBCUtil
   public void optimizeDatabase()
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     if(driver_name_.indexOf("hsqldb") > 0)
     {
       executeUpdate("CHECKPOINT");
@@ -270,6 +310,10 @@ public class JDBCUtil
   public void printSQLResult(String query)
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     if(debug_)
       System.out.println("Executing sql query: '"+query+"'");
     if(query.toLowerCase().trim().startsWith("select"))
@@ -316,6 +360,10 @@ public class JDBCUtil
   public  int executeUpdate(String sql)
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     if(debug_)
       System.err.println("executeUpdate: "+sql);
     synchronized(db_statement_)
@@ -336,6 +384,10 @@ public class JDBCUtil
   public ResultSet executeQuery(String sql)
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     if(debug_)
       System.err.println("executeQuery: "+sql);
     synchronized(db_statement_)
@@ -348,6 +400,10 @@ public class JDBCUtil
   public PreparedStatement prepareStatement(String query)
     throws SQLException
   {
+    if(db_connection_ == null) 
+    {
+      throw new IllegalStateException("Database was not opened!");
+    }
     return(db_connection_.prepareStatement(query));
   }
   

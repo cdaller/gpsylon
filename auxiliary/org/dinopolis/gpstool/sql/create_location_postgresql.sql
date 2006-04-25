@@ -6,11 +6,11 @@
 #   cannot do it, because the jdbc url already holds the db:
 # 
 #   create the user 'gpsmap':
-#   createuser --no-adduser --no-createdb --pwprompt gpsmap;
+#   createuser --no-adduser --no-createdb --pwprompt gpsylon;
 #   you will have to enter the password
 #   
-#   create the database gpsmap:
-#   createdb gpsmap
+#   create the database gpsylon:
+#   createdb gpsylon
 #   
 #   Normally this has to be done as a user the database knowns.
 #   Debian has the user postgres you have to do:

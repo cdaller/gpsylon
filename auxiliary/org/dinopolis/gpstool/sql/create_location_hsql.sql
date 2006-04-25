@@ -1,4 +1,6 @@
-# create the database for the location markers in hsqldb:
+# create the database for the location markers in derby database:
+
+# nothing to do
 
 # markers table:
 CREATE CACHED TABLE markers ( marker_id INTEGER IDENTITY PRIMARY KEY, 
@@ -17,6 +19,15 @@ CREATE INDEX markers_coordinates ON markers (latitude, longitude);
 
 # set maximum script file size to 3MB:
 SET LOGSIZE 3;
+
+# otherwise the data is lost, do not know why!
+SET WRITE_DELAY 100 MILLIS
+
+# create users:
+
+CREATE USER gpsylon PASSWORD "" ADMIN;
+GRANT ALL ON markers TO PUBLIC;
+
 
 
 

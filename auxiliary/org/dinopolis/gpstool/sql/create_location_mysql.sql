@@ -1,10 +1,10 @@
-# create the database for the location markers in hsqldb:
-# cannot do it, because the jdbc url already holds the db:
-# CREATE DATABASE IF NOT EXISTS gpsmap;
+# create the database for the location markers in mysql:
+CREATE DATABASE IF NOT EXISTS gpsylon;
 
-#USE gpsmap;
+USE gpsylon;
 
-GRANT all on gpsmap.* to sa@localhost identified by '';
+# create db user:
+GRANT all on gpsylon.* to gpsylon@localhost identified by '';
 
 # markers table:
 CREATE TABLE markers ( marker_id INTEGER NOT NULL AUTO_INCREMENT, 
@@ -17,10 +17,6 @@ CREATE TABLE markers ( marker_id INTEGER NOT NULL AUTO_INCREMENT,
 CREATE INDEX markers_name ON markers ( name );
 CREATE INDEX markers_cat ON markers ( category_id );
 CREATE INDEX markers_coordinates ON markers (latitude, longitude);
-
-# if table should be a csv file (change table def as well (identity is
-# not supported!) 
-# SET TABLE markers SOURCE "hsql_markers.csv";
 
 
 

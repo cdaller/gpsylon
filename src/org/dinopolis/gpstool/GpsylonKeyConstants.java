@@ -245,13 +245,21 @@ public interface GpsylonKeyConstants
   public static final String KEY_LOCATION_MARKER_TEXT_FONT_SIZE = "location.marker.text.font_size";
   public static final String KEY_LOCATION_MARKER_SHOW_NAMES = "location.marker.show_names";
   public static final String KEY_LOCATION_LAYER_ACTIVE = "location.layer_active";
-  public static final String KEY_LOCATION_MARKER_DB_JDBCDRIVER = "location.marker.db.jdbcdriver";
-  public static final String KEY_LOCATION_MARKER_DB_URL = "location.marker.db.url";
+  
+  public static final String KEY_LOCATION_MARKER_DB_PREFIX = "location.marker.db.";
+  public static final String KEY_LOCATION_MARKER_DB_TYPE = "location.marker.db.type";
+  public static final String KEY_LOCATION_MARKER_DB_JDBCDRIVER_POSTFIX = "jdbcdriver";
+  public static final String KEY_LOCATION_MARKER_DB_URL_POSTFIX = "url";
   public static final String KEY_LOCATION_MARKER_DB_USER = "location.marker.db.user";
   public static final String KEY_LOCATION_MARKER_DB_PASSWORD = "location.marker.db.password";
   public static final String KEY_LOCATION_MARKER_USE_DB = "location.marker.use_db";
-  public static final String KEY_LOCATION_MARKER_DB_CREATE_DB_SCRIPT_URL = "location.marker.db.create_db_script_url";
+  public static final String KEY_LOCATION_MARKER_DB_CREATE_DB_SCRIPT_URL_POSTFIX = "create_db.script_url";
+  public static final String KEY_LOCATION_MARKER_DB_CREATE_DB_JDBC_URL_POSTFIX = "create_db.jdbc_url";
+  public static final String KEY_LOCATION_MARKER_DB_CREATE_DB_USER_POSTFIX = "create_db.user";
+  public static final String KEY_LOCATION_MARKER_DB_CREATE_DB_PASSWORD_POSTFIX = "create_db.password";
+  public static final String KEY_LOCATION_MARKER_DB_CREATE_DB_ASK_USERNAME_PASSWORD_POSTFIX = "create_db.ask_username_password";
   public static final String KEY_LOCATION_MARKER_DB_OPTIMIZE_DB_ON_START = "location.marker.db.optimize_db_on_start";
+  
   public static final String KEY_LOCATION_MARKER_CATEGORY_AVAILABLE_CATEGORIES = "location.marker.category.available_categories";
   public static final String KEY_LOCATION_MARKER_CATEGORY_ICON_SUFFIX = "_icon";
   public static final String KEY_LOCATION_MARKER_CATEGORY_VISIBLE_SUFFIX = "_visible";

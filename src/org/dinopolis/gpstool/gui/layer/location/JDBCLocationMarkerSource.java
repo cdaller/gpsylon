@@ -63,6 +63,7 @@ public class JDBCLocationMarkerSource implements LocationMarkerSource
  * @param jdbc_url the url to use.
  * @param username the username to use.
  * @param password the password to use.
+ * @param resources the resources to use.
  */
   public JDBCLocationMarkerSource(String driver_name, String jdbc_url,
                                   String username, String password, Resources resources)

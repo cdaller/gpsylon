@@ -197,6 +197,7 @@ public class LocationLayer extends Layer
  *
  * @param resources the resources to use.
  * @param positionable the object to ask for the current gps position.
+ * @param map_navigation_hook the map navigation hook
  * @param frame the frame that should be the owner of any dialogs
  * opened.
  */
@@ -435,8 +436,12 @@ public class LocationLayer extends Layer
       if(resources_.getBoolean(KEY_LOCATION_MARKER_USE_DB))
       {
             // use a jdbc database for location markers:
-        String jdbc_driver = resources_.getString(KEY_LOCATION_MARKER_DB_JDBCDRIVER);
-        String jdbc_url =  resources_.getString(KEY_LOCATION_MARKER_DB_URL);
+        
+        String database_type = resources_.getString(KEY_LOCATION_MARKER_DB_TYPE);
+        String key_prefix = KEY_LOCATION_MARKER_DB_PREFIX + database_type + ".";
+        
+        String jdbc_driver = resources_.getString(key_prefix + KEY_LOCATION_MARKER_DB_JDBCDRIVER_POSTFIX);
+        String jdbc_url =  resources_.getString(key_prefix + KEY_LOCATION_MARKER_DB_URL_POSTFIX);
         String jdbc_username =  resources_.getString(KEY_LOCATION_MARKER_DB_USER);
         String jdbc_password =  resources_.getString(KEY_LOCATION_MARKER_DB_PASSWORD,"");
 
@@ -457,7 +462,7 @@ public class LocationLayer extends Layer
           }
           if(!could_open || !jdbc_util.tableExists("MARKERS"))
           {
-                // TODO: ask user, if database should be created!
+                // ask user, if database should be created:
             int result = JOptionPane.showConfirmDialog(null,
                                                        resources_.getString(KEY_LOCALIZE_MESSAGE_CREATE_DATABASE_MESSAGE),
                                                        resources_.getString(KEY_LOCALIZE_MESSAGE_INFO_TITLE),
@@ -465,17 +470,29 @@ public class LocationLayer extends Layer
                                                        JOptionPane.QUESTION_MESSAGE);
             if(result ==  JOptionPane.YES_OPTION)
             {
-              java.net.URL url = resources_.getURL(KEY_LOCATION_MARKER_DB_CREATE_DB_SCRIPT_URL);
+              java.net.URL url = resources_.getURL(key_prefix + KEY_LOCATION_MARKER_DB_CREATE_DB_SCRIPT_URL_POSTFIX);
+              boolean ask_admin_username_password = resources_.getBoolean(key_prefix + KEY_LOCATION_MARKER_DB_CREATE_DB_ASK_USERNAME_PASSWORD_POSTFIX);
               logger_.info("Database does not exist, creating it...");
               logger_.info("using the script at URL "+url);
 
               Reader reader = new InputStreamReader(url.openStream());
-              if(!jdbc_driver.equals("org.hsqldb.jdbcDriver"))
+              
+              String jdbc_create_db_url =  resources_.getString(key_prefix + KEY_LOCATION_MARKER_DB_CREATE_DB_JDBC_URL_POSTFIX);
+              String jdbc_admin_username;
+              String jdbc_admin_password;
+              if(!ask_admin_username_password) 
               {
-                  // TODO: ask for admin username and password, reconnect and create db!
-                String[] messages =
-                  new String[] {"Database Administrator Username/Password for Database:",
-                               jdbc_url};
+                jdbc_admin_username = resources_.getString(key_prefix + KEY_LOCATION_MARKER_DB_CREATE_DB_USER_POSTFIX);
+                jdbc_admin_password = resources_.getString(key_prefix + KEY_LOCATION_MARKER_DB_CREATE_DB_PASSWORD_POSTFIX);
+                logger_.info("logging into '" + jdbc_create_db_url + "' as user '"+jdbc_admin_username+"'");
+                jdbc_util = new JDBCUtil(jdbc_driver, jdbc_create_db_url, jdbc_admin_username, jdbc_admin_password);
+                jdbc_util.open();
+                jdbc_util.executeSQL(reader);
+              } 
+              else
+              {
+                String[] messages = new String[] {"Database Administrator Username/Password for Database Url:", 
+                                                  jdbc_create_db_url};
                 could_open = false;
                 while(!could_open)
                 {
@@ -485,9 +502,11 @@ public class LocationLayer extends Layer
                   
                   if(result == LoginDialog.OK_OPTION)
                   {
-                    jdbc_util = new JDBCUtil(jdbc_driver,jdbc_url,
-                                             login_dialog.getUsername(),
-                                             login_dialog.getPassword());
+                    jdbc_admin_username = login_dialog.getUsername();
+                    jdbc_admin_password = login_dialog.getPassword();
+                    // fixxme: close the old jdbc_util??
+                    jdbc_util = new JDBCUtil(jdbc_driver,jdbc_create_db_url,
+                                             jdbc_admin_username, jdbc_admin_password);
                     try
                     {
                       jdbc_util.open();
@@ -508,10 +527,6 @@ public class LocationLayer extends Layer
                     could_open = true;  // user gave up!
                   }
                 }
-              }
-              else
-              {
-                jdbc_util.executeSQL(reader);
               }
             }
           }
@@ -562,8 +577,8 @@ public class LocationLayer extends Layer
           dir.mkdirs();
         }
 
-	String marker_file = dirname + File.separator + resources_.getString(KEY_FILE_LOCATION_FILENAME);
-	default_source = new FileLocationMarkerSource(resources_,marker_file);
+        String marker_file = dirname + File.separator + resources_.getString(KEY_FILE_LOCATION_FILENAME);
+        default_source = new FileLocationMarkerSource(resources_,marker_file);
         ((FileLocationMarkerSource)default_source).setNameColumn(0);
         ((FileLocationMarkerSource)default_source).setLatitudeColumn(1);
         ((FileLocationMarkerSource)default_source).setLongitudeColumn(2);
@@ -2012,10 +2027,19 @@ public class LocationLayer extends Layer
  */
     public void actionPerformed(ActionEvent event)
     {
-      String[] arguments = new String[] {"-driver", resources_.getString(KEY_LOCATION_MARKER_DB_JDBCDRIVER),
-                                         "-url", resources_.getString(KEY_LOCATION_MARKER_DB_URL),
-                                         "-user",resources_.getString(KEY_LOCATION_MARKER_DB_USER),
-                                         "-password",resources_.getString(KEY_LOCATION_MARKER_DB_PASSWORD)};
+      String database_type = resources_.getString(KEY_LOCATION_MARKER_DB_TYPE);
+      String key_prefix = KEY_LOCATION_MARKER_DB_PREFIX + database_type + ".";
+      
+      String jdbc_driver = resources_.getString(key_prefix + KEY_LOCATION_MARKER_DB_JDBCDRIVER_POSTFIX);
+      String jdbc_url =  resources_.getString(key_prefix + KEY_LOCATION_MARKER_DB_URL_POSTFIX);
+      String jdbc_username =  resources_.getString(KEY_LOCATION_MARKER_DB_USER);
+      String jdbc_password =  resources_.getString(KEY_LOCATION_MARKER_DB_PASSWORD,"");
+
+      String[] arguments = new String[] {"-driver", jdbc_driver,
+                                         "-url", jdbc_url,
+                                         "-user", jdbc_username,
+                                         "-password", jdbc_password, 
+                                         "-noexit"};
       DatabaseManagerSwing.main(arguments);
     }
   }

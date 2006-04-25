@@ -167,7 +167,9 @@ map providers will discontinue their service when it is misused!
             href="http://164.214.2.59/gns/html/index.html">http://164.214.2.59/gns/html/index.html</a>) 
         </li>
          <li>Database support for Location Markers - selection of categories to
-          display</li>
+          display.<br/>
+          Different databases are supported (derby and hsqldb (both pure java, zero configuration),
+          mysql and postgresql) - the database and all tables are created automatically</li>
         <li>Level Of Detail: depending on the chosen scale, not all location
           markers are displayed. The level of detail is increased when the user
           zooms in or chooses to override the level of detail. This behaviour
@@ -669,5 +671,11 @@ map providers will discontinue their service when it is misused!
       </div> <!-- footer -->
     </div> <!-- content -->
   </div> <!-- wraper -->
+  <!--  google analytics -->
+  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    _uacct = "UA-264234-1";
+   urchinTracker();
+  </script>
  </body>
 </html>

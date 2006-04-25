@@ -1,5 +1,13 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/04/25: Rewrote the handling of databases for location markers: now the user can
+            choose between different databases (hsqldb (pure java), derby (pure java),
+            mysql and postgresql. The needed database and all tables are created 
+            automatically.
+            
+            Versions of jdbc drivers for hsqldb, mysql and postgres updated to the
+            latest versions.
+
 2006/04/21: Changed class hierarchy of Waypoints, fixed watchdog for garmin protocol
 
 2006/03/13: ScaleLayer does not depend on the FlatProjection anymore.

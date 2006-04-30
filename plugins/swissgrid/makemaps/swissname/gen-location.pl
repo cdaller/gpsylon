@@ -1,6 +1,15 @@
 #!/usr/bin/perl
 #
 #
+# Howto install this the location.sql Script into a derby DB?
+#
+# java -cp derbytools.jar:derby.jar \
+#	-Dij.protocol=jdbc:derby: -Dij.database=/home/<user>/.gpsylon/marker/location_marker_db_derby \
+#	org.apache.derby.tools.ij 
+# ij> run 'location.sql'
+# ij> select count(*) from gpsylon.markers;
+# ij> exit;
+#
 
 BEGIN {
 @INC = ("$ENV{'SWISSMAP'}/lib", @INC);
@@ -8,7 +17,7 @@ BEGIN {
 
 use SwissToPix;
 
-# insert into markers(NAME,LATITUDE,LONGITUDE,CATEGORY_ID,LEVEL_OF_DETAIL) values('test',54.00,23.00,'city',1);
+# insert into markers (NAME,LATITUDE,LONGITUDE,CATEGORY_ID,LEVEL_OF_DETAIL) values ('test',54.00,23.00,'city',1);
 
 
 open (LOCATION, "> location.sql");
@@ -55,7 +64,7 @@ while(<NAMES>){
 	}
 
 
-	print LOCATION "insert into markers(NAME,LATITUDE,LONGITUDE,CATEGORY_ID,LEVEL_OF_DETAIL) values(\'$name \[$info\]\',$lat,$lon,\'$type\',8)\;\n";
+	print LOCATION "insert into gpsylon.markers (NAME,LATITUDE,LONGITUDE,CATEGORY_ID,LEVEL_OF_DETAIL) values (\'$name \[$info\]\',$lat,$lon,\'$type\',8)\;\n";
 	
 }
 

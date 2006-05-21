@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#GPSYLON_VMARGS="-Xmx512m"
+
 # Setup the JVM
 if [ "x$JAVA" = "x" ]; then
   if [ "x$JAVA_HOME" != "x" ]; then
@@ -26,5 +28,18 @@ PRG="$0"
 # Get relative directory for gpsylon.sh
 PRGDIR=`dirname "$PRG"`
 
+# Get the path to the native RXTX Serial Library 
+LIBPATH=$PRGDIR/lib/native/rxtx-2.1-7/`uname -s`/`arch`
+
+if [ -d "$LIBPATH" ]; then
+ JAVA_LIB=-Djava.library.path=$LIBPATH
+else
+ JAVA_LIB="" 
+ echo "Warning: Your Plattform `uname -s`/`uname -m` is not supported by this script!"
+ echo "Have a look at ftp://ftp.qbang.org/pub/rxtx/ToyBox to install the missing RXTX Serial Library!"
+ echo ""
+ exit 1
+fi
+
 #echo "PRGDIR is $PRGDIR"
-$JAVA -jar $PRGDIR/gpsylon-0.5.2cvs20060421.jar
+$JAVA $JAVA_LIB $GPSYLON_VMARGS -jar $PRGDIR/gpsylon-0.5.2cvs20060421.jar

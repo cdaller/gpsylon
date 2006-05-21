@@ -16,6 +16,12 @@ Christof Dallermassl (christof@dallermassl.at)
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib${file.separator}java"/>
+  	<property name="native_lib_dir" value="lib${file.separator}native"/>
+  	<exec executable="uname" outputproperty="uname">
+  		<arg line="-s"/>
+  	</exec>
+  	<exec executable="arch" outputproperty="arch"/>
+  	<property name="rxtx.system.path" value="rxtx-2.1-7/${uname}/${arch}"/>
     <property name="javadoc_dir" value="javadoc"/>
     <property name="dist_name" value="gpsylon"/>
     <property name="dist_dir" value="dist"/>
@@ -298,6 +304,7 @@ Christof Dallermassl (christof@dallermassl.at)
     <java classname="org.dinopolis.gpstool.Gpsylon"
       fork="yes"
       classpathref="run_classpath">
+      <jvmarg value="-Djava.library.path=${native_lib_dir}/${rxtx.system.path}"/>
       <classpath id="run_classpath">
         <fileset dir="${basedir}">
           <include name="gpstool.jar"/>
@@ -539,6 +546,7 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="gpsinput-${release_version}.jar"/>
         <include name="dinopolis-util-${release_version}.jar"/>
         <include name="readme.txt"/>
+      	<include name="gpsylon.sh"/>
       </fileset>
     </copy>
 
@@ -548,6 +556,10 @@ Christof Dallermassl (christof@dallermassl.at)
       </fileset>
     </copy>
 
+    <copy todir="${dist_dir}/${native_lib_dir}">
+      <fileset dir="${native_lib_dir}"/>
+    </copy>
+  	
     <copy todir="${dist_dir}/${doc_dir}">
       <fileset dir="${doc_dir}">
         <exclude name="images/*.psd"/>
@@ -597,6 +609,10 @@ Christof Dallermassl (christof@dallermassl.at)
         <patternset refid="gpsylon.lib.patternset"/>
       </fileset>
     </copy>
+  	
+    <copy todir="${dist_dir}/${dist_name}_src-${release_version}/${native_lib_dir}">
+      <fileset dir="${native_lib_dir}"/>
+    </copy>
 
     <copy todir="${dist_dir}/${dist_name}_src-${release_version}">
       <fileset dir="${basedir}">
@@ -607,6 +623,7 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="${javadoc_dir}/**"/>
         <include name="META-INF/**"/>
         <include name="readme.txt"/>
+      	<include name="gpsylon.sh"/>
         <include name="build.xml"/>
         <include name="${plugin_dir}/*/META-INF/**"/>
         <include name="${plugin_dir}/*/${source_dir}/**"/>

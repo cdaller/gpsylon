@@ -17,11 +17,7 @@ Christof Dallermassl (christof@dallermassl.at)
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib${file.separator}java"/>
   	<property name="native_lib_dir" value="lib${file.separator}native"/>
-  	<exec executable="uname" outputproperty="uname">
-  		<arg line="-s"/>
-  	</exec>
-  	<exec executable="arch" outputproperty="arch"/>
-  	<property name="rxtx.system.path" value="rxtx-2.1-7/${uname}/${arch}"/>
+  	<property name="rxtx.system.path" value="rxtx-2.1-7/${os.name}/${os.arch}"/>
     <property name="javadoc_dir" value="javadoc"/>
     <property name="dist_name" value="gpsylon"/>
     <property name="dist_dir" value="dist"/>
@@ -301,6 +297,8 @@ Christof Dallermassl (christof@dallermassl.at)
 
   <!-- run target -->
   <target name="run" depends="init,compile,compile_plugins,install_plugins">
+  	<echo>OS: ${os.name}</echo>
+  	<echo>Arch: ${os.arch}</echo>
     <java classname="org.dinopolis.gpstool.Gpsylon"
       fork="yes"
       classpathref="run_classpath">

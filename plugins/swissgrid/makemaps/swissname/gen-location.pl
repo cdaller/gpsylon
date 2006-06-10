@@ -6,7 +6,7 @@
 # java -cp derbytools.jar:derby.jar \
 #	-Dij.protocol=jdbc:derby: -Dij.database=/home/<user>/.gpsylon/marker/location_marker_db_derby \
 #	org.apache.derby.tools.ij 
-# ij> run 'location.sql'
+# ij> run 'location.sql';
 # ij> select count(*) from gpsylon.markers;
 # ij> exit;
 #

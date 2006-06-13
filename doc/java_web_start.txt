@@ -1,0 +1,9 @@
+For a Java Web Start application, all jar files
+need to be signed 
+(from http://java.sun.com/developer/technicalArticles/Programming/jnlp/)
+
+1. create a keystore:
+keytool -genkey -keystore gpsylon.keys -alias "Christof Dallermassl"
+
+2. sign all jar files (including those in lib/..., plugins...):
+jarsigner -keystore gpsylon.keys gpsylon-0.5.2.jar "Christof Dallermassl"

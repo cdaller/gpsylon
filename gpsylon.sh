@@ -28,8 +28,8 @@ PRG="$0"
 # Get relative directory for gpsylon.sh
 PRGDIR=`dirname "$PRG"`
 
-# Get the path to the native RXTX Serial Library 
-LIBPATH=$PRGDIR/lib/native/rxtx-2.1-7/`uname -s`/`arch`
+# Get the path to the native libraries
+LIBPATH=$PRGDIR/lib/native/`uname -s`/`arch`
 
 if [ -d "$LIBPATH" ]; then
  JAVA_LIB=-Djava.library.path=$LIBPATH

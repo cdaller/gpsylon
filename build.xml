@@ -16,8 +16,8 @@ Christof Dallermassl (christof@dallermassl.at)
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib${file.separator}java"/>
-  	<property name="native_lib_dir" value="lib${file.separator}native"/>
-  	<property name="rxtx.system.path" value="rxtx-2.1-7/${os.name}/${os.arch}"/>
+  	<property name="native_lib_dir_base" value="lib${file.separator}native"/>
+  	<property name="native_lib_dir" value="${native_lib_dir_base}/${os.name}/${os.arch}"/>
     <property name="javadoc_dir" value="javadoc"/>
     <property name="dist_name" value="gpsylon"/>
     <property name="dist_dir" value="dist"/>
@@ -302,7 +302,7 @@ Christof Dallermassl (christof@dallermassl.at)
     <java classname="org.dinopolis.gpstool.Gpsylon"
       fork="yes"
       classpathref="run_classpath">
-      <jvmarg value="-Djava.library.path=${native_lib_dir}/${rxtx.system.path}"/>
+      <jvmarg value="-Djava.library.path=${native_lib_dir}"/>
       <classpath id="run_classpath">
         <fileset dir="${basedir}">
           <include name="gpstool.jar"/>
@@ -545,6 +545,7 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="dinopolis-util-${release_version}.jar"/>
         <include name="readme.txt"/>
       	<include name="gpsylon.sh"/>
+      	<include name="gpsylon.cmd"/>
       </fileset>
     </copy>
 
@@ -554,8 +555,8 @@ Christof Dallermassl (christof@dallermassl.at)
       </fileset>
     </copy>
 
-    <copy todir="${dist_dir}/${native_lib_dir}">
-      <fileset dir="${native_lib_dir}"/>
+    <copy todir="${dist_dir}/${native_lib_dir_base}">
+      <fileset dir="${native_lib_dir_base}"/>
     </copy>
   	
     <copy todir="${dist_dir}/${doc_dir}">
@@ -608,8 +609,8 @@ Christof Dallermassl (christof@dallermassl.at)
       </fileset>
     </copy>
   	
-    <copy todir="${dist_dir}/${dist_name}_src-${release_version}/${native_lib_dir}">
-      <fileset dir="${native_lib_dir}"/>
+    <copy todir="${dist_dir}/${dist_name}_src-${release_version}/${native_lib_dir_base}">
+      <fileset dir="${native_lib_dir_base}"/>
     </copy>
 
     <copy todir="${dist_dir}/${dist_name}_src-${release_version}">
@@ -622,6 +623,7 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="META-INF/**"/>
         <include name="readme.txt"/>
       	<include name="gpsylon.sh"/>
+      	<include name="gpsylon.cmd"/>
         <include name="build.xml"/>
         <include name="${plugin_dir}/*/META-INF/**"/>
         <include name="${plugin_dir}/*/${source_dir}/**"/>

@@ -212,7 +212,15 @@ map providers will discontinue their service when it is misused!
 									Antonio)</li>
               <li>Garmin Geko 201 (garmin mode) (reported by Frank Wilhelm)</li>
               <li>GlobalSat Bluetooth GPS BT-338 (tested by myself)</li>
+              <li>Navilock NL-303P PDA-GPS-Receiver with Serial/USB converter (tested by Silverbullet)</li>
             </ul>
+           </p> 
+            <p>
+            Linux users please note: serial ports must be like /dev/ttySXX, as otherwise
+            rxtx does not recognize the port. So for bluetooth or USB devices, 
+            a symlink is needed!
+            </p>
+            <p>
             For bluetooth connection, I used the following commands under linux to
             create a serial connection with bluetooth. First, find the id of your 
             bluetooth device. I used <code>hcitool</code> for this:

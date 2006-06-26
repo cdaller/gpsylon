@@ -1,5 +1,9 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/06/26: new pre release 0.5.2-pre1
+            added native libraries and scripts to start the application without installing
+            rxtx before (thanks to Sam Benz!)
+
 2006/04/25: Rewrote the handling of databases for location markers: now the user can
             choose between different databases (hsqldb (pure java), derby (pure java),
             mysql and postgresql. The needed database and all tables are created 
@@ -16,7 +20,6 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
             any problems now! Time to add other map types (like gpsdrive does)
 
 2006/03/06: Allow to set a different projection from a plugin.
-
 
 2006/02/10: Fixed reading of gpx tracks. Version 0.5.1 released.
 

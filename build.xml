@@ -12,7 +12,7 @@ Christof Dallermassl (christof@dallermassl.at)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.5.2cvs20060421"/>
+    <property name="release_version" value="0.5.2-pre1"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib${file.separator}java"/>
@@ -546,6 +546,8 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="readme.txt"/>
       	<include name="gpsylon.sh"/>
       	<include name="gpsylon.cmd"/>
+      	<include name="serialportlist.cmd"/>
+      	<include name="serialportlist.sh"/>
       </fileset>
     </copy>
 
@@ -624,6 +626,8 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="readme.txt"/>
       	<include name="gpsylon.sh"/>
       	<include name="gpsylon.cmd"/>
+      	<include name="serialportlist.sh"/>
+      	<include name="serialportlist.cmd"/>
         <include name="build.xml"/>
         <include name="${plugin_dir}/*/META-INF/**"/>
         <include name="${plugin_dir}/*/${source_dir}/**"/>

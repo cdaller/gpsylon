@@ -12,4 +12,4 @@ set LIBPATH=%PRG_DIR%lib\native\%OS%\%PROCESSOR_ARCHITECTURE%
 set JAVA_LIB=-Djava.library.path=%LIBPATH%
 
 rem run the jar file:
-java "%JAVA_LIB%" %GPSYLON_VMARGS% -jar "%PRG_DIR%gpsylon-0.5.2cvs20060421.jar" %*
+java "%JAVA_LIB%" %GPSYLON_VMARGS% -jar "%PRG_DIR%gpsylon-0.5.2-pre1.jar" %*

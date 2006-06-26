@@ -135,7 +135,7 @@ public class Gpsylon
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSYLON_VERSION = "0.5.2cvs20060421";
+  public final static String GPSYLON_VERSION = "0.5.2-pre1";
   private final static String GPSYLON_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";

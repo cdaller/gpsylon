@@ -12,10 +12,10 @@ Christof Dallermassl (christof@dallermassl.at)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.5.2-pre1"/>
+    <property name="release_version" value="0.5.2-pre2"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
-    <property name="lib_dir" value="lib${file.separator}java"/>
+    <property name="lib_dir" value="lib/java"/>
   	<property name="native_lib_dir_base" value="lib${file.separator}native"/>
   	<property name="native_lib_dir" value="${native_lib_dir_base}/${os.name}/${os.arch}"/>
     <property name="javadoc_dir" value="javadoc"/>
@@ -366,9 +366,9 @@ Christof Dallermassl (christof@dallermassl.at)
         <patternset refid="util.lib.patternset"/>
       </fileset>
     </path>
-    <pathconvert pathsep=" " property="util.dist.lib.classpath"
-      refid="util.dist.classpath">
-      <map from="${user.dir}${file.separator}${lib_dir}" to="lib${file.separator}java"/> 
+    <pathconvert pathsep=" " dirsep="/" property="util.dist.lib.classpath" refid="util.dist.classpath">
+      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/> 
+      <map from="${user.dir}" to="."/> 
     </pathconvert>
 
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
@@ -403,9 +403,8 @@ Christof Dallermassl (christof@dallermassl.at)
       </fileset>
       <pathelement location="dinopolis-util-${release_version}.jar"/>
     </path>
-    <pathconvert pathsep=" " property="gpsinput.dist.lib.classpath"
-      refid="gpsinput.dist.classpath">
-      <map from="${user.dir}${file.separator}${lib_dir}" to="lib${file.separator}java"/> 
+    <pathconvert pathsep=" " dirsep="/" property="gpsinput.dist.lib.classpath" refid="gpsinput.dist.classpath">
+      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/> 
       <map from="${user.dir}" to="."/> 
     </pathconvert>
 
@@ -442,9 +441,8 @@ Christof Dallermassl (christof@dallermassl.at)
       <pathelement location="dinopolis-util-${release_version}.jar"/>
       <pathelement location="gpsinput-${release_version}.jar"/>
     </path>
-    <pathconvert pathsep=" " property="gpstool.dist.lib.classpath"
-                 refid="gpstool.dist.classpath">
-      <map from="${user.dir}${file.separator}${lib_dir}" to="lib${file.separator}java"/> 
+    <pathconvert pathsep=" " dirsep="/" property="gpstool.dist.lib.classpath" refid="gpstool.dist.classpath">
+      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/> 
       <map from="${user.dir}" to="."/> 
     </pathconvert>
     
@@ -488,9 +486,8 @@ Christof Dallermassl (christof@dallermassl.at)
       <pathelement location="dinopolis-util-${release_version}.jar"/>
       <pathelement location="gpsinput-${release_version}.jar"/>
     </path>
-    <pathconvert pathsep=" " property="gpsylon.dist.lib.classpath"
-                 refid="gpsylon.dist.classpath">
-      <map from="${user.dir}${file.separator}${lib_dir}" to="lib${file.separator}java"/> 
+    <pathconvert pathsep=" " dirsep="/" property="gpsylon.dist.lib.classpath" refid="gpsylon.dist.classpath">
+      <map from="${user.dir}/${lib_dir}" to="lib/java"/> 
       <map from="${user.dir}" to="."/> 
     </pathconvert>
     
@@ -595,7 +592,7 @@ Christof Dallermassl (christof@dallermassl.at)
    
 
     <!-- remove temp directory -->
-    <delete dir="${dist_dir}/${dist_name}_bin-${release_version}"/>
+    <!--delete dir="${dist_dir}/${dist_name}_bin-${release_version}"/-->
   </target>
 
   <!-- src_dist target -->

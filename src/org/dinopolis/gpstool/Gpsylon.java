@@ -135,7 +135,7 @@ public class Gpsylon
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSYLON_VERSION = "0.5.2-pre1";
+  public final static String GPSYLON_VERSION = "0.5.2-pre2";
   private final static String GPSYLON_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -242,6 +242,8 @@ public class Gpsylon
       // gps mode actions 
   public final static String ACTION_FOLLOW_ME_MODE = "followme_mode";
   public final static String ACTION_SIMULATION_MODE = "simulation_mode";
+	 // MH
+  public final static String ACTION_AUTOMATIC_MAP_DOWNLOAD_MODE = "automatic_map_download_mode";
 
       // import actions 
   public final static String ACTION_IMPORT_GPSDRIVE = "import_gpsdrive";

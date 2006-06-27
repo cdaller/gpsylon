@@ -203,6 +203,8 @@ public interface GpsylonKeyConstants
   public static final String KEY_POSITION_FOLLOW_ME_MODE = "position.follow_me.mode";
   public static final String KEY_POSITION_FOLLOW_ME_PITCH = "position.follow_me.pitch";
   public static final String KEY_POSITION_FOLLOW_ME_PITCH_VALUE_PREFIX = "position.follow_me.pitch_value";
+  // MH
+  public static final String KEY_POSITION_AUTOMATIC_MAP_DOWNLOAD_MODE = "position.automatic_map_download.value";
 
 
   

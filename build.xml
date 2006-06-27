@@ -592,7 +592,7 @@ Christof Dallermassl (christof@dallermassl.at)
    
 
     <!-- remove temp directory -->
-    <!--delete dir="${dist_dir}/${dist_name}_bin-${release_version}"/-->
+    <delete dir="${dist_dir}/${dist_name}_bin-${release_version}"/>
   </target>
 
   <!-- src_dist target -->

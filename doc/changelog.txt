@@ -1,5 +1,9 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/06/27: Added autodownload feature from Manuel Habermacher (Thanks!)
+            Fixed problem on linux systems with backslashes in manifest files.
+            new pre release 0.5.2-pre2
+
 2006/06/26: new pre release 0.5.2-pre1
             added native libraries and scripts to start the application without installing
             rxtx before (thanks to Sam Benz!)

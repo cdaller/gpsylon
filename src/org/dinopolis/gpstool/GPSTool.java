@@ -823,7 +823,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   public static void printHelp()
   {
     System.out.println("GPSTool 0.8.0 - Communication between GPS-Devices and Computers via serial port");
-    System.out.println("(c) 2000-2003 Christof Dallermassl\n");
+    System.out.println("(c) 2000-2006 Christof Dallermassl\n");
     System.out.println("Usage: java org.dinopolis.gpstool.GPSTool [options]\n");
     System.out.println("Options:");
     System.out.println("--device, -d <device>, e.g. -d /dev/ttyS0 or COM1 (defaults depending on OS).");
@@ -859,7 +859,8 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     System.out.println("--infile <filename>, the GPX file to read the tracks, routes and waypoints from");
     System.out.println("--helptemplate, prints some more information on how to write a template.");
     System.out.println("--help -h, shows this page");
-    
+    System.out.println("Java Version: " + System.getProperty("java.version"));
+    System.out.println("OS: " + System.getProperty("os.name") + "/" + System.getProperty("os.arch"));
   }
 
   private static void test()

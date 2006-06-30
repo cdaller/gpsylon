@@ -60,7 +60,8 @@ public class NMEA0183Sentence
     if (logger_.isDebugEnabled())
       logger_.debug("raw data='"+raw_data+"'");
     int star_pos = raw_data.indexOf('*');
-    if(star_pos <= 6)
+    // tread $PSRFTXT sentences in a special way (no checksum!)
+    if(star_pos <= 6 && !raw_data.startsWith("$PSRFTXT"))
       throw (new IllegalArgumentException("Invalid NMEA Sentence (no '*'): "
                                           +new String(raw_data)));
     raw_data_ = raw_data.substring(0,star_pos+3);

@@ -24,6 +24,9 @@ package org.dinopolis.gpstool.gpsinput.nmea;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -71,6 +74,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 
   boolean ignore_invalid_checksum_ = false;
   boolean print_ignore_warning_ = true;
+  
+  List gps_infos_;
 
   // ----------------------------------------------------------------------
   /**
@@ -179,7 +184,15 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
    */
   public String[] getGPSInfo()
   {
-    String[] info = new String[]{"NMEA data"};
+    String[] info;
+    if(gps_infos_ == null)
+    {
+      info = new String[] {"Unknown NMEA GPS"};
+    } 
+    else
+    {
+      info = (String[]) gps_infos_.toArray(new String[gps_infos_.size()]);
+    }
     return (info);
   }
 
@@ -299,7 +312,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
               print_ignore_warning_ = false;
             }
 
-            if (message.isValid() || ignore_invalid_checksum_)
+            if (ignore_invalid_checksum_ || message.isValid() || message.getSentenceId().equals("RFTXT"))
             {
               try
               {
@@ -445,6 +458,12 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     if (id.equals("RME"))
     {
       processRME(sentence);
+      return;
+    }
+    
+    if (id.equals("RFTXT"))
+    {
+      processRFTXT(sentence);
       return;
     }
   }
@@ -805,6 +824,18 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       if (logger_nmea_.isDebugEnabled())
         nfe.printStackTrace();
     }
+  }
+  
+  protected void processRFTXT(NMEA0183Sentence sentence)
+  {
+    if (logger_nmea_.isDebugEnabled())
+      logger_nmea_.debug("RFTXT detected: " + sentence);
+    String data = (String) sentence.getDataFields().elementAt(0);
+    if(gps_infos_ == null || data.startsWith("Version:"))
+    {
+      gps_infos_ = new ArrayList();
+    }
+    gps_infos_.add(data);
   }
 
   // protected void changeGPSData(String key, Object value)

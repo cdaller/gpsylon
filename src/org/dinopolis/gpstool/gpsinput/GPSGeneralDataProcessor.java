@@ -127,7 +127,16 @@ public abstract class GPSGeneralDataProcessor implements GPSDataProcessor
  * @return the heading from the GPSDevice.
  */
   public abstract float getHeading();
-
+  
+//----------------------------------------------------------------------
+  /**
+   * Returns information about the gps connected (name of device, type
+   * of connection, etc.) This information is for display to the user,
+   * not for further processing (may change without notice).
+   *
+   * @return information about the gps connected.
+   */
+  public abstract String[] getGPSInfo();
 
 //----------------------------------------------------------------------
 /**

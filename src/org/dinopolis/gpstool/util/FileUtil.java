@@ -3,20 +3,20 @@
 *
  * Copyright (c) 2002 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -40,8 +40,71 @@ import java.text.ParseException;
  * @version $Revision$
  */
 
-public class FileUtil  
+public class FileUtil
 {
+
+//----------------------------------------------------------------------
+  /**
+   * Returns the next available number for a filename for a given directory, prefix,
+   * pattern and suffix. E.g. using the prefix "map_", the pattern
+   * "0000" and the suffix ".txt" and there exist the files
+   * "map_0001.txt" and "map_0002.txt" it returns "map_0003.txt". The
+   * pattern must be a valid NumberFormat pattern. If wildcards are used
+   * for the prefix or the suffix, they are contained in the returned
+   * filename!
+   *
+   * @param directory the directory the files are located in
+   * @param prefix the prefix of the files (may contain '?'s as wildcard).
+   * @param pattern the number pattern of the files
+   * @param suffix the suffix of the files (may contain '?'s as wildcard).
+   * @return the next available filename (including the given directory name!)
+   */
+
+    public static int getNextFileNameNumber(String directory, final String prefix,
+                                            final String pattern, final String suffix)
+    {
+      NumberFormat format = new DecimalFormat(pattern);
+
+      File dir = new File(directory);
+
+          // filter only the matching files:
+      FilenameFilter filter = new FilenameFilter()
+        {
+          public boolean accept(File dir, String name)
+          {
+            return(!(new File(dir,name).isDirectory())
+                   && wildcardStartsWith(name,prefix) && wildcardEndsWith(name,suffix)
+//                   && name.startsWith(prefix) && name.endsWith(suffix)
+                   && (name.length() == prefix.length() + pattern.length() + suffix.length()));
+          }
+      };
+
+      String[] children = dir.list(filter);
+      if(children == null)
+        throw(new IllegalArgumentException("Directory '"+directory
+                                           +"' does not exist or cannot be read!"));
+      int last_match = 0;
+      int number;
+      String filename;
+      String number_string;
+      for (int file_count = 0; file_count < children.length; file_count++)
+      {
+        filename = children[file_count];
+        try
+        {
+          number_string = filename.substring(prefix.length(),prefix.length()+pattern.length());
+          number = format.parse(number_string).intValue();
+
+          if(number > last_match)
+            last_match = number;
+        }
+        catch(ParseException pe)
+        {
+              // do not care!
+        }
+      }
+      return last_match + 1;
+    }
 
 //----------------------------------------------------------------------
 /**
@@ -63,47 +126,9 @@ public class FileUtil
   public static String getNextFileName(String directory, final String prefix,
                                        final String pattern, final String suffix)
   {
+    int freeNumber = getNextFileNameNumber(directory, prefix, pattern, suffix);
     NumberFormat format = new DecimalFormat(pattern);
-    
-    File dir = new File(directory);
-
-        // filter only the matching files:
-    FilenameFilter filter = new FilenameFilter()
-      {
-        public boolean accept(File dir, String name)
-        {
-          return(!(new File(dir,name).isDirectory())
-                 && wildcardStartsWith(name,prefix) && wildcardEndsWith(name,suffix)
-//                 && name.startsWith(prefix) && name.endsWith(suffix)
-                 && (name.length() == prefix.length() + pattern.length() + suffix.length()));
-        }
-    };
-    
-    String[] children = dir.list(filter);
-    if(children == null)
-      throw(new IllegalArgumentException("Directory '"+directory
-                                         +"' does not exist or cannot be read!"));
-    int last_match = 0;
-    int number;
-    String filename;
-    String number_string;
-    for (int file_count = 0; file_count < children.length; file_count++)
-    {
-      filename = children[file_count];
-      try
-      {
-        number_string = filename.substring(prefix.length(),prefix.length()+pattern.length());
-        number = format.parse(number_string).intValue();   
-        
-        if(number > last_match)
-          last_match = number;
-      }
-      catch(ParseException pe)
-      {
-            // do not care!
-      }
-    }
-    filename = prefix + format.format(last_match + 1) + suffix;
+    String filename = prefix + format.format(freeNumber) + suffix;
     return(directory + File.separator + filename);
   }
 
@@ -163,7 +188,7 @@ public class FileUtil
  */
   public static boolean wildcardStartsWith(String s1, String s2)
   {
-    int length = s2.length();
+    int length = Math.min(s1.length(),s2.length());
     return(wildcardEqual(s2,s1.substring(0,length)));
   }
 
@@ -187,7 +212,7 @@ public class FileUtil
     return(wildcardEqual(s2,s1.substring(s1.length()-length)));
   }
 
-  
+
 //----------------------------------------------------------------------
 /**
  * Compare s1 with s2; s1 can use wildcards.
@@ -244,7 +269,7 @@ public class FileUtil
       return true;
     return false;//not the same
   }
-  
+
   public static void main(String[] args)
   {
 //     if(args.length < 4)

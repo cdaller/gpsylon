@@ -4,20 +4,20 @@
  * Copyright (c) 2001 IICM, Graz University of Technology
  * Copyright (c) 2001-2003 Sandra Brueckler, Stefan Feitl
  * Written during an XPG-Project at the IICM of the TU-Graz, Austria
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -178,7 +178,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 	+"#end\n"
 	+"#end\n"
 	+"</gpx>\n";
-  
+
 //----------------------------------------------------------------------
 /**
  * Default constructor
@@ -186,7 +186,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   public GPSTool()
   {
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Initialize the gps device, the gps data processor and handle all
@@ -195,13 +195,13 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
  */
   public void init(String[] arguments)
   {
-    
+
     if(arguments.length < 1)
     {
       printHelp();
       return;
     }
-    
+
     String[] valid_args =
       new String[] {"device*","d*","help","h","speed#","s#","file*","f*",
                     "nmea","n","garmin","g","sirf","i","rawdata","downloadtracks",
@@ -218,10 +218,10 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     {
       args = new CommandArguments(arguments,valid_args);
     }
-    catch(CommandArgumentException cae) 
+    catch(CommandArgumentException cae)
     {
       System.err.println("Invalid arguments: "+cae.getMessage());
-      printHelp(); 
+      printHelp();
       return;
     }
 
@@ -243,42 +243,42 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     {
       printHelpTemplate();
     }
-    
+
     if (args.isSet("printdefaulttemplate"))
     {
       System.out.println(DEFAULT_TEMPLATE);
     }
-    
+
     if (args.isSet("device"))
     {
       serial_port_name = (String)args.getValue("device");
     }
-    else 
+    else
       if (args.isSet("d"))
       {
         serial_port_name = (String)args.getValue("d");
       }
-    
+
     if (args.isSet("speed"))
     {
       serial_port_speed = ((Integer)args.getValue("speed")).intValue();
     }
-    else 
+    else
       if (args.isSet("s"))
       {
         serial_port_speed = ((Integer)args.getValue("s")).intValue();
       }
-    
+
     if (args.isSet("file"))
     {
       filename = (String)args.getValue("file");
     }
-    else 
+    else
       if (args.isSet("f"))
       {
         filename = (String)args.getValue("f");
       }
-    
+
     if (args.isSet("garmin") || args.isSet("g"))
     {
       gps_data_processor = new GPSGarminDataProcessor();
@@ -306,7 +306,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         gps_data_processor = new GPSNmeaDataProcessor();
         serial_port_speed = 4800;
       }
-    
+
     if (args.isSet("nmealogfile") || (args.isSet("l")))
     {
       if(args.isSet("nmealogfile"))
@@ -314,7 +314,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
       else
         nmea_log_file = args.getStringValue("l");
     }
-    
+
       if (args.isSet("rawdata"))
     {
       gps_data_processor.addGPSRawDataListener(
@@ -377,7 +377,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         FileOutputStream out = new FileOutputStream((String)args.getValue("screenshot"));
         BufferedImage image = gps_data_processor.getScreenShot();
         ImageIO.write(image,"PNG",out);
-        
+
       }
 
       boolean print_waypoints = args.isSet("downloadwaypoints");
@@ -388,7 +388,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
       {
             // create context for template printing:
         VelocityContext context = new VelocityContext();
-        
+
         if(print_waypoints)
         {
           List waypoints = gps_data_processor.getWaypoints();
@@ -439,7 +439,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 
         addDefaultValuesToContext(context);
         boolean result = printTemplate(context,reader,writer);
-        
+
       }
       boolean read_waypoints = (args.isSet("uploadwaypoints") && args.isSet("infile"));
       boolean read_routes = (args.isSet("uploadroutes") && args.isSet("infile"));
@@ -470,7 +470,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         GPSPosition pos = gps_data_processor.getGPSPosition();
         System.out.println("Current Position: "+pos);
       }
-      
+
           // register as listener to be informed about the chosen events
       if(args.isSet("printpos") || args.isSet("p"))
       {
@@ -652,11 +652,11 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     }
     return(result);
   }
-  
-  
+
+
 //   public void registerListener()
 //   {
-//     System.out.println("------------------------------------------------------------"); 
+//     System.out.println("------------------------------------------------------------");
 //     System.out.println("------------------------------------------------------------");
 //     System.out.println("------------------------------------------------------------");
 
@@ -670,7 +670,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 // //         frame.getContentPane().add(panel);
 // //         frame.pack();
 // //         frame.setVisible(true);
-      
+
 // //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.LOCATION,panel);
 // //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.HEADING,panel);
 // //         gps_processor_.addGPSDataChangeListener(GPSDataProcessor.ALTITUDE,panel);
@@ -697,7 +697,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 //     {
 //       e.printStackTrace();
 //     }
-   
+
 //   }
 
 //----------------------------------------------------------------------
@@ -714,7 +714,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 //----------------------------------------------------------------------
 // Callback method for PropertyChangeListener
 //----------------------------------------------------------------------
-  
+
 //----------------------------------------------------------------------
 /**
  * Callback for any changes of the gps data (position, heading, speed,
@@ -743,7 +743,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 //----------------------------------------------------------------------
 // Callback methods for ProgressListener
 //----------------------------------------------------------------------
-  
+
 //----------------------------------------------------------------------
 /**
  * Callback to inform listeners about an action to start.
@@ -758,7 +758,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   {
     System.err.println("Starting '"+action_id+"' ("+max_value+" packages): ");
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Callback to inform listeners about progress going on. It is not
@@ -813,8 +813,8 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     System.out.println("  $dateformatter (java.text.SimpleDateFormat): helper object to format dates");
     System.out.println("For an example use the commandline switch '--printdefaulttemplate'.");
   }
-  
-  
+
+
 //----------------------------------------------------------------------
 /**
  * Prints the help messages
@@ -822,7 +822,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 
   public static void printHelp()
   {
-    System.out.println("GPSTool 0.8.0 - Communication between GPS-Devices and Computers via serial port");
+    System.out.println("GPSTool 0.5.2 - Communication between GPS-Devices and Computers via serial port");
     System.out.println("(c) 2000-2006 Christof Dallermassl\n");
     System.out.println("Usage: java org.dinopolis.gpstool.GPSTool [options]\n");
     System.out.println("Options:");
@@ -869,13 +869,13 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
 
 
 
-  
+
 //----------------------------------------------------------------------
 /**
  * Main method
  * @param arguments the command line arguments
  */
-  public static void main (String[] arguments) 
+  public static void main (String[] arguments)
   {
     new GPSTool().init(arguments);
   }
@@ -913,7 +913,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   * @param length the length for the final string (if the given string is longer,
   * it is shortened to the given length).
 	*/
-		public String pad(String string, int length) 
+		public String pad(String string, int length)
 		{
 			return(pad(string,length,' ',false));
 		}
@@ -926,7 +926,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   * it is shortened to the given length).
   * @param pad_char the character to pad with.
 	*/
-		public String pad(String string, int length, char pad_char) 
+		public String pad(String string, int length, char pad_char)
 		{
 			return(pad(string,length,pad_char,false));
 		}
@@ -941,16 +941,16 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
   * @param pad_char the character to pad with.
   * @param pad_begin pad on the begin of the string, not at the end
 	*/
-		public String pad(String string, int length, char pad_char, boolean pad_begin) 
+		public String pad(String string, int length, char pad_char, boolean pad_begin)
 		{
 			StringBuffer str = new StringBuffer(string);
 			if(length > string.length())
 			{
 				do
 				{
-					if(pad_begin) 
+					if(pad_begin)
 						str.insert(0,pad_char);
-					else 
+					else
 						str.append(pad_char);
 				}
 				while(str.length() < length);

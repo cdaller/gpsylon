@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2002 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -131,17 +131,17 @@ import org.dinopolis.util.servicediscovery.ServiceDiscovery;
  */
 
 public class Gpsylon
-  implements PropertyChangeListener, GpsylonKeyConstants, 
+  implements PropertyChangeListener, GpsylonKeyConstants,
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSYLON_VERSION = "0.5.2-pre2";
+  public final static String GPSYLON_VERSION = "0.5.2";
   private final static String GPSYLON_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
 
   protected HookManager hook_manager_;
-  
+
       /** the layer to display the maps */
   protected MultiMapLayer map_layer_;
   protected PositionLayer position_layer_;
@@ -150,7 +150,7 @@ public class Gpsylon
   protected LocationLayer location_layer_;
   protected ScaleLayer scale_layer_;
   protected GraticuleLayer graticule_layer_;
-    
+
   protected MapBean map_bean_;
 
   protected JMenuBar menu_bar_;
@@ -160,7 +160,7 @@ public class Gpsylon
 //  protected MapKeyHandler map_key_handler_;
   protected MapManager map_manager_;
   protected TrackManagerImpl track_manager_;
-  
+
   protected StatusBar status_bar_;
   protected Tachometer tacho_meter_;
 
@@ -173,15 +173,15 @@ public class Gpsylon
 
       /** the default center point */
   protected LatLonPoint current_gps_position_ = new LatLonPoint(47.06005f,15.47314f);
-  
+
   protected LatLonPoint current_map_position_ = current_gps_position_;
-  
+
       /** destination for gps track */
   protected LatLonPoint destination_position_;
 
 
   protected PropertyChangeSupport property_change_support_;
-  
+
       /** the resource bundle (configuration) */
   protected Resources resources_;
 
@@ -216,20 +216,20 @@ public class Gpsylon
 
       /** print warning to restart GPSylon if gps properties were changed */
   protected boolean print_gps_device_properties_warning_ = false;
-  
+
       /** the service discoverer (for plugin functionality) */
   public static ServiceDiscovery service_discovery_;
   public static RepositoryClassLoader repository_class_loader_;
 
       // -- action constants //
-  
+
       /** the name of the quit action */
   public final static String ACTION_QUIT = "quit";
 
       /** the name of the edit properties action */
   public final static String ACTION_EDIT_RESOURCES = "edit_resources";
 
-      // the name of mouse mode properties action 
+      // the name of mouse mode properties action
   public final static String ACTION_MOUSE_NAVIGATION_MODE = "mouse_navigation_mode";
   public final static String ACTION_MOUSE_POSITION_MODE = "mouse_position_mode";
   public final static String ACTION_MOUSE_DISTANCE_MODE = "mouse_distance_mode";
@@ -239,22 +239,22 @@ public class Gpsylon
   public final static String ACTION_ZOOM_OUT = "zoom_out";
   public final static String ACTION_CENTER_MAP = "center_map";
 
-      // gps mode actions 
+      // gps mode actions
   public final static String ACTION_FOLLOW_ME_MODE = "followme_mode";
   public final static String ACTION_SIMULATION_MODE = "simulation_mode";
 	 // MH
   public final static String ACTION_AUTOMATIC_MAP_DOWNLOAD_MODE = "automatic_map_download_mode";
 
-      // import actions 
+      // import actions
   public final static String ACTION_IMPORT_GPSDRIVE = "import_gpsdrive";
 
-      // track actions 
+      // track actions
   public final static String ACTION_DISPLAY_TRACK_MODE = "display_track_mode";
   public final static String ACTION_SAVE_TRACK_MODE = "save_track_mode";
   public final static String ACTION_CLEAR_TRACK = "clear_track";
   public final static String ACTION_LOAD_TRACK = "load_track";
 
-      // layer actions 
+      // layer actions
   public final static String ACTION_TRACK_LAYER_ACTIVATE = "track_layer_activate";
   public final static String ACTION_POSITION_LAYER_ACTIVATE = "position_layer_activate";
   public final static String ACTION_MAP_LAYER_ACTIVATE = "map_layer_activate";
@@ -278,8 +278,8 @@ public class Gpsylon
 
       // save as... actions
   public final static String ACTION_SAVE_AS_IMAGE_PLUGIN = "save_as_image_plugin";
-  
-      // other actions 
+
+      // other actions
   public final static String ACTION_RESET_TACHOMETER = "reset_tachometer";
   public final static String ACTION_SET_SCALE = "set_scale";
   public final static String ACTION_DOWNLOAD_MAP_POSITION = "download_map_position";
@@ -311,12 +311,12 @@ public class Gpsylon
   public final static String ACTION_SCALE_1000000 = "set_scale_1000000";
   public final static String ACTION_SCALE_2000000 = "set_scale_2000000";
   public final static String ACTION_SCALE_5000000 = "set_scale_5000000";
-  
+
       // test action
   public final static String ACTION_TESTACTION = "testaction";
 
       // the keys for gps property change events
-  
+
       /** the key for the current location from the gps device. The
        * value is a {@link com.bbn.openmap.LatLonPoint} object. */
   public final static String PROPERTY_KEY_GPS_LOCATION = GPSDataProcessor.LOCATION;
@@ -429,7 +429,7 @@ public class Gpsylon
     int splash_max_progress = resources_.getInt(KEY_SPLASH_MAX_PROGRESS,splash_progress);
     SplashScreen splash_screen = new SplashScreen(resources_.getIcon(KEY_SPLASH_IMAGE),30000,
                                                   0,splash_max_progress);
-    
+
     setLocale();
     initFilenames();
     splash_screen.setStatus("Processing command line arguments",splash_progress+=5);
@@ -474,7 +474,7 @@ public class Gpsylon
 //                                new TestAction(),
                           new ImportGpsDriveAction()
     };
-  
+
 
     action_store_ = ActionStore.getStore(ACTION_STORE_ID);
     action_store_.addActions(actions_);
@@ -485,10 +485,10 @@ public class Gpsylon
     main_frame_ = new JFrame("GPSylon V"+GPSYLON_VERSION);
         // Size the frame appropriately
     main_frame_.setSize(640, 480);
-    
-    main_frame_.addWindowListener(new WindowAdapter() 
+
+    main_frame_.addWindowListener(new WindowAdapter()
       {
-        public void windowClosing(WindowEvent e) 
+        public void windowClosing(WindowEvent e)
         {
               // TODO QuitAction!!!! FIXXME????
           try
@@ -501,12 +501,12 @@ public class Gpsylon
             System.err.println("WARNING: could not close connection to gps device: "
                                +gpse.getMessage());
           }
-          
+
           System.exit(0);
         }
       }
       );
-    
+
     checkLockFiles(resources_.getStringArray(KEY_LOCKFILES));
 
         // create hook_manager
@@ -514,11 +514,11 @@ public class Gpsylon
 
     splash_screen.setStatus("Connecting to gps device",splash_progress+=5);
     connectGPSDevice();
-    
+
     updateResources(null);
     updateWindowLocation();
 
- 
+
         // Create a MapBean
     splash_screen.setStatus("Create map component",splash_progress+=5);
     map_bean_ = new MapBean();
@@ -532,12 +532,12 @@ public class Gpsylon
 
         // create MouseModeManager
     mouse_mode_manager_ = new MouseModeManager();
-    
+
         // initialize data for plugins (PluginSupport):
     splash_screen.setStatus("Initialize modules for plugins",splash_progress+=5);
     hook_manager_.setMapManagerHook(map_manager_);
     hook_manager_.setMapNavigationHook(this);
-    hook_manager_.setStatusHook(this); 
+    hook_manager_.setStatusHook(this);
     hook_manager_.setMainFrame(main_frame_);
     hook_manager_.setMapComponent(map_bean_);
     hook_manager_.setPropertyChangeSupport(property_change_support_);
@@ -572,7 +572,7 @@ public class Gpsylon
     splash_screen.setStatus("Create status bar",splash_progress+=5);
     status_bar_ = new StatusBar(hook_manager_);
     main_frame_.getContentPane().add(status_bar_,BorderLayout.SOUTH);
-    
+
 
     logger_.info("Plugins in the following locations are used:");
     List plugin_dirs = repository_class_loader_.getRepositories();
@@ -587,16 +587,16 @@ public class Gpsylon
       }
     }
 
-    
+
         // instantiate, initialize and add plugins (gui and mousemodes)
     splash_screen.setStatus("Initialize plugins",splash_progress+=5);
     initializePlugins();
-    
+
     splash_screen.setStatus("Add graticule layer",splash_progress+=5);
     graticule_layer_ = new GraticuleLayer();
     graticule_layer_.initialize(resources_);
     map_bean_.add(graticule_layer_);
-    
+
     splash_screen.setStatus("Add scale layer",splash_progress+=5);
     scale_layer_ = new ScaleLayer();
     scale_layer_.initializePlugin(hook_manager_);
@@ -605,11 +605,11 @@ public class Gpsylon
     splash_screen.setStatus("Add shape layer",splash_progress+=5);
     shape_layer_ = new ShapeLayer(resources_);
     map_bean_.add(shape_layer_);
-    
+
 //     track_layer_ = new TrackLayer();
 //     track_layer_.initialize(hook_manager_);
 //     map_bean_.add(track_layer_);
-    
+
     splash_screen.setStatus("Add position layer",splash_progress+=5);
     position_layer_ = new PositionLayer(resources_);
     map_bean_.add(position_layer_);
@@ -622,7 +622,7 @@ public class Gpsylon
         // layer, otherwise no key events are received!
 //     map_key_handler_ = new MapKeyHandler(this);
 //     position_layer_.addKeyListener(map_key_handler_);
-    
+
     splash_screen.setStatus("Add location layer",splash_progress+=5);
     location_layer_ = new LocationLayer();
     location_layer_.initialize(resources_,this,this,main_frame_);
@@ -643,12 +643,12 @@ public class Gpsylon
     resources_.addPropertyChangeListener(KEY_POSITION_USE_ICON,position_layer_);
 //    resources_.addPropertyChangeListener(KEY_POSITION_FOLLOW_ME_RELATIVE_BORDER,position_layer_);
     resources_.addPropertyChangeListener(KEY_POSITION_FOLLOW_ME_PITCH,position_layer_);
-    
+
 //    addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, track_layer_);
 //    addPropertyChangeListener(PROPERTY_KEY_GPS_SPEED, track_layer_);
 //    addPropertyChangeListener(PROPERTY_KEY_GPS_ALTITUDE, track_layer_);
 //    addPropertyChangeListener(PROPERTY_KEY_CURRENT_SPEED, track_layer_);
-    
+
     addPropertyChangeListener(PROPERTY_KEY_GPS_LOCATION, status_bar_);
     addPropertyChangeListener(PROPERTY_KEY_CURRENT_HEADING, status_bar_);
 //     resources_.addPropertyChangeListener(KEY_ANGLE_FORMAT_LATLON, status_bar_);
@@ -671,7 +671,7 @@ public class Gpsylon
     resources_.addPropertyChangeListener(KEY_LOCATION_MARKER_TEXT_BACKGROUND_COLOR,location_layer_);
     resources_.addPropertyChangeListener(KEY_LOCATION_MARKER_TEXT_FONT_SIZE,location_layer_);
     resources_.addPropertyChangeListener(KEY_LOCATION_MARKER_SHOW_NAMES,location_layer_);
-    
+
     position_layer_.addPropertyChangeListener(this);
     position_layer_.setMapNavigationHook(this);
 
@@ -689,15 +689,15 @@ public class Gpsylon
 
         // add menu bar at the end (maybe some modules add actions to it!)
     menu_bar_ = MenuFactory.createMenuBar(resources_, action_store_);
-    
+
     addMouseModesToMenu();
     addGuiPluginsToMenu();
-    
+
     // disable the menus "mouse modes" and "plugins" if they are not used:
     disableMenuIfEmpty(resources_.getString(KEY_MENU_PLUGIN_LABEL));
     disableMenuIfEmpty(resources_.getString(KEY_MENU_MOUSE_MODE_LABEL));
     mouse_mode_manager_.activateMouseMode(resources_.getString(KEY_MOUSE_MODE_DEFAULT_MODE));
-    
+
     main_frame_.setJMenuBar(menu_bar_);
 
 //      map_bean_.add(graticule_layer_);
@@ -726,7 +726,7 @@ public class Gpsylon
         e.printStackTrace();
       }
     }
-    
+
 
     main_frame_.setVisible(true);
 //     main_frame_.getContentPane().requestFocus();
@@ -747,7 +747,7 @@ public class Gpsylon
 
   void loadResources()
   {
-    try 
+    try
     {
       resources_ =
         ResourceManager.getResources(Gpsylon.class,
@@ -756,7 +756,7 @@ public class Gpsylon
                                      Locale.getDefault());
       resources_.addPropertyChangeListener(this);
     }
-    catch (MissingResourceException mre) 
+    catch (MissingResourceException mre)
     {
 //       if (Debug.DEBUG)
 //         Debug.println("GPSMap", mre.toString()+'\n'+
@@ -801,8 +801,8 @@ public class Gpsylon
 //      System.out.println("maindir from resources: "+resources_.getString(KEY_FILE_MAINDIR));
     }
   }
-  
-  
+
+
 
 
 //----------------------------------------------------------------------
@@ -870,7 +870,7 @@ public class Gpsylon
       menu.setEnabled(false);
   }
 
-  
+
 //----------------------------------------------------------------------
 /**
  * Adds the mouse modes of the MouseModeManager to the menu bar (Menu
@@ -965,7 +965,7 @@ public class Gpsylon
     {
       args = new CommandArguments(arguments,valid_args);
     }
-    catch(CommandArgumentException cae) 
+    catch(CommandArgumentException cae)
     {
       cae.printStackTrace();
     }
@@ -990,7 +990,7 @@ public class Gpsylon
         resources_.setString(KEY_GPS_DEVICE_SERIAL_PORT,args.getStringValue("device"));
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_SERIAL);
       }
-      else 
+      else
       if (args.isSet("d"))
       {
         resources_.setString(KEY_GPS_DEVICE_SERIAL_PORT,args.getStringValue("d"));
@@ -1017,13 +1017,13 @@ public class Gpsylon
         resources_.setInt(KEY_GPS_DEVICE_SERIAL_SPEED,speed);
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_SERIAL);
       }
-      else 
+      else
       if (args.isSet("s"))
       {
         resources_.setInt(KEY_GPS_DEVICE_SERIAL_SPEED,args.getIntegerValue("s").intValue());
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_SERIAL);
       }
-      
+
       if (args.isSet("gpsfile") || args.isSet("f"))
       {
         String filename;
@@ -1042,9 +1042,9 @@ public class Gpsylon
           resources_.setString(KEY_GPS_DEVICE_DATA_FILENAME,filename);
           resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_FILE);
         }
-           
+
       }
-      else 
+      else
       if (args.isSet("f"))
       {
         resources_.setString(KEY_GPS_DEVICE_DATA_FILENAME,args.getStringValue("f"));
@@ -1058,7 +1058,7 @@ public class Gpsylon
           nmea_log_file = args.getStringValue("nmealogfile");
         else
           nmea_log_file = args.getStringValue("l");
-          
+
         if(nmea_log_file.equals("none"))
           resources_.setString(KEY_GPS_DEVICE_NMEALOGFILE,"");
         else
@@ -1070,7 +1070,7 @@ public class Gpsylon
         resources_.setString(KEY_GPS_DEVICE_GPSD_HOST,args.getStringValue("gpsdhost"));
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_FILE);
       }
-      else 
+      else
       if (args.isSet("g"))
       {
         resources_.setString(KEY_GPS_DEVICE_GPSD_HOST,args.getStringValue("g"));
@@ -1082,7 +1082,7 @@ public class Gpsylon
         resources_.setString(KEY_GPS_DEVICE_GPSD_PORT,args.getStringValue("gpsdport"));
         resources_.setString(KEY_GPS_DEVICE_MODE,VALUE_KEY_DEVICE_MODE_FILE);
       }
-      else 
+      else
       if (args.isSet("p"))
       {
         resources_.setString(KEY_GPS_DEVICE_GPSD_PORT,args.getStringValue("p"));
@@ -1151,14 +1151,14 @@ public class Gpsylon
     System.out.println();
     System.out.println("Have fun!");
   }
-  
+
 
 //----------------------------------------------------------------------
 /**
  * Callback method for property change events (ResourceBundle,
  * GPSDevice, etc.). Performes updates according to the values
  * of the PropertyChangeEvent.
- * 
+ *
  * @param event the property change event.
  */
 
@@ -1173,7 +1173,7 @@ public class Gpsylon
 //       Debug.println("GPSMap_propertychange","property change event: "
 // 		    +event.getPropertyName()+"="+event.getNewValue()
 // 		    +" from "+event.getSource());
-    
+
     if (event.getSource() == resources_)
     {
       updateResources(event.getPropertyName());
@@ -1193,7 +1193,7 @@ public class Gpsylon
 //       System.out.println("GPSMap: property location detected!");
 //       System.out.println(event.getPropertyName()+".equals("+GPSDataProcessor.LOCATION
 // 			 +")="+event.getPropertyName().equals(GPSDataProcessor.LOCATION));
-      
+
       if(event.getPropertyName().equals(GPSDataProcessor.LOCATION))
       {
         GPSPosition pos = (GPSPosition)event.getNewValue();
@@ -1257,7 +1257,7 @@ public class Gpsylon
           .debug("new destination: "+event.getNewValue());
 //         if(Debug.DEBUG)
 //           Debug.println("GPSMap_Destination","new destination: "+event.getNewValue());
-        
+
         if(simulation_mode_)
         {
           startSimulation(current_gps_position_,destination_position_);
@@ -1265,7 +1265,7 @@ public class Gpsylon
       }
     }
   }
-  
+
 
 //----------------------------------------------------------------------
 /**
@@ -1283,7 +1283,7 @@ public class Gpsylon
     if(!(gps_data_processor_ instanceof GPSSimulationDataProcessor))
       return;
 
-    GPSSimulationDataProcessor gps_processor = 
+    GPSSimulationDataProcessor gps_processor =
           (GPSSimulationDataProcessor)gps_data_processor_;
 
     GPSPosition gps_position = new GPSPosition();
@@ -1308,22 +1308,22 @@ public class Gpsylon
 
   protected void initializePluginArchitecture()
   {
-    
+
     if(resources_.getBoolean(KEY_DEVELOPMENT_PLUGINS_CLASSLOADER_USE_DEFAULT_CLASSLOADER))
           // use default classloader as well, so plugins are searched
           // in classpath (useful for development of plugins)
-      service_discovery_ = new ServiceDiscovery(true); 
+      service_discovery_ = new ServiceDiscovery(true);
     else
       // do not use the system loader (is used automatically by the RepositoryClassLoader)
       service_discovery_ = new ServiceDiscovery(false);
-    
+
     repository_class_loader_ = new RepositoryClassLoader();
-    
+
         // find paths that should be searched for plugin/service jars:
     String[] plugin_repositories = resources_.getStringArray(KEY_FILE_PLUGIN_DIRS);
     String repository;
     TreeSet repository_set = new TreeSet();
-    
+
         // add default system plugin directory ("plugins" in the same directory as my jar)
         // or parallel to "classes" directory:
 
@@ -1349,7 +1349,7 @@ public class Gpsylon
       {
         uee.printStackTrace();
       }
-      
+
       if(logger_plugin_.isDebugEnabled())
         logger_plugin_.debug("URL of my class :"+url+", dir of jar is "+dir_name);
 //       if(Debug.DEBUG)
@@ -1382,7 +1382,7 @@ public class Gpsylon
 //     if(Debug.DEBUG)
 //       Debug.println("plugin","Adding default plugin dir: "+repository);
     repository_set.add(repository);
-    
+
 
         // add plugin paths from resources:
     for(int count = 0; count < plugin_repositories.length; count++)
@@ -1521,7 +1521,7 @@ public class Gpsylon
       JMenuItem plugin_menu = plugin.getSubMenu();
       if(plugin_menu != null)
         addToPluginsMenu(plugin_menu);
-      
+
           // add main menu of plugin:
       plugin_menu = plugin.getMainMenu();
       if(plugin_menu != null)
@@ -1574,7 +1574,7 @@ public class Gpsylon
         unit_helper_.setHeadingFormat(resources_.getString(KEY_ANGLE_FORMAT_HEADING));
       }
     }
-    catch (MissingResourceException mre) 
+    catch (MissingResourceException mre)
     {
       System.err.println(mre.getMessage());
       System.exit(1);
@@ -1608,7 +1608,7 @@ public class Gpsylon
 //----------------------------------------------------------------------
 /**
  * Updates the locations according to the values set within the
- * resource file. 
+ * resource file.
  */
 
   protected void updateWindowLocation()
@@ -1632,7 +1632,7 @@ public class Gpsylon
 //----------------------------------------------------------------------
 /**
  * Updates the locations according to the values set within the
- * resource file. 
+ * resource file.
  */
 
   public void connectGPSDevice()
@@ -1645,7 +1645,7 @@ public class Gpsylon
           // logfile for nmea is set, protocol garmin, but tcp is set,
           // ...)
 //      System.out.println("GPSMode: "+gps_mode);
-      
+
       if(!gps_mode.equals(VALUE_KEY_DEVICE_MODE_NONE))
       {
         try
@@ -1661,7 +1661,7 @@ public class Gpsylon
           e.printStackTrace();
         }
       }
-      
+
       if(simulation_mode_)
       {
         if(logger_connection_.isDebugEnabled())
@@ -1759,19 +1759,19 @@ public class Gpsylon
             {
               String gpsd_hostname = resources_.getString(KEY_GPS_DEVICE_GPSD_HOST,"localhost");
               int gpsd_port = resources_.getInt(KEY_GPS_DEVICE_GPSD_PORT,2947);
-              
+
               gps_data_processor_ = new GPSNmeaDataProcessor();
               GPSDevice gps_device;
               Hashtable environment = new Hashtable();
               environment.put(GPSNetworkGpsdDevice.GPSD_HOST_KEY,gpsd_hostname);
               environment.put(GPSNetworkGpsdDevice.GPSD_PORT_KEY,new Integer(gpsd_port));
               gps_device = new GPSNetworkGpsdDevice();
-              
+
               // NMEA LOGFILE:
               String nmea_logfile = resources_.getString(KEY_GPS_DEVICE_NMEALOGFILE);
               if((nmea_logfile != null) && (nmea_logfile.length() > 0))
                 gps_data_processor_.addGPSRawDataListener(new GPSRawDataFileLogger(nmea_logfile));
-            
+
               gps_device.init(environment);
               gps_data_processor_.setGPSDevice(gps_device);
               if(logger_connection_.isDebugEnabled())
@@ -1781,14 +1781,14 @@ public class Gpsylon
 //                 Debug.println("GPSMap_GPSConnection","connecting to gpsdevice on host "
 //                               +gpsd_hostname+":"+gpsd_port);
               gps_data_processor_.open();
-              
+
             }
             else
             if(gps_mode.equals(VALUE_KEY_DEVICE_MODE_NONE))
             {
               gps_data_processor_ = null;
             }
-      
+
           // set me as gps data listener into the data processor:
       if(gps_data_processor_ != null)
       {
@@ -1822,7 +1822,7 @@ public class Gpsylon
       exc.printStackTrace();
     }
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Checks for the existence of any lock files (for serial devices,
@@ -1891,7 +1891,7 @@ public class Gpsylon
     return((float)unit_helper_.getDistance(distance_or_speed));
   }
 
-  
+
 //----------------------------------------------------------------------
 /**
  * Returns a String that contains the distance formatted corresponding
@@ -1924,7 +1924,7 @@ public class Gpsylon
 //----------------------------------------------------------------------
 /**
  * Returns a String that contains the unit of distances corresponding
- * to the settings in the resource file. 
+ * to the settings in the resource file.
  *
  * @return a String that contains the unit of distances corresponding
  * to the settings in the resource file.
@@ -1935,11 +1935,11 @@ public class Gpsylon
   {
     return(unit_helper_.getDistanceUnit());
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Returns a String that contains the unit for speed corresponding
- * to the settings in the resource file. 
+ * to the settings in the resource file.
  *
  * @return a String that contains the unit for speed corresponding
  * to the settings in the resource file.
@@ -1969,7 +1969,7 @@ public class Gpsylon
 //----------------------------------------------------------------------
 /**
  * Returns a String that contains the unit for altitude corresponding
- * to the settings in the resource file. 
+ * to the settings in the resource file.
  *
  * @return a String that contains the unit for altitude corresponding
  * to the settings in the resource file.
@@ -1982,8 +1982,8 @@ public class Gpsylon
   }
 
 
-  
-  
+
+
 //----------------------------------------------------------------------
 // The GPS Property Change Methods
 //----------------------------------------------------------------------
@@ -1995,7 +1995,7 @@ public class Gpsylon
  * @param listener the listener to be added.
  * @param key the key of the GPSdata to be observed.
  * @exception IllegalArgumentException if <code>key</code> or
- * <code>listener</code> is <code>null</code>. 
+ * <code>listener</code> is <code>null</code>.
  */
   public void addPropertyChangeListener(String key, PropertyChangeListener listener)
     throws IllegalArgumentException
@@ -2008,14 +2008,14 @@ public class Gpsylon
     property_change_support_.addPropertyChangeListener(key,listener);
   }
 
-  
+
 //----------------------------------------------------------------------
 /**
  * Adds a listener for GPS data change events.
  *
  * @param listener the listener to be added.
  * @exception IllegalArgumentException if <code>listener</code> is
- * <code>null</code>.  
+ * <code>null</code>.
  */
   public void addPropertyChangeListener(PropertyChangeListener listener)
     throws IllegalArgumentException
@@ -2027,7 +2027,7 @@ public class Gpsylon
       property_change_support_ = new PropertyChangeSupport(this);
     property_change_support_.addPropertyChangeListener(listener);
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Removes a listener for GPS data change events.
@@ -2035,7 +2035,7 @@ public class Gpsylon
  * @param listener the listener to be removed.
  * @param key the key of the GPSdata to be observed.
  * @exception IllegalArgumentException if <code>key<code> or
- * <code>listener</code> is <code>null</code>.  
+ * <code>listener</code> is <code>null</code>.
  */
   public void removePropertyChangeListener(String key, PropertyChangeListener listener)
     throws IllegalArgumentException
@@ -2056,7 +2056,7 @@ public class Gpsylon
  *
  * @param listener the listener to be removed.
  * @exception IllegalArgumentException if <code>listener</code> is
- * <code>null</code>.  
+ * <code>null</code>.
  */
   public void removePropertyChangeListener(PropertyChangeListener listener)
     throws IllegalArgumentException
@@ -2080,7 +2080,7 @@ public class Gpsylon
     return(current_gps_position_);
   }
 
-  
+
 //----------------------------------------------------------------------
 // The MapNavigation Hooks
 //----------------------------------------------------------------------
@@ -2100,7 +2100,7 @@ public class Gpsylon
     resources_.setDouble(KEY_CURRENT_MAP_POSITION_LONGITUDE,longitude);
   }
 
-  
+
 //----------------------------------------------------------------------
 /**
  * Rescales the map by a given factor. A factor of 1.0 leaves the map
@@ -2116,7 +2116,7 @@ public class Gpsylon
     map_bean_.setScale(new_scale);
     resources_.setDouble(KEY_MAP_SCALE,new_scale);
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Rescales the map by to a given scale.
@@ -2163,7 +2163,7 @@ public class Gpsylon
   {
     return(map_bean_.getProjection());
   }
-  
+
 //----------------------------------------------------------------------
   /**
    * Sets the projection of the map. This projection
@@ -2173,7 +2173,7 @@ public class Gpsylon
    * @param projection the projection that should be used from now on.
    * @see com.bbn.openmap.proj.Projection
    */
-  public void setMapProjection(Projection projection) 
+  public void setMapProjection(Projection projection)
   {
     map_bean_.setProjection(projection);
   }
@@ -2202,7 +2202,7 @@ public class Gpsylon
 /**
  * Returns an image of the current map bean.
  *
- * @return an image of the current map bean. 
+ * @return an image of the current map bean.
  */
   public BufferedImage getMapScreenShot()
   {
@@ -2211,7 +2211,7 @@ public class Gpsylon
     map_bean_.paint(g2);
     return (image);
   }
-  
+
 //----------------------------------------------------------------------
 // The Status Hooks
 //----------------------------------------------------------------------
@@ -2226,7 +2226,7 @@ public class Gpsylon
   {
     status_bar_.setStatus(message);
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Main Method
@@ -2251,7 +2251,7 @@ public class Gpsylon
 //     {
 //       System.out.println("Key pressed: "+KeyEvent.getKeyText(event.getKeyCode()));
 //     }
-    
+
 //   }
 
 
@@ -2267,18 +2267,18 @@ public class Gpsylon
     protected LatLonPoint old_point_;
     protected long old_time_;
     protected long test_old_time_;
-    
+
         /** every refresh_period_ milliseonds a new value is calculated */
     protected int refresh_period_;
 
     /** if true, use the speed from the gps receiver, if false, calculate speed from
 	distance and time. */
     protected boolean use_gps_speed_ = false;
-    
+
     /** if true, use the heading from the gps receiver, if false, calculate heading from
 	location. */
     protected boolean use_gps_heading_ = false;
-    
+
     public Tachometer()
     {
       refresh_period_ = resources_.getInt(KEY_TACHOMETER_REFRESH_TIME);
@@ -2311,7 +2311,7 @@ public class Gpsylon
    *
    * @param event the property change event.
    */
-  
+
     public void propertyChange(PropertyChangeEvent event)
     {
       if(event.getPropertyName().equals(Gpsylon.PROPERTY_KEY_GPS_HEADING))
@@ -2417,7 +2417,7 @@ public class Gpsylon
        * The Action that triggers for "edit_resources" events.
        */
 
-  class EditResourcesAction extends AbstractAction 
+  class EditResourcesAction extends AbstractAction
   {
         //----------------------------------------------------------------------
         /**
@@ -2457,7 +2457,7 @@ public class Gpsylon
        * The Action that triggers for "quit" events.
        */
 
-  class QuitAction extends AbstractAction 
+  class QuitAction extends AbstractAction
   {
 
         //----------------------------------------------------------------------
@@ -2475,7 +2475,7 @@ public class Gpsylon
         /**
          * Stores bounds and locations if this option was enabled and
          * exits.
-         * 
+         *
          * @param event the action event
          */
 
@@ -2497,8 +2497,8 @@ public class Gpsylon
           e.printStackTrace();
         }
       }
-      
-      
+
+
           // save window locaton and dimensions:
       Point location;
       Dimension dimension;
@@ -2562,7 +2562,7 @@ public class Gpsylon
        * The Action that triggers zoom in event.
        */
 
-  class ZoomInAction extends AbstractAction 
+  class ZoomInAction extends AbstractAction
   {
 
         //----------------------------------------------------------------------
@@ -2579,7 +2579,7 @@ public class Gpsylon
         /**
          * Stores bounds and locations if this option was enabled and
          * exits.
-         * 
+         *
          * @param event the action event
          */
 
@@ -2594,7 +2594,7 @@ public class Gpsylon
        * The Action that triggers zoom out event.
        */
 
-  class ZoomOutAction extends AbstractAction 
+  class ZoomOutAction extends AbstractAction
   {
 
         //----------------------------------------------------------------------
@@ -2611,7 +2611,7 @@ public class Gpsylon
         /**
          * Stores bounds and locations if this option was enabled and
          * exits.
-         * 
+         *
          * @param event the action event
          */
 
@@ -2626,7 +2626,7 @@ public class Gpsylon
        * The Action that triggers center map event
        */
 
-  class CenterMapAction extends AbstractAction 
+  class CenterMapAction extends AbstractAction
   {
 
     LatLongInputDialog input_dialog_;
@@ -2644,7 +2644,7 @@ public class Gpsylon
         //----------------------------------------------------------------------
         /**
          * Opens a dialog to enter coordinates for the new center of the map.
-         * 
+         *
          * @param event the action event
          */
 
@@ -2688,7 +2688,7 @@ public class Gpsylon
        * The Action that triggers follow me mode.
        */
 
-  class ResetTachometerAction extends AbstractAction 
+  class ResetTachometerAction extends AbstractAction
   {
 
         //----------------------------------------------------------------------
@@ -2704,7 +2704,7 @@ public class Gpsylon
         //----------------------------------------------------------------------
         /**
          * Resets the values from the tachometer.
-         * 
+         *
          * @param event the action event
          */
 
@@ -2719,7 +2719,7 @@ public class Gpsylon
        * The Action that triggers simulation mode.
        */
 
-  class SimulationModeAction extends AbstractAction 
+  class SimulationModeAction extends AbstractAction
   {
 
         //----------------------------------------------------------------------
@@ -2736,7 +2736,7 @@ public class Gpsylon
         /**
          * Stores bounds and locations if this option was enabled and
          * exits.
-         * 
+         *
          * @param event the action event
          */
 
@@ -2759,7 +2759,7 @@ public class Gpsylon
        * The Action that imports data from gpsdrive.
        */
 
-  class ImportGpsDriveAction extends AbstractAction 
+  class ImportGpsDriveAction extends AbstractAction
   {
 
         //----------------------------------------------------------------------
@@ -2777,20 +2777,20 @@ public class Gpsylon
    * Reads the map_koord.txt file from gpsdrive and copies its
    * entries to the maps description file (adding height and
    * width).
-   * 
+   *
    * @param event the action event
    */
-  
+
     public void actionPerformed(ActionEvent event)
     {
       logger_.debug("import_gpsdrive action called");
       String home_dir = System.getProperty("user.home");
       String gpsdrive_dir = home_dir + File.separator + ".gpsdrive";
-      
+
       String import_filename = gpsdrive_dir + File.separator + "map_koord.txt";
 
       BufferedReader map_reader;
-    
+
       try
       {
         map_reader= new BufferedReader(new FileReader(import_filename));
@@ -2813,7 +2813,7 @@ public class Gpsylon
         StringTokenizer tokenizer;
         String full_filename;
         MapInfo info;
-        
+
         while ((line = map_reader.readLine()) != null)
         {
           linenumber++;
@@ -2835,7 +2835,7 @@ public class Gpsylon
               latitude_string = latitude_string.replace(',','.');
               longitude_string = longitude_string.replace(',','.');
               scale_string = scale_string.replace(',','.');
-              
+
               info = new MapInfo(full_filename,
                        new Double(latitude_string).doubleValue(),
                        new Double(longitude_string).doubleValue(),
@@ -2860,7 +2860,7 @@ public class Gpsylon
 														+"Ignoring line '"+line+"'");
             }
           }
-        }      
+        }
         map_reader.close();
       }
       catch(IOException ioe)
@@ -2875,7 +2875,7 @@ public class Gpsylon
        * The Action that triggers the setting of the scale.
        */
 
-  class SetScaleAction extends AbstractAction 
+  class SetScaleAction extends AbstractAction
   {
 
         //----------------------------------------------------------------------
@@ -2891,7 +2891,7 @@ public class Gpsylon
         //----------------------------------------------------------------------
         /**
          * Sets the scale of the map.
-         * 
+         *
          * @param event the action event
          */
 
@@ -2914,7 +2914,7 @@ public class Gpsylon
        * jpg,png, svg,...)
        */
 
-  class SaveAsImagePluginAction extends AbstractAction 
+  class SaveAsImagePluginAction extends AbstractAction
   {
     JFileChooser file_chooser_;
     Object[] plugins_;
@@ -2932,7 +2932,7 @@ public class Gpsylon
             // (do not use a string here, so the compiler checks for typos)
       plugins_ = service_discovery_.getServices(
         org.dinopolis.gpstool.plugin.WriteImagePlugin.class);
-      
+
       if(logger_plugin_.isDebugEnabled())
         logger_plugin_.debug("plugins for writing image detected: "+Debug.objectToString(plugins_));
 //       if(Debug.DEBUG)
@@ -2947,7 +2947,7 @@ public class Gpsylon
         //----------------------------------------------------------------------
         /**
          * Saves the image as the chosen file format
-         * 
+         *
          * @param event the action event
          */
 
@@ -3020,11 +3020,11 @@ public class Gpsylon
        * The Action that pans left/right/up/down for the given factors.
        */
 
-  class PanAction extends AbstractAction 
+  class PanAction extends AbstractAction
   {
     float pan_horiz_;
     float pan_vertical_;
-    
+
         //----------------------------------------------------------------------
         /**
          * The Default Constructor.
@@ -3040,7 +3040,7 @@ public class Gpsylon
         //----------------------------------------------------------------------
         /**
          * Open the frame to show gps data
-         * 
+         *
          * @param event the action event
          */
 
@@ -3055,10 +3055,10 @@ public class Gpsylon
        * The Action that sets the scale to the given factor.
        */
 
-  class ScaleAction extends AbstractAction 
+  class ScaleAction extends AbstractAction
   {
     float scale_;
-    
+
         //----------------------------------------------------------------------
         /**
          * The Default Constructor.
@@ -3073,7 +3073,7 @@ public class Gpsylon
         //----------------------------------------------------------------------
         /**
          * Open the frame to show gps data
-         * 
+         *
          * @param event the action event
          */
 
@@ -3090,7 +3090,7 @@ public class Gpsylon
 
   class PrintMapAction extends AbstractAction //implements java.awt.print.Printable
   {
-    
+
         //----------------------------------------------------------------------
         /**
          * The Default Constructor.
@@ -3104,7 +3104,7 @@ public class Gpsylon
         //----------------------------------------------------------------------
         /**
          * Open the frame to show gps data
-         * 
+         *
          * @param event the action event
          */
 
@@ -3148,13 +3148,13 @@ public class Gpsylon
        //----------------------------------------------------------------------
        /**
         * Ouputs some test message
-        * 
+        *
         * @param event the action event
         */
 
    public void actionPerformed(ActionEvent event)
    {
-     
+
    }
 
    public void propertyChange(PropertyChangeEvent event)
@@ -3175,7 +3175,7 @@ public class Gpsylon
 //        * The Action for testing
 //        */
 
-//   class TestAction extends AbstractAction 
+//   class TestAction extends AbstractAction
 //   {
 
 //         //----------------------------------------------------------------------
@@ -3191,7 +3191,7 @@ public class Gpsylon
 //         //----------------------------------------------------------------------
 //         /**
 //          * Ouputs some test message
-//          * 
+//          *
 //          * @param event the action event
 //          */
 

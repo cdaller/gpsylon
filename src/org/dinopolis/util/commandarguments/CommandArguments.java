@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2000 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -24,7 +24,8 @@
 package org.dinopolis.util.commandarguments;
 
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -53,7 +54,7 @@ import java.util.TreeMap;
  * <P>
  * There are options that stand just per se. Other options require to be
  * followed by a value (a number or a string). E.g. <code>--filename
- * /home/username/log.txt</code> or <code>--port 1234</code>. 
+ * /home/username/log.txt</code> or <code>--port 1234</code>.
  *
  * @author Christof Dallermassl <cdaller@iicm.edu>
  * @version $Id$
@@ -64,7 +65,7 @@ public class CommandArguments
   Map args_;
   Map valid_args_;
   /** here, the arguments, which have no leading "-" or "--" are saved. */
-  Vector real_arguments_;
+  List real_arguments_;
 
 //---------------------------------------------------------------------
 /**
@@ -74,12 +75,12 @@ public class CommandArguments
  * @exception CommandArgumentException thrown, if one of the given
  *   argument is not in valid_args.
  */
-  public CommandArguments (Vector args, String[] valid_args)
+  public CommandArguments (List args, String[] valid_args)
     throws CommandArgumentException
   {
-    this (vectorToStringArray(args),valid_args);
+    this ((String[])args.toArray(new String[args.size()]),valid_args);
   }
- 
+
 //---------------------------------------------------------------------
 /**
  * Format of valid_args:
@@ -102,7 +103,7 @@ public class CommandArguments
   {
     valid_args_ = new TreeMap ();
     args_ = new TreeMap ();
-    real_arguments_ = new Vector ();
+    real_arguments_ = new ArrayList ();
 
     String valid_arg;
     int last_pos;
@@ -160,7 +161,7 @@ public class CommandArguments
           {
             throw new InvalidCommandArgumentFormatException (
               "Invalid number format given for argument '"+argument
-              +"'.",arg_count-1); 
+              +"'.",arg_count-1);
           }
           catch (ArrayIndexOutOfBoundsException aiobe)
           {
@@ -210,7 +211,7 @@ public class CommandArguments
             {
               throw new InvalidCommandArgumentFormatException (
                 "Invalid number format given for argument '"+argument
-                +"'.",arg_count-1); 
+                +"'.",arg_count-1);
             }
             catch (ArrayIndexOutOfBoundsException e)
             {
@@ -221,7 +222,7 @@ public class CommandArguments
         }
       }
       else
-        real_arguments_.addElement (given_argument);
+        real_arguments_.add(given_argument);
     }
   }
 
@@ -232,7 +233,7 @@ public class CommandArguments
  *
  * @param option_name the name of the option to be checked.
  * @return <code>true</code> when the given option (not argument!) was
- * specified.  
+ * specified.
  */
   public boolean isSet(String option_name)
   {
@@ -297,14 +298,14 @@ public class CommandArguments
 
 //---------------------------------------------------------------------
 /**
- * Returns the argument (not option!) at the given position. 
+ * Returns the argument (not option!) at the given position.
  *
  * @param position the position of the argument (not option!).
- * @return the argument at the given position.  
+ * @return the argument at the given position.
  */
   public String getArgumentAt(int position)
   {
-    return ((String)real_arguments_.elementAt(position));
+    return (String)real_arguments_.get(position);
   }
 
 //---------------------------------------------------------------------
@@ -313,9 +314,9 @@ public class CommandArguments
  *
  * @return all argument (not options!).
  */
-  public Vector getArguments()
+  public List getArguments()
   {
-    return ((Vector)real_arguments_.clone());
+    return new ArrayList(real_arguments_);
   }
 
 //---------------------------------------------------------------------
@@ -328,15 +329,6 @@ public class CommandArguments
   {
     return (real_arguments_.size());
   }
-
-      /* needed to call one CommandArgument constructor from the other! */
-  private static String[] vectorToStringArray (Vector vector)
-  {
-    String[] array = new String[vector.size()];
-    vector.copyInto (array);
-    return (array);
-  }
-
 }
 
 

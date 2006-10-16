@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2001 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -40,10 +40,10 @@ import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
 /**
  * This class is interpreting NMEA data from a GPSDevice (serial gps-receivier, file containing gps
  * data, ...) and provides this information (heading and location, etc.).
- * 
+ *
  * @author Christof Dallermassl
  * @version $Revision$
- * 
+ *
  * Contributions:
  * <ul>
  * <li>Didier Donsez <didier.donsez@imag.fr> added hanlding of VTG and HTD nmea sentences</li>
@@ -74,7 +74,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 
   boolean ignore_invalid_checksum_ = false;
   boolean print_ignore_warning_ = true;
-  
+
   List gps_infos_;
 
   // ----------------------------------------------------------------------
@@ -88,7 +88,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   // ----------------------------------------------------------------------
   /**
    * Default constructor.
-   * 
+   *
    * @param delay_time the time between two NMEA messages are read (may be used for reading NMEA
    *          files slower) in milliseconds.
    */
@@ -101,7 +101,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   // ----------------------------------------------------------------------
   /**
    * Sets the deley time between reading two NMEA messages.
-   * 
+   *
    * @param delay_time the time between two NMEA messages are read (may be used for reading NMEA
    *          files slower) in milliseconds.
    */
@@ -113,7 +113,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   // ----------------------------------------------------------------------
   /**
    * Returns true if invalid NMEA checksums should be ignored.
-   * 
+   *
    * @return true if invalid NMEA checksums should be ignored.
    */
   public boolean isIgnoreInvalidChecksum()
@@ -125,7 +125,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Set if invalid nmea checksums should be ignored. If set to true, invalid checksums are ignored
    * (may be used for broken nmea devices).
-   * 
+   *
    * @param ignore_invalid_checksum if set to true, invalid checksums are ignored.
    */
   public void setIgnoreInvalidChecksum(boolean ignore_invalid_checksum)
@@ -137,7 +137,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Starts the data processing. The Data Processor connects to the GPSDevice and starts retrieving
    * information.
-   * 
+   *
    * @exception if an error occured on connecting.
    */
   public void open() throws GPSException
@@ -164,7 +164,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   // ----------------------------------------------------------------------
   /**
    * Stopps the data processing. The Data Processor disconnects from the GPSDevice.
-   * 
+   *
    * @exception if an error occured on disconnecting.
    */
   public void close() throws GPSException
@@ -179,7 +179,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Returns information about the gps connected (name of device, type of connection, etc.) This
    * information is for display to the user, not for further processing (may change without notice).
-   * 
+   *
    * @return information about the gps connected.
    */
   public String[] getGPSInfo()
@@ -188,7 +188,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     if(gps_infos_ == null)
     {
       info = new String[] {"Unknown NMEA GPS"};
-    } 
+    }
     else
     {
       info = (String[]) gps_infos_.toArray(new String[gps_infos_.size()]);
@@ -206,7 +206,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
    * Requests the gps device to send the current position/heading/etc. periodically. This
    * implementation ignores the period set as all known NMEA devices send one sentence set every
    * second.
-   * 
+   *
    * @param period time in milliseconds between periodically sending position/heading/etc. This
    *          value may be changed by the gps device, so do not rely on the value given!
    * @return the period chosen by the gps device or 0 if the gps device is unable to send
@@ -222,7 +222,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Requests the gps device to stop to send the current position/heading/etc. periodically. This
    * implementation does nothing, as most NMEA devices cannot be stopped.
-   * 
+   *
    * @throws GPSException if the operation threw an exception (e.g. communication problem).
    */
   public void stopSendPositionPeriodically() throws GPSException
@@ -264,8 +264,9 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
         {
           if (data == -1) // EOF
           {
-            System.err.println("End of Stream (File) reached!");
-            return;
+            //System.err.println("End of Stream (File) reached!");
+            continue; // ignore end of stream, just go on!
+            //return;
           }
           if (count >= MAX_NMEA_MESSAGE_LENGTH - 1)
           {
@@ -361,7 +362,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Reads garbage from the input stream and tries to find the beginning of the next valid nmea
    * sentence (by searching the next CR/LF pair).
-   * 
+   *
    * @return true if everything was fine, false otherwise (e.g. if the end of the input stream was
    *         reached!)
    */
@@ -377,8 +378,9 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
         {
           if (data == -1)
           {
-            System.err.println("End of Stream (File) reached!");
-            return (false);
+            //System.err.println("End of Stream (File) reached!");
+            continue; // ignore end of stream, just go on (this is an rxtx 2.1.7 bug (?) on windows)
+            //return (false);
           }
         }
         data = in_stream_.read(); // char after CR
@@ -406,7 +408,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   // ----------------------------------------------------------------------
   /**
    * Processes the different nmea sentences.
-   * 
+   *
    * @param sentence a NMEA sentence.
    */
   protected void processNmeaSentence(NMEA0183Sentence sentence)
@@ -460,7 +462,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       processRME(sentence);
       return;
     }
-    
+
     if (id.equals("RFTXT"))
     {
       processRFTXT(sentence);
@@ -472,7 +474,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Processes a GLL nmea sentences and fires the specific events about the information contained in
    * this sentence (property name GPSDataProcessor.LOCATION).
-   * 
+   *
    * @param sentence a NMEA sentence.
    */
   protected void processGLL(NMEA0183Sentence sentence)
@@ -507,7 +509,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
    * Processes a DBT (Depth below Transducer) nmea sentences and fires the specific events about the
    * information contained in this sentence (property name GPSDataProcessor.DEPTH) (depth in
    * meters!)
-   * 
+   *
    * @param sentence a NMEA sentence.
    */
   protected void processDBT(NMEA0183Sentence sentence)
@@ -534,7 +536,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
    * Processes a GGA nmea sentences and fires the specific events about the information contained in
    * this sentence (property name GPSDataProcessor.LOCATION, GPSDataProcessor.ALTITUDE,
    * GPSDataProcessor.NUMBER_SATELLITES).
-   * 
+   *
    * @param sentence a NMEA sentence.
    */
   protected void processGGA(NMEA0183Sentence sentence)
@@ -580,7 +582,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Processes a RMC nmea sentences and fires the specific events about the information contained in
    * this sentence (property name GPSDataProcessor.LOCATION, GPSDataProcessor.SPEED).
-   * 
+   *
    * @param sentence a NMEA sentence.
    */
   protected void processRMC(NMEA0183Sentence sentence)
@@ -626,7 +628,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
    * event is fired only on occurrence of the last message of the block. Missing messages of a block
    * are detected and the whole block is thrown away in the case of incorrect occurrence of
    * messages.
-   * 
+   *
    * @param sentence a NMEA sentence.
    */
   protected void processGSV(NMEA0183Sentence sentence)
@@ -699,7 +701,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Processes a HDG nmea sentences and fires the specific events about the information contained in
    * this sentence (property name GPSDataProcessor.HEADING).
-   * 
+   *
    * @param sentence a NMEA sentence.
    */
   protected void processHDG(NMEA0183Sentence sentence)
@@ -724,7 +726,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Processes a RME nmea sentences (garmin specific) and fires the specific events about the
    * information contained in this sentence (property name GPSDataProcessor.EPE).
-   * 
+   *
    * @param sentence a NMEA sentence.
    */
   protected void processRME(NMEA0183Sentence sentence)
@@ -755,9 +757,9 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Processes a VTG nmea sentences and fires the specific events about the information contained in
    * this sentence (property name GPSDataProcessor.SPEED).
-   * 
+   *
    * @param sentence a NMEA sentence.
-   * 
+   *
    * @link http://home.mira.net/~gnb/gps/nmea.html#gpvtg
    */
 
@@ -803,9 +805,9 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Processes a HDT nmea sentences and fires the specific events about the information contained in
    * this sentence (property name GPSDataProcessor.HEADING).
-   * 
+   *
    * @param sentence a NMEA sentence.
-   * 
+   *
    * @link http://home.mira.net/~gnb/gps/nmea.html#gphdt
    */
   protected void processHDT(NMEA0183Sentence sentence)
@@ -825,7 +827,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
         nfe.printStackTrace();
     }
   }
-  
+
   protected void processRFTXT(NMEA0183Sentence sentence)
   {
     if (logger_nmea_.isDebugEnabled())
@@ -863,7 +865,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Returns the last received position from the GPSDevice or <code>null</code> if no position was
    * retrieved until now.
-   * 
+   *
    * @return the position from the GPSDevice.
    */
 
@@ -876,7 +878,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Returns the last received position from the GPSDevice or <code>null</code> if no position was
    * retrieved until now.
-   * 
+   *
    * @return the position from the GPSDevice.
    */
 
@@ -913,7 +915,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
    * value (degrees). NMEA uses e.g. 4916.45 to represent 49 degrees, 16.45 minutes (latitude) or
    * 02311.12 for 23 degrees 11.12 minutes (longitude). So this method converts e.g. 4916.45 to the
    * WGS84 system representation (degrees only) which is 49.27416 degrees.
-   * 
+   *
    * @param nmea_pos the NMEA string representation for global postition.
    * @exception NumberFormatException if the String could not be converted.
    */
@@ -934,7 +936,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Returns the last received heading (direction) from the GPSDevice or <code>-1.0</code> if no
    * heading was retrieved until now.
-   * 
+   *
    * @return the heading from the GPSDevice.
    */
   public float getHeading()
@@ -954,7 +956,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   /**
    * Returns the last received heading (direction) from the GPSDevice or <code>-1.0</code> if no
    * heading was retrieved until now.
-   * 
+   *
    * @return the heading from the GPSDevice.
    */
   protected float getHeading(NMEA0183Sentence sentence)

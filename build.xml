@@ -12,7 +12,7 @@ Christof Dallermassl (christof@dallermassl.at)
   <!-- initialize properties (this is done as a target to allow conditionals -->
   <!-- (that does not seem to work outside of a target!) -->
   <target name="init">
-    <property name="release_version" value="0.5.2-pre2"/>
+    <property name="release_version" value="0.5.2"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib/java"/>
@@ -33,7 +33,7 @@ Christof Dallermassl (christof@dallermassl.at)
     <property name="java_encoding" value="ISO-8859-1"/>
     <property name="java_deprecation" value="on"/>
     <tstamp/> <!-- needed for ${TODAY} -->
-    
+
     <!-- create or not create a property, depending on the value of use_http_proxy -->
     <condition property="internal_use_proxy">
       <istrue value="${use_http_proxy}"/>
@@ -52,7 +52,7 @@ Christof Dallermassl (christof@dallermassl.at)
       <include name="velocity-dep-1.3.1.jar" />
       <include name="log4j-1.2.8.jar" />
     </patternset>
-    
+
     <!-- patternset including all required external library jar files for gpstool -->
     <patternset id="gpstool.lib.patternset">
       <include name="gnu-regexp-1.1.3.jar" />
@@ -61,7 +61,7 @@ Christof Dallermassl (christof@dallermassl.at)
       <include name="velocity-dep-1.3.1.jar" />
       <include name="log4j-1.2.8.jar" />
     </patternset>
-    
+
     <!-- patternset including all required external library jar files for gpsinput -->
     <patternset id="gpsinput.lib.patternset">
       <include name="gnu-regexp-1.1.3.jar" />
@@ -93,9 +93,9 @@ Christof Dallermassl (christof@dallermassl.at)
       <include name="trackchart/${dist_dir}/**/*.jar" />
     </patternset>
   </target>
-  
+
   <!-- patternset of gpstool files needed to compile the distribution -->
-  
+
   <patternset id="compile.gpsylon-files">
     <include name="org/dinopolis/**/*.java"/>
     <exclude name="org/dinopolis/gpstool/GPSTool.java"/>
@@ -103,7 +103,7 @@ Christof Dallermassl (christof@dallermassl.at)
     <exclude name="org/dinopolis/util"/>
     <exclude name="**/CVS/**/*.java"/>
   </patternset>
-  
+
   <patternset id="compile.gpstool-files">
     <include name="org/dinopolis/gpstool/GPSTool.java"/>
     <include name="org/dinopolis/gpstool/gpx/ReadGPX.java"/>
@@ -131,20 +131,20 @@ Christof Dallermassl (christof@dallermassl.at)
       The following targets are available:
       - help: shows all available targets of this build.xml file
       - run: runs the GPSylon application
-      
+
       - compile: compiles the util and the gpsinput library, and the GPSTool and GPSylon applications
       - compile_util: compiles the gpsinput library
       - compile_gpsinput: compiles the gpsinput library
       - compile_gpstool: compiles the GPSTool application
       - compile_gpsylon: compiles the GPSylon application
       - compile_plugins: compiles all plugins
-      
+
       - clean_all: deletes the '${target_class_dir}','${dist_dir}' and '${javadoc_dir}' directory.
       - clean: removes all compiled classes in the '${target_class_dir}' directory.
       - clean_dist: deletes the '${dist_dir}' directory.
       - clean_javadoc: deletes the '${javadoc_dir}' directory.
 
-      
+
       - jars: creates the jar files needed to execute GPSTool or GPSylon.
       - jar_util: compiles and packages the gpsinput library
       - jar_gpsinput: compiles and packages the gpsinput library
@@ -169,12 +169,12 @@ Christof Dallermassl (christof@dallermassl.at)
   <!-- compile_util target -->
   <target name="compile_util" depends="init">
     <mkdir dir="${target_class_dir}"/>
-    <javac srcdir="${source_dir}" 
+    <javac srcdir="${source_dir}"
       destdir="${target_class_dir}"
       classpathref="compile_util_classpath"
       debug="on"
       deprecation="on"
-      source="${java_source_version}" 
+      source="${java_source_version}"
       target="${java_target_version}"
       encoding="${java_encoding}"
       >
@@ -184,18 +184,18 @@ Christof Dallermassl (christof@dallermassl.at)
           <include name="log4j-1.2.8.jar" />
         </fileset>
       </classpath>
-      <patternset refid="compile.util-files"/> 
+      <patternset refid="compile.util-files"/>
     </javac>
   </target>
 
   <!-- compile_gpsinput target -->
   <target name="compile_gpsinput" depends="init,compile_util,jar_util"> <mkdir dir="${target_class_dir}"/>
-    <javac srcdir="${source_dir}" 
+    <javac srcdir="${source_dir}"
            destdir="${target_class_dir}"
            classpathref="compile_gpsinput-classpath"
            debug="on"
            deprecation="${java_deprecation}"
-           source="${java_source_version}" 
+           source="${java_source_version}"
            target="${java_target_version}"
            encoding="${java_encoding}"
       >
@@ -211,16 +211,16 @@ Christof Dallermassl (christof@dallermassl.at)
       <patternset refid="compile.gpsinput-files"/>
     </javac>
   </target>
-  
+
   <!-- compile_gpstool target -->
-  <target name="compile_gpstool" depends="init,compile_util,jar_util,compile_gpsinput,jar_gpsinput"> 
+  <target name="compile_gpstool" depends="init,compile_util,jar_util,compile_gpsinput,jar_gpsinput">
     <mkdir dir="${target_class_dir}"/>
-    <javac srcdir="${source_dir}" 
+    <javac srcdir="${source_dir}"
            destdir="${target_class_dir}"
            classpathref="compile_gpstool-classpath"
            debug="on"
            deprecation="${java_deprecation}"
-           source="${java_source_version}" 
+           source="${java_source_version}"
            target="${java_target_version}"
            encoding="${java_encoding}"
       >
@@ -238,16 +238,16 @@ Christof Dallermassl (christof@dallermassl.at)
       <patternset refid="compile.gpstool-files"/>
     </javac>
   </target>
-  
+
   <!-- compile_gpsylon target -->
   <target name="compile_gpsylon" depends="init,jar_util,jar_gpsinput">
     <mkdir dir="${target_class_dir}"/>
-    <javac srcdir="${source_dir}" 
+    <javac srcdir="${source_dir}"
       destdir="${target_class_dir}"
       classpathref="compile_gpsylon_classpath"
       debug="on"
 			deprecation="${java_deprecation}"
-      source="${java_source_version}" 
+      source="${java_source_version}"
       target="${java_target_version}"
       encoding="${java_encoding}"
       >
@@ -263,11 +263,11 @@ Christof Dallermassl (christof@dallermassl.at)
       <patternset refid="compile.gpsylon-files"/>
     </javac>
   </target>
-  
+
   <!-- compile target -->
   <target name="compile" depends="init,compile_gpsylon">
   </target>
-  
+
   <!-- clean_all target -->
   <target name="clean_all" depends="init,clean,clean_dist,clean_javadoc">
   </target>
@@ -367,8 +367,8 @@ Christof Dallermassl (christof@dallermassl.at)
       </fileset>
     </path>
     <pathconvert pathsep=" " dirsep="/" property="util.dist.lib.classpath" refid="util.dist.classpath">
-      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/> 
-      <map from="${user.dir}" to="."/> 
+      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/>
+      <map from="${user.dir}" to="."/>
     </pathconvert>
 
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
@@ -383,7 +383,7 @@ Christof Dallermassl (christof@dallermassl.at)
           <attribute name="Specification-Version" value="${release_version}" />
           <attribute name="Specification-Vendor" value="Christof Dallermassl" />
           <attribute name="Implementation-Title" value="Dinopolis Util" />
-          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" />
           <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
         </section>
       </manifest>
@@ -392,8 +392,8 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="org/dinopolis/util/**/*.class"/>
       </fileset>
     </jar>
-  </target>  
- 
+  </target>
+
   <!-- jar_gpsinput target -->
   <target name="jar_gpsinput" depends="compile_gpsinput">
     <!-- create a property holding the Class-Path for the manifest -->
@@ -404,8 +404,8 @@ Christof Dallermassl (christof@dallermassl.at)
       <pathelement location="dinopolis-util-${release_version}.jar"/>
     </path>
     <pathconvert pathsep=" " dirsep="/" property="gpsinput.dist.lib.classpath" refid="gpsinput.dist.classpath">
-      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/> 
-      <map from="${user.dir}" to="."/> 
+      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/>
+      <map from="${user.dir}" to="."/>
     </pathconvert>
 
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
@@ -420,7 +420,7 @@ Christof Dallermassl (christof@dallermassl.at)
           <attribute name="Specification-Version" value="${release_version}" />
           <attribute name="Specification-Vendor" value="Christof Dallermassl" />
           <attribute name="Implementation-Title" value="gpsinput library" />
-          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" />
           <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
         </section>
       </manifest>
@@ -442,10 +442,10 @@ Christof Dallermassl (christof@dallermassl.at)
       <pathelement location="gpsinput-${release_version}.jar"/>
     </path>
     <pathconvert pathsep=" " dirsep="/" property="gpstool.dist.lib.classpath" refid="gpstool.dist.classpath">
-      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/> 
-      <map from="${user.dir}" to="."/> 
+      <map from="${user.dir}${file.separator}${lib_dir}" to="lib/java"/>
+      <map from="${user.dir}" to="."/>
     </pathconvert>
-    
+
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
     <!-- properties files and the images ! -->
     <jar jarfile="gpstool-${release_version}.jar">
@@ -459,11 +459,11 @@ Christof Dallermassl (christof@dallermassl.at)
           <attribute name="Specification-Version" value="${release_version}" />
           <attribute name="Specification-Vendor" value="Christof Dallermassl" />
           <attribute name="Implementation-Title" value="GPSTool" />
-          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" />
           <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
         </section>
       </manifest>
-      
+
       <fileset dir="${target_class_dir}">
         <include name="org/dinopolis/gpstool/GPSTool.class"/>
         <include name="org/dinopolis/gpstool/GPSTool$*.class"/>
@@ -487,10 +487,10 @@ Christof Dallermassl (christof@dallermassl.at)
       <pathelement location="gpsinput-${release_version}.jar"/>
     </path>
     <pathconvert pathsep=" " dirsep="/" property="gpsylon.dist.lib.classpath" refid="gpsylon.dist.classpath">
-      <map from="${user.dir}/${lib_dir}" to="lib/java"/> 
-      <map from="${user.dir}" to="."/> 
+      <map from="${user.dir}/${lib_dir}" to="lib/java"/>
+      <map from="${user.dir}" to="."/>
     </pathconvert>
-    
+
     <!-- build the jar file: Don't forget the MANIFEST.MF the -->
     <!-- properties files and the images ! -->
     <jar jarfile="gpsylon-${release_version}.jar">
@@ -504,11 +504,11 @@ Christof Dallermassl (christof@dallermassl.at)
           <attribute name="Specification-Version" value="${release_version}" />
           <attribute name="Specification-Vendor" value="Christof Dallermassl" />
           <attribute name="Implementation-Title" value="Gpsylon" />
-          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" />
           <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
         </section>
       </manifest>
-      
+
       <fileset dir="${aux_dir}">
         <exclude name="**/*.xcf"/>
       </fileset>
@@ -529,7 +529,7 @@ Christof Dallermassl (christof@dallermassl.at)
   <!-- jars target -->
   <target name="jars" depends="init,clean,jar_gpstool,jar_gpsylon">
   </target>
-  
+
   <!-- bin_dist target -->
   <target name="bin_dist" depends="jars,clean_dist,copy_default_plugins">
     <mkdir dir="${dist_dir}"/>
@@ -557,7 +557,7 @@ Christof Dallermassl (christof@dallermassl.at)
     <copy todir="${dist_dir}/${native_lib_dir_base}">
       <fileset dir="${native_lib_dir_base}"/>
     </copy>
-  	
+
     <copy todir="${dist_dir}/${doc_dir}">
       <fileset dir="${doc_dir}">
         <exclude name="images/*.psd"/>
@@ -578,7 +578,7 @@ Christof Dallermassl (christof@dallermassl.at)
     <!-- create tar file -->
     <tar longfile="gnu"
       destfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz"
-      basedir="${dist_dir}"           
+      basedir="${dist_dir}"
       includes="${dist_name}_bin-${release_version}/**/*"
       excludes="${dist_name}_bin-${release_version}/${dist_name}_bin-${release_version},*.zip,*.tar.gz"
       compression="gzip"/>
@@ -586,17 +586,17 @@ Christof Dallermassl (christof@dallermassl.at)
     <!-- create zip file -->
     <zip
       destfile="${dist_dir}/${dist_name}_bin-${release_version}.zip"
-      basedir="${dist_dir}"           
+      basedir="${dist_dir}"
       includes="${dist_name}_bin-${release_version}/**/*"
       excludes="${dist_name}_bin-${release_version}/${dist_name}_bin-${release_version},*.tar.gz,*.zip"/>
-   
+
 
     <!-- remove temp directory -->
     <delete dir="${dist_dir}/${dist_name}_bin-${release_version}"/>
   </target>
 
   <!-- src_dist target -->
-  <target name="src_dist" depends="init,clean,compile,javadoc">  
+  <target name="src_dist" depends="init,clean,compile,javadoc">
     <mkdir dir="${dist_dir}"/>
 
     <!-- create directory with the name using the release number -->
@@ -607,7 +607,7 @@ Christof Dallermassl (christof@dallermassl.at)
         <patternset refid="gpsylon.lib.patternset"/>
       </fileset>
     </copy>
-  	
+
     <copy todir="${dist_dir}/${dist_name}_src-${release_version}/${native_lib_dir_base}">
       <fileset dir="${native_lib_dir_base}"/>
     </copy>
@@ -647,7 +647,7 @@ Christof Dallermassl (christof@dallermassl.at)
       excludes="*CVS*,${dist_name}_bin-${release_version}*,*.zip,*.tar.gz"
       compression="gzip"/>
 
-    <zip 
+    <zip
       basedir="${dist_dir}"
       destfile="${dist_dir}/${dist_name}_src-${release_version}.zip"
       excludes="*CVS*,${dist_name}_bin-${release_version}*,*.zip,*.tar.gz"/>
@@ -657,53 +657,53 @@ Christof Dallermassl (christof@dallermassl.at)
   </target>
 
   <!-- copy_default_plugins target -->
-  <target name="copy_default_plugins" depends="init,bin_dist_plugins"> 
+  <target name="copy_default_plugins" depends="init,bin_dist_plugins">
     <mkdir dir="${dist_dir}/${plugin_dir}"/>
     <copy todir="${dist_dir}/${plugin_dir}">
       <fileset dir="${plugin_dir}/navigationmousemode/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/downloadmousemode/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/writerasterimage/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/readgpsdrivetrack/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/readgpx/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/readtop50ovl/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/mapmanager/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/kismetimport/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/tracklayer/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/trackchart/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/averagepos/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/gpstool/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
       <fileset dir="${plugin_dir}/importexport/${dist_dir}">
-        <include name="**/*.jar"/>  
+        <include name="**/*.jar"/>
       </fileset>
     </copy>
   </target>
 
   <!-- plugins_dist target -->
-  <target name="plugins_dist" depends="init,bin_dist_plugins"> 
+  <target name="plugins_dist" depends="init,bin_dist_plugins">
     <mkdir dir="${dist_dir}"/>
     <tar longfile="gnu"
       basedir="${basedir}"
@@ -746,226 +746,226 @@ Christof Dallermassl (christof@dallermassl.at)
 
   <!-- compile_plugins target -->
   <target name="compile_plugins"
-    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_readgpx_plugin,compile_readtop50ovl_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin,compile_trackchart_plugin"> 
+    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_readgpx_plugin,compile_readtop50ovl_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin,compile_trackchart_plugin">
   </target>
 
   <!-- compile_downloadmousemode_plugin target -->
-  <target name="compile_downloadmousemode_plugin" depends="init"> 
+  <target name="compile_downloadmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/downloadmousemode" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_navigationmousemode_plugin target -->
-  <target name="compile_navigationmousemode_plugin" depends="init"> 
+  <target name="compile_navigationmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/navigationmousemode" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_writerasterimage_plugin target -->
-  <target name="compile_writerasterimage_plugin" depends="init"> 
+  <target name="compile_writerasterimage_plugin" depends="init">
     <ant dir="${plugin_dir}/writerasterimage" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_writesvgimage_plugin target -->
-  <target name="compile_writesvgimage_plugin" depends="init"> 
+  <target name="compile_writesvgimage_plugin" depends="init">
     <ant dir="${plugin_dir}/writesvgimage" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_readgpsdrivetrack_plugin target -->
-  <target name="compile_readgpsdrivetrack_plugin" depends="init"> 
+  <target name="compile_readgpsdrivetrack_plugin" depends="init">
     <ant dir="${plugin_dir}/readgpsdrivetrack" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_readgpx_plugin target -->
-  <target name="compile_readgpx_plugin" depends="init"> 
+  <target name="compile_readgpx_plugin" depends="init">
     <ant dir="${plugin_dir}/readgpx" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_readtop50ovl_plugin target -->
-  <target name="compile_readtop50ovl_plugin" depends="init"> 
+  <target name="compile_readtop50ovl_plugin" depends="init">
     <ant dir="${plugin_dir}/readtop50ovl" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_mapmanager_plugin target -->
-  <target name="compile_mapmanager_plugin" depends="init"> 
+  <target name="compile_mapmanager_plugin" depends="init">
     <ant dir="${plugin_dir}/mapmanager" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_kismetimport_plugin target -->
-  <target name="compile_kismetimport_plugin" depends="init"> 
+  <target name="compile_kismetimport_plugin" depends="init">
     <ant dir="${plugin_dir}/kismetimport" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_importexport_plugin target -->
-  <target name="compile_importexport_plugin" depends="init"> 
+  <target name="compile_importexport_plugin" depends="init">
     <ant dir="${plugin_dir}/importexport" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_tracklayer_plugin target -->
-  <target name="compile_tracklayer_plugin" depends="init"> 
+  <target name="compile_tracklayer_plugin" depends="init">
     <ant dir="${plugin_dir}/tracklayer" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_trackchart_plugin target -->
-  <target name="compile_trackchart_plugin" depends="init"> 
+  <target name="compile_trackchart_plugin" depends="init">
     <ant dir="${plugin_dir}/trackchart" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_gpstool_plugin target -->
-  <target name="compile_gpstool_plugin" depends="init"> 
+  <target name="compile_gpstool_plugin" depends="init">
     <ant dir="${plugin_dir}/gpstool" target="compile" inheritAll="false"/>
   </target>
 
   <!-- compile_averagepos_plugin target -->
-  <target name="compile_averagepos_plugin" depends="init"> 
+  <target name="compile_averagepos_plugin" depends="init">
     <ant dir="${plugin_dir}/averagepos" target="compile" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_plugins target -->
   <target name="bin_dist_plugins"
-    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_readgpx_plugin,bin_dist_readtop50ovl_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin,bin_dist_trackchart_plugin"> 
+    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_readgpx_plugin,bin_dist_readtop50ovl_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin,bin_dist_trackchart_plugin">
   </target>
 
   <!-- bin_dist_downloadmousemode_plugin target -->
-  <target name="bin_dist_downloadmousemode_plugin" depends="init"> 
+  <target name="bin_dist_downloadmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/downloadmousemode" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_navigationmousemode_plugin target -->
-  <target name="bin_dist_navigationmousemode_plugin" depends="init"> 
+  <target name="bin_dist_navigationmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/navigationmousemode" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_writerasterimage_plugin target -->
-  <target name="bin_dist_writerasterimage_plugin" depends="init"> 
+  <target name="bin_dist_writerasterimage_plugin" depends="init">
     <ant dir="${plugin_dir}/writerasterimage" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_writesvgimage_plugin target -->
-  <target name="bin_dist_writesvgimage_plugin" depends="init"> 
+  <target name="bin_dist_writesvgimage_plugin" depends="init">
     <ant dir="${plugin_dir}/writesvgimage" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_readgpsdrivetrack_plugin target -->
-  <target name="bin_dist_readgpsdrivetrack_plugin" depends="init"> 
+  <target name="bin_dist_readgpsdrivetrack_plugin" depends="init">
     <ant dir="${plugin_dir}/readgpsdrivetrack" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_readgpx_plugin target -->
-  <target name="bin_dist_readgpx_plugin" depends="init"> 
+  <target name="bin_dist_readgpx_plugin" depends="init">
     <ant dir="${plugin_dir}/readgpx" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_readgpx_plugin target -->
-  <target name="bin_dist_readtop50ovl_plugin" depends="init"> 
+  <target name="bin_dist_readtop50ovl_plugin" depends="init">
     <ant dir="${plugin_dir}/readtop50ovl" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_mapmanager_plugin target -->
-  <target name="bin_dist_mapmanager_plugin" depends="init"> 
+  <target name="bin_dist_mapmanager_plugin" depends="init">
     <ant dir="${plugin_dir}/mapmanager" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_kismetimport_plugin target -->
-  <target name="bin_dist_kismetimport_plugin" depends="init"> 
+  <target name="bin_dist_kismetimport_plugin" depends="init">
     <ant dir="${plugin_dir}/kismetimport" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_importexport_plugin target -->
-  <target name="bin_dist_importexport_plugin" depends="init"> 
+  <target name="bin_dist_importexport_plugin" depends="init">
     <ant dir="${plugin_dir}/importexport" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_tracklayer_plugin target -->
-  <target name="bin_dist_tracklayer_plugin" depends="init"> 
+  <target name="bin_dist_tracklayer_plugin" depends="init">
     <ant dir="${plugin_dir}/tracklayer" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_trackchart_plugin target -->
-  <target name="bin_dist_trackchart_plugin" depends="init"> 
+  <target name="bin_dist_trackchart_plugin" depends="init">
     <ant dir="${plugin_dir}/trackchart" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_gpstool_plugin target -->
-  <target name="bin_dist_gpstool_plugin" depends="init"> 
+  <target name="bin_dist_gpstool_plugin" depends="init">
     <ant dir="${plugin_dir}/gpstool" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_averagepos_plugin target -->
-  <target name="bin_dist_averagepos_plugin" depends="init"> 
+  <target name="bin_dist_averagepos_plugin" depends="init">
     <ant dir="${plugin_dir}/averagepos" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- install_plugins target -->
   <target name="install_plugins"
-    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_readgpx_plugin,install_readtop50ovl_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin,install_plugin_trackchart_plugin"> 
+    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_readgpx_plugin,install_readtop50ovl_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin,install_plugin_trackchart_plugin">
   </target>
 
   <!-- install_downloadmousemode_plugin target -->
-  <target name="install_downloadmousemode_plugin" depends="init"> 
+  <target name="install_downloadmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/downloadmousemode" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_navigationmousemode_plugin target -->
-  <target name="install_navigationmousemode_plugin" depends="init"> 
+  <target name="install_navigationmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/navigationmousemode" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_writerasterimage_plugin target -->
-  <target name="install_writerasterimage_plugin" depends="init"> 
+  <target name="install_writerasterimage_plugin" depends="init">
     <ant dir="${plugin_dir}/writerasterimage" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_writesvgimage_plugin target -->
-  <target name="install_writesvgimage_plugin" depends="init"> 
+  <target name="install_writesvgimage_plugin" depends="init">
     <ant dir="${plugin_dir}/writesvgimage" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_readgpsdrivetrack_plugin target -->
-  <target name="install_readgpsdrivetrack_plugin" depends="init"> 
+  <target name="install_readgpsdrivetrack_plugin" depends="init">
     <ant dir="${plugin_dir}/readgpsdrivetrack" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_readgpx_plugin target -->
-  <target name="install_readgpx_plugin" depends="init"> 
+  <target name="install_readgpx_plugin" depends="init">
     <ant dir="${plugin_dir}/readgpx" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_readtop50ovl_plugin target -->
-  <target name="install_readtop50ovl_plugin" depends="init"> 
+  <target name="install_readtop50ovl_plugin" depends="init">
     <ant dir="${plugin_dir}/readtop50ovl" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_mapmanager_plugin target -->
-  <target name="install_mapmanager_plugin" depends="init"> 
+  <target name="install_mapmanager_plugin" depends="init">
     <ant dir="${plugin_dir}/mapmanager" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_kismetimport_plugin target -->
-  <target name="install_kismetimport_plugin" depends="init"> 
+  <target name="install_kismetimport_plugin" depends="init">
     <ant dir="${plugin_dir}/kismetimport" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_plugin_importexport_plugin target -->
-  <target name="install_plugin_importexport_plugin" depends="init"> 
+  <target name="install_plugin_importexport_plugin" depends="init">
     <ant dir="${plugin_dir}/importexport" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_plugin_tracklayer_plugin target -->
-  <target name="install_plugin_tracklayer_plugin" depends="init"> 
+  <target name="install_plugin_tracklayer_plugin" depends="init">
     <ant dir="${plugin_dir}/tracklayer" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_plugin_trackchart_plugin target -->
-  <target name="install_plugin_trackchart_plugin" depends="init"> 
+  <target name="install_plugin_trackchart_plugin" depends="init">
     <ant dir="${plugin_dir}/trackchart" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_plugin_gpstool_plugin target -->
-  <target name="install_plugin_gpstool_plugin" depends="init"> 
+  <target name="install_plugin_gpstool_plugin" depends="init">
     <ant dir="${plugin_dir}/gpstool" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_plugin_averagepos_plugin target -->
-  <target name="install_plugin_averagepos_plugin" depends="init"> 
+  <target name="install_plugin_averagepos_plugin" depends="init">
     <ant dir="${plugin_dir}/averagepos" target="install_plugin" inheritAll="false"/>
   </target>
 

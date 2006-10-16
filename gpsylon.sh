@@ -34,7 +34,7 @@ LIBPATH=$PRGDIR/lib/native/`uname -s`/`arch`
 if [ -d "$LIBPATH" ]; then
  JAVA_LIB=-Djava.library.path=$LIBPATH
 else
- JAVA_LIB="" 
+ JAVA_LIB=""
  echo "Warning: Your Plattform `uname -s`/`uname -m` is not supported by this script!"
  echo "Have a look at ftp://ftp.qbang.org/pub/rxtx/ToyBox to install the missing RXTX Serial Library!"
  echo ""
@@ -42,4 +42,4 @@ else
 fi
 
 #echo "PRGDIR is $PRGDIR"
-$JAVA $JAVA_LIB $GPSYLON_VMARGS -jar $PRGDIR/gpsylon-0.5.2-pre2.jar
+$JAVA $JAVA_LIB $GPSYLON_VMARGS -jar $PRGDIR/gpsylon-0.5.2.jar

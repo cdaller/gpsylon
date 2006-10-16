@@ -1,4 +1,5 @@
-rem windows startscript for gpsylon
+@echo off
+rem windows startscript for gpstool
 
 rem GPSYLON_VMARGS="-Xmx512m"
 
@@ -12,4 +13,7 @@ set LIBPATH=%PRG_DIR%lib\native\%OS%\%PROCESSOR_ARCHITECTURE%
 set JAVA_LIB=-Djava.library.path=%LIBPATH%
 
 rem run the jar file:
-java "%JAVA_LIB%" %GPSYLON_VMARGS% -jar "%PRG_DIR%gpsylon-0.5.2.jar" %*
+rem c:\j2skd1.4.2_12\bin\java.exe -version
+java "%JAVA_LIB%" %GPSYLON_VMARGS% -jar "%PRG_DIR%gpstool-0.5.2.jar" %*
+pause
+

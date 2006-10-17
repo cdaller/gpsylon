@@ -24,8 +24,8 @@ package org.dinopolis.gpstool.gpsinput.nmea;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -62,6 +62,10 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   protected Thread read_thread_;
 
   public final static int MAX_NMEA_MESSAGE_LENGTH = 90;
+  /** if an end of stream is reached, wait some milliseconds and continue */
+  private static final long EOFREACHED_WAIT_MS = 50;
+  /** the milliseconds to wait for device info on nmea devices */
+  private static final long NMEA_DEVICE_INFO_WAIT_MS = 1000;
 
   SatelliteInfo[] satellite_infos_;
   int satellite_info_count_;
@@ -76,6 +80,15 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   boolean print_ignore_warning_ = true;
 
   List gps_infos_;
+
+  /**
+   * initialization strings that some nmea devices understand
+   * taken from http://www.gpspassion.com/forumsen/topic.asp?TOPIC_ID=60637
+   * tested with GlobalSat bt338
+   */
+  public static final String INIT_COLD_START = "$PSRF101,0,0,0,000,0,0,12,6*12";
+  public static final String INIT_WARM_START = "$PSRF101,0,0,0,000,0,0,12,2*16";
+  public static final String INIT_HOT_START = "$PSRF101,0,0,0,000,0,0,12,1*15";
 
   // ----------------------------------------------------------------------
   /**
@@ -153,12 +166,27 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       read_thread_ = new Thread(this, "GPSNmeaDataProcessor");
       read_thread_.setDaemon(true); // so thread is finished after exit of application
       read_thread_.start();
+
+      sendInitNmea(gps_device_.getOutputStream());
     }
     catch (IOException e)
     {
       throw new GPSException(e.getMessage());
     }
 
+  }
+
+  /**
+   * Initializes the nmea device. This is not really necessary, but tells the device
+   * to send some information about itself.
+   * @param outStream the stream to write to
+   * @throws IOException if an error occurs.
+   */
+  private void sendInitNmea(OutputStream outStream) throws IOException
+  {
+    outStream.write(INIT_HOT_START.getBytes());
+    outStream.write(13);
+    outStream.write(10);
   }
 
   // ----------------------------------------------------------------------
@@ -184,18 +212,33 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
    */
   public String[] getGPSInfo()
   {
-    String[] info;
+    String[] info = null;
     if(gps_infos_ == null)
     {
-      info = new String[] {"Unknown NMEA GPS"};
+      // wait a little, as the device info is sent after initialization
+      try
+      {
+        Thread.sleep(NMEA_DEVICE_INFO_WAIT_MS);
+      } catch (InterruptedException ignore)
+      {
+      }
+      if(gps_infos_ == null)
+      {
+        info = new String[] {"Unknown NMEA GPS"};
+      }
     }
-    else
+
+    if(info == null)
     {
       info = (String[]) gps_infos_.toArray(new String[gps_infos_.size()]);
     }
     return (info);
   }
 
+  /**
+   * Reads messages
+   * @see java.lang.Runnable#run()
+   */
   public void run()
   {
     readMessages();
@@ -260,14 +303,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
         count = 0;
         buffer = new char[MAX_NMEA_MESSAGE_LENGTH];
 
-        while ((data = in_stream_.read()) != (char) 13) // read data until CR
+        while ((data = getNextByte()) != (char) 13) // read data until CR
         {
-          if (data == -1) // EOF
-          {
-            //System.err.println("End of Stream (File) reached!");
-            continue; // ignore end of stream, just go on!
-            //return;
-          }
           if (count >= MAX_NMEA_MESSAGE_LENGTH - 1)
           {
             System.err.println("ERROR: max. message length exceeded! (" + count + "):" + new String(buffer));
@@ -294,7 +331,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
         { // valid sentence, no garbage
           try
           {
-            message = new NMEA0183Sentence(buffer);
+            message = new NMEA0183Sentence(buffer, 0, count);
 
             buffer[count] = 13; // add CR from NMEA message
             buffer[count + 1] = 10; // add LF from NMEA message
@@ -358,6 +395,30 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
   }
 
+  /**
+   * Fetches the next byte from the input stream and returns it.
+   *
+   * @return the next byte from the input stream.
+   * @throws IOException if an error occurs.
+   */
+  private int getNextByte() throws IOException
+  {
+    int data = -1;
+    // rxtx 2.1.7 on windows has the problem (?) that even if the stream is not ended
+    // it returns -1 here (happens in between nmea sentences)
+    // so we just wait a little and then retry to read
+    while ((data = in_stream_.read()) < 0)
+    {
+      try
+      {
+        Thread.sleep(EOFREACHED_WAIT_MS);
+      } catch (InterruptedException ignore)
+      {
+      }
+    }
+    return data;
+  }
+
   // ----------------------------------------------------------------------
   /**
    * Reads garbage from the input stream and tries to find the beginning of the next valid nmea
@@ -373,26 +434,14 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     {
       while (true)
       {
-        // read until CR/LF
-        while ((data = in_stream_.read()) != (char) 13) // read data until CR
+        // read until CR/LF>
+        while ((data = getNextByte()) != (char) 13) // read data until CR
         {
-          if (data == -1)
-          {
-            //System.err.println("End of Stream (File) reached!");
-            continue; // ignore end of stream, just go on (this is an rxtx 2.1.7 bug (?) on windows)
-            //return (false);
-          }
         }
-        data = in_stream_.read(); // char after CR
+        data = getNextByte(); // char after CR
         if (data == (char) 10) // linefeed
         {
           return (true);
-        }
-
-        if (data == -1)
-        {
-          System.err.println("End of Stream (File) reached!");
-          return (false);
         }
         if (logger_message_.isDebugEnabled())
           logger_message_.debug("reading garbage...");
@@ -481,17 +530,17 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("GLL detected: " + sentence);
-    Vector data_fields = sentence.getDataFields();
+    List data_fields = sentence.getDataFields();
 
-    String valid = (String) data_fields.elementAt(5);
+    String valid = (String) data_fields.get(5);
     if (valid.equals("V")) // invalid
       return;
 
-    String latitude = (String) data_fields.elementAt(0);
-    String north_south = (String) data_fields.elementAt(1);
-    String longitude = (String) data_fields.elementAt(2);
-    String east_west = (String) data_fields.elementAt(3);
-    String utc_time = (String) data_fields.elementAt(4);
+    String latitude = (String) data_fields.get(0);
+    String north_south = (String) data_fields.get(1);
+    String longitude = (String) data_fields.get(2);
+    String east_west = (String) data_fields.get(3);
+    String utc_time = (String) data_fields.get(4);
 
     // check for empty messages:
     if (latitude.length() == 0)
@@ -516,8 +565,8 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("DBT detected: " + sentence);
-    Vector data_fields = sentence.getDataFields();
-    String depth_str = (String) sentence.getDataFields().elementAt(2);
+    List data_fields = sentence.getDataFields();
+    String depth_str = (String) sentence.getDataFields().get(2);
     Float depth = null;
     try
     {
@@ -543,12 +592,12 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("GGA detected: " + sentence);
-    Vector data_fields = sentence.getDataFields();
-    String latitude = (String) data_fields.elementAt(1);
-    String north_south = (String) data_fields.elementAt(2);
-    String longitude = (String) data_fields.elementAt(3);
-    String east_west = (String) data_fields.elementAt(4);
-    int valid_fix = Integer.parseInt((String) data_fields.elementAt(5));
+    List data_fields = sentence.getDataFields();
+    String latitude = (String) data_fields.get(1);
+    String north_south = (String) data_fields.get(2);
+    String longitude = (String) data_fields.get(3);
+    String east_west = (String) data_fields.get(4);
+    int valid_fix = Integer.parseInt((String) data_fields.get(5));
 
     if (valid_fix == 0)
       return;
@@ -563,12 +612,12 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     GPSPosition pos = new GPSPosition(wgs84_lat, north_south, wgs84_long, east_west);
     changeGPSData(LOCATION, pos);
 
-    String num_sat = (String) data_fields.elementAt(6);
+    String num_sat = (String) data_fields.get(6);
     changeGPSData(NUMBER_SATELLITES, new Integer(num_sat));
 
     try
     {
-      String altitude = (String) data_fields.elementAt(8);
+      String altitude = (String) data_fields.get(8);
       changeGPSData(ALTITUDE, new Float(altitude));
     }
     catch (NumberFormatException nfe)
@@ -589,11 +638,11 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("RMC detected: " + sentence);
-    Vector data_fields = sentence.getDataFields();
-    String latitude = (String) data_fields.elementAt(2);
-    String north_south = (String) data_fields.elementAt(3);
-    String longitude = (String) data_fields.elementAt(4);
-    String east_west = (String) data_fields.elementAt(5);
+    List data_fields = sentence.getDataFields();
+    String latitude = (String) data_fields.get(2);
+    String north_south = (String) data_fields.get(3);
+    String longitude = (String) data_fields.get(4);
+    String east_west = (String) data_fields.get(5);
 
     // check for empty messages:
     if (latitude.length() == 0)
@@ -605,7 +654,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     GPSPosition pos = new GPSPosition(wgs84_lat, north_south, wgs84_long, east_west);
     changeGPSData(LOCATION, pos);
 
-    String speed_knots = (String) data_fields.elementAt(6);
+    String speed_knots = (String) data_fields.get(6);
     try
     {
       float speed = Float.parseFloat(speed_knots);
@@ -638,10 +687,10 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
 
     try
     {
-      Vector data_fields = sentence.getDataFields();
-      int total_number_messages = Integer.parseInt((String) data_fields.elementAt(0));
-      int message_number = Integer.parseInt((String) data_fields.elementAt(1));
-      int number_satellites = Integer.parseInt((String) data_fields.elementAt(2));
+      List data_fields = sentence.getDataFields();
+      int total_number_messages = Integer.parseInt((String) data_fields.get(0));
+      int message_number = Integer.parseInt((String) data_fields.get(1));
+      int number_satellites = Integer.parseInt((String) data_fields.get(2));
 
       // plausability check for gsv sentences:
       if ((message_number != last_gsv_message_number_ + 1) || ((message_number > 1) && (number_satellites != satellite_infos_.length)))
@@ -667,13 +716,13 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       int sat_count = 0;
       while ((sat_count < 4) && ((message_number - 1) * 4 + sat_count < number_satellites))
       {
-        int prn = Integer.parseInt((String) data_fields.elementAt(3 + 4 * sat_count));
-        float elevation = Float.parseFloat((String) data_fields.elementAt(4 + 4 * sat_count));
-        float azimuth = Float.parseFloat((String) data_fields.elementAt(5 + 4 * sat_count));
-        String srn_string = (String) data_fields.elementAt(6 + 4 * sat_count);
+        int prn = Integer.parseInt((String) data_fields.get(3 + 4 * sat_count));
+        float elevation = Float.parseFloat((String) data_fields.get(4 + 4 * sat_count));
+        float azimuth = Float.parseFloat((String) data_fields.get(5 + 4 * sat_count));
+        String srn_string = (String) data_fields.get(6 + 4 * sat_count);
         int srn;
         if (srn_string.length() > 0)
-          srn = Integer.parseInt((String) data_fields.elementAt(6 + 4 * sat_count));
+          srn = Integer.parseInt((String) data_fields.get(6 + 4 * sat_count));
         else
           srn = 0;
         satellite_infos_[satellite_info_count_++] = new SatelliteInfo(prn, elevation, azimuth, srn);
@@ -708,7 +757,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("HDG detected: " + sentence);
-    String heading_str = (String) sentence.getDataFields().elementAt(0);
+    String heading_str = (String) sentence.getDataFields().get(0);
     Float heading = null;
     try
     {
@@ -733,9 +782,9 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("RME detected: " + sentence);
-    String horizontal_str = (String) sentence.getDataFields().elementAt(0);
-    String vertical_str = (String) sentence.getDataFields().elementAt(2);
-    String spherical_str = (String) sentence.getDataFields().elementAt(2);
+    String horizontal_str = (String) sentence.getDataFields().get(0);
+    String vertical_str = (String) sentence.getDataFields().get(2);
+    String spherical_str = (String) sentence.getDataFields().get(2);
     Double horizontal_error = null;
     Double vertical_error = null;
     Double spherical_error = null;
@@ -767,13 +816,13 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("VTG detected: " + sentence);
-    Vector data_fields = sentence.getDataFields();
-    String trueCourse = (String) data_fields.elementAt(0); // True course made good over ground,
+    List data_fields = sentence.getDataFields();
+    String trueCourse = (String) data_fields.get(0); // True course made good over ground,
                                                             // degrees
-    // String magneticCourse = (String)data_fields.elementAt(2); // Magnetic course made good over
+    // String magneticCourse = (String)data_fields.get(2); // Magnetic course made good over
     // ground, degrees
-    // String groundSpeedKnots = (String)data_fields.elementAt(4); // Ground speed, N=Knots
-    String groundSpeedKms = (String) data_fields.elementAt(6); // Ground speed, K=Kilometers per
+    // String groundSpeedKnots = (String)data_fields.get(4); // Ground speed, N=Knots
+    String groundSpeedKms = (String) data_fields.get(6); // Ground speed, K=Kilometers per
                                                                 // hour
 
     Float heading = null;
@@ -814,7 +863,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("HDT detected: " + sentence);
-    String heading_str = (String) sentence.getDataFields().elementAt(0);
+    String heading_str = (String) sentence.getDataFields().get(0);
     Float heading = null;
     try
     {
@@ -832,7 +881,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
   {
     if (logger_nmea_.isDebugEnabled())
       logger_nmea_.debug("RFTXT detected: " + sentence);
-    String data = (String) sentence.getDataFields().elementAt(0);
+    String data = (String) sentence.getDataFields().get(0);
     if(gps_infos_ == null || data.startsWith("Version:"))
     {
       gps_infos_ = new ArrayList();
@@ -895,11 +944,11 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     if (sentence == null)
       return (null);
 
-    Vector data_fields = sentence.getDataFields();
-    String latitude = (String) data_fields.elementAt(0);
-    String north_south = (String) data_fields.elementAt(1);
-    String longitude = (String) data_fields.elementAt(2);
-    String east_west = (String) data_fields.elementAt(3);
+    List data_fields = sentence.getDataFields();
+    String latitude = (String) data_fields.get(0);
+    String north_south = (String) data_fields.get(1);
+    String longitude = (String) data_fields.get(2);
+    String east_west = (String) data_fields.get(3);
 
     double wgs84_lat = nmeaLatOrLongToWGS84(latitude);
     double wgs84_long = nmeaLatOrLongToWGS84(longitude);
@@ -964,7 +1013,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     if (sentence == null)
       return (-1.0f);
 
-    String heading_str = (String) sentence.getDataFields().elementAt(0);
+    String heading_str = (String) sentence.getDataFields().get(0);
     try
     {
       return (Float.parseFloat(heading_str));

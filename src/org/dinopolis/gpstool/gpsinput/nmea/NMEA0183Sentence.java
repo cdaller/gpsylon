@@ -3,27 +3,28 @@
  *
  * Copyright (c) 2001 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
 
 package org.dinopolis.gpstool.gpsinput.nmea;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -38,22 +39,22 @@ import org.apache.log4j.Logger;
  * @author Christof Dallermassl
  * @version $Revision$ */
 
-public class NMEA0183Sentence  
+public class NMEA0183Sentence
 {
   protected String raw_data_;
   protected String talker_id_ = null;
   protected String sentence_id_ = null;
   protected byte checksum_ = -1;
   protected byte calculated_checksum_ = -1;
-  protected Vector data_fields_ = null;
+  protected List data_fields_ = null;
   private static Logger logger_ = Logger.getLogger(NMEA0183Sentence.class);
-  
+
 //----------------------------------------------------------------------
-/**
- * Initialize a new NMEA 0183 sentence with the given raw data.
- * The raw data looks like "$HCHDG,219.5,,,2.5,E*21".
- * @param raw_data the raw data to be parsed.
- */
+  /**
+   * Initialize a new NMEA 0183 sentence with the given raw data.
+   * The raw data looks like "$HCHDG,219.5,,,2.5,E*21".
+   * @param raw_data the raw data to be parsed.
+   */
 
   public NMEA0183Sentence(String raw_data)
   {
@@ -61,30 +62,54 @@ public class NMEA0183Sentence
       logger_.debug("raw data='"+raw_data+"'");
     int star_pos = raw_data.indexOf('*');
     // tread $PSRFTXT sentences in a special way (no checksum!)
-    if(star_pos <= 6 && !raw_data.startsWith("$PSRFTXT"))
+    if(raw_data.startsWith("$PSRFTXT"))
+    {
+      raw_data_ = raw_data;
+    }
+    else if(star_pos <= 6)
+    {
       throw (new IllegalArgumentException("Invalid NMEA Sentence (no '*'): "
-                                          +new String(raw_data)));
-    raw_data_ = raw_data.substring(0,star_pos+3);
+          +new String(raw_data)));
+    }
+    else
+    {
+      raw_data_ = raw_data.substring(0,star_pos+3);
+    }
   }
-  
 
 //----------------------------------------------------------------------
-/**
- * Initialize a new NMEA 0183 sentence with the given raw data.
- * @param raw_data the raw data to be parsed.
- */
+  /**
+   * Initialize a new NMEA 0183 sentence with the given raw data.
+   * @param raw_data the raw data to be parsed.
+   * @param offset the offset in the buffer
+   * @param length the length
+   */
 
-  public NMEA0183Sentence(byte[] raw_data)
+  public NMEA0183Sentence(byte[] raw_data, int offset, int length)
   {
-    this(new String(raw_data));
+    this(new String(raw_data, offset, length));
   }
 
 
 //----------------------------------------------------------------------
-/**
- * Initialize a new NMEA 0183 sentence with the given raw data.
- * @param raw_data the raw data to be parsed.
- */
+  /**
+   * Initialize a new NMEA 0183 sentence with the given raw data.
+   * @param raw_data the raw data to be parsed.
+   * @param offset the offset in the buffer
+   * @param length the length
+   */
+
+  public NMEA0183Sentence(char[] raw_data, int offset, int length)
+  {
+    this(new String(raw_data, offset, length));
+  }
+
+
+//----------------------------------------------------------------------
+  /**
+   * Initialize a new NMEA 0183 sentence with the given raw data.
+   * @param raw_data the raw data to be parsed.
+   */
 
   public NMEA0183Sentence(char[] raw_data)
   {
@@ -93,10 +118,10 @@ public class NMEA0183Sentence
 
 
 //----------------------------------------------------------------------
-/**
- * Returns the talker id of this NMEA sentence.
- * @return the talker id of this NMEA sentence.
- */
+  /**
+   * Returns the talker id of this NMEA sentence.
+   * @return the talker id of this NMEA sentence.
+   */
 
   public String getTalkerId()
   {
@@ -107,25 +132,32 @@ public class NMEA0183Sentence
 
 
 //----------------------------------------------------------------------
-/**
- * Returns the sentence id of this NMEA sentence.
- * @return the sentence id of this NMEA sentence.
- */
+  /**
+   * Returns the sentence id of this NMEA sentence.
+   * @return the sentence id of this NMEA sentence.
+   */
 
-public String getSentenceId()
+  public String getSentenceId()
   {
     if (sentence_id_ == null)
-      sentence_id_ = raw_data_.substring(3,6); 
+    {
+      int comma_pos = raw_data_.indexOf(',');
+      if(comma_pos < 0)
+      {
+        comma_pos = 6;
+      }
+      sentence_id_ = raw_data_.substring(3,comma_pos);
+    }
     return(sentence_id_);
   }
 
 //----------------------------------------------------------------------
-/**
- * Returns the data fields of this NMEA sentence.
- * @return the data fields of this NMEA sentence.
- */
+  /**
+   * Returns the data fields of this NMEA sentence.
+   * @return the data fields of this NMEA sentence.
+   */
 
-  public Vector getDataFields()
+  public List getDataFields()
   {
     if (data_fields_ == null)
       retrieveDataFieldsAndChecksum();
@@ -133,10 +165,10 @@ public String getSentenceId()
   }
 
 //----------------------------------------------------------------------
-/**
- * Returns the checksum of this NMEA sentence.
- * @return the checksum of this NMEA sentence.
- */
+  /**
+   * Returns the checksum of this NMEA sentence.
+   * @return the checksum of this NMEA sentence.
+   */
 
   public byte getChecksum()
   {
@@ -147,10 +179,10 @@ public String getSentenceId()
 
 
 //----------------------------------------------------------------------
-/**
- * Returns the calculated checksum of this NMEA sentence.
- * @return the calculated checksum of this NMEA sentence.
- */
+  /**
+   * Returns the calculated checksum of this NMEA sentence.
+   * @return the calculated checksum of this NMEA sentence.
+   */
 
   public byte getCalculatedChecksum()
   {
@@ -165,65 +197,68 @@ public String getSentenceId()
 
 
 //----------------------------------------------------------------------
-/**
- * Returns true if the sentence is valid (by using the checksum).
- *
- * @return true if the sentence is valid (by using the checksum).
- */
+  /**
+   * Returns true if the sentence is valid (by using the checksum).
+   *
+   * @return true if the sentence is valid (by using the checksum).
+   */
   public boolean isValid()
   {
     return(getChecksum() == getCalculatedChecksum());
   }
-  
+
 //----------------------------------------------------------------------
-/**
- * Parses the raw data and extracts the data fields and the checksum.
- */
+  /**
+   * Parses the raw data and extracts the data fields and the checksum.
+   */
 
   protected void retrieveDataFieldsAndChecksum()
   {
     if (data_fields_ == null)
-      data_fields_ = new Vector();
-    
+      data_fields_ = new ArrayList();
+
     StringTokenizer tokenizer = new StringTokenizer(raw_data_,",*",true);
     tokenizer.nextElement();  // skip first element (NMEA messageid)
     if (tokenizer.hasMoreElements())
       tokenizer.nextElement();  // skip first delimiter
     String token;
     String element = "";
-    
+
     while(tokenizer.hasMoreElements())
     {
       token = tokenizer.nextToken();
       if(token.equals(","))
       {
-        data_fields_.addElement(element);
+        data_fields_.add(element);
         element = "";
+      }
+      else if(token.equals("*"))
+      {
+        data_fields_.add(element);
+        element = "";  // mostly useless, as checksum is the last
+        checksum_ = decodeChecksum(tokenizer.nextToken());
+        if(tokenizer.hasMoreElements())
+          System.err.println("WARNING: too long NMEA sentence, elements after checksum found: "
+              +raw_data_);
       }
       else
       {
-        if(token.equals("*"))
-        {
-          data_fields_.addElement(element);
-          element = "";  // mostly useless, as checksum is the last
-          checksum_ = decodeChecksum(tokenizer.nextToken());
-          if(tokenizer.hasMoreElements())
-            System.err.println("WARNING: too long NMEA sentence, elements after checksum found: "
-                               +raw_data_);
-        }
-        else
-        {
-          element = token;  // normal token
-        }
+        element = token;  // normal token
       }
     }
+    // add last element. This is only relevant if there is no checksum
+    // (for RFTXT sentences or for devices that do not send checksums)
+    // for sentences like (no checksum sent)
+    // XXX,a,b,c,
+    // an empty string for the fourth element is appended
+    data_fields_.add(element);
   }
 
   public boolean equals(NMEA0183Sentence object)
   {
     return(object.raw_data_.equals(raw_data_));
   }
-  
+
   public boolean equals(Object object)
   {
     if (!(object instanceof NMEA0183Sentence))
@@ -231,77 +266,77 @@ public String getSentenceId()
     else
       return(equals((NMEA0183Sentence)object));
   }
-  
+
 //----------------------------------------------------------------------
-/**
- * Decodes the checksum string of a nmea sentence.
- *
- * @param	checksum_string the string representing the checksum (two characters long)
- * @return the checksum as a byte value
- */
-	
-	protected static byte decodeChecksum(String checksum_string)
-	{
+  /**
+   * Decodes the checksum string of a nmea sentence.
+   *
+   * @param	checksum_string the string representing the checksum (two characters long)
+   * @return the checksum as a byte value
+   */
+
+  protected static byte decodeChecksum(String checksum_string)
+  {
     byte checksum;
-    
+
     checksum = (byte)((hexCharToByte(checksum_string.charAt(0)) & 0xF ) << 4 );
     checksum = (byte)(checksum | hexCharToByte(checksum_string.charAt(1)) & 0xF );
     return(checksum);
-	}
-	
-	
+  }
+
+
 //----------------------------------------------------------------------
-/**
- * Calculate the checksum of this NMEA sentence
- *
- * @return the calculated checksum
- */
-	
-	protected byte calcChecksum()
-	{
-		int		calc = 0;
-		int		count;
-		int		len;
-		char	chr;
-		
-		len = raw_data_.length();
-		
-		for(count = 1; count < len - 2; count++)  // ignore '$' at beginning and checksum at the end
+  /**
+   * Calculate the checksum of this NMEA sentence
+   *
+   * @return the calculated checksum
+   */
+
+  protected byte calcChecksum()
+  {
+    int		calc = 0;
+    int		count;
+    int		len;
+    char	chr;
+
+    len = raw_data_.length();
+
+    for(count = 1; count < len - 2; count++)  // ignore '$' at beginning and checksum at the end
     {
-			chr = raw_data_.charAt(count);
-			
-			if(chr == '*') // just to be sure
+      chr = raw_data_.charAt(count);
+
+      if(chr == '*') // just to be sure
         break;
 
-				if(count == 1)
-					calc = (chr + 256) & 0xFF;
-				else
-					calc ^= (chr + 256) & 0xFF;
-		}
-		return((byte)calc);
-	}
-	
+      if(count == 1)
+        calc = (chr + 256) & 0xFF;
+      else
+        calc ^= (chr + 256) & 0xFF;
+    }
+    return((byte)calc);
+  }
+
 //----------------------------------------------------------------------
-/**
- * Get the byte value for a hex character
- *
- * @param	hex_char hex character
- * @return byte value
- */
-	
-	protected static byte hexCharToByte(char hex_char)
-	{
-		if( hex_char > 57 )
-			return((byte)(hex_char - 55));
+  /**
+   * Get the byte value for a hex character
+   *
+   * @param	hex_char hex character
+   * @return byte value
+   */
+
+  protected static byte hexCharToByte(char hex_char)
+  {
+    if( hex_char > 57 )
+      return((byte)(hex_char - 55));
     else
-			return((byte)(hex_char - 48)); 
-	}
-	
+      return((byte)(hex_char - 48));
+  }
+
 //----------------------------------------------------------------------
-/**
- * Returns the string representation of this NMEA sentence.
- * @return the string representation of this NMEA sentence.
- */
+  /**
+   * Returns the string representation of this NMEA sentence.
+   * @return the string representation of this NMEA sentence.
+   */
 
   public String toString()
   {
@@ -336,9 +371,3 @@ public String getSentenceId()
     }
   }
 }
-
-
-
-
-
-

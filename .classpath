@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry output="plugins/averagepos/classes" kind="src" path="plugins/averagepos/auxiliary"/>
-	<classpathentry output="classes" kind="src" path="plugins/dem/auxiliary"/>
-	<classpathentry output="plugins/downloadmousemode/classes" kind="src" path="plugins/downloadmousemode/auxiliary"/>
-	<classpathentry output="plugins/gpstool/classes" kind="src" path="plugins/gpstool/auxiliary"/>
-	<classpathentry output="plugins/graph/classes" kind="src" path="plugins/graph/auxiliary"/>
-	<classpathentry output="plugins/imageserver/classes" kind="src" path="plugins/imageserver/auxiliary"/>
-	<classpathentry output="plugins/importexport/classes" kind="src" path="plugins/importexport/auxiliary"/>
-	<classpathentry output="plugins/mapmanager/classes" kind="src" path="plugins/mapmanager/auxiliary"/>
-	<classpathentry output="plugins/modifytracks/classes" kind="src" path="plugins/modifytracks/auxiliary"/>
-	<classpathentry output="plugins/readgpsdrivetrack/classes" kind="src" path="plugins/readgpsdrivetrack/auxiliary"/>
-	<classpathentry output="plugins/readgpx/classes" kind="src" path="plugins/readgpx/auxiliary"/>
-	<classpathentry output="plugins/readtop50ovl/classes" kind="src" path="plugins/readtop50ovl/auxiliary"/>
-	<classpathentry output="plugins/swissgrid/classes" kind="src" path="plugins/swissgrid/auxiliary"/>
-	<classpathentry output="plugins/dufourmap/classes" kind="src" path="plugins/dufourmap/auxiliary"/>
-	<classpathentry output="plugins/trackchart/classes" kind="src" path="plugins/trackchart/auxiliary"/>
-	<classpathentry output="plugins/tracklayer/classes" kind="src" path="plugins/tracklayer/auxiliary"/>
+	<classpathentry kind="src" output="plugins/averagepos/classes" path="plugins/averagepos/auxiliary"/>
+	<classpathentry kind="src" output="classes" path="plugins/dem/auxiliary"/>
+	<classpathentry kind="src" output="plugins/downloadmousemode/classes" path="plugins/downloadmousemode/auxiliary"/>
+	<classpathentry kind="src" output="plugins/gpstool/classes" path="plugins/gpstool/auxiliary"/>
+	<classpathentry kind="src" output="plugins/graph/classes" path="plugins/graph/auxiliary"/>
+	<classpathentry kind="src" output="plugins/imageserver/classes" path="plugins/imageserver/auxiliary"/>
+	<classpathentry kind="src" output="plugins/importexport/classes" path="plugins/importexport/auxiliary"/>
+	<classpathentry kind="src" output="plugins/mapmanager/classes" path="plugins/mapmanager/auxiliary"/>
+	<classpathentry kind="src" output="plugins/modifytracks/classes" path="plugins/modifytracks/auxiliary"/>
+	<classpathentry kind="src" output="plugins/readgpsdrivetrack/classes" path="plugins/readgpsdrivetrack/auxiliary"/>
+	<classpathentry kind="src" output="plugins/readgpx/classes" path="plugins/readgpx/auxiliary"/>
+	<classpathentry kind="src" output="plugins/readtop50ovl/classes" path="plugins/readtop50ovl/auxiliary"/>
+	<classpathentry kind="src" output="plugins/swissgrid/classes" path="plugins/swissgrid/auxiliary"/>
+	<classpathentry kind="src" output="plugins/dufourmap/classes" path="plugins/dufourmap/auxiliary"/>
+	<classpathentry kind="src" output="plugins/trackchart/classes" path="plugins/trackchart/auxiliary"/>
+	<classpathentry kind="src" output="plugins/tracklayer/classes" path="plugins/tracklayer/auxiliary"/>
 	<classpathentry kind="src" path="auxiliary"/>
-	<classpathentry output="plugins/averagepos/classes" kind="src" path="plugins/averagepos/src"/>
-	<classpathentry output="plugins/dem/classes" kind="src" path="plugins/dem/src"/>
-	<classpathentry output="plugins/downloadmousemode/classes" kind="src" path="plugins/downloadmousemode/src"/>
-	<classpathentry output="plugins/gpstool/classes" kind="src" path="plugins/gpstool/src"/>
-	<classpathentry output="plugins/graph/classes" kind="src" path="plugins/graph/src"/>
-	<classpathentry output="plugins/imageserver/classes" kind="src" path="plugins/imageserver/src"/>
-	<classpathentry output="plugins/importexport/classes" kind="src" path="plugins/importexport/src"/>
-	<classpathentry output="plugins/kismetimport/classes" kind="src" path="plugins/kismetimport/src"/>
-	<classpathentry output="plugins/mapmanager/classes" kind="src" path="plugins/mapmanager/src"/>
-	<classpathentry output="plugins/memorymonitor/classes" kind="src" path="plugins/memorymonitor/src"/>
-	<classpathentry output="plugins/modifytracks/classes" kind="src" path="plugins/modifytracks/src"/>
-	<classpathentry output="plugins/navigationmousemode/classes" kind="src" path="plugins/navigationmousemode/src"/>
-	<classpathentry output="plugins/readgpsdrivetrack/classes" kind="src" path="plugins/readgpsdrivetrack/src"/>
-	<classpathentry output="plugins/readgpx/classes" kind="src" path="plugins/readgpx/src"/>
-	<classpathentry output="plugins/readtop50ovl/classes" kind="src" path="plugins/readtop50ovl/src"/>
-	<classpathentry output="plugins/simpledemo/classes" kind="src" path="plugins/simpledemo/src"/>
-	<classpathentry output="plugins/swissgrid/classes" kind="src" path="plugins/swissgrid/src"/>
-	<classpathentry output="plugins/dufourmap/classes" kind="src" path="plugins/dufourmap/src"/>
-	<classpathentry output="plugins/trackchart/classes" kind="src" path="plugins/trackchart/src"/>
-	<classpathentry output="plugins/tracklayer/classes" kind="src" path="plugins/tracklayer/src"/>
-	<classpathentry output="plugins/writerasterimage/classes" kind="src" path="plugins/writerasterimage/src"/>
-	<classpathentry output="plugins/writesvgimage/classes" kind="src" path="plugins/writesvgimage/src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" output="plugins/averagepos/classes" path="plugins/averagepos/src"/>
+	<classpathentry kind="src" output="plugins/dem/classes" path="plugins/dem/src"/>
+	<classpathentry kind="src" output="plugins/downloadmousemode/classes" path="plugins/downloadmousemode/src"/>
+	<classpathentry kind="src" output="plugins/gpstool/classes" path="plugins/gpstool/src"/>
+	<classpathentry kind="src" output="plugins/graph/classes" path="plugins/graph/src"/>
+	<classpathentry kind="src" output="plugins/imageserver/classes" path="plugins/imageserver/src"/>
+	<classpathentry kind="src" output="plugins/importexport/classes" path="plugins/importexport/src"/>
+	<classpathentry kind="src" output="plugins/kismetimport/classes" path="plugins/kismetimport/src"/>
+	<classpathentry kind="src" output="plugins/mapmanager/classes" path="plugins/mapmanager/src"/>
+	<classpathentry kind="src" output="plugins/memorymonitor/classes" path="plugins/memorymonitor/src"/>
+	<classpathentry kind="src" output="plugins/modifytracks/classes" path="plugins/modifytracks/src"/>
+	<classpathentry kind="src" output="plugins/navigationmousemode/classes" path="plugins/navigationmousemode/src"/>
+	<classpathentry kind="src" output="plugins/readgpsdrivetrack/classes" path="plugins/readgpsdrivetrack/src"/>
+	<classpathentry kind="src" output="plugins/readgpx/classes" path="plugins/readgpx/src"/>
+	<classpathentry kind="src" output="plugins/readtop50ovl/classes" path="plugins/readtop50ovl/src"/>
+	<classpathentry kind="src" output="plugins/simpledemo/classes" path="plugins/simpledemo/src"/>
+	<classpathentry kind="src" output="plugins/swissgrid/classes" path="plugins/swissgrid/src"/>
+	<classpathentry kind="src" output="plugins/dufourmap/classes" path="plugins/dufourmap/src"/>
+	<classpathentry kind="src" output="plugins/trackchart/classes" path="plugins/trackchart/src"/>
+	<classpathentry kind="src" output="plugins/tracklayer/classes" path="plugins/tracklayer/src"/>
+	<classpathentry kind="src" output="plugins/writerasterimage/classes" path="plugins/writerasterimage/src"/>
+	<classpathentry kind="src" output="plugins/writesvgimage/classes" path="plugins/writesvgimage/src"/>
 	<classpathentry kind="lib" path="lib/java/gnu-regexp-1.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/java/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/java/openmap.jar"/>
@@ -62,5 +61,6 @@
 	<classpathentry kind="lib" path="lib/java/mysql-connector-java-3.0.15-ga-bin.jar"/>
 	<classpathentry kind="lib" path="lib/java/hsqldb-1.8.2.jar"/>
 	<classpathentry kind="lib" path="lib/java/postgresql-8.1-405.jdbc3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java 1.4.2"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

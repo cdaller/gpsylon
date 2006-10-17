@@ -543,6 +543,8 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="readme.txt"/>
       	<include name="gpsylon.sh"/>
       	<include name="gpsylon.cmd"/>
+      	<include name="gpstool.sh"/>
+      	<include name="gpstool.cmd"/>
       	<include name="serialportlist.cmd"/>
       	<include name="serialportlist.sh"/>
       </fileset>

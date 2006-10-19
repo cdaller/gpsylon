@@ -1,5 +1,17 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/10/19: fixed problem with png images in my development environment (were
+            checked out as ASCII vom cvs with the result, that all pngs were invalid)
+            this concerned all icons, splash screen, custom cursors (with the result
+            that no mouse cursor was visible in application)
+
+2006/10/18: fixed problem with database initialization on windows systems
+
+2006/10/17: removed custom cursors, makes problems on windows systems (no mouse cursor
+            visible)
+
+2006/10/16: fixed serial read problem on windows systems
+
 2006/06/27: Added autodownload feature from Manuel Habermacher (Thanks!)
             Fixed problem on linux systems with backslashes in manifest files.
             new pre release 0.5.2-pre2
@@ -10,9 +22,9 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
 2006/04/25: Rewrote the handling of databases for location markers: now the user can
             choose between different databases (hsqldb (pure java), derby (pure java),
-            mysql and postgresql. The needed database and all tables are created 
+            mysql and postgresql. The needed database and all tables are created
             automatically.
-            
+
             Versions of jdbc drivers for hsqldb, mysql and postgres updated to the
             latest versions.
 
@@ -27,33 +39,33 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
 2006/02/10: Fixed reading of gpx tracks. Version 0.5.1 released.
 
-2006/01/26: Lots of refactoring: 
+2006/01/26: Lots of refactoring:
             - Moved the GPSTool application out of the gpsinput package.
-              
+
             - Renamed application class from GPSMap to Gpsylon.
-              
-            - Moved helper classes from org.dinopolis.gpstool package to 
+
+            - Moved helper classes from org.dinopolis.gpstool package to
               subpackages. Ony the applications stayed there.
-            
-            Made separate jars for utils, gpsinput (communication with gps 
+
+            Made separate jars for utils, gpsinput (communication with gps
             devices), gpstool (command line application), gpsylon (moving map
             application).
-            
+
             Renamed the resource files from ~/.gpsmap/GPSMap.properties to
-            ~/.gpsylon/Gpsylon.properties - on upgrade please copy your 
+            ~/.gpsylon/Gpsylon.properties - on upgrade please copy your
             private settings to the new location/name.
-            
+
             Default world map (from gpsdrive) as top level map.
 
 2006/01/23: changed from javax.comm to gnu.io, due to a new incompatible
             java commapi from sun.
-            
+
             changed the garmin's thread stop: threads are now interrupted
             to prevent zombie threads.
-            
+
             added system properties to overrule all other properties
             (-Dfoo=bar)
-            
+
             did some tests with a bluetooth gps receiver (linux) - added
             documentation for this
 
@@ -68,7 +80,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 2003/12/01: changed all "packages" to "packets" (for garmin data packets)
 
             moved ProgressListener to org.dinopolis.util package
-        
+
      	      moved ProgressFrame to org.dinopolis.util.gui package
 
             added some helper variables to the velocity context for
@@ -88,7 +100,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 2003/11/25: fixed more bugs in dataconversion
 
             fixed bug in reading gpx files (wrong date in trackpoints)
-   
+
             added geocache and geochache_found symbols (when reading
             waypoints) in gpx file
 
@@ -117,7 +129,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
             100.0 are displayed with one digit behind the comma.
 
 2003/10/15: Added a quick'n'dirty import plugin for top40 overlay
-            tracks (ascii format). 
+            tracks (ascii format).
 
             0.4.15-pre8 released
 
@@ -177,7 +189,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
             download :-)
 
             fixed bug in download map module: scale factor was not
-            correctly handled 
+            correctly handled
 
             added feature: changes in maps.txt file are detected and
             the maps are added/removed.
@@ -195,7 +207,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
 2003/06/24: changed map download completely (now using plugins, so
             extending it should be easier now!
- 
+
             changed screenshot to find out about the colors used in
             the gps device (garmin only). Still most of the protocol
             unknown, but it works at least for eTrex and eMaps
@@ -284,19 +296,19 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
 2003/03/10: Fixed problems with plugin building under windows.
 
-2003/02/24: Fixed some problems with plugins. Allowed a different 
-            classloader for resources (plugins are not loaded by the 
+2003/02/24: Fixed some problems with plugins. Allowed a different
+            classloader for resources (plugins are not loaded by the
             system classloader!)
-            
-            added methods to the map manager that return the maps for 
-            given coordinates. 
-            
-            added functionality to the mouse mode of the map manager 
-            (selection works quite well (control adds selections, 
-            shift selects all maps at the click coordinates, not only 
+
+            added methods to the map manager that return the maps for
+            given coordinates.
+
+            added functionality to the mouse mode of the map manager
+            (selection works quite well (control adds selections,
+            shift selects all maps at the click coordinates, not only
             the map on top (visible)).
 
-2003/02/17: removed all unused import statements (thanks to eclipse) 
+2003/02/17: removed all unused import statements (thanks to eclipse)
             and fixed all other warnings eclipse showed.
 
             added table that shows the available maps to mapmanager
@@ -365,7 +377,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 2002/12/20: version 0.4.13 released
 
 2002/12/19: bug fix (reported from Jun Li): if the map layer was
-            deactivated, no maps were displyed on startup. 
+            deactivated, no maps were displyed on startup.
 
             Added service (plugin) functionality for "save as". At the
             moment, jpg and png is supported. A svg service is done,
@@ -438,7 +450,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
 2002/11/15: release 0.4.9 did not contain the script to create the
             database. so version 0.4.10 was released to fix this bug!
-            
+
             added lots of icons
 
             added import of location markers (gpsdrive and geonet
@@ -474,8 +486,8 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 2002/11/04: added adding of location markers to default file (csv).
 
             changed the build.xml file around (fixed a bug in the
-            build.xml file that is packed with the distributions 
-     
+            build.xml file that is packed with the distributions
+
             version 0.4.8 released
 
 2002/10/31: bug fix in track layer: cancel button in load track
@@ -483,12 +495,12 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
             added "save as..." functionality (jpg and png supported)
 
-2002/10/30: added reading csv and gpsdrive waypoints files. 
+2002/10/30: added reading csv and gpsdrive waypoints files.
 
 2002/10/29: started to implement the locationlayer from scratch (not
             using the openmap layer)
 
-2002/10/25: allow configuration of the "ignore nmea checksum" 
+2002/10/25: allow configuration of the "ignore nmea checksum"
 
             version 0.4.7 released
 
@@ -526,7 +538,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
             version 0.4.5 released
 
 2002/10/17: scale layer draws rule for current scale
-            bug fix in distance/speed unit for nautical 
+            bug fix in distance/speed unit for nautical
             version 0.4.4 released
 
 2002/10/16: added progress bars for downloads
@@ -569,7 +581,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 2002/09/24: FlatProjection is set directly into mapbean, so patch
               of ProjectionFactory is obsolete.
             bufixes
-            
+
 2002/09/23: moved java classes into packages in org.dinopolis.gpstool
             created ant-build.xml file
             TrackLayer displays tracks (save not yet done)
@@ -581,7 +593,7 @@ ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 2002/09/20: expedia works now (scale was not adopted to uneven expedia scales)
             download of areas works (array of images)
             made the image a weak reference
-            
+
 2002/09/19: added download of position
             added support for different map servers (expedia and mapblast)
             made urls configurable in resource files

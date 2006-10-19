@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2002 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -37,8 +37,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 //----------------------------------------------------------------------
 /**
@@ -48,7 +49,7 @@ import java.util.Vector;
  * @version $Revision$
  */
 
-public class JDBCUtil 
+public class JDBCUtil
 {
   String driver_name_;
   String jdbc_url_;
@@ -57,7 +58,7 @@ public class JDBCUtil
   Connection db_connection_;
   Statement db_statement_;
   boolean debug_ = true;
-  
+
 //----------------------------------------------------------------------
 /**
  * Constructs a location marker source that reads from a jdbc
@@ -83,11 +84,11 @@ public class JDBCUtil
  *
  * @param debug the debug.
  */
-  public void setDebug(boolean debug) 
+  public void setDebug(boolean debug)
   {
     debug_ = debug;
   }
-  
+
   /**
    * Opens the connection to the database.
    * @throws ClassNotFoundException if the jdbc driver class was not found!
@@ -116,7 +117,7 @@ public class JDBCUtil
   public void close()
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
@@ -130,20 +131,20 @@ public class JDBCUtil
  * @return a vector containing the names of all tables.
  * @exception SQLException if the jdbc driver used throws an SQLException
  */
-  
-  public Vector getTables()
+
+  public List getTables()
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
     DatabaseMetaData db_meta_data = db_connection_.getMetaData();
     ResultSet rs;
-    Vector tables = new Vector();
+    List tables = new ArrayList();
     rs = db_meta_data.getTables(null,null,null,new String[]{"TABLE"});
     while(rs.next())
-      tables.addElement(rs.getString("TABLE_NAME"));
+      tables.add(rs.getString("TABLE_NAME"));
     return(tables);
   }
 
@@ -155,15 +156,15 @@ public class JDBCUtil
  * @return true if the given tablename exists.
  * @exception SQLException if the jdbc driver used throws an SQLException
  */
-  
+
   public boolean tableExists(String tablename)
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
-    Vector tables = getTables();
+    List tables = getTables();
     Iterator iterator = tables.iterator();
     tablename = tablename.toLowerCase();
     while(iterator.hasNext())
@@ -187,13 +188,13 @@ public class JDBCUtil
   public void executeSQLFile(String filename)
     throws SQLException, FileNotFoundException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
     executeSQL(new FileReader(filename));
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Prints the result of a file containing sql statements. The '#'
@@ -207,7 +208,7 @@ public class JDBCUtil
   public void executeSQL(Reader sql_reader)
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
@@ -260,6 +261,8 @@ public class JDBCUtil
         case StreamTokenizer.TT_EOL:
               // ignore new lines
           break;
+        case 13: // CARRIAGE RETURN
+          break;
         default:
           System.err.println("unknown token (code 0x0"+Integer.toHexString(code)
                              +") string="+tokenizer.sval+", line "+tokenizer.lineno());
@@ -288,7 +291,7 @@ public class JDBCUtil
   public void optimizeDatabase()
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
@@ -306,11 +309,11 @@ public class JDBCUtil
  *
  * @exception SQLException if the jdbc driver used throws an SQLException
  */
-  
+
   public void printSQLResult(String query)
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
@@ -348,7 +351,7 @@ public class JDBCUtil
         System.out.println(result + " row(s) updated.");
     }
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Executes an executeUpdate call on the db_statement_ and takes care,
@@ -360,7 +363,7 @@ public class JDBCUtil
   public  int executeUpdate(String sql)
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
@@ -372,7 +375,7 @@ public class JDBCUtil
     }
   }
 
-  
+
 //----------------------------------------------------------------------
 /**
  * Executes an executeQuery call on the db_statement_ and takes care,
@@ -384,7 +387,7 @@ public class JDBCUtil
   public ResultSet executeQuery(String sql)
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
@@ -400,13 +403,13 @@ public class JDBCUtil
   public PreparedStatement prepareStatement(String query)
     throws SQLException
   {
-    if(db_connection_ == null) 
+    if(db_connection_ == null)
     {
       throw new IllegalStateException("Database was not opened!");
     }
     return(db_connection_.prepareStatement(query));
   }
-  
+
 
   public static void main(String[] args)
   {
@@ -414,7 +417,7 @@ public class JDBCUtil
     String jdbc_url =  "jdbc:hsqldb:/filer/cdaller/.gpsylon/marker/testdb";
     String jdbc_username =  "sa";
     String jdbc_password =  "";
-    
+
     JDBCUtil jdbc_util = new JDBCUtil(jdbc_driver,jdbc_url,jdbc_username,jdbc_password);
 
     try
@@ -422,7 +425,7 @@ public class JDBCUtil
       System.out.println("open");
       jdbc_util.open();
       System.out.println("check for table MARKERS:");
-      
+
       if(!jdbc_util.tableExists("MARKERS"))
       {
         System.out.println("execute script:");

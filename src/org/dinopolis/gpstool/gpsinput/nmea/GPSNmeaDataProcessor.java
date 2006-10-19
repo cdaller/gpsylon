@@ -449,7 +449,7 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
     catch (IOException ioe)
     {
-      System.err.println("IOException on beginning of reading, try once more: " + ioe.getMessage());
+      System.err.println("GPS Nmea Reading: IOException on beginning of reading, try once more: " + ioe.getMessage());
       return (false);
     }
   }

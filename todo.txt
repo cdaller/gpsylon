@@ -1,0 +1,6 @@
+[x] BUG: No splash screen, no icons for markers, no cursors (CD, 19.10.2006)
+[x] FEATURE: Export gpx tracks
+[ ] Custom Icon in Frame
+[ ] GPSTOOL should write gpx 1.1?
+[ ] Read GPX 1.0 and 1.1 Format
+[ ] NavigationMouseMode use mouse wheel to zoom

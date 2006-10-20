@@ -37,7 +37,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,7 +44,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
 import javax.imageio.ImageIO;
+
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ParseErrorException;
@@ -68,6 +69,7 @@ import org.dinopolis.gpstool.gpx.ReadGPX;
 import org.dinopolis.util.ProgressListener;
 import org.dinopolis.util.commandarguments.CommandArgumentException;
 import org.dinopolis.util.commandarguments.CommandArguments;
+import org.dinopolis.util.text.OneArgumentMessageFormat;
 
 //----------------------------------------------------------------------
 /**
@@ -546,12 +548,12 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         // current time, date
     Calendar now = Calendar.getInstance();
     context.put("creation_date",now.getTime());
-    int day = now.get(Calendar.DAY_OF_MONTH);
-    int month = now.get(Calendar.MONTH);
-    int year = now.get(Calendar.YEAR);
-    int hour = now.get(Calendar.HOUR_OF_DAY);
-    int minute = now.get(Calendar.MINUTE);
-    int second = now.get(Calendar.SECOND);
+//    int day = now.get(Calendar.DAY_OF_MONTH);
+//    int month = now.get(Calendar.MONTH);
+//    int year = now.get(Calendar.YEAR);
+//    int hour = now.get(Calendar.HOUR_OF_DAY);
+//    int minute = now.get(Calendar.MINUTE);
+//    int second = now.get(Calendar.SECOND);
 //     DecimalFormat two_digit_formatter = new DecimalFormat("00");
 //     context.put("date_day",two_digit_formatter.format((long)day));
 //     context.put("date_month",two_digit_formatter.format((long)month));
@@ -863,12 +865,6 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     System.out.println("OS: " + System.getProperty("os.name") + "/" + System.getProperty("os.arch"));
   }
 
-  private static void test()
-  {
-  }
-
-
-
 
 //----------------------------------------------------------------------
 /**
@@ -880,88 +876,6 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     new GPSTool().init(arguments);
   }
 
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-
-	static public class OneArgumentMessageFormat extends MessageFormat
-	{
-		public OneArgumentMessageFormat(String pattern)
-		{
-			super(pattern);
-		}
-
-		public OneArgumentMessageFormat(String pattern, Locale locale)
-		{
-			super(pattern,locale);
-		}
-
-		public String format(String argument)
-		{
-			System.out.println("OneArgumentMessageFormat: "+argument);
-			return(format(new Object[] {argument}));
-		}
-
-		public String format(String pattern, String argument)
-		{
-			return(format(pattern, new Object[] {argument}));
-		}
-
-//----------------------------------------------------------------------
- /**
-  * Pad a string to a maximal length with spaces at the end.
-  * @param string the string to pad.
-  * @param length the length for the final string (if the given string is longer,
-  * it is shortened to the given length).
-	*/
-		public String pad(String string, int length)
-		{
-			return(pad(string,length,' ',false));
-		}
-
-//----------------------------------------------------------------------
- /**
-  * Pad a string to a maximal length with a given character at the end.
-  * @param string the string to pad.
-  * @param length the length for the final string (if the given string is longer,
-  * it is shortened to the given length).
-  * @param pad_char the character to pad with.
-	*/
-		public String pad(String string, int length, char pad_char)
-		{
-			return(pad(string,length,pad_char,false));
-		}
-
-//----------------------------------------------------------------------
- /**
-  * Pad a string to a maximal length with a given character on the beginning or
-  *	 on the end.
-  * @param string the string to pad.
-  * @param length the length for the final string (if the given string is longer,
-  * it is shortened to the given length).
-  * @param pad_char the character to pad with.
-  * @param pad_begin pad on the begin of the string, not at the end
-	*/
-		public String pad(String string, int length, char pad_char, boolean pad_begin)
-		{
-			StringBuffer str = new StringBuffer(string);
-			if(length > string.length())
-			{
-				do
-				{
-					if(pad_begin)
-						str.insert(0,pad_char);
-					else
-						str.append(pad_char);
-				}
-				while(str.length() < length);
-				return(str.toString());
-			}
-			else
-			{
-				return(string.substring(0,length));
-			}
-		}
-	}
 
 
 }

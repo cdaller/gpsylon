@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -24,6 +24,8 @@
 package org.dinopolis.gpstool.track;
 
 import com.bbn.openmap.proj.Projection;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -57,13 +59,13 @@ import org.dinopolis.util.Resources;
  * @version $Revision$
  */
 
-public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants 
+public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
 {
 //  List tracks_ = new Vector();
 //  Map track_map_ = new TreeMap(new RouteIdentificationComparator());
   Map track_map_ = new TreeMap();
   GPSDataProcessor gps_data_processor_;
-  Vector track_listeners_;
+  List track_listeners_;
   String active_track_identifier_;
   Resources resources_;
 
@@ -81,7 +83,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
  * Initialize with all the track manager needs (resources and gps data
  * processor).
  *
- * @param support 
+ * @param support
  */
   public void initialize(PluginSupport support)
   {
@@ -90,7 +92,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
     active_track_identifier_ = resources_.getString(KEY_TRACK_ACTIVE_TRACK_IDENTIFIER);
   }
 
-  
+
 //----------------------------------------------------------------------
 /**
  * Returns a copy of the list of tracks ({@link
@@ -221,7 +223,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
     if(track == null)
       throw new IllegalArgumentException("Track with identifier '"
                                          +identifier+"' does not exist.");
-    
+
     active_track_identifier_ = identifier;
   }
 
@@ -257,7 +259,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
                                          +identifier+"' does not exist.");
     if(trackpoint == null)
       throw new IllegalArgumentException("Trackpoint must not be null");
-    
+
     track.addWaypoint(trackpoint);
 //    System.out.println("added trackpoint to track");
     fireTrackChangedEvent(new TrackChangedEvent(this,
@@ -305,7 +307,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
     {
       gps_track = (GPSTrack)iterator.next();
       track = new TrackImpl(gps_track);
-      
+
       addTrack(track);
     }
   }
@@ -344,7 +346,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
     if(gps_data_processor_ == null)
       throw new UnsupportedOperationException("No gps data processor available (set).");
 
-    Vector tracks = new Vector();
+    List tracks = new ArrayList();
     for(int index = 0; index < identifiers.length; index++)
     {
       tracks.add(getTrack(identifiers[index]));
@@ -362,7 +364,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
   public void addTrackListener(TrackChangedListener listener)
   {
     if(track_listeners_ == null)
-      track_listeners_ = new Vector();
+      track_listeners_ = new ArrayList();
 
     synchronized(track_listeners_)
     {
@@ -412,7 +414,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
   {
     Vector tracks = new Vector();
     GeoExtent visible_area = new GeoExtent(projection);
-    
+
     synchronized(track_map_)
     {
       Iterator iterator = track_map_.keySet().iterator();
@@ -443,7 +445,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
     }
     return(tracks);
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * Returns a projected track (holding the screen coordinates as well
@@ -490,7 +492,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
     int track_size = track.size();
     if(track_size == 0)
       return(false);
-    
+
     GPSWaypoint start_point;
     GPSWaypoint next_point;
     int index = 1;
@@ -498,7 +500,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
 
     if(track_size == 1)
       return(visible_area.isInside(start_point.getLatitude(), start_point.getLongitude()));
-    
+
     while (index < track_size)
     {
       next_point = track.getWaypoint(index);
@@ -509,7 +511,7 @@ public class TrackManagerImpl implements TrackManager, GpsylonKeyConstants
       index++;
     }
     return(false);
-    
+
 //     GPSWaypoint point;
 //     for(int index = 0; index < track_size; index++)
 //     {

@@ -3,38 +3,47 @@
  *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
 
 package org.dinopolis.gpstool.plugin.tracklayer;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.event.TrackChangedEvent;
 import org.dinopolis.gpstool.event.TrackChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-import org.dinopolis.gpstool.track.*;
+import org.dinopolis.gpstool.track.Track;
+import org.dinopolis.gpstool.track.TrackImpl;
+import org.dinopolis.gpstool.track.TrackManager;
+import org.dinopolis.gpstool.track.Trackpoint;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
 
@@ -45,7 +54,7 @@ import com.bbn.openmap.proj.Projection;
 //----------------------------------------------------------------------
 /**
  * This layer displays tracks stored in the trackmanager.
- * 
+ *
  * @author Christof Dallermassl
  * @version $Revision$
  */
@@ -80,7 +89,7 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
 
   public static final String VALUE_TRACK_DRAW_MODE_LINEONLY = "line_only";
   public static final String VALUE_TRACK_DRAW_MODE_TRACKPOINT_LINE = "trackpoint_line";
-  
+
 //----------------------------------------------------------------------
 /**
  * Constructor
@@ -134,13 +143,13 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
     if(Debug.DEBUG)
       Debug.println("trackplugin","in paintComponent");
 
-    if(tracks_ == null)
+    if(tracks_ == null || tracks_.size() == 0)
       return;
-    
-    Vector tracks = null;
+
+    List tracks = null;
     synchronized(tracks_lock_)
     {
-      tracks = new Vector(tracks_);
+      tracks = new ArrayList(tracks_);
     }
 
     Graphics2D g2 = (Graphics2D) g;
@@ -207,7 +216,7 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
 //           g2.setColor(Color.green);
             if(draw_trackpoints_)
               g2.drawRect(end_x-1,end_y-1,3,3);
-            
+
             if(Debug.DEBUG)
               Debug.println("trackplugin_paint","painting line: from"+start_x+"/"
                             +start_y+" to "+end_x+"/"+end_y);
@@ -314,7 +323,7 @@ public class TrackLayer extends BasicLayer implements TrackChangedListener, Prop
 //----------------------------------------------------------------------
 /**
  * Callback method for property change events (Postion, altitude, ...)
- * 
+ *
  * @param event the property change event.
  */
 

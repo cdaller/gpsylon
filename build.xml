@@ -80,6 +80,7 @@ Christof Dallermassl (christof@dallermassl.at)
     <patternset id="gpstool.default_plugin_names">
       <include name="navigationmousemode/${dist_dir}/**/*.jar" />
       <include name="downloadmousemode/${dist_dir}/**/*.jar" />
+      <include name="export/${dist_dir}/**/*.jar" />
       <include name="writerasterimage/${dist_dir}/**/*.jar" />
       <include name="readgpsdrivetrack/${dist_dir}/**/*.jar" />
       <include name="readgpx/${dist_dir}/**/*.jar" />
@@ -668,6 +669,9 @@ Christof Dallermassl (christof@dallermassl.at)
       <fileset dir="${plugin_dir}/downloadmousemode/${dist_dir}">
         <include name="**/*.jar"/>
       </fileset>
+      <fileset dir="${plugin_dir}/export/${dist_dir}">
+        <include name="**/*.jar"/>
+      </fileset>
       <fileset dir="${plugin_dir}/writerasterimage/${dist_dir}">
         <include name="**/*.jar"/>
       </fileset>
@@ -748,7 +752,7 @@ Christof Dallermassl (christof@dallermassl.at)
 
   <!-- compile_plugins target -->
   <target name="compile_plugins"
-    depends="init,compile_downloadmousemode_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_readgpx_plugin,compile_readtop50ovl_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin,compile_trackchart_plugin">
+    depends="init,compile_downloadmousemode_plugin,compile_export_plugin,compile_navigationmousemode_plugin,compile_writerasterimage_plugin,compile_readgpsdrivetrack_plugin,compile_readgpx_plugin,compile_readtop50ovl_plugin,compile_mapmanager_plugin,compile_kismetimport_plugin,compile_importexport_plugin,compile_tracklayer_plugin,compile_gpstool_plugin,compile_averagepos_plugin,compile_trackchart_plugin">
   </target>
 
   <!-- compile_downloadmousemode_plugin target -->
@@ -756,6 +760,10 @@ Christof Dallermassl (christof@dallermassl.at)
     <ant dir="${plugin_dir}/downloadmousemode" target="compile" inheritAll="false"/>
   </target>
 
+  <!-- compile_export_plugin target -->
+  <target name="compile_export_plugin" depends="init">
+    <ant dir="${plugin_dir}/export" target="compile" inheritAll="false"/>
+  </target>
   <!-- compile_navigationmousemode_plugin target -->
   <target name="compile_navigationmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/navigationmousemode" target="compile" inheritAll="false"/>
@@ -823,12 +831,17 @@ Christof Dallermassl (christof@dallermassl.at)
 
   <!-- bin_dist_plugins target -->
   <target name="bin_dist_plugins"
-    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_readgpx_plugin,bin_dist_readtop50ovl_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin,bin_dist_trackchart_plugin">
+    depends="init,bin_dist_downloadmousemode_plugin,bin_dist_export_plugin,bin_dist_navigationmousemode_plugin,bin_dist_writerasterimage_plugin,bin_dist_readgpsdrivetrack_plugin,bin_dist_readgpx_plugin,bin_dist_readtop50ovl_plugin,bin_dist_mapmanager_plugin,bin_dist_kismetimport_plugin,bin_dist_importexport_plugin,bin_dist_tracklayer_plugin,bin_dist_gpstool_plugin,bin_dist_averagepos_plugin,bin_dist_trackchart_plugin">
   </target>
 
   <!-- bin_dist_downloadmousemode_plugin target -->
   <target name="bin_dist_downloadmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/downloadmousemode" target="bin_dist" inheritAll="false"/>
+  </target>
+
+  <!-- bin_dist_export_plugin target -->
+  <target name="bin_dist_export_plugin" depends="init">
+    <ant dir="${plugin_dir}/export" target="bin_dist" inheritAll="false"/>
   </target>
 
   <!-- bin_dist_navigationmousemode_plugin target -->
@@ -898,12 +911,17 @@ Christof Dallermassl (christof@dallermassl.at)
 
   <!-- install_plugins target -->
   <target name="install_plugins"
-    depends="init,install_downloadmousemode_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_readgpx_plugin,install_readtop50ovl_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin,install_plugin_trackchart_plugin">
+    depends="init,install_downloadmousemode_plugin,install_export_plugin,install_navigationmousemode_plugin,install_writerasterimage_plugin,install_readgpsdrivetrack_plugin,install_readgpx_plugin,install_readtop50ovl_plugin,install_mapmanager_plugin,install_kismetimport_plugin,install_plugin_importexport_plugin,install_plugin_tracklayer_plugin,install_plugin_gpstool_plugin,install_plugin_averagepos_plugin,install_plugin_trackchart_plugin">
   </target>
 
   <!-- install_downloadmousemode_plugin target -->
   <target name="install_downloadmousemode_plugin" depends="init">
     <ant dir="${plugin_dir}/downloadmousemode" target="install_plugin" inheritAll="false"/>
+  </target>
+
+  <!-- install_export_plugin target -->
+  <target name="install_export_plugin" depends="init">
+    <ant dir="${plugin_dir}/export" target="install_plugin" inheritAll="false"/>
   </target>
 
   <!-- install_navigationmousemode_plugin target -->

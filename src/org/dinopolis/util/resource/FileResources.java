@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2001 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -144,7 +144,7 @@ public class FileResources extends AbstractResources
    */
 
   protected FileResources(File user_resource_file,
-                          Properties user_bundle, 
+                          Properties user_bundle,
                           String user_resource_base_name,
                           ResourceBundle system_bundle,
                           String system_resource_base_name,
@@ -167,10 +167,10 @@ public class FileResources extends AbstractResources
    * @param base_name the base name of the resource bundle.
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
-   * could not be located. 
+   * could not be located.
    * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
- 
+
   public static FileResources getResources(String base_name)
     throws MissingResourceException
   {
@@ -182,7 +182,7 @@ public class FileResources extends AbstractResources
    * Get the appropriate FileResources for the given base_name and
    * searches the system bundle in the callers package name.
    * See also
-   * {@link #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)} 
+   * {@link #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)}
    *
    * @param caller the caller, to search the system bundle for.
    * @param base_name the base name of the resource bundle.
@@ -190,8 +190,8 @@ public class FileResources extends AbstractResources
    * @exception MissingResourceException if the system resource file
    * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
- 
-  public static FileResources getResources(Class caller, 
+
+  public static FileResources getResources(Class caller,
                                            String base_name)
     throws MissingResourceException
   {
@@ -207,7 +207,7 @@ public class FileResources extends AbstractResources
    * @param locale the locale.
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
-   * could not be located. 
+   * could not be located.
    * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
 
@@ -223,18 +223,18 @@ public class FileResources extends AbstractResources
    * Get the appropriate FileResources for the given base_name and locale
    * and searches the system bundle in the callers package name. See
    * also {@link
-   * #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)}  
+   * #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)}
    *
    * @param caller the caller, to search the system bundle for.
    * @param base_name the base name of the resource bundle.
    * @param locale the locale.
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
-   * could not be located. 
+   * could not be located.
    * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
 
-  public static FileResources getResources(Class caller, 
+  public static FileResources getResources(Class caller,
                                            String base_name,
                                            Locale locale)
     throws MissingResourceException
@@ -254,11 +254,11 @@ public class FileResources extends AbstractResources
    * to look for a property file.
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
-   * could not be located. 
+   * could not be located.
    * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
  */
- 
-  public static FileResources getResources(String base_name, 
+
+  public static FileResources getResources(String base_name,
                                            String dir_name)
     throws MissingResourceException
   {
@@ -278,11 +278,11 @@ public class FileResources extends AbstractResources
    * @param dir_name the name of the directory within the users homedir
    * to look for a property file.
    * @exception MissingResourceException if the system resource file
-   * could not be located. 
+   * could not be located.
    * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
- 
-  public static FileResources getResources(Class caller, 
+
+  public static FileResources getResources(Class caller,
                                            String base_name,
                                            String dir_name)
     throws MissingResourceException
@@ -303,11 +303,11 @@ public class FileResources extends AbstractResources
    * to look for a property file.
    * @return the Resource.
    * @exception MissingResourceException if the system resource file
-   * could not be located. 
+   * could not be located.
    * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
 
-  public static FileResources getResources(String base_name, 
+  public static FileResources getResources(String base_name,
                                            String dir_name,
                                            Locale locale)
     throws MissingResourceException
@@ -326,7 +326,7 @@ public class FileResources extends AbstractResources
    * $user_home/.<code>dir_name</code>/<code>base_name</code>.properties,
    * $user_home/<code>dir_name</code>.toLowerCase()/<code>base_name</code>.properties,
    * $user_home/.<code>dir_name</code>.toLowerCase()/<code>base_name</code>.properties<p>
-   * 
+   *
    * The system resources are expected to be in the same package than
    * the caller!<p>
    *
@@ -344,11 +344,11 @@ public class FileResources extends AbstractResources
    * the system resources are expected to be in:<br>
    * "org.dinopolis.util.FileResources.TestFileResources.properties"
    * within your classpath!<p>
-   * 
+   *
    * The sample code of the caller for the given example will look
    * like this:
    * <xmp>
-   * FileResources resources = FileResources.getResources(getClass(), "TestFileResources", 
+   * FileResources resources = FileResources.getResources(getClass(), "TestFileResources",
    *                                           "test_resources");
    * </xmp>
    *
@@ -362,7 +362,7 @@ public class FileResources extends AbstractResources
    * could not be located.
    */
 
-  public static FileResources getResources(Class caller, 
+  public static FileResources getResources(Class caller,
                                            String base_name,
                                            String dir_name,
                                            Locale locale)
@@ -388,21 +388,20 @@ public class FileResources extends AbstractResources
    * could not be located.
    * @see #getResources(java.lang.Class,java.lang.String,java.lang.String,java.util.Locale)
    */
-   
-   public static FileResources getResources(Class caller, 
+
+   public static FileResources getResources(Class caller,
                                             String base_name,
                                             String dir_name,
                                             Locale locale,
                                             ClassLoader class_loader)
     throws MissingResourceException
   {
-    String system_resource_base_name =
-      getSystemResourceBaseName(caller);
+    String system_resource_base_name = getSystemResourceBaseName(caller);
     String user_resource_base_name = getUserResourceBaseName(dir_name);
     File user_resource_file = getUsersResourceFile(base_name, user_resource_base_name);
-    
-    String key = locale+":"+base_name+":"+system_resource_base_name+ 
-      ":"+user_resource_base_name; 
+
+    String key = locale+":"+base_name+":"+system_resource_base_name+
+      ":"+user_resource_base_name;
     FileResources bound = (FileResources)mapping_.get(key);
     if (bound == null)
     {
@@ -440,7 +439,7 @@ public class FileResources extends AbstractResources
       return("");
     String caller_package = caller.getName();
     int las_dot = caller_package.lastIndexOf('.');
-    if (las_dot > 0) 
+    if (las_dot > 0)
       caller_package = caller_package.substring(0, las_dot);
     else
       caller_package = "";
@@ -458,7 +457,7 @@ public class FileResources extends AbstractResources
    * @param class_loader the class loader to use.
    * @return the system resource bundle if found.
    * @exception MissingResourceException if the system resource file
-   * could not be located. 
+   * could not be located.
    */
 
   protected static ResourceBundle getSystemResourceBundle(String system_resource_base_dir,
@@ -484,7 +483,7 @@ public class FileResources extends AbstractResources
    * $user_home/.<code>dir_name</code>,
    * $user_home/<code>dir_name</code>.toLowerCase(),
    * $user_home/.<code>dir_name</code>.toLowerCase().
-   * 
+   *
    * @param dir_name the name of the directory within the users homedir
    * to look for a property file.
    * @return the base name of the resource bundle, or null if no dir was
@@ -501,7 +500,7 @@ public class FileResources extends AbstractResources
       resource_dir = new File(home_dir, dir_name.toLowerCase()); // try it lowercased
     if (!resource_dir.isDirectory())
       resource_dir = new File(home_dir, "."+dir_name.toLowerCase()); // try it lowercased and added dot
-    
+
     if (!resource_dir.isDirectory())
       // directory not found! -> use standard way
       resource_dir = new File(home_dir, dir_name.toLowerCase());
@@ -520,7 +519,7 @@ public class FileResources extends AbstractResources
    * @return the resource file found in the users home dir.
    */
 
-  protected static File getUsersResourceFile(String base_name, 
+  protected static File getUsersResourceFile(String base_name,
                                              String user_resource_dir)
   {
     File resource_dir;
@@ -586,7 +585,7 @@ public class FileResources extends AbstractResources
    * @return the string loaded from the resource bundle.
    * @throws MissingResourceException if the value is not found.
    */
-  
+
   protected synchronized String getValue(String key)
     throws MissingResourceException
   {
@@ -620,9 +619,9 @@ public class FileResources extends AbstractResources
    *
    * @param key the key of the resource property to set.
    * @param value the value of the resource property to set.
-   * 
+   *
    */
-  
+
   protected synchronized void setValue(String key, String value)
   {
     //    System.err.println("setValue() key: "+key+", value: "+value);
@@ -670,13 +669,13 @@ public class FileResources extends AbstractResources
   {
     user_properties_.remove(key);
   }
-  
+
   //----------------------------------------------------------------------
   /**
    * Call this method to make all changes performed by unset and
    * setter methods persistent.
    * Overwrite this method in classes extending AbstractResources, if
-   * modifications are supported. 
+   * modifications are supported.
    *
    * @exception IOException in case of an IOError.
    */
@@ -688,7 +687,7 @@ public class FileResources extends AbstractResources
     File parent = user_resource_file_.getParentFile();
     if (!parent.exists())
       parent.mkdir();
-        
+
     FileOutputStream file_out = new FileOutputStream(user_resource_file_);
     user_properties_.store(file_out, "auto generated file - by FileResources");
     file_out.close();
@@ -733,7 +732,7 @@ public class FileResources extends AbstractResources
   /**
    * Returns a string that describes the key and its possible values.
    * If no description for this key is available, <code>null</code> is
-   * returned. 
+   * returned.
    * Overwrite this method in classes extending AbstractResources, if
    * descriptions are supported. by default, this method returns null.
    *
@@ -810,7 +809,7 @@ public class FileResources extends AbstractResources
    * If no set of valid values exists <code>null</code> is returned.
    * Overwrite this method in classes extending AbstractResources, if
    * types is a set of chooseable values. by default, this method
-   * returns null. 
+   * returns null.
    *
    * @param key the key to get the type for.
    * @return the possible values.
@@ -819,7 +818,7 @@ public class FileResources extends AbstractResources
   public String[] getPossibleValues(String key)
   {
     return(getStringArray(key+POSSIBLE_VALUES_SUFFIX,
-                          (String[])null)); 
+                          (String[])null));
   }
 
   //----------------------------------------------------------------------
@@ -829,7 +828,7 @@ public class FileResources extends AbstractResources
    *
    * @param key the key to set the possible Values for.
    * @param possible_values the possible Values to set.
-   * @exception IllegalArgumentException if is 'null'. 
+   * @exception IllegalArgumentException if is 'null'.
    */
 
   public void setPossibleValues(String key, String[] possible_values)
@@ -877,7 +876,7 @@ public class FileResources extends AbstractResources
           // ignored
         }
       }
-      
+
       // try it with class loader
       URL ret = class_loader_.getResource(system_resource_base_name_+"/"+value);
 
@@ -886,8 +885,8 @@ public class FileResources extends AbstractResources
 
       if (ret != null)
         return(ret);
-      
-      throw(new MissingResourceException("malformed URL '"+value+"'", 
+
+      throw(new MissingResourceException("malformed URL '"+value+"'",
                                          getClass().getName(), key));
     }
   }

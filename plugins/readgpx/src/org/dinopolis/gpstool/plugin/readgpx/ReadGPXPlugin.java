@@ -25,9 +25,10 @@ package org.dinopolis.gpstool.plugin.readgpx;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
+
 import org.dinopolis.gpstool.Gpsylon;
 import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.gpsinput.GPSTrack;
@@ -39,7 +40,6 @@ import org.dinopolis.gpstool.track.TrackImpl;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
-import java.util.List;
 
 //----------------------------------------------------------------------
 /**

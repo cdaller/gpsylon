@@ -425,8 +425,10 @@ public class ImportExportPlugin implements GuiPlugin
             plugin.initializePlugin(plugin_support_);
             filter = new ExtensionFileFilter();
             extensions = plugin.getContentFileExtensions();
-            for(int extension_count = 0; extension_count < extensions.length; extension_count++)
+            for(int extension_count = 0; extension_count < extensions.length; ++extension_count)
+            {
               filter.addExtension(extensions[extension_count]);
+            }
             filter.setDescription(plugin.getContentDescription());
             filter.setAuxiliaryObject(plugin);
             track_file_chooser_.addChoosableFileFilter(filter);
@@ -446,7 +448,6 @@ public class ImportExportPlugin implements GuiPlugin
       {
         ExtensionFileFilter filter = (ExtensionFileFilter)track_file_chooser_.getFileFilter();
         ReadTrackPlugin plugin = (ReadTrackPlugin)filter.getAuxiliaryObject();
-        File file = track_file_chooser_.getSelectedFile();
         chosen_files = track_file_chooser_.getSelectedFiles();
         // add all tracks from all files:
         for(int file_count = 0; file_count < chosen_files.length; file_count++)
@@ -454,8 +455,7 @@ public class ImportExportPlugin implements GuiPlugin
           try
           {
             // create inputstream from file for plugin:
-            Track[] tracks = plugin.getTracks(new BufferedInputStream(
-                new FileInputStream(chosen_files[file_count])));
+            Track[] tracks = plugin.getTracks(new BufferedInputStream(new FileInputStream(chosen_files[file_count])));
             for(int track_count = 0; track_count < tracks.length; track_count++)
             {
               track_manager_.addTrack(tracks[track_count]);
@@ -541,8 +541,11 @@ public class ImportExportPlugin implements GuiPlugin
             plugin.initializePlugin(plugin_support_);
             filter = new ExtensionFileFilter();
             extensions = plugin.getContentFileExtensions();
-            for(int extension_count = 0; extension_count < extensions.length; extension_count++)
+            // add last one first, so the order in the dialog is correct
+            for(int extension_count = 0; extension_count < extensions.length; ++extension_count)
+            {
               filter.addExtension(extensions[extension_count]);
+            }
             filter.setDescription(plugin.getContentDescription());
             filter.setAuxiliaryObject(plugin);
             track_file_chooser_.addChoosableFileFilter(filter);
@@ -562,7 +565,7 @@ public class ImportExportPlugin implements GuiPlugin
       {
         ExtensionFileFilter filter = (ExtensionFileFilter)track_file_chooser_.getFileFilter();
         WriteTrackPlugin plugin = (WriteTrackPlugin)filter.getAuxiliaryObject();
-        File file = track_file_chooser_.getSelectedFile();
+        File file = addExtension(track_file_chooser_.getSelectedFile(), plugin.getContentFileExtensions());
         // write all tracks:
         List tracks = track_manager_.getTracks();
         try
@@ -575,5 +578,22 @@ public class ImportExportPlugin implements GuiPlugin
         }
       }
     }
+  }
+  
+  /**
+   * If no extension is given in the file, the first extension from the given array is appended.
+   * @param filename the filename to check.
+   * @param extensions the extensions.
+   * @return the filename.
+   */
+  private File addExtension(File file, String[] extensions)
+  {
+    // if the file name already has an extension, return the filename
+    if(file.getName().indexOf('.') > 0)
+    {
+      return file;
+    }
+    
+    return new File(file.getParent(), file.getName() + "." + extensions[0]);
   }
 }

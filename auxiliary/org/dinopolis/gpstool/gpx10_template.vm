@@ -80,8 +80,10 @@
 #end
       </trkpt>
 #end
+#if($close_segment)
     </trkseg>
-  </trk>
+#end  
+</trk>
 #end
 #end
 </gpx>

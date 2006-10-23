@@ -1,5 +1,7 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/10/21: fixed bug in gpx templates (gpstool and gpsylon)
+
 2006/10/20: added export of tracks in gpx 1.0 and gpx 1.1 format
 
 2006/10/19: fixed problem with png images in my development environment (were

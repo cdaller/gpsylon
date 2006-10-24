@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -44,7 +44,7 @@ import com.bbn.openmap.Layer;
  * @version $Revision$
  */
 
-public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
+public class NavigationMouseMode implements MouseModePlugin, AWTEventListener, MouseWheelListener
 {
   boolean mode_active_;
   MapNavigationHook map_navigation_hook_;
@@ -55,10 +55,11 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
   Component component_;
   Point drag_start_;
   boolean mouse_dragged_ = false;
-  
+
   public static final int ZOOM_IN_MODE = 0;
   public static final int ZOOM_OUT_MODE = 1;
-  
+  public static final float ZOOM_FACTOR = 2.0f;
+
 
 //----------------------------------------------------------------------
 /**
@@ -99,7 +100,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
       component_.setCursor(zoom_out_cursor_);
   }
 
-  // AWTEventListener 
+  // AWTEventListener
   //----------------------------------------------------------------------
   /**
    * Invoked when a key event occures.
@@ -118,7 +119,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
  *
  * @param event the key event.
  */
-  
+
   public void dispatchKeyEvent(KeyEvent event)
   {
     if (event.isShiftDown())
@@ -213,7 +214,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
   {
     return(null);
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * The name returned here is used in the menu and/or the toolbar of
@@ -230,7 +231,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
 //----------------------------------------------------------------------
 /**
  * The icon returned here is used in the menu and/or the toolbar of
- * the application to switch the mouse mode on or off. 
+ * the application to switch the mouse mode on or off.
  *
  * @return the icon of the mouse mode.
  */
@@ -243,7 +244,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
 //----------------------------------------------------------------------
 /**
  * The description returned here is used in the menu and/or the toolbar of
- * the application to switch the mouse mode on or off. 
+ * the application to switch the mouse mode on or off.
  *
  * @return the description of the mouse mode.
  */
@@ -282,7 +283,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
   {
     return("control N");
   }
-  
+
 //----------------------------------------------------------------------
 // Plugin methods
 //----------------------------------------------------------------------
@@ -302,7 +303,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
 //----------------------------------------------------------------------
 /**
  * Returns the version of the plugin. The version may be used to
- * choose between different version of the same plugin. 
+ * choose between different version of the same plugin.
  *
  * @return The version of the plugin.
  */
@@ -316,7 +317,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
 /**
  * Returns the name of the Plugin. The name should be a human
  * readable and understandable name like "Save Image as JPEG". It is
- * prefereable but not necessary that the name is localized. 
+ * prefereable but not necessary that the name is localized.
  *
  * @return The name of the plugin.
  */
@@ -331,7 +332,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
  * Returns a description of the Plugin. The description should be
  * human readable and understandable like "This plugin saves the
  * content of the main window as an image in jpeg format". It is
- * prefereable but not necessary that the description is localized. 
+ * prefereable but not necessary that the description is localized.
  *
  * @return The description of the plugin.
  */
@@ -341,7 +342,6 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
     return(getMouseModeDescription());
   }
 
-  
 //----------------------------------------------------------------------
 // MouseListener Adapter
 //----------------------------------------------------------------------
@@ -359,7 +359,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
       if(event.isShiftDown())
       {
         map_navigation_hook_.setMapCenter(point.getLatitude(),point.getLongitude());
-        map_navigation_hook_.reScale(2.0f);
+        map_navigation_hook_.reScale(ZOOM_FACTOR);
       }
 
 //       if(event.isControlDown())
@@ -375,7 +375,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
       if(!event.isAltDown() && !event.isShiftDown() && !event.isControlDown())
       {
         map_navigation_hook_.setMapCenter(point.getLatitude(),point.getLongitude());
-        map_navigation_hook_.reScale(0.5f);
+        map_navigation_hook_.reScale(1.0f / ZOOM_FACTOR);
       }
     } // end of if(Button1)
   }
@@ -389,7 +389,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
       source.setCursor(zoom_out_cursor_);
     else
       source.setCursor(zoom_in_cursor_);
-    
+
 //    System.out.println("mouseEntered: "+event.getSource());
   }
 
@@ -423,15 +423,15 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
       if(drag_start_ == null)
         return;
       Point point = event.getPoint();
-      
+
       float delta_x = (float)(drag_start_.getX() - point.getX());
       float delta_y = (float)(drag_start_.getY() - point.getY());
       float factor_x = delta_x / component_.getWidth();
       float factor_y = delta_y / component_.getHeight();
-      
+
       map_navigation_hook_.translateMapCenterRelative(factor_x,factor_y);
       drag_start_ = null;
-      
+
       updateZoomCursor(ZOOM_IN_MODE);
     }
 //    System.out.println("mouseReleased: "+event.getSource());
@@ -450,6 +450,7 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
         // TODO FIXXME, set hand mouse cursor:
     Component source = (Component)event.getSource();
     source.setCursor(pan_cursor_);
+
 //     drag_current_x_ = event.getX();
 //     drag_current_y_ = event.getY();
 //     drag_mode_ = true;
@@ -474,10 +475,20 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener
 // available only in jdk 1.4, so not used at the moment
 //----------------------------------------------------------------------
 
-//    void mouseWheelMoved(MouseWheelEvent event)
-//     {
-//       System.out.println("mouseWheelMoved: "+event.getSource());
-//     }
+    public void mouseWheelMoved(MouseWheelEvent event)
+     {
+       System.out.println("mouseWheelMoved: "+event.getSource());
+       //LatLonPoint point = map_navigation_hook_.getMapProjection().inverse(event.getX(),event.getY());
+       float factor = ZOOM_FACTOR;
+       System.out.println("scroll amount: " + event.getScrollAmount());
+       System.out.println("units : " + event.getUnitsToScroll());
+       int units = event.getUnitsToScroll();
+       if(units > 0)
+       {
+         factor = 1.0f / factor;
+       }
+       map_navigation_hook_.reScale(factor);
+     }
 
 }
 

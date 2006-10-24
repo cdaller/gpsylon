@@ -1,6 +1,6 @@
 # Add plugin
-org.dinopolis.gpstool.plugin.export.WriteGPXPlugin
 org.dinopolis.gpstool.plugin.export.WriteGPX10Plugin
+org.dinopolis.gpstool.plugin.export.WriteGPXPlugin
 # pcx5template handles only waypoints at the moment
 # org.dinopolis.gpstool.plugin.export.WritePcx5Plugin
 # end of services

@@ -1,7 +1,7 @@
 
 <project name="org.dinopolis.gpstool.plugin.navigationmousemode" default="help">
 
-  <property name="release_version" value="1.0"/>
+  <property name="release_version" value="1.1"/>
   <property name="dist_name" value="gpstool_plugin_navigationmousemode"/>
   <property name="source_dir" value="src"/>
   <property name="dist_dir" value="dist"/>
@@ -12,7 +12,7 @@
   <property name="plugin_install_home_dir" value="${user.home}/.gpsylon/plugins"/>
 
 <!-- patternset of gpstool files needed to compile the distribution (used by the common_compile_dist) -->
-  
+
   <patternset id="compile.files">
     <include name="org/dinopolis/gpstool/plugin/navigationmousemode/*.java"/>
   </patternset>
@@ -28,7 +28,7 @@
 
 
 <!-- targets -->
- 
+
   <target name="help">
     <echo>
 The following targets are available:
@@ -45,9 +45,9 @@ The following targets are available:
  - install_plugin_home: installs the plugins and all needed libraries into the
       '${plugin_install_home_dir} directory.
  - clean_old_plugins: removes the old versions of this plugin in the plugins
-      directory '${plugin_install_dir}. 
+      directory '${plugin_install_dir}.
  - clean_old_plugins_home: removes the old versions of this plugin in the plugins
-      directory '${plugin_install_home_dir}. 
+      directory '${plugin_install_home_dir}.
     </echo>
   </target>
 
@@ -55,7 +55,7 @@ The following targets are available:
 <!-- make a binary distribution: includes documentation and jars.
    In order to run the gpstool out of the binary distribution first unzip and
    untar the distribution, switch to the gpstool directory and invoke the gpstool:
-   java -jar gpstool.jar 
+   java -jar gpstool.jar
 -->
   <target name="bin_dist" depends="compile">
     <tstamp/> <!-- needed for ${TODAY} -->
@@ -64,7 +64,7 @@ The following targets are available:
 
 <!-- create a property holding the Class-Path for the manifest -->
     <path id="gpstool_plugin_navigationmousemode.dist.classpath">
-<!-- no other libraries needed: 
+<!-- no other libraries needed:
       <fileset dir="${lib_dir}">
         <patternset refid="gpstool_plugin_navigationmousemode.lib.patternset"/>
       </fileset>
@@ -89,7 +89,7 @@ The following targets are available:
           <attribute name="Specification-Version" value="${release_version}" />
           <attribute name="Specification-Vendor" value="Christof Dallermassl" />
           <attribute name="Implementation-Title" value="Navigation Mouse Mode Plugin for GPSTool" />
-          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" /> 
+          <attribute name="Implementation-Version" value="${release_version} ${TODAY}" />
           <attribute name="Implementation-Vendor" value="Christof Dallermassl" />
         </section>
       </manifest>
@@ -109,16 +109,16 @@ The following targets are available:
 -->
     <tar longfile="gnu"
       tarfile="${dist_dir}/${dist_name}_bin-${release_version}.tar"
-      basedir="${dist_dir}"           
+      basedir="${dist_dir}"
       includes="${dist_name}-${release_version}.jar,${lib_dir}/**"/>
-    <gzip zipfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz" 
+    <gzip zipfile="${dist_dir}/${dist_name}_bin-${release_version}.tar.gz"
       src="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
     <delete file="${dist_dir}/${dist_name}_bin-${release_version}.tar"/>
   </target>
 
 
 <!-- src_dist target -->
-  <target name="src_dist" depends="clean,compile"> 
+  <target name="src_dist" depends="clean,compile">
     <mkdir dir="${dist_dir}"/>
     <tar longfile="gnu"
       basedir="${basedir}"
@@ -127,7 +127,7 @@ The following targets are available:
       excludes="*CVS*"
       compression="gzip"/>
   </target>
-  
+
 <!-- compile target -->
   <target name="compile">
     <mkdir dir="classes"/>
@@ -147,9 +147,9 @@ The following targets are available:
         <pathelement path="${dinopolis_classes}"/>
       </classpath>
       <patternset refid="compile.files"/>
-    </javac>         
-  </target>       
-  
+    </javac>
+  </target>
+
 <!-- clean_all target -->
   <target name="clean_all" depends="clean,clean_dist">
   </target>

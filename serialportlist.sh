@@ -42,4 +42,4 @@ else
 fi
 
 #echo "PRGDIR is $PRGDIR"
-$JAVA $JAVA_LIB $GPSYLON_VMARGS -cp $PRGDIR/gpsinput-0.5.2.jar:$PRGDIR/lib/java/RXTXcomm.jar org.dinopolis.gpstool.gpsinput.SerialPortList
+$JAVA $JAVA_LIB $GPSYLON_VMARGS -cp $PRGDIR/gpsinput-0.5.3.jar:$PRGDIR/lib/java/RXTXcomm.jar org.dinopolis.gpstool.gpsinput.SerialPortList

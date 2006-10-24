@@ -4,3 +4,4 @@
 [ ] GPSTOOL should write gpx 1.1?
 [ ] Read GPX 1.0 and 1.1 Format
 [ ] NavigationMouseMode use mouse wheel to zoom
+[ ] start/stop tracking

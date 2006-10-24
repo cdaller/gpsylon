@@ -33,6 +33,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -135,7 +136,7 @@ public class Gpsylon
 	MapNavigationHook, StatusHook, Positionable
 {
 
-  public final static String GPSYLON_VERSION = "0.5.2";
+  public final static String GPSYLON_VERSION = "0.5.3";
   private final static String GPSYLON_CVS_VERSION = "$Revision$";
 
   public final static String STD_PLUGINS_DIR_NAME = "plugins";
@@ -1465,6 +1466,10 @@ public class Gpsylon
     mouse_mode.setActive(false);
     map_bean_.addMouseListener(mouse_mode);
     map_bean_.addMouseMotionListener(mouse_mode);
+    if(mouse_mode instanceof MouseWheelListener)
+    {
+      map_bean_.addMouseWheelListener((MouseWheelListener) mouse_mode);
+    }
   }
 
 

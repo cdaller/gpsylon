@@ -42,4 +42,4 @@ else
 fi
 
 #echo "PRGDIR is $PRGDIR"
-$JAVA $JAVA_LIB $GPSYLON_VMARGS -jar $PRGDIR/gpstool-0.5.2.jar
+$JAVA $JAVA_LIB $GPSYLON_VMARGS -jar $PRGDIR/gpstool-0.5.3.jar

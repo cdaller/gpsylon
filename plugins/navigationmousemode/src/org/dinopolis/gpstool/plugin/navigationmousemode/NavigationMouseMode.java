@@ -477,11 +477,8 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener, M
 
     public void mouseWheelMoved(MouseWheelEvent event)
      {
-       System.out.println("mouseWheelMoved: "+event.getSource());
        //LatLonPoint point = map_navigation_hook_.getMapProjection().inverse(event.getX(),event.getY());
        float factor = ZOOM_FACTOR;
-       System.out.println("scroll amount: " + event.getScrollAmount());
-       System.out.println("units : " + event.getUnitsToScroll());
        int units = event.getUnitsToScroll();
        if(units > 0)
        {

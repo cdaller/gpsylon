@@ -1,5 +1,10 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/10/24: added mouse wheel operation to navigation mouse mode
+
+2006/10/23: fixed problem with cursor size on windows systems
+            version 0.5.2 released
+
 2006/10/21: fixed bug in gpx templates (gpstool and gpsylon)
 
 2006/10/20: added export of tracks in gpx 1.0 and gpx 1.1 format

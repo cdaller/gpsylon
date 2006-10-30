@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -53,12 +53,13 @@ import org.xml.sax.helpers.DefaultHandler;
  * @version $Revision 1.5$
  */
 
-public class ReadGPX 
+public class ReadGPX
 {
   protected Vector routes_ = new Vector();
   protected Vector tracks_ = new Vector();
   protected Vector waypoints_ = new Vector();
   protected SimpleDateFormat date_format_ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+  protected SimpleDateFormat date_format2_ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'.'S'Z'");
   private ParsePosition dummy_position_ = new ParsePosition(0);
   private static Logger logger_ = Logger.getLogger(ReadGPX.class);
 
@@ -73,7 +74,7 @@ public class ReadGPX
  *
  * @return routes The list of routes read.
  */
-  public List getRoutes() 
+  public List getRoutes()
   {
     return((List)routes_);
   }
@@ -85,7 +86,7 @@ public class ReadGPX
  *
  * @return tracks The list of tracks read.
  */
-  public List getTracks() 
+  public List getTracks()
   {
     return((List)tracks_);
   }
@@ -97,7 +98,7 @@ public class ReadGPX
  *
  * @return waypoints The list of waypoints read.
  */
-  public List getWaypoints() 
+  public List getWaypoints()
   {
     return((List)waypoints_);
   }
@@ -112,7 +113,7 @@ public class ReadGPX
     {
       SAXParserFactory spf = SAXParserFactory.newInstance();
       SAXParser parser = spf.newSAXParser();
-    
+
 // // Set the schema language if necessary
 //     try {
 //         parser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
@@ -141,7 +142,7 @@ public class ReadGPX
     {
       SAXParserFactory spf = SAXParserFactory.newInstance();
       SAXParser parser = spf.newSAXParser();
-    
+
 // // Set the schema language if necessary
 //     try {
 //         parser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
@@ -491,7 +492,15 @@ public class ReadGPX
 				}
 				catch(ParseException pe)
 				{
-					System.err.println("illegal time/date format: '"+characters_+"'");
+          // try the other format:
+          try
+          {
+            actual_trkpt_.setDate(date_format2_.parse(characters_.toString()));
+          }
+          catch(ParseException pe2)
+          {
+            System.err.println("illegal time/date format: '"+characters_+"'");
+          }
 				}
 
                 if (logger_.isDebugEnabled())

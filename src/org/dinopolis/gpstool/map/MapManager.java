@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2002 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -60,10 +60,8 @@ import org.dinopolis.util.io.FileChangeListener;
 
 // ----------------------------------------------------------------------
 /**
- * This is an application that shows maps, tracks, gps position, etc. It heavily depends on its
- * resources, as all default values are stored there. The information is organized and painted in
- * layers.
- * 
+ * The MapManager administrates all map files available.
+ *
  * @author Christof Dallermassl
  * @version $Revision$
  */
@@ -138,7 +136,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
    * Adds a new map to the system. This method is responsible to make this information persistent
    * and to add this map to the running system. If the filename in map_info is already used, the map
    * is not added.
-   * 
+   *
    * @param map_info the new map
    */
 
@@ -220,7 +218,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   /**
    * Removes the given map from the map manager. This method does not store the information in the
    * file.
-   * 
+   *
    * @param info the map info
    */
   public void removeMap(MapInfo info)
@@ -237,7 +235,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   // ----------------------------------------------------------------------
   /**
    * Returns a collection that holds information about all available maps (MapInfo objects).
-   * 
+   *
    * @return information about all available maps.
    */
   public Collection getMapInfos()
@@ -253,7 +251,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   // ----------------------------------------------------------------------
   /**
    * Stores the map informations (in a file, in the database, etc.).
-   * 
+   *
    * @throws IOException if an error occured.
    */
   public void storeMapInfos() throws IOException
@@ -265,7 +263,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   /**
    * Stores the map informations in a file. This is the counterpart method to the
    * {@link #loadMapInfos(String)} method.
-   * 
+   *
    * @throws IOException if an error occured.
    */
   protected void storeMapInfos(String filename) throws IOException
@@ -278,7 +276,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   // ----------------------------------------------------------------------
   /**
    * Loads the mapinfo data from the map description file and returns them (sorted by scale).
-   * 
+   *
    * @param filename the file to read from.
    * @return a TreeSet containing MapInfo objects.
    */
@@ -293,7 +291,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
     float scale = 88226037.0f; //taken from gpsdrive.c
     MapInfo map_info = new MapInfo(worldmap_url, 0.0, 0.0, scale,1280,1024);
     map_infos.add(map_info);
-    
+
     BufferedReader map_reader;
     try
     {
@@ -301,10 +299,10 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
     }
     catch (FileNotFoundException fnfe)
     {
-      logger_.warn("Could not open map description file '" + filename 
+      logger_.warn("Could not open map description file '" + filename
           + "', maybe no maps were downloaded yet?");
-      JOptionPane.showMessageDialog(main_frame_, 
-          resources_.getString(KEY_LOCALIZE_MESSAGE_FILE_NOT_FOUND_MESSAGE) + ": '" 
+      JOptionPane.showMessageDialog(main_frame_,
+          resources_.getString(KEY_LOCALIZE_MESSAGE_FILE_NOT_FOUND_MESSAGE) + ": '"
           + filename + "'.\n" + resources_.getString(KEY_LOCALIZE_MESSAGE_HINT_DOWNLOAD_MAPS), resources_.getString(KEY_LOCALIZE_MESSAGE_ERROR_TITLE),
           JOptionPane.ERROR_MESSAGE);
       return (map_infos);
@@ -371,7 +369,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   /**
    * Returns a list of MapInfo objects that are located at the given position. All maps that are at
    * the given position are returned (not only the visible one).
-   * 
+   *
    * @param latitude the latitude
    * @param longitude the longitude
    * @return a list of map info objects (or an empty list, if no maps were found).
@@ -385,7 +383,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   /**
    * Returns a MapInfo object with the smalles scale that is located at the given position or null,
    * if no map was found.
-   * 
+   *
    * @param latitude the latitude
    * @param longitude the longitude
    * @return a map info object or null, if no map was found.
@@ -403,7 +401,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   /**
    * Returns a collection of ImageInfo objects that are located at the given position. All maps that
    * are at the given position are returned (not only the visible one).
-   * 
+   *
    * @param map_infos the map infos to use as available maps.
    * @param latitude the latitude
    * @param longitude the longitude
@@ -455,7 +453,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
    * distance between the center of the image and the center of the viewport (the projection) is
    * less than (image.width + viewport.width)/2 (same with height), the image is visible. The
    * "visible_rectangle" info is not used in the returned ImageInfo objects!
-   * 
+   *
    * @param projection the projection to find the images for.
    */
   public synchronized Collection getAllVisibleImages(Projection projection)
@@ -471,7 +469,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
    * distance between the center of the image and the center of the viewport (the projection) is
    * less than (image.width + viewport.width)/2 (same with height), the image is visible. The
    * "visible_rectangle" info is not used in the returned ImageInfo objects!
-   * 
+   *
    * @param projection the projection to find the images for.
    * @param min_scale_factor if the scale of the map divided by the scale of the projection is less
    *          than this value, the map is sorted out. So if the scale of the projection is 100000
@@ -532,7 +530,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   // ----------------------------------------------------------------------
   /**
    * Adds as a listener that is informed about changes of the maps (adding, removal).
-   * 
+   *
    * @param listener the listener to add
    */
   public void addMapsChangedListener(MapsChangedListener listener)
@@ -549,7 +547,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   // ----------------------------------------------------------------------
   /**
    * Remove a listener that is informed about changes of the maps (adding, removal).
-   * 
+   *
    * @param listener the listener to be removed.
    */
   public void removeMapsChangedListener(MapsChangedListener listener)
@@ -565,7 +563,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   // ----------------------------------------------------------------------
   /**
    * Informs all maps changed listeners about a change event.
-   * 
+   *
    * @param event the event to inform the listeners.
    */
   protected void fireMapsChanged(MapsChangedEvent event)
@@ -591,7 +589,7 @@ public class MapManager implements MapManagerHook, GpsylonKeyConstants, FileChan
   /**
    * FileChangeListener.fileChanged implementation. Checks for added/removed maps in the map
    * description file and fires the events for them.
-   * 
+   *
    * @param file the file that changed
    */
   public void fileChanged(File file)

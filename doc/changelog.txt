@@ -1,5 +1,9 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2006/11/03: changed zoom in/out, so the clicked position stays constant (same with wheel)
+
+2006/10/30: fixed gpx import (problem with date)
+
 2006/10/24: added mouse wheel operation to navigation mouse mode
 
 2006/10/23: fixed problem with cursor size on windows systems

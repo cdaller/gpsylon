@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -61,7 +61,7 @@ public class DownloadMouseMode implements MouseModePlugin
 //----------------------------------------------------------------------
 // Plugin Methods
 // ----------------------------------------------------------------------
-  
+
 //----------------------------------------------------------------------
 /**
  * Initialize the plugin and pass a PluginSupport that provides
@@ -119,7 +119,7 @@ public class DownloadMouseMode implements MouseModePlugin
 //----------------------------------------------------------------------
 /**
  * Returns the version of the plugin. The version may be used to
- * choose between different version of the same plugin. 
+ * choose between different version of the same plugin.
  *
  * @return The version of the plugin.
  */
@@ -133,7 +133,7 @@ public class DownloadMouseMode implements MouseModePlugin
 /**
  * Returns the name of the Plugin. The name should be a human
  * readable and understandable name like "Save Image as JPEG". It is
- * prefereable but not necessary that the name is localized. 
+ * prefereable but not necessary that the name is localized.
  *
  * @return The name of the plugin.
  */
@@ -148,7 +148,7 @@ public class DownloadMouseMode implements MouseModePlugin
  * Returns a description of the Plugin. The description should be
  * human readable and understandable like "This plugin saves the
  * content of the main window as an image in jpeg format". It is
- * prefereable but not necessary that the description is localized. 
+ * prefereable but not necessary that the description is localized.
  *
  * @return The description of the plugin.
  */
@@ -172,7 +172,7 @@ public class DownloadMouseMode implements MouseModePlugin
     return(download_layer_);
   }
 
-  
+
 //----------------------------------------------------------------------
 // MouseMode methods
 // ----------------------------------------------------------------------
@@ -221,7 +221,7 @@ public class DownloadMouseMode implements MouseModePlugin
 //----------------------------------------------------------------------
 /**
  * The icon returned here is used in the menu and/or the toolbar of
- * the application to switch the mouse mode on or off. 
+ * the application to switch the mouse mode on or off.
  *
  * @return the icon of the mouse mode.
  */
@@ -234,7 +234,7 @@ public class DownloadMouseMode implements MouseModePlugin
 //----------------------------------------------------------------------
 /**
  * The description returned here is used in the menu and/or the toolbar of
- * the application to switch the mouse mode on or off. 
+ * the application to switch the mouse mode on or off.
  *
  * @return the description of the mouse mode.
  */
@@ -338,16 +338,5 @@ public class DownloadMouseMode implements MouseModePlugin
   public void mouseMoved(MouseEvent event)
   {
   }
-
-//----------------------------------------------------------------------
-// MouseWheelListener
-// available only in jdk 1.4, so not used at the moment
-//----------------------------------------------------------------------
-
-//    void mouseWheelMoved(MouseWheelEvent event)
-//     {
-//       System.out.println("mouseWheelMoved: "+event.getSource());
-//     }
-
 
 }

@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2003 IICM, Graz University of Technology
  * Inffeldgasse 16c, A-8010 Graz, Austria.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL)
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 
+ * Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  ***********************************************************************/
 
@@ -67,7 +67,7 @@ public class MappointDownloader implements MapRetrievalPlugin
   protected String cookie_;
   protected String session_id_;
   protected String session_pn_;
-  
+
   public MappointDownloader()
   {
   }
@@ -76,7 +76,7 @@ public class MappointDownloader implements MapRetrievalPlugin
   {
     resources_ = support.getResources();
   }
-  
+
 //----------------------------------------------------------------------
 /**
  * The application calls this method to indicate that the plugin is
@@ -122,7 +122,7 @@ public class MappointDownloader implements MapRetrievalPlugin
 //----------------------------------------------------------------------
 /**
  * Returns the version of the plugin. The version may be used to
- * choose between different version of the same plugin. 
+ * choose between different version of the same plugin.
  *
  * @return The version of the plugin.
  */
@@ -136,7 +136,7 @@ public class MappointDownloader implements MapRetrievalPlugin
 /**
  * Returns the name of the Plugin. The name should be a human
  * readable and understandable name like "Save Image as JPEG". It is
- * prefereable but not necessary that the name is localized. 
+ * prefereable but not necessary that the name is localized.
  *
  * @return The name of the plugin.
  */
@@ -151,7 +151,7 @@ public class MappointDownloader implements MapRetrievalPlugin
  * Returns a description of the Plugin. The description should be
  * human readable and understandable like "This plugin saves the
  * content of the main window as an image in jpeg format". It is
- * prefereable but not necessary that the description is localized. 
+ * prefereable but not necessary that the description is localized.
  *
  * @return The description of the plugin.
  */
@@ -274,7 +274,7 @@ public class MappointDownloader implements MapRetrievalPlugin
         }
       }
       double real_mapblast_scale = mappoint_scale * scale_factor;
-      
+
       MapInfo map_info = new MapInfo();
       map_info.setLatitude(latitude);
       map_info.setLongitude(longitude);
@@ -282,13 +282,13 @@ public class MappointDownloader implements MapRetrievalPlugin
       map_info.setWidth(image_width);
       map_info.setHeight(image_height);
       map_info.setFilename(file_path_wo_extension+"gif");
-      
+
       Map request_header = new TreeMap();
       request_header.put("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 4.0)");
       request_header.put("Keep-Alive","300");
       request_header.put("Connection","keep-alive");
       request_header.put("Host",HOST_NAME);
-      
+
           // set proxy authentication if necessary:
       if(resources_.getBoolean(GpsylonKeyConstants.KEY_HTTP_PROXY_AUTHENTICATION_USE))
       {
@@ -323,7 +323,7 @@ public class MappointDownloader implements MapRetrievalPlugin
       if(Debug.DEBUG)
         Debug.println("map_download","URL: "+url);
       response = web_request_.requestUrl(url,request_header);
-    
+
           // get and concatinate cookie:
       String cookie = getCookie(response);
       if(Debug.DEBUG)
@@ -343,7 +343,7 @@ public class MappointDownloader implements MapRetrievalPlugin
 
           // reload the page with session_key, cookie, session_id and session_pn set:
       request_header.put("Referer",url.toString());
-    
+
       url = new URL("http://"+HOST_NAME+"/"+session_key+"/map.aspx?"
                     +"ID="+session_id
                     +"&C="+latitude+","+longitude
@@ -435,7 +435,7 @@ public class MappointDownloader implements MapRetrievalPlugin
     Object cookies = web_response.get("Set-Cookie");
     if(cookies == null)
       return("");
-    
+
     if(cookies instanceof List)
     {
       for (int index = 0; index < ((List)cookies).size(); index++)
@@ -468,6 +468,13 @@ public class MappointDownloader implements MapRetrievalPlugin
     return(new String[] {session_id, session_pn});
   }
 
+  /**
+   * Saves the content of the web response to the given file.
+   * @param web_response the response.
+   * @param filename the filename.
+   * @return the number of bytes written.
+   * @throws IOException if an error occurs.
+   */
   protected int saveContentToFile(Map web_response, String filename)
     throws IOException
   {

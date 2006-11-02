@@ -37,6 +37,7 @@ import org.dinopolis.util.Resources;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.proj.Projection;
 
 //----------------------------------------------------------------------
 /**
@@ -358,24 +359,16 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener, M
 
       if(event.isShiftDown())
       {
-        map_navigation_hook_.setMapCenter(point.getLatitude(),point.getLongitude());
-        map_navigation_hook_.reScale(ZOOM_FACTOR);
+        zoomAndKeepPositionConstant(event.getX(), event.getY(), ZOOM_FACTOR);
+//        map_navigation_hook_.setMapCenter(point.getLatitude(),point.getLongitude());
+//        map_navigation_hook_.reScale(ZOOM_FACTOR);
       }
-
-//       if(event.isControlDown())
-//       {
-
-//       }
-
-//       if(event.isAltDown())
-//       {
-//       }
-
           // no modifiers pressed:
       if(!event.isAltDown() && !event.isShiftDown() && !event.isControlDown())
       {
-        map_navigation_hook_.setMapCenter(point.getLatitude(),point.getLongitude());
-        map_navigation_hook_.reScale(1.0f / ZOOM_FACTOR);
+        zoomAndKeepPositionConstant(event.getX(), event.getY(), 1.0f / ZOOM_FACTOR);
+//        map_navigation_hook_.setMapCenter(point.getLatitude(),point.getLongitude());
+//        map_navigation_hook_.reScale(1.0f / ZOOM_FACTOR);
       }
     } // end of if(Button1)
   }
@@ -475,17 +468,29 @@ public class NavigationMouseMode implements MouseModePlugin, AWTEventListener, M
 // available only in jdk 1.4, so not used at the moment
 //----------------------------------------------------------------------
 
-    public void mouseWheelMoved(MouseWheelEvent event)
-     {
-       //LatLonPoint point = map_navigation_hook_.getMapProjection().inverse(event.getX(),event.getY());
-       float factor = ZOOM_FACTOR;
-       int units = event.getUnitsToScroll();
-       if(units > 0)
-       {
-         factor = 1.0f / factor;
-       }
-       map_navigation_hook_.reScale(factor);
-     }
+  public void mouseWheelMoved(MouseWheelEvent event)
+  {
+    int units = event.getUnitsToScroll();
+    float scale_factor = ZOOM_FACTOR;
+    if(units > 0)
+    {
+      scale_factor = 1.0f / scale_factor;
+    }
+    zoomAndKeepPositionConstant(event.getX(), event.getY(), scale_factor);
+  }
+
+  private void zoomAndKeepPositionConstant(int x, int y, float zoom_factor)
+  {
+    Projection proj = map_navigation_hook_.getMapProjection();
+    int center_x = proj.getWidth() / 2;
+    int center_y = proj.getHeight() / 2;
+    int delta_x = x - center_x;
+    int delta_y = y - center_y;
+    float factor_x = (1.0f - 1/zoom_factor) * delta_x / proj.getWidth();
+    float factor_y = (1.0f - 1/zoom_factor) * delta_y / proj.getHeight();
+    map_navigation_hook_.reScale(zoom_factor);
+    map_navigation_hook_.translateMapCenterRelative(-factor_x, -factor_y);
+  }
 
 }
 

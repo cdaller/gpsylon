@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="geo.position" content="47.059734;15.473280" />
     <meta name="geo.placename" content="Graz, Austria" />
-    <meta name="geo.region" content="AT"/ >    
+    <meta name="geo.region" content="AT"/ >
     <link rel="stylesheet" type="text/css" media="screen"  href="gpsylon.css" />
   </head>
 
@@ -58,7 +58,7 @@ google_color_text = "ffffff";    // orig: aecceb
           href="https://sourceforge.net/mailarchive/forum.php?forum_id=12596">Mailing List Archive</a></li>
       <li>
         <a href="http://sourceforge.net/donate/index.php?group_id=64816">
-          <img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" /> 
+          <img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" />
         </a>
        </li>
        <li>Other Projects
@@ -74,9 +74,9 @@ google_color_text = "ffffff";    // orig: aecceb
       The dinopolis gpstool package is an open source (LGPL) Java GPS
       application. It consists of different modules that may be used as a
       programmer's framework or as an application. The main application is
-      <a href="#general_description">GPSylon</a>. A smaller command line tool (demonstration of the 
+      <a href="#general_description">GPSylon</a>. A smaller command line tool (demonstration of the
       gpsinput library) is named <a href="#gpstool">GPSTool</a>. The library that is used
-      to communicate with the gps device can be used independently and is provided as a 
+      to communicate with the gps device can be used independently and is provided as a
       separate jar file (since version 0.5).
     </p>
 
@@ -106,29 +106,29 @@ google_color_text = "ffffff";    // orig: aecceb
       <h2>Short Description of GPSylon</h2>
 
    <p>
-    GPSylon is able to show maps downloaded from the 
-    <!-- 
+    GPSylon is able to show maps downloaded from the
+    <!--
     <a href="http://www.mapblast.com">mapblast</a>
-    or 
+    or
      -->
     <a href="http://www.expedia.com">expedia</a>
     map servers. It may connect
-    to a gps device and track your position on 
+    to a gps device and track your position on
     the maps. At the moment, it is able to read gpsdata in the NMEA
     standard from a serial gps device, a file or a gps daemon across a
-    network (available at the 
+    network (available at the
     <a href="http://freshmeat.net/projects/gpsd/">gpsd project page</a>).
    </p>
-          
+
    <p>
    The main feature is the display of various maps. GPSylon allows the
    user to navigate around like in a digital atlas. It shows maps of
    different scales, so missing maps of one scale do not result in a
    black screen, but show the next larger scale. See <a
    href="screenshots.html#diffscales">the screenshot section</a> for an
-   image. 
+   image.
    </p>
-      
+
    <p>It allows the download of a single map or for a given location or
 for multiple maps in a given rectangular area from mapblast or expedia
 map servers. In the download mouse mode the user may choose a single map
@@ -140,8 +140,8 @@ map providers will discontinue their service when it is misused!
 </p>
 
       <p>
-        It uses the open source library <a href="http://openmap.bbn.com">openmap</a> 
-        for various cartographic things.   
+        It uses the open source library <a href="http://openmap.bbn.com">openmap</a>
+        for various cartographic things.
       </p>
 
       <h3>Features</h3>
@@ -168,7 +168,7 @@ map providers will discontinue their service when it is misused!
          separated (name, latitude, longitude [,category]) - in that order!)),
          export markers to csv files, icons for categories, import geonet data
           (available from <a
-            href="http://164.214.2.59/gns/html/index.html">http://164.214.2.59/gns/html/index.html</a>) 
+            href="http://164.214.2.59/gns/html/index.html">http://164.214.2.59/gns/html/index.html</a>)
         </li>
          <li>Database support for Location Markers - selection of categories to
           display.<br/>
@@ -218,15 +218,15 @@ map providers will discontinue their service when it is misused!
               <li>GlobalSat Bluetooth GPS BT-338 (tested by myself)</li>
               <li>Navilock NL-303P PDA-GPS-Receiver with Serial/USB converter (tested by Silverbullet)</li>
             </ul>
-           </p> 
+           </p>
             <p>
             Linux users please note: serial ports must be like /dev/ttySXX, as otherwise
-            rxtx does not recognize the port. So for bluetooth or USB devices, 
+            rxtx does not recognize the port. So for bluetooth or USB devices,
             a symlink is needed!
             </p>
             <p>
             For bluetooth connection, I used the following commands under linux to
-            create a serial connection with bluetooth. First, find the id of your 
+            create a serial connection with bluetooth. First, find the id of your
             bluetooth device. I used <code>hcitool</code> for this:
             <pre>
             hcitool scan
@@ -240,7 +240,7 @@ map providers will discontinue their service when it is misused!
             <pre>
             rfcomm bind /dev/ttyS50 00:0D:B5:30:3C:0A
             </pre>
-            As rxtx does not allow <code>/dev/rfcomm0</code> as serial device, I used <code>/dev/ttyS50</code> 
+            As rxtx does not allow <code>/dev/rfcomm0</code> as serial device, I used <code>/dev/ttyS50</code>
             (all ttys below 50 were already existent in my installation). A symlink from
             ttyS50 to rfcomm0 also works!
             </p>
@@ -269,30 +269,43 @@ map providers will discontinue their service when it is misused!
 
               <ul>
                 <li>
-                  Java in Version 1.4 (or better) is needed. It can be obtained from 
+                  Java in Version 1.4 (or better) is needed. It can be obtained from
                   <a href="http://java.sun.com">Sun's Website</a>. Development is
-                  currently done with version 1.5, but 1.4 should also work. Version
-                  1.3 will NOT work!
+                  currently done with version 1.5, but tests are done for version 1.4.
+                  Java version 1.3 will NOT work!
                 </li>
                 <li>
+                  <p>
+                  Starting from Gpsylon V0.5.2, NO installation of the Java serial
+                  libraries are needed anymore! The native libraries are shipped with
+                  Gpsylon and start scripts are provided (for Linux and Windows)
+                  for Gpsylon and Gpstool (ther command line application). So just unpack
+                  the archive, and run (or double click) <code>gpsylon.cmd</code>, <code>gpstool.cmd</code>
+                  (for Windows) respectivly <code>gpsylon.sh</code>, <code>gpstool.sh</code> for
+                  Unix (Native Libraries for Linux, Sun Solaris and MacOSX are provided).
+                  As there is no Apple
+                  computer around for testing, I am not sure, if the unix scripts will work.
+                  Feedback is welcome!
+                  </p>
+                  <!--
                   Java Communications API is needed, if you want to access a serial gps
                   device directly (if the gps daemon is used or NMEA data is read from a
                   file, this is not necessary). Sun released a new API just recently (only
                   for Windows and Linux), so the decision was made to stick to the packages
                   from <a href="http://www.rxtx.org">RXTX</a>. Use the 2.1 version of
                   the libraries (with the gnu.io package name), NOT the javax.comm packages.
-
-                  <!-- 
+                   -->
+                  <!--
                   For Windows use the package provided from
                   Sun at
                   <a href="http://java.sun.com/products/javacomm/index.html">the comm-api
-                    webpage</a>. For Linux I used the package provided at 
+                    webpage</a>. For Linux I used the package provided at
                   <a href="http://www.rxtx.org">RXTX</a>. I used the version that uses
                   javax.comm, not the one using gnu.io (to stay compatible with Sun's
-                  naming). 
+                  naming).
                   -->
                   <p>
-                    Jan van Haarst reported that 
+                    Jan van Haarst reported that
                     <a href="http://www.brianpoe.com/comfoolery/">comfoolery</a>
                     can be used to forward the serial data to a network socket. GPSylon may
                     connect to this socket when it is configured to use gpsd instead of
@@ -310,9 +323,9 @@ map providers will discontinue their service when it is misused!
               GPSylon creates a database on demand without any hassle.
             </p>
        <p>
-        As the 
+        As the
         <a href="http://164.214.2.59/gns/html/index.html">geonet dataset</a>
-        is quite large (e.g. Austria 50 thousand entries, 
+        is quite large (e.g. Austria 50 thousand entries,
         Germany 170 thousand entries), hsqldb seemed quite slow. So I gave it a
         try with mysql and it seems to be faster! Especially
         searching for location markers is faster by a factor 5 to 10! So I
@@ -323,7 +336,7 @@ map providers will discontinue their service when it is misused!
         <ul>
          <li>Install MySQL :-)</li>
          <li>
-          Create the database: e.g. with the command 
+          Create the database: e.g. with the command
           <code>mysqladmin create gpsmap</code>
          </li>
          <li>Start GPSylon and edit database settings in the preferences
@@ -367,17 +380,17 @@ map providers will discontinue their service when it is misused!
             <a name="run_gpsmap"></a>
               <h2>Run GPSylon</h2>
               <p>
-                To start GPSylon, <a href="https://sourceforge.net/project/showfiles.php?group_id=64816">download</a> the gpstool-archive, unpack it and call<br> 
-                  <code>java -jar gpssylon.jar</code><br> 
+                To start GPSylon, <a href="https://sourceforge.net/project/showfiles.php?group_id=64816">download</a> the gpstool-archive, unpack it and call<br>
+                  <code>java -jar gpssylon.jar</code><br>
                     or if your environment is setup to handle jar-archives correctly, simply
                     double click on the jar-archive (should work under
-                    windows). All needed classes are contained in the jar file. 
+                    windows). All needed classes are contained in the jar file.
                     If you have the ant environment installed, call <code>ant run</code>.
               </p>
               <p>
                 For commandline arguments (everything may be configured in the
                 application as well!), call<br>
-                  <code>java -jar gpsylon.jar --help</code><br> 
+                  <code>java -jar gpsylon.jar --help</code><br>
               </p>
 	      <h3>Mouse Modes</h3>
 	      GPSylon supports different mouse modes. Mouse modes may be added
@@ -409,12 +422,12 @@ map providers will discontinue their service when it is misused!
 	       are used without the need to set the
 	       <code>CLASSPATH</code>. All jars in the directories
 	       <code>[home]/.gpsylon/plugins</code> and in the
-	       <code>plugins</code> directory of the applicaton are used. 
+	       <code>plugins</code> directory of the applicaton are used.
 	       </p>
               <a name="download"></a>
                 <h2>Download</h2>
-                Please download the latest distribution of GPSylon at the 
-                <a href="http://sourceforge.net/project/showfiles.php?group_id=64816">download 
+                Please download the latest distribution of GPSylon at the
+                <a href="http://sourceforge.net/project/showfiles.php?group_id=64816">download
                   page on sourceforge</a>.
                 <a name="status"></a>
             <h2>Status</h2>
@@ -426,7 +439,7 @@ map providers will discontinue their service when it is misused!
             <a name="press"></a>
              <h2>Articles about GPSylon</h2>
              <p>
-               Elliotte Rusty Harold, the author of quite a few books about Java, mentioned GPSylon 
+               Elliotte Rusty Harold, the author of quite a few books about Java, mentioned GPSylon
                in his <a href="http://www.cafeaulait.org/">Cafe au Lait blog</a>.
              </p>
             <a name="otherprojects"></a>
@@ -520,7 +533,7 @@ map providers will discontinue their service when it is misused!
                 <li>autoscale (set scale, depending on speed)</li>
                </ul></p>
 
-              <p>vectorize tracks 
+              <p>vectorize tracks
                <ul>
                 <li>define nodes (crossings) and arcs between nodes</li>
                 <li>define type of arcs (highway, smaller road, bicycle
@@ -606,9 +619,9 @@ map providers will discontinue their service when it is misused!
                  main class is
                  <code>org.dinopolis.gpstool.GPSTool</code>
                  and it may
-                 be started using the provided gpstool-&lt;version&gt;.jar file 
-                 (execute in a command window <code>java -jar gpsylon-&lt;version&gt;.jar</code> 
-                 - double click does not make 
+                 be started using the provided gpstool-&lt;version&gt;.jar file
+                 (execute in a command window <code>java -jar gpsylon-&lt;version&gt;.jar</code>
+                 - double click does not make
                  much sense, as it is a commandline application). Use "--help"
                  to see all commandline switches.<br>
                   The following features are implemented in GPSTool:
@@ -633,7 +646,7 @@ map providers will discontinue their service when it is misused!
 									  after sending the 10th line of the image).
                    </li>
                    <li>
-                    Supprts 
+                    Supprts
                     <a href="http://jakarta.apache.org/velocity/">Velocity</a>
                     templates to print tracks, routes, waypoints. These
                     templates are easy to write. Use command line switch
@@ -654,14 +667,14 @@ map providers will discontinue their service when it is misused!
                   basically is licensed unter the Lesser Gnu
                   Public License (LGPL). Some parts in the
                   framework (e.g. the main application GPSylon)
-                  uses the Open Source library openmap. The OpenMap code is 
-                  covered under the 
+                  uses the Open Source library openmap. The OpenMap code is
+                  covered under the
                   <a href="http://openmap.bbn.com/license.html">OpenMap
                    license</a>,
                   which is a modified version of Sun's artistic license, so
                   take care which
                   modules you use and which license you have to
-                  respect. 
+                  respect.
                  </p>
                  <p>
                   The module that is responsible for reading gps
@@ -672,7 +685,7 @@ map providers will discontinue their service when it is misused!
    <div id="footer">
                  <p>
                   Please report any comments, bugfixes, ...
-                  to 
+                  to
                   <address>
                    <a href="mailto:cdaller@users.sourceforge.net">Christof
                     Dallermassl</a> at 47.059734&deg;/15.473280&deg;

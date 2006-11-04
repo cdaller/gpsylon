@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="plugins/googlemaps/auxiliary"/>
+	<classpathentry kind="src" path="plugins/googlemaps/src"/>
 	<classpathentry kind="src" path="plugins/export/src"/>
 	<classpathentry kind="src" output="plugins/export/classes" path="plugins/export/auxiliary"/>
 	<classpathentry kind="src" output="plugins/averagepos/classes" path="plugins/averagepos/auxiliary"/>

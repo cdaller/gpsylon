@@ -1,0 +1,4 @@
+# all provided MapRetrievalPlugins in this package:
+org.dinopolis.gpstool.plugin.googlemap.GoogleMapDownloader
+# end of file
+

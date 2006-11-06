@@ -28,35 +28,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 import java.util.NoSuchElementException;
+
 import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
 import org.dinopolis.util.Debug;
-import org.dinopolis.util.Resources;
+import org.dinopolis.util.io.Tokenizer;
 
 //----------------------------------------------------------------------
 /**
  * This plugin reads track data from a stream (ususally from a file)
  * and provides one or more tracks (lists of {@link Trackpoint}
- * objects). This plugin reads the tracks Gpsylon saves itself. That's
- * why it is not a real plugin, but always available.
+ * objects). This plugin reads a csv file. It is a quick and dirty plugin.
+ * The csv file holds lines in format
+ * latitude,longitude,altitude,unix time
  *
  * @author Christof Dallermassl
  * @version $Revision$
  */
 
-public class ReadGpsylonTrackPlugin implements ReadTrackPlugin, GpsylonKeyConstants
+public class ReadCsvTrackPlugin implements ReadTrackPlugin, GpsylonKeyConstants
 {
 
-  Resources resources_;
-  public final static String TRACK_FORMAT_DEFINITION_IN_FILE_PREFIX = "# Format: ";
+  //Resources resources_;
   
-  public ReadGpsylonTrackPlugin()
+  public ReadCsvTrackPlugin()
   {
   }
 
@@ -70,7 +70,7 @@ public class ReadGpsylonTrackPlugin implements ReadTrackPlugin, GpsylonKeyConsta
  */
   public void initializePlugin(PluginSupport support)
   {
-    resources_ = support.getResources();
+    //resources_ = support.getResources();
   }
   
 //----------------------------------------------------------------------
@@ -112,7 +112,7 @@ public class ReadGpsylonTrackPlugin implements ReadTrackPlugin, GpsylonKeyConsta
 
   public String getContentDescription()
   {
-    return(resources_.getString(KEY_TRACK_FILE_DESCRIPTIVE_NAME));
+    return "CSV Files";
   }
   
 //----------------------------------------------------------------------
@@ -125,7 +125,7 @@ public class ReadGpsylonTrackPlugin implements ReadTrackPlugin, GpsylonKeyConsta
 
   public String[] getContentFileExtensions()
   {
-    return(new String[] {resources_.getString(KEY_TRACK_FILE_EXTENSION)});
+    return new String[] {"csv"};
   }
   
 
@@ -149,70 +149,34 @@ public class ReadGpsylonTrackPlugin implements ReadTrackPlugin, GpsylonKeyConsta
       Track track = new TrackImpl();
       if(Debug.DEBUG)
         Debug.println("read_track","loading GPSMap track");
-// TODO: this resources comes from the tracklayer plugin. if it does not exist, an exception is
-// thrown. Not very nice!
-      String track_format = resources_.getString(KEY_TRACK_FILE_FORMAT);
-      line_format = new MessageFormat(track_format,Locale.US); // for decimal points
 
-      while((line = track_in.readLine()) != null)
+      Tokenizer tokenizer = new Tokenizer(in);
+      List tokens;
+      String token;
+      float latitude = 0.0f;
+      float longitude = 0.0f;
+      float altitude = 0.0f;
+      Date date = null;
+      while(tokenizer.hasNextLine())
       {
-        linenumber++;
-        if(line.startsWith(TRACK_FORMAT_DEFINITION_IN_FILE_PREFIX))
+        linenumber = tokenizer.getLineNumber();
+        tokens = tokenizer.nextLine();
+        if(tokens.size() > 0) 
         {
-          line_format =
-            new MessageFormat(line.substring(TRACK_FORMAT_DEFINITION_IN_FILE_PREFIX.length()), Locale.US);  // for . as decimal point!
-	  
-//            System.out.println("using format: '"+line.substring(format_def.length())+"'");
-        }
-        if(!line.startsWith("#"))
-        {
-          Object[] objs = line_format.parse(line);
-	  
-          float latitude = 0.0f;
-          float longitude = 0.0f;
-          float altitude = 0.0f;
-          String altitude_unit = "";
-          float speed = 0.0f;
-          String speed_unit = "";
-          Date date = null;
-	  
-          if(objs.length > 0)
+          token = (String) tokens.get(0);
+          if(!token.startsWith("#"))
           {
-            latitude = ((Number)objs[0]).floatValue();
-            if(objs.length > 1)
-            {
-              longitude = ((Number)objs[1]).floatValue();
-              if(objs.length > 2)
-              {
-                altitude = ((Number)objs[2]).floatValue();
-                if(objs.length > 3)
-                {
-                  altitude_unit = (String)objs[3];
-                  if(objs.length > 4)
-                  {
-                    speed = ((Number)objs[4]).floatValue();
-                    if(objs.length > 5)
-                    {
-                      speed_unit = (String)objs[5];
-                      if(objs.length > 6)
-                      {
-                        if(objs[6] instanceof Date)
-                          date = (Date)objs[6];
-                        else
-                          date = null;
-                      }
-                    }
-                  }
-                }
-              }
-            }
+             latitude = Float.parseFloat((String) tokens.get(0));
+             longitude = Float.parseFloat((String) tokens.get(1));
+             altitude = Float.parseFloat((String) tokens.get(2));
+             date = new Date(Long.parseLong((String)tokens.get(3)));
+             Trackpoint point = new TrackpointImpl();
+             point.setDate(date);
+             point.setLongitude(longitude);
+             point.setLatitude(latitude);
+             point.setAltitude(altitude);
+             track.addWaypoint(point);
           }
-          Trackpoint point = new TrackpointImpl();
-          point.setDate(date);
-          point.setLongitude(longitude);
-          point.setLatitude(latitude);
-          point.setAltitude(altitude);
-          track.addWaypoint(point);
         }
       }
       if(Debug.DEBUG)
@@ -225,14 +189,9 @@ public class ReadGpsylonTrackPlugin implements ReadTrackPlugin, GpsylonKeyConsta
         first_date = new Date(); // use now!
       SimpleDateFormat track_date_format = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
       track.setIdentification(track_date_format.format(first_date));
-      track.setComment("track created by GPSMap");
+      track.setComment("track imported from csv");
       System.out.println("read track:"+track);
       return(new Track[] {track});
-    }
-    catch(ParseException pe)
-    {
-      System.err.println("ERROR: ParseError in line "+linenumber);
-      pe.printStackTrace();
     }
     catch(ClassCastException cce)
     {

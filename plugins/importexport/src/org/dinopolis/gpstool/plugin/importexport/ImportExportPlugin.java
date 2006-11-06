@@ -48,6 +48,7 @@ import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.plugin.ReadTrackPlugin;
 import org.dinopolis.gpstool.plugin.WriteTrackPlugin;
+import org.dinopolis.gpstool.track.ReadCsvTrackPlugin;
 import org.dinopolis.gpstool.track.ReadGpsylonTrackPlugin;
 import org.dinopolis.gpstool.track.Track;
 import org.dinopolis.gpstool.track.TrackManager;
@@ -375,9 +376,10 @@ public class ImportExportPlugin implements GuiPlugin
       // (do not use a string here, so the compiler checks for typos)
       Object[] plugins = service_discovery_.getServices(org.dinopolis.gpstool.plugin.ReadTrackPlugin.class);
       // add ReadGpsylonTrackPlugin by hand:
-      plugins_ = new Object[plugins.length + 1];
+      plugins_ = new Object[plugins.length + 2];
       plugins_[0] = new ReadGpsylonTrackPlugin();
-      System.arraycopy(plugins,0,plugins_,1,plugins.length);
+      plugins_[1] = new ReadCsvTrackPlugin();
+      System.arraycopy(plugins,0,plugins_,2,plugins.length);
 
       if(Debug.DEBUG)
         Debug.println("plugin","plugins for reading tracks detected: "+Debug.objectToString(plugins_));

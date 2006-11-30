@@ -3,5 +3,7 @@
 [ ] Custom Icon in Frame
 [ ] GPSTOOL should write gpx 1.1?
 [ ] Read GPX 1.0 and 1.1 Format
-[ ] NavigationMouseMode use mouse wheel to zoom
-[ ] start/stop tracking
+[x] NavigationMouseMode use mouse wheel to zoom
+[ ] BUG: Mousewheel does not work in linux
+[ ] FEATURE: start/stop tracking
+[ ] FEATURE: import tracks in CetusGPS pdb files format

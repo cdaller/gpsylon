@@ -1,9 +1,7 @@
 classes
-javadoc
 .settings
 plugins/*/classes
 plugins/lib
-
 dinopolis-*.jar
 gpsinput-*.jar
 gpstool-*.jar

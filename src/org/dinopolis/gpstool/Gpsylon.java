@@ -513,8 +513,15 @@ public class Gpsylon
         // create hook_manager
     hook_manager_ = new HookManager();
 
-    splash_screen.setStatus("Connecting to gps device",splash_progress+=5);
-    connectGPSDevice();
+    try 
+    {
+      splash_screen.setStatus("Connecting to gps device",splash_progress+=5);
+      connectGPSDevice();
+    } 
+    catch(Throwable e) {
+      System.err.println("Threw uncatched exception!");
+      e.printStackTrace();
+    }
 
     updateResources(null);
     updateWindowLocation();

@@ -32,7 +32,6 @@ import org.dinopolis.gpstool.util.angle.Latitude;
 import org.dinopolis.gpstool.util.angle.Longitude;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.ProjMath;
 
@@ -538,7 +537,7 @@ public class GoogleMapProjection extends Mercator {
 			String northing = args[0];
 			String easting = args[1];
 
-			AngleFormat latlon_formatter_ = new AngleFormat("DD°MM'SS\"");
+			AngleFormat latlon_formatter_ = new AngleFormat("DDï¿½MM'SS\"");
 			LatLonPoint inpoint = new LatLonPoint();
 
 			if(easting.matches("^......$") && northing.matches("[0123456789].*")){
@@ -558,20 +557,20 @@ public class GoogleMapProjection extends Mercator {
 		    Point2D outpoint = ll2lv03(inpoint.getLatitude(),inpoint.getLongitude());
 			System.out.println("LV03: \t" + (int) outpoint.getX() + " " + (int) outpoint.getY() + " [" + lv03tosn(outpoint,25) + "/" + lv03tosn(outpoint,50) + "/" + lv03tosn(outpoint,100) + "]");
 
-			latlon_formatter_.applyPattern("DD.ddddd°");
+			latlon_formatter_.applyPattern("DD.dddddï¿½");
 			System.out.println("WGS84: \t" + latlon_formatter_.format(inpoint.getLatitude()) + " " + latlon_formatter_.format(inpoint.getLongitude()));
 
-			latlon_formatter_.applyPattern("DD°MM'SS.ss\"");
+			latlon_formatter_.applyPattern("DDï¿½MM'SS.ss\"");
 			System.out.println("WGS84: \t" + latlon_formatter_.format(inpoint.getLatitude()) + " " + latlon_formatter_.format(inpoint.getLongitude()));
 
-//			if(northing.matches("^.*°.*'.*''$")){
-//				System.out.println("Input is WGS84 hdd°mm'ss.s''");
+//			if(northing.matches("^.*ï¿½.*'.*''$")){
+//				System.out.println("Input is WGS84 hddï¿½mm'ss.s''");
 //
-//			}else if(northing.matches("^.*°.*.*'$")){
-//				System.out.println("Input is WGS84 hdd°mm.mm'");
+//			}else if(northing.matches("^.*ï¿½.*.*'$")){
+//				System.out.println("Input is WGS84 hddï¿½mm.mm'");
 //
 //			}else if(northing.matches("^.*\\..*$")){
-//				System.out.println("Input is WGS84 hdd.dddd°");
+//				System.out.println("Input is WGS84 hdd.ddddï¿½");
 //
 //			}else if(northing.matches("^......$")){
 //				System.out.println("Input is Swissgrid");

@@ -22,10 +22,7 @@
 
 package org.dinopolis.gpstool.track;
 
-import com.bbn.openmap.proj.Projection;
-
 import java.text.DecimalFormat;
-import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +45,8 @@ import org.dinopolis.gpstool.plugin.PluginSupport;
 import org.dinopolis.gpstool.util.GeoExtent;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.Resources;
+
+import com.bbn.openmap.proj.Projection;
 
 // ----------------------------------------------------------------------
 /**

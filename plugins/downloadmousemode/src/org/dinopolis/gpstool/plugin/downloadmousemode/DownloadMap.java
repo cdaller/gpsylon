@@ -2,21 +2,17 @@ package org.dinopolis.gpstool.plugin.downloadmousemode;
 
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Vector;
 
 import org.dinopolis.gpstool.GpsylonKeyConstants;
-import org.dinopolis.gpstool.map.MapInfo;
 import org.dinopolis.gpstool.hook.MapManagerHook;
-import org.dinopolis.gpstool.plugin.MapRetrievalPlugin;
-import org.dinopolis.gpstool.util.FileUtil;
-import org.dinopolis.util.*;
+import org.dinopolis.gpstool.map.MapInfo;
 import org.dinopolis.gpstool.plugin.PluginSupport;
-
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.Projection;
+import org.dinopolis.gpstool.util.FileUtil;
+import org.dinopolis.util.Debug;
+import org.dinopolis.util.ProgressListener;
+import org.dinopolis.util.Resources;
 
 //----------------------------------------------------------------------
 /** This class provides a plugin that allows the user to download maps

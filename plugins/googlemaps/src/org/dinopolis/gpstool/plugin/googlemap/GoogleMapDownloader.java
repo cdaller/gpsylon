@@ -32,10 +32,8 @@ import java.net.NoRouteToHostException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.dinopolis.gpstool.GpsylonKeyConstants;
 import org.dinopolis.gpstool.map.MapInfo;

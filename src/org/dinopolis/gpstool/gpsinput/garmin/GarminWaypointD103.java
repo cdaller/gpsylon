@@ -22,7 +22,6 @@
 
 package org.dinopolis.gpstool.gpsinput.garmin;
 
-import java.awt.Color;
 import org.dinopolis.gpstool.gpsinput.GPSWaypoint;
 
 // ----------------------------------------------------------------------

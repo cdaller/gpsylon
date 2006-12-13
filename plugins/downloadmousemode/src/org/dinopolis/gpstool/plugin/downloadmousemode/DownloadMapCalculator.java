@@ -25,9 +25,6 @@ package org.dinopolis.gpstool.plugin.downloadmousemode;
 
 import java.util.Vector;
 
-import org.dinopolis.util.Resources;
-import org.dinopolis.gpstool.*;
-
 //----------------------------------------------------------------------
 /**
  * @author Christof Dallermassl

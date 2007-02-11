@@ -1,0 +1,116 @@
+/*** Basic Components *********************************************************/
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: #719ecb url("http://www.tegmento.org/gpsylon/images/bg_main.gif") repeat-x 0 0;
+  color: #fff;
+  font: 0.75em/160% "Lucida Grande", Arial, Helvetica, Verdana, sans-serif;
+  text-align: center; /* make IE center the wrapper div */
+}
+a {
+  color: #1f5b96;
+  text-decoration: underline;
+}
+a:hover {
+  color: #fff;
+}
+a:active {
+  color: #ffd800;
+}
+
+/*** Positioning Components ***************************************************/
+
+#wrapper {
+  margin: 0 auto;  /* centers content */
+  position: relative;
+  text-align: left; /* resets text align */
+  width: 728px;
+}
+
+#googleads {
+	margin-bottom: 1em;
+}
+
+/*** Header Components ********************************************************/
+
+h1 {
+  background: transparent url("http://www.tegmento.org/gpsylon/images/logo.gif") no-repeat 0 0;
+  height: 47px;
+  line-height: 100px;
+  margin: 20px 2px;
+  overflow: hidden;
+  text-indent: 300px; /* shift to right, so it is not visible (for width) */
+  width: 170px;
+}
+
+/*** Menu Components ********************************************************/
+
+#menu {
+  float:right;
+  margin-left: 5px;
+  padding: 5px;
+  border: 1px solid #316ba4;
+  width: 180px;
+}
+
+#menu a{
+  color: #284766;
+  font-weight: bold;
+  margin: 2px 0 2px 0;
+  padding: 1px 3px 1px 4px;
+  text-decoration: none;
+  background: transparent;
+  display: block;
+}
+
+#menu a:hover {
+  color: #fff;
+  background-color: #284766;
+}
+
+#menu ul {
+  list-style-type: none;
+  list-style-position:inside;
+}
+
+/* prevents large spaces for IE in lists: */
+#menu li {
+	float: left;
+	clear: both;
+	width: 100%;
+}
+
+#menu h2 {
+}
+/*** Content Components ********************************************************/
+#content h2 {
+  font-size: 1.7em;
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+#content h3 {
+  font-size: 1.4em;
+  padding-top: 7px;
+  padding-bottom: 3px;
+}
+
+#content ul {
+  padding-left: 20px;
+}
+
+.todo-done {
+	text-decoration: line-through;
+}
+
+/*** Footer Components ********************************************************/
+
+#footer {
+  clear: both;
+}
+
+#sflogo {
+	float: right;
+}

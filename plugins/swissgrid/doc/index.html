@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <!-- <meta name="geo.position" content="47.059734;15.473280" /> -->
+  <meta name="geo.placename" content="Bern, Switzerland" />
+  <meta name="geo.region" content="CH" />
+  <link rel="stylesheet" type="text/css" media="screen"  href="gpsylon.css" />
+  <title>SwissGrid Plugin f&uuml;r Gpsylon</title>
+</head>
+
+<body>
+<div id="wrapper">
+
+<h1>GPSylon</h1>
+
+<div id="menu">
+<h2>Menu</h2>
+<ul>
+<li><a href="#general_description">Allgemeines</a></li>
+
+<li><a href="#swissgrid">Swissgrid Plugin</a></li>
+<li><a href="#dufourmap">Dufourmap Plugin</a></li>
+<li><a href="#dem">DEM Plugin</a></li>
+
+<li><a href="#install">Installation</a></li>
+<li><a href="#download">Download</a></li>
+
+<!-- <li><a href="#todo">To Do List</a></li> -->
+
+<li><a href="http://www.sourceforge.net/projects/gpsmap">GPSylon project auf Sourceforge</a></li>
+<li>
+<a href="http://sourceforge.net/donate/index.php?group_id=64816">
+	<img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" />
+
+</a>
+</li>
+</ul>
+</div> <!-- menu -->
+
+<div id="content">
+<a name="general_description"></a>
+<h2>SwissGrid Plugin f&uuml;r Gpsylon</h2>
+<p>Die folgenden Plugins welche f&uuml;r die Java Applikation <a href="http://www.tegmento.org/gpsylon/" >Gpsylon</a> von Christof Dallermassl geschrieben wurden, erweitern die original Applikation um die schweizerische Kartenprojektion ("Swiss Grid") mit dem Bezugssystem CH1903 und erm&ouml;glichen somit die Integration der topographischen Karten, den Dufourkarten und dem digitalen H&ouml;henmodell von <a href="http://www.swisstopo.ch/">Swiss Topo</a>. 
+<br><br>
+Dieses Projekt beinhaltet <b>keine Kartendaten</b>. Es beinhaltet jedoch Programme um diese von den originalen Swiss Topo Proukte CD's zu extrahieren. Diese Scripte basieren und erweitern das Projekt <a href="http://buchli.org/jonas/swisstopix/swisstopix.html">SwissToPix</a> von Jonas Buchli.
+<br></p>
+<p>&nbsp;</p>
+
+<a name="swissgrid"></a>
+<h2>Plugin SwissGrid:</h2>
+<p>Dieses Plugin ist die Basis f&uuml;r alle weiteren hier aufgef&uuml;hrten. Es implementiert die schweizerische Kartenprojektion und stellt die nötigen Tools zur verfügung um die Daten von den Swiss Topo CD's zu extrahieren.</p>
+<br>
+<h3>Was macht das Plugin genau?</h3> 
+<p>Beim Aufruf vom Gpsylon wird die Kartenprojektion auf Swissgrid CH-1903 umgestellt. Dies ist n&ouml;tig, da alle Pixelkarten von Swiss Topo so dargestellt sind. Karten welche wie z.B. von Mapblast stammen, werden dann nicht mehr korrekt dargestellt. Diese wurden in einer anderen Projektion erstellt. Vektordaten und somit alle weiteren Funktionen von Gpsylon, wie GPX import, stehen jedoch weiterhin zu verf&uuml;gung. Vektordaten werden beim Anzeigen automatisch in die aktuelle Projektion umgerechnet.</p>
+<h3>Wie k&ouml;nnen die Swiss Topo Karten verwendet werden?</h3>
+<p>
+Die Perlscripte lesen pro Kartenmassstab ein Adress- und ein Datenfile ein. Im Datenfile sind jeweils ein bis mehrere Kartenbl&auml;tter enthalten und in kleinen, ca. 256x256 Pixel grossen Bildern abgelegt. Die Adressfiles beschreiben danach die Reihenfolge der Anordung der kleinen Kartenschnipsel. Am Schluss werden diese Schnipsel mit einer Bildkonvertierungs-Software (ImageMagick) wieder in die ursprünglichen Kartenbl&auml;ttern von 7000x4800 Pixel zusammengefügt. Diese Kartenblätter entsprechen der offiziellen Nummerierung. Z.b. für Bern 1:100000 also KOMB36.png.<br>
+Um nun diese grossen Bilder im SwissGrid Plugin zu verwenden, muss nur noch in einem Configfile angegeben werden, welche geographische Ecke der Schweiz nun durch dieses Blatt abgedeckt ist. F&uuml;r Bern z.b. in maps.txt "pk100/KOMB36.png 46.788997 7.242189 100000 7000 4800". Die Koordinaten werden in WGS84 angegeben und beschreiben das Kartenzentrum. Die Scripte um das maps.txt zu generieren liegen unter "gpstool/plugins/swissgrid/makemaps/gen-maps-txt"<br>
+Eine optimierung in der Ladezeit wird nun erzeugt in dem man die grossen 7000x4800 Pixel grossen Kartenbl&auml;tter in z.b. 16 kleinere unterteilt. Die nötigen Scripte befinden sich am selben Ort.</p>
+<br>
+<p>
+Zus&auml;tzliche Funktionen:
+<br>
+<ul>
+  <li>MouseMode mit Satstusleiste (Anzeige von SwissGrid Koordinaten sowie der Karten-Blattnummer)</li>
+  <li>SwissGrid Layer zur Darstellung des Swissgrids</li>
+  <li>Scripte zur extrahierung der Kartendaten (1:50000/1:100000/1:200000/1:500000/1:1Mio/1:2Mio)</li>
+  <li>Scripte zur extrahierung und konvertierung der SwissName Datenbank (ca. 100000 Objekte)</li>
+  <li>Main-Methode in org.dinopolis.gpstool.plugin.swissgrid.SwissProjection zur Umrechnung SwissGrid<->WGS84</li>
+</ul>
+<br>
+<a href="http://www.geoid.ch/swissgrid/screenshots/SwissName.jpg"><img src="http://www.geoid.ch/swissgrid/screenshots/SwissName-small.jpg" border="0"></a>&nbsp;
+<a href="http://www.geoid.ch/swissgrid/screenshots/SwissGrid.jpg"><img src="http://www.geoid.ch/swissgrid/screenshots/SwissGrid-small.jpg" border="0"></a>&nbsp;
+<a href="http://www.geoid.ch/swissgrid/screenshots/Graz.jpg"><img src="http://www.geoid.ch/swissgrid/screenshots/Graz-small.jpg" border="0"></a>&nbsp;
+<br>
+</p>
+<p>&nbsp;</p>
+
+<a name="dufourmap"></a>
+<h2>Plugin Dufourmap:</h2>
+<p>Dieses Plugin impementiert einen zweiten Karten-Layer, welcher es erm&ouml;glich, Karten der gleichen Projektion mit variablem Deckungsfaktor parallel darzustellen.</p>
+<br>
+<p>Die Dufourkarte, mit offiziellem Namen Topographische Karte der Schweiz, ist das &auml;lteste amtliche Kartenwerk der Schweiz. Sie basiert auf Vermessungen der Kantone und der Eidgenossenschaft und wurde in den Jahren 1845 bis 1865 vom Eidgen&ouml;ssischen Topographischen Bureau unter der Leitung von Henri Dufour herausgegeben.<br>
+<a href="http://de.wikipedia.org/wiki/Dufourkarte">Dufourkarte auf Wikipedia</a></p>
+<br>
+<p>
+<ul>
+  <li>Anzeige mit &uuml;berblendung auf die "normalen" Karten</li>
+  <li>Die Scripte zur extrahierung der Kartendaten, sind im SwissGrid Plugin enthalten</li>
+</ul>
+<br>
+<a href="http://www.geoid.ch/swissgrid/screenshots/Dufourmap-1.jpg"><img src="http://www.geoid.ch/swissgrid/screenshots/Dufourmap-1-small.jpg" border="0"></a>&nbsp;
+<a href="http://www.geoid.ch/swissgrid/screenshots/Dufourmap-2.jpg"><img src="http://www.geoid.ch/swissgrid/screenshots/Dufourmap-2-small.jpg" border="0"></a>&nbsp;
+<br>
+</p>
+<p>&nbsp;</p>
+
+<a name="dem"></a>
+<!-- <h2>Plugin SwissDHM:</h2>
+Ein Digitales Gel&auml;ndemodell (DGM) bzw. Digitales H&ouml;henmodell (DHM) ist ein digitales, numerisches Modell der Gel&auml;ndeh&ouml;hen und -formen. Oft werden auch die englischen Begriffe Digital Terrain Model (DTM) und Digital Elevation Model (DEM) benutzt. Ein DGM bzw. DHM stellt im Gegensatz zum digitalen Oberfl&auml;chenmodell (DOM) keine Objekte auf der Erdoberfl&auml;che dar (z.B. B&auml;ume oder H&auml;user).<br>
+<a href="http://de.wikipedia.org/wiki/Digitales_H%C3%B6henmodell">DHM auf Wikipedia</a>
+<br><br>
+<ul>
+  <li>Version 0.5: Anzeige der Hangneigung f&uuml;r Tourenski Fahrer (ab vorberechneten Bilder)</li>
+  <li>geplante Version 1.0: Anzeige der Hangneigung direkt ab DHM</li>
+  <li>geplante Version 1.0: Anzeige der Hangexposition direkt ab DHM</li>
+  <li>geplante Version 1.0: Anzeige der Relief schattierung ab DHM</li>
+  <li>geplante Version 1.1: Anzeige der H&ouml;he im SwissGrid MouseMode</li>
+</ul>
+<br>
+<a href="screenshots/SwissDHM-1.jpg"><img src="screenshots/SwissDHM-1-small.jpg" border="0"></a>&nbsp;
+<a href="screenshots/DHM-planed.jpg"><img src="screenshots/DHM-planed-small.jpg" border="0"></a>&nbsp;
+<br>
+<p>&nbsp;</p> -->
+
+<a name="install"></a>
+<h2>Installation:</h2>
+<ul>
+  <li>Gpsylon downloaden und auspacken</li>
+  <li>Pugins generieren:<br>Da das SwissGrid Plugin die Projektion &auml;nderet und die Software für z.b. mapblast Karten unbrauchbar macht, wird es nur als Sourcecode geliefert. Es kann wie folgt gebuildet und installiert werden:</li>
+   <ul>
+    <li>cd plugins/swissgrid/ && ant install_plugin</li>
+    <li>analog gilt auch -> cd plugins/dufourmap/ && ant install_plugin</li>
+    <li>analog gilt auch -> cd plugins/dem/ && ant install_plugin</li>
+   </ul>
+  <li>Karten generieren:<br>Die Scripte generieren pro Kartenblatt ein grosses .png File.</li>
+   <ul>
+    <li>z.b. 1:100000 -> cd plugins/swissgrid/makemaps/swissmap/100v3/ && ./Make-cn100.sh</li>
+    <li>z.b. 1:200000 -> cd plugins/swissgrid/makemaps/swissmap/50v2/ && ./Make200.sh</li>
+    <li>z.b. 1:100000 (dufour) -> cd plugins/swissgrid/makemaps/dufourmap/ && ./MakeDufour.sh</li>
+    <li>usw.</li>
+   </ul>
+  <li>maps.txt generieren und Karten zerschneiden:<br>Um die Ladezeit einzelner Karten zu verbessern, können die Karten in kleinerer zerhackt werden.</li>
+   <ul>
+    <li>cd gpstool/plugins/swissgrid/makemaps/gen-maps-txt/ && ./gen-maps-txt.pl</li>
+    <li>Karten zerkleinern: cd gpstool/plugins/swissgrid/makemaps/gen-maps-txt/ && ./gen-subimage.pl (Pfade müssen direkt im Script angepasst werden!)</li>
+   </ul>
+  <li>Applikation mit ./gpsylon.sh starten</li>
+  <li>Unter "File -> Preferences" die Pfade zu den Kartendaten und dem maps.txt anpassen (inkl. Dufourkarten und DHM) anpassen</li>
+  <li>Markers Datenbank:<br>Nach dem öffnen wird eine leere Datenbank angelegt. Die Swissname Datenbank kann wie folg inportiert werden:
+  <ul>
+    <li>cd plugins/swissgrid/makemaps/swissname/ &&  make</li>
+    <li>java -cp derbytools.jar:derby.jar \<br>
+       -Dij.protocol=jdbc:derby: -Dij.database=/home/<user>/.gpsylon/marker/location_marker_db_derby \<br>
+       org.apache.derby.tools.ij<br>
+ ij> run 'location.sql';<br>
+ ij> select count(*) from gpsylon.markers;<br>
+ ij> exit;
+    </li>
+   </ul>
+</ul>
+<p>&nbsp;</p>
+
+<a name="download"></a>
+<h2>Download:</h2>
+<a href="http://sourceforge.net/project/showfiles.php?group_id=64816">http://sourceforge.net/project/showfiles.php?group_id=64816</a>
+<p>&nbsp;</p>
+<p>F&uuml;r Fragen oder Anmerkungen: <address><a href="mailto:benz@geoid.ch">Samuel Benz</a></address>
+ <a id="sflogo" href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=64816&amp;type=4" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></p>
+<p>&nbsp;</p>
+</div>
+</div>
+</body>
+</html>

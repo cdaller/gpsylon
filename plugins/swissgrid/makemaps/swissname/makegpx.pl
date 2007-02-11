@@ -2,7 +2,7 @@
 #
 #
 BEGIN {
-@INC = ("$ENV{'SWISSMAP'}/bin", @INC);
+@INC = ("../SwissToPix/lib", @INC);
 }
 
 

@@ -5,7 +5,7 @@
 # Zusätzlich schreibt es informatinen für gen-subimage.pl, falls man die Karten zerhacken möchte.
 
 BEGIN {
-@INC = ("$ENV{'SWISSMAP'}/lib", @INC);
+@INC = ("../SwissToPix/lib", @INC);
 }
 
 use SwissToPix;

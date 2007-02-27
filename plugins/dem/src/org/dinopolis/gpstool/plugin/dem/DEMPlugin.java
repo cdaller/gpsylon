@@ -40,10 +40,12 @@ import org.dinopolis.gpstool.Gpsylon;
 import org.dinopolis.gpstool.gui.MouseMode;
 import org.dinopolis.gpstool.plugin.GuiPlugin;
 import org.dinopolis.gpstool.plugin.PluginSupport;
+import org.dinopolis.gpstool.plugin.dem.mlt.MLT2LandSerf;
 import org.dinopolis.util.Debug;
 import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
+import org.dinopolis.util.gui.MenuFactory;
 
 import com.bbn.openmap.Layer;
 
@@ -68,8 +70,8 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	
 	/** the plugin support of the application */
 	protected PluginSupport support_;
-	/** the Plugin Menu Item from GPSylon */
-	protected JMenuItem frame_menu_item_;
+	/** the Plugin Menu from GPSylon */
+	protected JMenu dem_main_menu_;
 	/** the resources of the swiss grid plugin */
 	protected Resources resources_;
 	/** the resources of the GPSylon application */
@@ -81,13 +83,16 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	/** the layer to draw */
 	protected DEMLayer layer_;
 	
+	int SlopeType = MLT2LandSerf.SLOPE;
+	int ReliefType = MLT2LandSerf.RELIEF;
+	
 	// keys for resources:
 	public static final String KEY_DEM_PLUGIN_IDENTIFIER = "dem.plugin.identifier";
 	public static final String KEY_DEM_PLUGIN_VERSION = "dem.plugin.version";
 	public static final String KEY_DEM_PLUGIN_NAME = "dem.plugin.name";
 	public static final String KEY_DEM_PLUGIN_DESCRIPTION = "dem.plugin.description";
 	
-	public static final String KEY_DEM_MENU_NAME = "DEM";
+	public static final String KEY_DEM_MENU_NAME = "dem";
 
 	/** the name of the resource file */
 	private final static String RESOURCE_BUNDLE_NAME = "DEMPlugin";
@@ -96,7 +101,11 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	private final static String USER_RESOURCE_DIR_NAME = Gpsylon.USER_RESOURCE_DIR_NAME;
 
 	public static final String DEM_ACTION_STORE_ID = RESOURCE_BUNDLE_NAME;
-	public static final String ACTION_DEM_DEM_FRAME = "elevation_model";
+	public static final String ACTION_DEM_SLOPE_ANGLE = "slope_angle";
+	public static final String ACTION_DEM_SLOPE_ASPECT = "slope_aspect";
+	public static final String ACTION_DEM_SLOPE_AVALANCHE = "slope_avalanche";
+	public static final String ACTION_DEM_RELIEF = "relief";
+	public static final String ACTION_DEM_CACHE = "clear_cache";
 
 	// ----------------------------------------------------------------------  
 	// Implementation of org.dinopolis.gpstool.plugin.Plugin
@@ -111,6 +120,8 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 */
 	public void initializePlugin(PluginSupport support)
 	{
+		//Debug.addLevelsToPrint("DEM");
+		
 		support_ = support;
 		
 		application_resources_ = support.getResources();
@@ -118,13 +129,13 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 		
 		// load swiss dhm resources:
 		if (Debug.DEBUG)
-			Debug.println("DEM_init", "loading resources");
+			Debug.println("DEM", "DEM: loading resources");
 		loadResources();
 		application_resources_.attachResources(resources_);
 
 		// prepare the actionstore for the menu:
 		action_store_ = ActionStore.getStore(DEM_ACTION_STORE_ID);
-		action_store_.addActions(new Action[] { new DEMFrameAction()});
+		action_store_.addActions(new Action[] { new ClearDEMCache(),new SlopeAngleAction(),new SlopeAspectAction(),new SlopeAvalancheAction()});
 		
 	}
 
@@ -223,7 +234,15 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 */
 	public JMenu getMainMenu()
 	{
-		return (null);
+		if (dem_main_menu_ == null)
+		{
+			dem_main_menu_ = MenuFactory.createMenu(
+			MenuFactory.KEY_MENUE_PREFIX,
+			KEY_DEM_MENU_NAME,
+			resources_,
+			action_store_);
+		}
+		return (dem_main_menu_);
 	}
 
 	//----------------------------------------------------------------------
@@ -239,17 +258,7 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	 */
 	public JMenuItem getSubMenu()
 	{
-		/*if (frame_menu_item_ == null)
-		{
-			frame_menu_item_ =
-				(JMenuItem) MenuFactory.createMenuComponent(
-					MenuFactory.KEY_MENUE_PREFIX,
-					KEY_DEM_MENU_NAME,
-					resources_,
-					action_store_);
-		}
-		return (frame_menu_item_);*/
-		return null;
+		return (null);
 	}
 
 	//----------------------------------------------------------------------
@@ -282,7 +291,8 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 			DEMManager dem_manager_ = new DEMManager();
 			dem_manager_.initialize(application_resources_, main_frame_);
 			layer_.initialize(dem_manager_);
-			
+			layer_.setSlopeType(SlopeType);
+			layer_.setReliefType(ReliefType);	
 		}
 		return (layer_);
 	}
@@ -333,7 +343,7 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 		{
 			if (Debug.DEBUG)
 				Debug.println(
-					"DEMPlugin",
+					"DEM",
 					mre.toString() + '\n' + Debug.getStackTrace(mre));
 			System.err.println(
 				"DEMPlugin: resource file '"
@@ -345,15 +355,6 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 		}
 	}
 
-	//----------------------------------------------------------------------
-	/**
-	 * Updates the locations according to the values set within the
-	 * resource file. 
-	 */
-	protected void updateWindowLocation()
-	{
-		
-	}
 
 	//----------------------------------------------------------------------
 	/**
@@ -364,7 +365,7 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 	public void valueChanged(ListSelectionEvent event)
 	{
 		if (Debug.DEBUG)
-			Debug.println("DEM_selection", "selection changed " + event);
+			Debug.println("DEM", "DEM: selection changed " + event);
 
 		if (event.getValueIsAdjusting())
 			return; // user not finished yet!
@@ -399,9 +400,9 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 
 	//----------------------------------------------------------------------
 	/**
-	 * The Action for switching a layer on or off
+	 * The Action for switching slope type
 	 */
-	class DEMFrameAction extends AbstractAction
+	class SlopeAngleAction extends AbstractAction
 	{
 
 		/**
@@ -413,9 +414,9 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 		/**
 		 * The Default Constructor.
 		 */
-		public DEMFrameAction()
+		public SlopeAngleAction()
 		{
-			super(ACTION_DEM_DEM_FRAME);
+			super(ACTION_DEM_SLOPE_ANGLE);
 		}
 
 		//----------------------------------------------------------------------
@@ -426,6 +427,116 @@ public class DEMPlugin implements GuiPlugin, ListSelectionListener, PropertyChan
 		 */
 		public void actionPerformed(ActionEvent event)
 		{
+			layer_.setSlopeType(MLT2LandSerf.SLOPE);
+			layer_.setReliefType(MLT2LandSerf.RELIEF);
+			layer_.calculateVisibleImages();
+		}
+	}
+
+	//----------------------------------------------------------------------
+	/**
+	 * The Action for switching slope type
+	 */
+	class SlopeAspectAction extends AbstractAction
+	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2052792608512413096L;
+
+		//----------------------------------------------------------------------
+		/**
+		 * The Default Constructor.
+		 */
+		public SlopeAspectAction()
+		{
+			super(ACTION_DEM_SLOPE_ASPECT);
+		}
+
+		//----------------------------------------------------------------------
+		/**
+		 * Ouputs some test message
+		 * 
+		 * @param event the action event
+		 */
+		public void actionPerformed(ActionEvent event)
+		{
+			layer_.setSlopeType(MLT2LandSerf.ASPECT);
+			layer_.setReliefType(MLT2LandSerf.RELIEF);
+			layer_.calculateVisibleImages();
+		}
+	}
+
+	//----------------------------------------------------------------------
+	/**
+	 * The Action for switching slope type
+	 */
+	class SlopeAvalancheAction extends AbstractAction
+	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1681337957024059194L;
+
+		//----------------------------------------------------------------------
+		/**
+		 * The Default Constructor.
+		 */
+		public SlopeAvalancheAction()
+		{
+			super(ACTION_DEM_SLOPE_AVALANCHE);
+		}
+
+		//----------------------------------------------------------------------
+		/**
+		 * Ouputs some test message
+		 * 
+		 * @param event the action event
+		 */
+		public void actionPerformed(ActionEvent event)
+		{
+			layer_.setSlopeType(MLT2LandSerf.AVALANCHE);
+			layer_.setReliefType(MLT2LandSerf.PLAIN);
+			layer_.calculateVisibleImages();
+		}
+	}
+
+	
+	//----------------------------------------------------------------------
+	/**
+	 * The Action for clearing the cache
+	 */
+	class ClearDEMCache extends AbstractAction	
+	{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2567863969345828658L;
+
+		//----------------------------------------------------------------------
+		/**
+		 * The Default Constructor.
+		 */
+		public ClearDEMCache()
+		{
+			super(ACTION_DEM_CACHE);
+		}
+
+		//----------------------------------------------------------------------
+		/**
+		 * Ouputs some test message
+		 * 
+		 * @param event the action event
+		 */
+		public void actionPerformed(ActionEvent event)
+		{
+			if (Debug.DEBUG)
+				Debug.println("DEM", "DEM: clear cache");
+			MLT2LandSerf.clearDEMCache();
+			layer_.calculateVisibleImages();
 		}
 	}
 

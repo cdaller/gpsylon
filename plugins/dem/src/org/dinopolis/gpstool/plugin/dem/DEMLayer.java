@@ -38,8 +38,6 @@ import org.dinopolis.gpstool.plugin.dem.mlt.MLT2LandSerf;
 import org.dinopolis.gpstool.event.MapsChangedEvent;
 import org.dinopolis.gpstool.event.MapsChangedListener;
 import org.dinopolis.gpstool.gui.util.BasicLayer;
-import org.dinopolis.gpstool.gui.util.ImageInfo;
-import org.dinopolis.gpstool.gui.util.VisibleImage;
 import org.dinopolis.util.gui.SwingWorker;
 
 import com.bbn.openmap.event.LayerStatusEvent;
@@ -69,6 +67,10 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 	
 	MLT2LandSerf landserf_;
 	
+	int SlopeType_;
+	int ReliefType_;
+	boolean reload;
+	
 	double visible_map_scale_factor_ = 1.0/1.67;
 	double max_visible_map_scale = 1000000;
 
@@ -93,7 +95,48 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 		
 	}
 	
-
+	/**
+	 * Set slope type
+	 * 
+	 * @param slope type
+	 */
+	protected void setSlopeType(int SlopeType){
+		if (SlopeType_ != SlopeType){
+			reload = true;
+		}
+		SlopeType_ = SlopeType;
+	}
+	
+	/**
+	 * Get slope type
+	 * 
+	 * @return slope type
+	 */
+	protected int getSlopeType(){
+		return SlopeType_;
+	}	
+	
+	/**
+	 * Set relief type
+	 * 
+	 * @param relief type
+	 */
+	protected void setReliefType(int ReliefType){
+		if (ReliefType_ != ReliefType){
+			reload = true;
+		}
+		ReliefType_ = ReliefType;
+	}	
+	
+	/**
+	 * Get relief type
+	 * 
+	 * @return slope type
+	 */
+	protected int getReliefType(){	
+		return ReliefType_;
+	}	
+	
 	/**
 	 * Called when a map is added or removed.
 	 *
@@ -134,20 +177,20 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 			Iterator image_iterator = visible_images_.iterator();
 			float scale_factor;
 			while (image_iterator.hasNext()) {
-				ImageInfo visible_image = (ImageInfo) image_iterator.next();
+				DEMImageInfo visible_image = (DEMImageInfo) image_iterator.next();
 				scale_factor = visible_image.getScaleFactor();
 				g2.clipRect(visible_image.getVisibleRectangleX(), visible_image
 						.getVisibleRectangleY(), visible_image
 						.getVisibleRectangleWidth(), visible_image
 						.getVisibleRectangleHeight());
 				 //System.out.println("Drawing image: "+visible_image);
-
+				String imagename = MLT2LandSerf.tmpPath + "/" + MLT2LandSerf.createRasterID(visible_image.getMapInfo().getFilename()) + "_" + new Integer(SlopeType_).toString() + new Integer(ReliefType_).toString() + ".png";				
 				if (scale_factor < 1e-4) { // just print image
-					g2.drawImage(visible_image.getImage(), (int) visible_image
+					g2.drawImage(visible_image.getImage(imagename,Color.white), (int) visible_image
 							.getX(), (int) visible_image.getY(), this);
 				} else // print scaled version of image
 				{
-					g2.drawImage(visible_image.getImage(), (int) visible_image
+					g2.drawImage(visible_image.getImage(imagename,Color.white), (int) visible_image
 							.getX(), (int) visible_image.getY(),
 							(int) (visible_image.getWidth()),
 							(int) (visible_image.getHeight()), this);
@@ -205,7 +248,7 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 					tmp_visible_map_scale_factor /= 2.0;
 				} while ((visible_images.size() == 0) && (tmp_visible_map_scale_factor > 0.001) && (projection.getScale() <= max_visible_map_scale));
 
-				worker_visible_images_ = VisibleImage.findVisibleImages(0,
+				worker_visible_images_ = VisibleDEMImage.findVisibleImages(0,
 						projection.getWidth(), 0, projection.getHeight(),
 						visible_images, worker_visible_images_,
 						worker_empty_rectangles_);
@@ -215,16 +258,21 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 				if (worker_visible_images_ != null) {
 					Iterator image_iterator = worker_visible_images_.iterator();
 					while (image_iterator.hasNext()) {
-						ImageInfo visible_image = (ImageInfo) image_iterator.next();
+						DEMImageInfo visible_image = (DEMImageInfo) image_iterator.next();
 						String filename_ = visible_image.getMapInfo().getFilename();
-						boolean exists = new File(MLT2LandSerf.tmpPath + "/" + MLT2LandSerf.createRasterID(filename_) + ".png").exists();
+						String imagename = MLT2LandSerf.tmpPath + "/" + MLT2LandSerf.createRasterID(filename_) + "_" + new Integer(SlopeType_).toString() + new Integer(ReliefType_).toString() + ".png";
+						boolean exists = new File(imagename).exists();
 						if(!exists){
 							landserf_.addRaster(landserf_.createRaster(filename_));
-							// TODO: gui for setting different LandSerf parameter
-							landserf_.calculateSlope(MLT2LandSerf.AVALANCHE);
-							landserf_.calculateRelief(MLT2LandSerf.PLAIN);
-							landserf_.writeImage();
+							landserf_.calculateSlope(SlopeType_);
+							landserf_.calculateRelief(ReliefType_);
+							landserf_.writeImage(imagename);
 						}
+						if(reload){
+							// clear the soft reference 
+							visible_image.getDEMInfo().clearReference();
+						}
+						
 					}
 				}
 
@@ -233,6 +281,7 @@ public class DEMLayer extends BasicLayer implements MapsChangedListener {
 
 			public void finished() {
 				fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+				reload = false;
 				setVisibleImages(worker_visible_images_);
 				repaint();
 			}

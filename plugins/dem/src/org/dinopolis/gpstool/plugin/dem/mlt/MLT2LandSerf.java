@@ -262,11 +262,10 @@ public class MLT2LandSerf
 	/**
 	 * Save the RasterMap to disc. Useful for testing
 	 *
-	 * Filename: java.io.tempdir + rasterID + srf
-	 * 
+	 * @param filename_ Filename
 	 */
-    public void writeSrfFile(){
-        LandSerfIO.write(raster,MLT2LandSerf.tmpPath + "/" + getRasterID() + ".srf");
+    public void writeSrfFile(String filename_){
+        LandSerfIO.write(raster,filename_);
         //LandSerfIO.write(gisFrame.getRaster1(),MLT2LandSerf.tmpPath + "/raster1.srf");
         //LandSerfIO.write(gisFrame.getRaster2(),MLT2LandSerf.tmpPath + "/raster2.srf");
     }
@@ -274,15 +273,15 @@ public class MLT2LandSerf
 	//----------------------------------------------------------------------
 	/**
 	 * Export the graphics pane from GUIFrame to an png image and save this to disc.
-	 * Filename: java.io.tempdir + rasterID + png
 	 * 
 	 * TODO: fix LandSerf bug. border pixel are exported white
 	 * 
+	 * @param filename_ Filename
 	 */
-    public void writeImage(){
+    public void writeImage(String filename_){
         // Achtung: Diese Methode ist statisch obschon sie nicht statisch aufgerufen werden kann!!
         RasterMap DummyRaster = new RasterMap();
-        DummyRaster.writeFile(MLT2LandSerf.tmpPath + "/" + getRasterID() + ".png", FileHandler.IMAGE, gisFrame);	
+        DummyRaster.writeFile(filename_, FileHandler.IMAGE, gisFrame);	
     }
     
 	//----------------------------------------------------------------------
@@ -290,19 +289,17 @@ public class MLT2LandSerf
 	 * Save the image to disc an load them from disc.
 	 * LandSerf does not support exporting image objects directly!
 	 * 
-	 * Filename: java.io.tempdir + rasterID + png
-	 * 
 	 * @return image Load the image from disc
+	 * @param filename_ Filename
 	 */
-    public Image getImage(){
-    	writeImage();
+    public Image getImage(String filename_){
+    	writeImage(filename_);
     	Image image = null;
         try {
             // Read from a file
-            File file = new File(MLT2LandSerf.tmpPath + "/" + getRasterID() + ".png");
-            image = ImageIO.read(file);
+            image = ImageIO.read(new File(filename_));
         } catch (IOException e) {
-        	System.err.println("Error: could not get Image " + MLT2LandSerf.tmpPath + "/" + getRasterID() + ".png");
+        	System.err.println("Error: could not get Image " + filename_);
         }
     	return image;	
     }
@@ -311,10 +308,11 @@ public class MLT2LandSerf
 	/**
 	 * Show the generated image in a grpahics pane.
 	 * Useful for testing debbuging
-	 * 
+	 * 	 
+	 * @param filename_ Filename
 	 */
-    public void showImage(){
-    	Image image = getImage();    
+    public void showImage(String filename_){
+    	Image image = getImage(filename_);    
         // Use a label to display the image
         JFrame frame = new JFrame();
         JLabel label = new JLabel(new ImageIcon(image));
@@ -375,15 +373,16 @@ public class MLT2LandSerf
 		//String[] maps = {"/opt/map/data/dhm25/ch1000.mlt"};
 		
 		for(int i=0;i < maps.length;i++){
-			boolean exists = new File(MLT2LandSerf.tmpPath + "/" + MLT2LandSerf.createRasterID(maps[i]) + ".png").exists();
+			String file = MLT2LandSerf.tmpPath + "/" + MLT2LandSerf.createRasterID(maps[i]) + ".png";
+			boolean exists = new File(file).exists();
 			if(!exists){
 				api.addRaster(api.createRaster(maps[i]));
 				api.calculateSlope(MLT2LandSerf.AVALANCHE);
 				api.calculateRelief(MLT2LandSerf.PLAIN);
         
-				api.writeImage();
-				//api.writeSrfFile();
-				//api.showImage();
+				api.writeImage(file);
+				//api.writeSrfFile("/tmp/reaster.srf");
+				//api.showImage(file);
 			}
 		}
 		

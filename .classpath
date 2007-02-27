@@ -66,5 +66,6 @@
 	<classpathentry kind="lib" path="lib/java/hsqldb-1.8.2.jar"/>
 	<classpathentry kind="lib" path="lib/java/postgresql-8.1-405.jdbc3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java 1.4.2"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

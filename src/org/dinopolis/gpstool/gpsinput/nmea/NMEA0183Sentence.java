@@ -277,11 +277,16 @@ public class NMEA0183Sentence
 
   protected static byte decodeChecksum(String checksum_string)
   {
-    byte checksum;
-
-    checksum = (byte)((hexCharToByte(checksum_string.charAt(0)) & 0xF ) << 4 );
-    checksum = (byte)(checksum | hexCharToByte(checksum_string.charAt(1)) & 0xF );
-    return(checksum);
+//    byte checksum;
+//
+//    checksum = (byte)((hexCharToByte(checksum_string.charAt(0)) & 0xF ) << 4 );
+//    checksum = (byte)(checksum | hexCharToByte(checksum_string.charAt(1)) & 0xF );
+//    return(checksum);
+    // changes added by cedricseah@users.sourceforge.net
+    if (checksum_string == null || checksum_string.equals("")) {
+      throw new IllegalArgumentException("checksum must not be null or empty!");
+    }
+    return Byte.parseByte(checksum_string, 16);
   }
 
 
@@ -294,26 +299,38 @@ public class NMEA0183Sentence
 
   protected byte calcChecksum()
   {
-    int		calc = 0;
-    int		count;
-    int		len;
-    char	chr;
+//    int		calc = 0;
+//    int		count;
+//    int		len;
+//    char	chr;
+//
+//    len = raw_data_.length();
+//
+//    for(count = 1; count < len - 2; count++)  // ignore '$' at beginning and checksum at the end
+//    {
+//      chr = raw_data_.charAt(count);
+//
+//      if(chr == '*') // just to be sure
+//        break;
+//
+//      if(count == 1)
+//        calc = (chr + 256) & 0xFF;
+//      else
+//        calc ^= (chr + 256) & 0xFF;
+//    }
+//    return((byte)calc);
 
-    len = raw_data_.length();
-
-    for(count = 1; count < len - 2; count++)  // ignore '$' at beginning and checksum at the end
-    {
-      chr = raw_data_.charAt(count);
-
-      if(chr == '*') // just to be sure
-        break;
-
-      if(count == 1)
-        calc = (chr + 256) & 0xFF;
-      else
-        calc ^= (chr + 256) & 0xFF;
+    // changes proposed by cedric
+    int start = raw_data_.indexOf('$');
+    int end = raw_data_.indexOf('*');
+    if(end < 0) {
+      end = raw_data_.length();
     }
-    return((byte)calc);
+    byte checksum = (byte) raw_data_.charAt(start + 1);
+    for (int index = start + 2; index < end; ++index) {
+        checksum ^= (byte) raw_data_.charAt(index);
+    }
+    return checksum;    
   }
 
 //----------------------------------------------------------------------

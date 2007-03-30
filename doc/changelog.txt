@@ -1,5 +1,9 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2007/03/30: added Garmin support for EDGE 305 (thanks to Massimo Nervi)
+
+2007/02/02: fixed shell scripts to pass command line arguments correctly
+
 2006/11/03: changed zoom in/out, so the clicked position stays constant (same with wheel)
 
 2006/10/30: fixed gpx import (problem with date)

@@ -510,6 +510,7 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     }
     // add last:
     capabilities_string.append(capabilities.get(capabilities.size()-1));
+    //System.out.println(capabilities_string);    
     long serial_number = -1;
     try
     {
@@ -1589,7 +1590,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
   public List getTracks(long timeout)
   throws GPSException, UnsupportedOperationException
   {
-    if(!capabilities_.hasCapability("A300") && !capabilities_.hasCapability("A301"))
+    // A302 added by massimo nervi
+    if(!capabilities_.hasCapability("A300") && !capabilities_.hasCapability("A301") && !capabilities_.hasCapability("A302"))
       throw new UnsupportedOperationException("Garmin Device does not support track transfer");
 
     try
@@ -2120,7 +2122,8 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
     while(!success && (num_tries < MAX_TRIES))
     {
       // Does device support route transfer protocol
-      if(capabilities_.hasCapability("A300") || capabilities_.hasCapability("A301"))
+      // A302 added by massimo nervi
+      if(capabilities_.hasCapability("A300") || capabilities_.hasCapability("A301")  || capabilities_.hasCapability("A302") )
       {
         if(capabilities_.hasCapability("L1"))
         {
@@ -2676,9 +2679,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
               // create route header depending on used format:
               if(capabilities_.hasCapability("D310"))
                 item = new GarminTrackD310(next_garmin_packet);
+              if(capabilities_.hasCapability("D311"))
+                item = new GarminTrackD311(next_garmin_packet);
               if(logger_.isDebugEnabled())
                 logger_.debug("Received Track Header: "+item);
+              
               break;
+              
 
               // trackpoints
             case Pid_Trk_Data_L001:
@@ -2699,6 +2706,13 @@ public class GPSGarminDataProcessor extends GPSGeneralDataProcessor// implements
                 ((GarminTrack)item).addWaypoint(new GarminTrackpointD300(next_garmin_packet));
               if(capabilities_.hasCapability("D301"))
                 ((GarminTrack)item).addWaypoint(new GarminTrackpointD301(next_garmin_packet));
+              // start massimo nervi
+              if(capabilities_.hasCapability("D304")) {
+                  GarminTrackpointD304 gtp = new GarminTrackpointD304(next_garmin_packet);
+                  if (gtp.has_valid_position())
+                    ((GarminTrack)item).addWaypoint(gtp); 
+              }
+              // end massimo nervi
               break;
 
               // waypoint:

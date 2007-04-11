@@ -27,8 +27,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSGeneralDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSPosition;
@@ -516,6 +518,13 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       processRFTXT(sentence);
       return;
     }
+    // PHILIPPE START
+    if (id.equals("GSA"))
+    {
+    	processGSA(sentence);
+    	return;
+    }
+    // PHILIPPE STOP
   }
 
   // ----------------------------------------------------------------------
@@ -614,6 +623,10 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     String num_sat = (String) data_fields.get(6);
     changeGPSData(NUMBER_SATELLITES, new Integer(num_sat));
 
+    // PHILIPPE START
+    String hdop = (String) data_fields.get(7);
+    changeGPSData(HDOP, new Float(hdop));
+    // PHILIPPE END
     try
     {
       String altitude = (String) data_fields.get(8);
@@ -626,6 +639,44 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     }
   }
 
+  // PHILIPPE START
+  // ----------------------------------------------------------------------
+  /**
+   * Processes a GSA nmea sentences and fires the specific events about the information contained in
+   * this sentence (property name {@link GPSDataProcessor#PDOP}, {@link GPSDataProcessor#HDOP}
+   * {@link GPSDataProcessor#VDOP} and {@link GPSDataProcessor#IDS_SATELLITES}).
+   *
+   * @param sentence a NMEA sentence.
+   */
+  protected void processGSA(NMEA0183Sentence sentence)
+  {
+    if (logger_nmea_.isDebugEnabled())
+      logger_nmea_.debug("GSA detected: " + sentence);
+    List data_fields = sentence.getDataFields();
+    Integer[] satellites_ids = new Integer[12];
+    String pdop = (String) data_fields.get(14);
+    String hdop = (String) data_fields.get(15);
+    String vdop = (String) data_fields.get(16);
+    int valid_fix = Integer.parseInt((String) data_fields.get(1));
+
+    for (int i=0; i < 12; i++) {
+    	String id = (String) data_fields.get(i+2);
+    	if (id != null && id.length()>0) {
+    		satellites_ids[i] = new Integer(Integer.parseInt(id));
+    	}
+    }
+
+    changeGPSData(PDOP,new Float(pdop));
+
+    changeGPSData(HDOP,new Float(hdop));
+    
+    changeGPSData(VDOP, new Float(vdop));
+    
+    changeGPSData(IDS_SATELLITES, satellites_ids);
+
+  }
+  // PHILIPPE END
+  
   // ----------------------------------------------------------------------
   /**
    * Processes a RMC nmea sentences and fires the specific events about the information contained in

@@ -49,6 +49,10 @@ import org.dinopolis.util.ProgressListener;
  * <li><code>SATELLITE_INFO</code>: the value is a {@link org.dinopolis.gpstool.gpsinput.SatelliteInfo} object.</li>
  * <li><code>DEPTH</code>: the value is a Float and is in meters.</li>
  * <li><code>EPE</code>: estimated position error, the value is a GPSPositionError object.</li>
+ * <li><code>IDS_SATELLITES</code>: An array of Integers holding the number of visible satellites.</li>
+ * <li><code>PDOP</code>: a Float indicating the quality of the gps signal.</li>
+ * <li><code>HDOP</code>: a Float indicating the quality of the gps signal in horizontal direction.</li>
+ * <li><code>VDOP</code>: a Float indicating the quality of the gps signal in vertical direction.</li>
  * <ul>
  * <p>
  
@@ -76,6 +80,12 @@ public interface GPSDataProcessor
   public final static String HEADING = "heading";
   public final static String SPEED = "speed";
   public final static String NUMBER_SATELLITES = "number_satellites";
+  // PHILIPPE START
+  public final static String IDS_SATELLITES = "ids_satellites";
+  public final static String PDOP = "position_dop";
+  public final static String HDOP = "horizontal_dop";
+  public final static String VDOP = "vertical_dop";
+  // PHILIPPE STOP
   public final static String ALTITUDE = "altitude";
   public final static String SATELLITE_INFO = "satellite_info";
   public final static String DEPTH = "depth";

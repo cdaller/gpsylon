@@ -1,5 +1,8 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2007/04/11: added support for nmea sentence GSA (includes hdop, vdop and ids of satellites) 
+            (thanks to Philipe Morin)
+
 2007/03/30: added Garmin support for EDGE 305 (thanks to Massimo Nervi)
 
 2007/02/02: fixed shell scripts to pass command line arguments correctly

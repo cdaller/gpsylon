@@ -386,9 +386,9 @@ public class Gpsylon
       System.err.println("WARNING: Could not find log4j configuration file: '"
                          +log_file+"' - logging disabled.");
     logger_ = Logger.getLogger(Gpsylon.class);
-    logger_plugin_ = Logger.getLogger(Gpsylon.class+".connection");
-    logger_connection_ = Logger.getLogger(Gpsylon.class+".plugin");
-    logger_gpsdata_ = Logger.getLogger(Gpsylon.class+".gpsdata");
+    logger_plugin_ = Logger.getLogger(Gpsylon.class.getName()+".plugin");
+    logger_connection_ = Logger.getLogger(Gpsylon.class.getName()+".connection");
+    logger_gpsdata_ = Logger.getLogger(Gpsylon.class.getName()+".gpsdata");
   }
 
 
@@ -1653,6 +1653,8 @@ public class Gpsylon
     {
       String gps_mode = resources_.getString(KEY_GPS_DEVICE_MODE);
       String gps_protocol = resources_.getString(KEY_GPS_DEVICE_PROTOCOL);
+      if(logger_connection_.isDebugEnabled())
+        logger_connection_.debug("connecting in gps mode '" + gps_mode + "' with gps protocol '" + gps_protocol + "'");
           // TODO check plausability (e.g. protocol is garmin, but
           // logfile for nmea is set, protocol garmin, but tcp is set,
           // ...)
@@ -1716,7 +1718,7 @@ public class Gpsylon
             if(gps_protocol.equals(VALUE_KEY_DEVICE_PROTOCOL_NMEA))
             {
               if(logger_connection_.isDebugEnabled())
-                logger_connection_.debug("connecting to nmea device");
+                logger_connection_.debug("connecting to nmea device " + serial_port_name);
 //               if(Debug.DEBUG)
 //                 Debug.println("GPSMap_GPSConnection","connecting to nmea device");
               gps_data_processor_ = new GPSNmeaDataProcessor();
@@ -1736,7 +1738,7 @@ public class Gpsylon
             else
             {
               if(logger_connection_.isDebugEnabled())
-                logger_connection_.debug("connecting to garmin device");
+                logger_connection_.debug("connecting to garmin device " + serial_port_name);
 //               if(Debug.DEBUG)
 //                 Debug.println("GPSMap_GPSConnection","connecting to garmin device");
               gps_data_processor_ = new GPSGarminDataProcessor();
@@ -1757,9 +1759,7 @@ public class Gpsylon
 
             gps_device.init(environment);
             gps_data_processor_.setGPSDevice(gps_device);
-            if(logger_connection_.isDebugEnabled())
-              logger_connection_.debug("connecting to gpsdevice on port "
-                            +serial_port_name +" at "+serial_port_speed+" baud");
+            logger_.info("Connecting to gpsdevice on port " +serial_port_name +" at "+serial_port_speed+" baud");
 //             if(Debug.DEBUG)
 //               Debug.println("GPSMap_GPSConnection","connecting to gpsdevice on port "
 //                             +serial_port_name +" at "+serial_port_speed+" baud");

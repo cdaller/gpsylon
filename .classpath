@@ -45,7 +45,6 @@
 	<classpathentry kind="src" output="plugins/writerasterimage/classes" path="plugins/writerasterimage/src"/>
 	<classpathentry kind="src" output="plugins/writesvgimage/classes" path="plugins/writesvgimage/src"/>
 	<classpathentry kind="lib" path="lib/java/gnu-regexp-1.1.3.jar"/>
-	<classpathentry kind="lib" path="lib/java/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/java/openmap.jar"/>
 	<classpathentry kind="lib" path="lib/java/pg73jdbc3.jar"/>
 	<classpathentry kind="lib" path="lib/java/velocity-dep-1.3.1.jar"/>
@@ -67,5 +66,6 @@
 	<classpathentry kind="lib" path="lib/java/postgresql-8.1-405.jdbc3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java 1.4.2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/java/log4j-1.2.14.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

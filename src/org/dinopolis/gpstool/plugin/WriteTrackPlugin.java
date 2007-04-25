@@ -60,17 +60,13 @@ public interface WriteTrackPlugin extends Plugin
 
   public String[] getContentFileExtensions();
 
-//----------------------------------------------------------------------
-/**
- * Parse the given input stream and return tracks. If no tracks could
- * be read, an empty array (length of 0) is returned (not null!).
- *
- * @param in the inputstream to read the data from.
- * @return an array of {@link
- * org.dinopolis.gpstool.track.Track} objects.
- * @throws IOException if an error occurs during reading.
- */
 
+  /**
+   * Writes the given tracks to the output stream.
+   * @param out the output stream to write to.
+   * @param tracks the tracks to write to.
+   * @throws IOException if an error occurs.
+   */
   public void writeTracks(OutputStream out, List tracks)
     throws IOException;
 }

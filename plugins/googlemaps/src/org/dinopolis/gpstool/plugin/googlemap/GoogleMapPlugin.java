@@ -53,7 +53,6 @@ import org.dinopolis.util.Debug;
 import org.dinopolis.util.ResourceManager;
 import org.dinopolis.util.Resources;
 import org.dinopolis.util.gui.ActionStore;
-import org.dinopolis.util.gui.MenuFactory;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;

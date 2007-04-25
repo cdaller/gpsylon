@@ -1,5 +1,8 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2007/04/25: new version of log4j jar, changed log4j.properties to use logfile for debug msgs
+            version 0.5.3 released
+
 2007/04/11: added support for nmea sentence GSA (includes hdop, vdop and ids of satellites) 
             (thanks to Philipe Morin)
 

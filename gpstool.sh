@@ -29,7 +29,7 @@ PRG="$0"
 PRGDIR=`dirname "$PRG"`
 
 # Get the path to the native libraries
-LIBPATH=$PRGDIR/lib/native/`uname -s`/`arch`
+LIBPATH=$PRGDIR/lib/native/`uname -s`/`uname -m`
 
 if [ -d "$LIBPATH" ]; then
  JAVA_LIB=-Djava.library.path=$LIBPATH

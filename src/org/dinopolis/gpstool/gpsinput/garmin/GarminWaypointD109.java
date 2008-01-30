@@ -149,12 +149,12 @@ public class GarminWaypointD109 extends GarminWaypointD108
     ete_ = pack.getNextAsLongWord(); // 4b
 
     // read strings
-    identification_ = pack.getNextAsString(51);
-    comment_ = pack.getNextAsString(51);
-    facility_ = pack.getNextAsString(31);
-    city_ = pack.getNextAsString(25);
-    address_ = pack.getNextAsString(51);
-    cross_road_ = pack.getNextAsString(51);
+    identification_ = pack.getNextAsString();
+    comment_ = pack.getNextAsString();
+    facility_ = pack.getNextAsString();
+    city_ = pack.getNextAsString();
+    address_ = pack.getNextAsString();
+    cross_road_ = pack.getNextAsString();
   }
 
   /**
@@ -247,12 +247,12 @@ public class GarminWaypointD109 extends GarminWaypointD108
     pack.setNextAsString(state_code_,2,false);
     pack.setNextAsString(country_code_,2,false);
     pack.setNextAsLongWord(ete_);
-    pack.setNextAsString(identification_,51,true);
-    pack.setNextAsString(comment_,51,true);
-    pack.setNextAsString(facility_,31,true);
-    pack.setNextAsString(city_,25,true);
-    pack.setNextAsString(address_,51,true);
-    pack.setNextAsString(cross_road_,51,true);
+    pack.setNextAsString(identification_);
+    pack.setNextAsString(comment_);
+    pack.setNextAsString(facility_);
+    pack.setNextAsString(city_);
+    pack.setNextAsString(address_);
+    pack.setNextAsString(cross_road_);
 
     return (pack);
   }

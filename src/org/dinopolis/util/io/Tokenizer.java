@@ -731,7 +731,7 @@ public class Tokenizer
     throws IOException
   {
     int token = nextToken();
-    Vector list = new Vector();
+    List list = new ArrayList();
     String word = "";
 //    while(token != Tokenizer.EOF)
     while(true)

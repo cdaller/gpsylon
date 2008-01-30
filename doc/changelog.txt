@@ -1,5 +1,9 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2008/01/30: adding support for gpsd in GPSTool
+            fixed problem in D108 and D109 (variable length strings)
+            version 0.5.4, not yet released
+
 2007/04/25: new version of log4j jar, changed log4j.properties to use logfile for debug msgs
             version 0.5.3 released
 

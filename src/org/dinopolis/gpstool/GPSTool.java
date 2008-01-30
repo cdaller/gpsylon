@@ -54,6 +54,7 @@ import org.dinopolis.gpstool.gpsinput.GPSDataProcessor;
 import org.dinopolis.gpstool.gpsinput.GPSDevice;
 import org.dinopolis.gpstool.gpsinput.GPSException;
 import org.dinopolis.gpstool.gpsinput.GPSFileDevice;
+import org.dinopolis.gpstool.gpsinput.GPSNetworkGpsdDevice;
 import org.dinopolis.gpstool.gpsinput.GPSPosition;
 import org.dinopolis.gpstool.gpsinput.GPSRawDataFileLogger;
 import org.dinopolis.gpstool.gpsinput.GPSRawDataListener;
@@ -207,7 +208,7 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
     }
 
     String[] valid_args =
-      new String[] {"device*","d*","help","h","speed#","s#","file*","f*",
+      new String[] {"device*","d*","help","h","speed#","s#","file*","f*","gpsd*",
                     "nmea","n","garmin","g","sirf","i","rawdata","downloadtracks",
                     "downloadwaypoints","downloadroutes","deviceinfo","printposonce",
                     "printpos","p","printalt","printspeed","printheading","printsat",
@@ -232,6 +233,9 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
         // Set default values
     String filename = null;
     String serial_port_name = null;
+    boolean gpsd = false;
+    String gpsd_host = "localhost";
+    int gpsd_port = 2947;
     int serial_port_speed = -1;
     GPSDataProcessor gps_data_processor;
     String nmea_log_file = null;
@@ -282,6 +286,21 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
       {
         filename = (String)args.getValue("f");
       }
+    
+    if(args.isSet("gpsd"))
+    {
+      gpsd = true;
+      String gpsd_host_port = (String) args.getValue("gpsd");
+      if (gpsd_host_port != null && gpsd_host_port.length() > 0)
+      {
+        String[] params = gpsd_host_port.split(":");
+        gpsd_host = params[0];
+        if (params.length > 0)
+        {
+          gpsd_port = Integer.parseInt(params[1]);
+        }
+      }
+    }
 
     if (args.isSet("garmin") || args.isSet("g"))
     {
@@ -339,6 +358,12 @@ public class GPSTool implements PropertyChangeListener, ProgressListener
       environment.put(GPSFileDevice.PATH_NAME_KEY,filename);
       gps_device = new GPSFileDevice();
     }
+    else if(gpsd)
+    {
+      environment.put(GPSNetworkGpsdDevice.GPSD_HOST_KEY,gpsd_host);
+      environment.put(GPSNetworkGpsdDevice.GPSD_PORT_KEY,new Integer(gpsd_port));
+      gps_device = new GPSNetworkGpsdDevice();
+    } 
     else
     {
       if (serial_port_name != null)

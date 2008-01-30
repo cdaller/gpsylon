@@ -472,6 +472,7 @@ Christof Dallermassl (christof@dallermassl.at)
         <include name="org/dinopolis/gpstool/GPSTool.class"/>
         <include name="org/dinopolis/gpstool/GPSTool$*.class"/>
         <include name="org/dinopolis/gpstool/gpx/ReadGPX.class"/>
+        <include name="org/dinopolis/gpstool/gpx/ReadGPX$*.class"/>
       </fileset>
 
       <fileset dir="${aux_dir}">

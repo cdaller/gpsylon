@@ -57,6 +57,8 @@ public class GeoMath
  * @param latitude2 the latitude of the second point given in degrees.
  * @param longitude2 the longitude of the second point given in degrees.
  * @return the distance in meters.
+ * FIXXME: The calculation is wrong (does not respect that a degree close to the pole is 
+ * less (in meters) than a degree at the equator!
  */
   public static double distance(double latitude1, double longitude1,
                                 double latitude2, double longitude2)

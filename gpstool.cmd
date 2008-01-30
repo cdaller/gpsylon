@@ -14,6 +14,6 @@ set JAVA_LIB=-Djava.library.path=%LIBPATH%
 
 rem run the jar file:
 rem c:\j2skd1.4.2_12\bin\java.exe -version
-java "%JAVA_LIB%" %GPSYLON_VMARGS% -jar "%PRG_DIR%gpstool-0.5.3.jar" %*
+java "%JAVA_LIB%" %GPSYLON_VMARGS% -jar "%PRG_DIR%gpstool-0.5.4.jar" %*
 pause
 

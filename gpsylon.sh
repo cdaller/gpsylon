@@ -42,5 +42,5 @@ else
 fi
 
 #echo "PRGDIR is $PRGDIR"
-$JAVA $JAVA_LIB $GPSYLON_VMARGS -jar $PRGDIR/gpsylon-0.5.3.jar "$@"
+$JAVA $JAVA_LIB $GPSYLON_VMARGS -jar $PRGDIR/gpsylon-0.5.4.jar "$@"
 

@@ -15,7 +15,7 @@ Christof Dallermassl (christof@dallermassl.at)
   	<echo>Java Home: ${java.home}</echo>
   	<echo>Java Version: ${java.version}</echo>
   	
-    <property name="release_version" value="0.5.3"/>
+    <property name="release_version" value="0.5.4"/>
     <property name="target_class_dir" value="classes"/>
     <property name="source_dir" value="src"/>
     <property name="lib_dir" value="lib/java"/>

@@ -47,6 +47,7 @@ public class GarminProduct
     product_id_= GarminDataConverter.getGarminWord(buffer,2);
     product_software_= GarminDataConverter.getGarminWord(buffer,4);
     product_name_ = GarminDataConverter.getGarminString(buffer,6);
+    // FIXME: latest specification has multiple zero terminated strings here
   }
 
 //----------------------------------------------------------------------

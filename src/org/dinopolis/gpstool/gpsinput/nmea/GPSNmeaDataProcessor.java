@@ -47,7 +47,7 @@ import org.dinopolis.gpstool.gpsinput.SatelliteInfo;
  *
  * Contributions:
  * <ul>
- * <li>Didier Donsez <didier.donsez@imag.fr> added hanlding of VTG and HTD nmea sentences</li>
+ * <li>Didier Donsez <didier.donsez@imag.fr> added handling of VTG and HTD nmea sentences</li>
  * </ul>
  */
 
@@ -393,6 +393,24 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     {
       if (open_) // otherwise, this is the reason for the exception!
         ioe.printStackTrace();
+      
+      // try to reconnect:
+      logger_.info("Lost connection, sleeping and try to reconnect");
+      try
+      {
+        Thread.sleep(5000); // 5sec
+      }
+      catch (InterruptedException ie)
+      {
+      }
+      try
+      {
+        open();
+      } catch (GPSException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
   }
 
@@ -654,23 +672,27 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       logger_nmea_.debug("GSA detected: " + sentence);
     List data_fields = sentence.getDataFields();
     Integer[] satellites_ids = new Integer[12];
-    String pdop = (String) data_fields.get(14);
-    String hdop = (String) data_fields.get(15);
-    String vdop = (String) data_fields.get(16);
     int valid_fix = Integer.parseInt((String) data_fields.get(1));
-
-    for (int i=0; i < 12; i++) {
-    	String id = (String) data_fields.get(i+2);
-    	if (id != null && id.length()>0) {
-    		satellites_ids[i] = new Integer(Integer.parseInt(id));
-    	}
-    }
-
-    changeGPSData(PDOP,new Float(pdop));
-
-    changeGPSData(HDOP,new Float(hdop));
     
-    changeGPSData(VDOP, new Float(vdop));
+    if(data_fields.size() > 13) 
+    {
+      String pdop = (String) data_fields.get(14);
+      String hdop = (String) data_fields.get(15);
+      String vdop = (String) data_fields.get(16);
+      changeGPSData(PDOP,new Float(pdop));
+      changeGPSData(HDOP,new Float(hdop));
+      changeGPSData(VDOP, new Float(vdop));
+    }
+    
+    for (int sat_index=0; sat_index < 12; sat_index++) {
+      if(data_fields.size() > sat_index + 2) 
+      {
+        String id = (String) data_fields.get(sat_index+2);
+        if (id != null && id.length()>0) {
+          satellites_ids[sat_index] = new Integer(Integer.parseInt(id));
+        }
+      }
+    }
     
     changeGPSData(IDS_SATELLITES, satellites_ids);
 

@@ -225,12 +225,19 @@ public class GarminWaypointD109 extends GarminWaypointD108
  */
   public GarminPacket toGarminPacket(int packet_id)
   {
-    int data_length = 52 + Math.min(identification_.length()+1,51)
-                      + Math.min(comment_.length()+1,51)
-                      + Math.min(facility_.length()+1,31)
-                      + Math.min(city_.length()+1,25)
-                      + Math.min(address_.length()+1,51)
-                      + Math.min(cross_road_.length()+1,51);
+//    int data_length = 52 + identification_.length()+1,51)
+//                      + Math.min(comment_.length()+1,51)
+//                      + Math.min(facility_.length()+1,31)
+//                      + Math.min(city_.length()+1,25)
+//                      + Math.min(address_.length()+1,51)
+//                      + Math.min(cross_road_.length()+1,51);
+    int data_length = 52 + identification_.length() + 1
+      + comment_.length()
+      + facility_.length()+1
+      + city_.length()+1
+      + address_.length()+1
+      + cross_road_.length()+1;
+    
     GarminPacket pack = new GarminPacket(packet_id,data_length);
 
     pack.setNextAsByte(dtype_);

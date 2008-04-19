@@ -679,9 +679,18 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
       String pdop = (String) data_fields.get(14);
       String hdop = (String) data_fields.get(15);
       String vdop = (String) data_fields.get(16);
-      changeGPSData(PDOP,new Float(pdop));
-      changeGPSData(HDOP,new Float(hdop));
-      changeGPSData(VDOP, new Float(vdop));
+      if (pdop != null && pdop.length() > 0)
+      {
+        changeGPSData(PDOP,new Float(pdop));
+      }
+      if (pdop != null && pdop.length() > 0)
+      {
+        changeGPSData(HDOP,new Float(hdop));
+      }
+      if (pdop != null && pdop.length() > 0)
+      {
+        changeGPSData(VDOP, new Float(vdop));
+      }
     }
     
     for (int sat_index=0; sat_index < 12; sat_index++) {
@@ -729,10 +738,13 @@ public class GPSNmeaDataProcessor extends GPSGeneralDataProcessor implements Run
     String speed_knots = (String) data_fields.get(6);
     try
     {
-      float speed = Float.parseFloat(speed_knots);
-      speed = speed / KM2NAUTIC;
+      if (speed_knots != null && speed_knots.length() > 0) 
+      {
+        float speed = Float.parseFloat(speed_knots);
+        speed = speed / KM2NAUTIC;
 
-      changeGPSData(SPEED, new Float(speed));
+        changeGPSData(SPEED, new Float(speed));
+      }
     }
     catch (NumberFormatException nfe)
     {

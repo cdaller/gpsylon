@@ -1,5 +1,7 @@
 ChangeLog for GPSMap/GPSylon (http://gpsmap.sourceforge.net)
 
+2008/04/17: fixed number conversion for gsa and rmc (for emtpy fields of speed and hdop)
+
 2008/03/19: fixed bugs D108 and D109 (variable length strings)
 
 2008/01/30: adding support for gpsd in GPSTool

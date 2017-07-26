@@ -19,7 +19,7 @@ Usually, you can start GPSylon by calling
 java -jar gpsylon-<version>.jar
 ```
 
-As the map application uses map tile servers that probably do not exist anymore it probable will not work anymore.
+As the map application uses map tile servers that probably do not exist anymore it probable will not work anymore. Sorry for that - but no spare time at the moment to get it running again.
 
 ## GPSTool
 
@@ -46,3 +46,13 @@ If you have questions, please contact the author
 Christof Dallermassl (christof@dallermassl.at)
 
 GPSylon uses some features of the open-source (GPL) openmap library.
+
+## Build
+
+```
+ant - gives a list of all ant commands (see there)
+ant compile - compiles the project
+```
+
+## License
+This project is licensed under [Apache 2.0](http://opensource.org/licenses/apache2.0)
